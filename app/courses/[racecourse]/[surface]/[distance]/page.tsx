@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import Link from 'next/link';
 import DataTable from '@/components/DataTable';
 
 // モックデータ
@@ -124,25 +125,27 @@ const surfaceNames: Record<string, string> = {
 };
 
 type Props = {
-  params: {
+  params: Promise<{
     racecourse: string;
     surface: string;
     distance: string;
-  };
+  }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const racecourse = racecourseNames[params.racecourse] || params.racecourse;
-  const surface = surfaceNames[params.surface] || params.surface;
+  const resolvedParams = await params;
+  const racecourse = racecourseNames[resolvedParams.racecourse] || resolvedParams.racecourse;
+  const surface = surfaceNames[resolvedParams.surface] || resolvedParams.surface;
   
   return {
-    title: `${racecourse} ${surface}${params.distance}m コース攻略データ | KEIBA DATA LAB`,
-    description: `${racecourse}の${surface}${params.distance}mのコースデータ。騎手別・血統別の詳細な成績を分析。`,
+    title: `${racecourse} ${surface}${resolvedParams.distance}m コース攻略データ | KEIBA DATA LAB`,
+    description: `${racecourse}の${surface}${resolvedParams.distance}mのコースデータ。騎手別・血統別の詳細な成績を分析。`,
   };
 }
 
-export default function CoursePage({ params }: Props) {
-  const data = mockData[params.racecourse as keyof typeof mockData]?.[params.surface as 'dirt' | 'turf']?.[params.distance];
+export default async function CoursePage({ params }: Props) {
+  const resolvedParams = await params;
+  const data = (mockData as any)[resolvedParams.racecourse]?.[resolvedParams.surface]?.[resolvedParams.distance];
   
   if (!data) {
     return <div>データが見つかりません</div>;
@@ -156,7 +159,7 @@ export default function CoursePage({ params }: Props) {
   return (
     <>
       <div className="breadcrumb">
-        <a href="/">ホーム</a> &gt; <a href="/courses">コース</a> &gt; <a href={`/courses/${params.racecourse}`}>{course_info.racecourse}</a> &gt; {course_info.surface} &gt; {course_info.distance}m
+        <Link href="/">ホーム</Link> &gt; <Link href="/courses">コース</Link> &gt; <Link href={`/courses/${resolvedParams.racecourse}`}>{course_info.racecourse}</Link> &gt; {course_info.surface} &gt; {course_info.distance}m
       </div>
       
       <main>
@@ -276,7 +279,7 @@ export default function CoursePage({ params }: Props) {
           <div className="chart-container">
             <h3 style={{ fontSize: '1rem', marginBottom: '1rem', color: '#2d3748', fontWeight: 600 }}>TOP5 勝率</h3>
             <div className="bar-chart">
-              {top5Jockeys.map((jockey) => (
+              {top5Jockeys.map((jockey: any) => (
                 <div key={jockey.rank} className="bar-item">
                   <div className="bar-label">{jockey.name}</div>
                   <div className="bar-visual">
@@ -303,27 +306,27 @@ export default function CoursePage({ params }: Props) {
           <div className="chart-container">
             <h3 style={{ fontSize: '1rem', marginBottom: '1rem', color: '#2d3748', fontWeight: 600 }}>TOP5 勝率</h3>
             <div className="bar-chart">
-              {top5Pedigrees.map((pedigree) => (
+              {top5Pedigrees.map((pedigree: any) => (
                 <div key={pedigree.rank} className="bar-item">
-                <div className="bar-label">{pedigree.name}</div>
-                <div className="bar-visual">
-                  <div className="bar-fill-container">
-                    <div className="bar-fill" style={{ width: `${pedigree.win_rate * 2.5}%` }}></div>
+                  <div className="bar-label">{pedigree.name}</div>
+                  <div className="bar-visual">
+                    <div className="bar-fill-container">
+                      <div className="bar-fill" style={{ width: `${pedigree.win_rate * 2.5}%` }}></div>
+                    </div>
+                    <div className="bar-value">{pedigree.win_rate}%</div>
                   </div>
-                  <div className="bar-value">{pedigree.win_rate}%</div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
-      </div>
-      
-      <DataTable 
-        title="血統別成績 詳細データ"
-        data={pedigree_stats}
-        initialShow={10}
-      />
-    </main>
-  </>
-);
+        
+        <DataTable 
+          title="血統別成績 詳細データ"
+          data={pedigree_stats}
+          initialShow={10}
+        />
+      </main>
+    </>
+  );
 }
