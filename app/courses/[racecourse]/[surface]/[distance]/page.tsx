@@ -20,15 +20,26 @@ const mockData = {
             gate_position: 4
           },
           buying_points: {
-            positive: [
-              '武豊騎手（勝率31.3%）',
-              'キングカメハメハ産駒（勝率34.4%）',
-              '外枠が有利'
-            ],
-            negative: [
-              '内枠は不利',
-              '先行馬は苦戦傾向'
-            ]
+            positive: {
+              jockey: {
+                name: '武豊',
+                value: '31.3%'
+              },
+              pedigree: {
+                name: 'キングカメハメハ産駒',
+                value: '34.4%'
+              }
+            },
+            negative: {
+              gate: {
+                name: '内枠',
+                note: '不利'
+              },
+              running_style: {
+                name: '先行馬',
+                note: '苦戦傾向'
+              }
+            }
           }
         },
         jockey_stats: [
@@ -168,12 +179,12 @@ export default function CoursePage({ params }: Props) {
         </div>
         
         <div className="summary-box">
-          <div className="summary-box-title">💡 このコースのポイント</div>
+          <div className="summary-box-title">このコースのポイント</div>
           <div className="summary-box-content">{course_info.summary}</div>
         </div>
         
         <div className="characteristics-box">
-          <div className="characteristics-title">📊 コース特性</div>
+          <div className="characteristics-title">コース特性</div>
           
           <div className="gauge-item">
             <div className="gauge-label">脚質傾向</div>
@@ -221,23 +232,41 @@ export default function CoursePage({ params }: Props) {
           </div>
         </div>
         
-        <div className="points-container">
-          <div className="point-box positive">
-            <div className="point-title positive">✅ 注目ポイント</div>
-            <ul className="point-list positive">
-              {course_info.buying_points.positive.map((point, index) => (
-                <li key={index}>{point}</li>
-              ))}
-            </ul>
+        <div className="buying-rules-container">
+          <div className="buying-rules-section positive-section">
+            <div className="buying-rules-header positive-header">
+              買いの法則
+            </div>
+            <div className="buying-cards">
+              <div className="buying-card positive-card">
+                <div className="card-label">買い騎手</div>
+                <div className="card-name">{course_info.buying_points.positive.jockey.name}</div>
+                <div className="card-value">{course_info.buying_points.positive.jockey.value}</div>
+              </div>
+              <div className="buying-card positive-card">
+                <div className="card-label">買い血統</div>
+                <div className="card-name">{course_info.buying_points.positive.pedigree.name}</div>
+                <div className="card-value">{course_info.buying_points.positive.pedigree.value}</div>
+              </div>
+            </div>
           </div>
           
-          <div className="point-box negative">
-            <div className="point-title negative">⚠️ 注意ポイント</div>
-            <ul className="point-list negative">
-              {course_info.buying_points.negative.map((point, index) => (
-                <li key={index}>{point}</li>
-              ))}
-            </ul>
+          <div className="buying-rules-section negative-section">
+            <div className="buying-rules-header negative-header">
+              消しの法則
+            </div>
+            <div className="buying-cards">
+              <div className="buying-card negative-card">
+                <div className="card-label">消し枠</div>
+                <div className="card-name">{course_info.buying_points.negative.gate.name}</div>
+                <div className="card-note">{course_info.buying_points.negative.gate.note}</div>
+              </div>
+              <div className="buying-card negative-card">
+                <div className="card-label">消し脚質</div>
+                <div className="card-name">{course_info.buying_points.negative.running_style.name}</div>
+                <div className="card-note">{course_info.buying_points.negative.running_style.note}</div>
+              </div>
+            </div>
           </div>
         </div>
         
@@ -276,25 +305,25 @@ export default function CoursePage({ params }: Props) {
             <div className="bar-chart">
               {top5Pedigrees.map((pedigree) => (
                 <div key={pedigree.rank} className="bar-item">
-                  <div className="bar-label">{pedigree.name}</div>
-                  <div className="bar-visual">
-                    <div className="bar-fill-container">
-                      <div className="bar-fill" style={{ width: `${pedigree.win_rate * 2.5}%` }}></div>
-                    </div>
-                    <div className="bar-value">{pedigree.win_rate}%</div>
+                <div className="bar-label">{pedigree.name}</div>
+                <div className="bar-visual">
+                  <div className="bar-fill-container">
+                    <div className="bar-fill" style={{ width: `${pedigree.win_rate * 2.5}%` }}></div>
                   </div>
+                  <div className="bar-value">{pedigree.win_rate}%</div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         </div>
-        
-        <DataTable 
-          title="血統別成績 詳細データ"
-          data={pedigree_stats}
-          initialShow={10}
-        />
-      </main>
-    </>
-  );
+      </div>
+      
+      <DataTable 
+        title="血統別成績 詳細データ"
+        data={pedigree_stats}
+        initialShow={10}
+      />
+    </main>
+  </>
+);
 }

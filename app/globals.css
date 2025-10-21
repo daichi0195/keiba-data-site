@@ -1,42 +1,903 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+body {
+  font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+  background: #f5f7fa;
+  color: #333;
+  min-height: 100vh;
+}
+
+/* ヘッダー */
+header {
+  background: #fff;
+  padding: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.site-name {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #2d5016;
+}
+
+/* パンくず */
+.breadcrumb {
+  background: #fff;
+  padding: 0.75rem 1rem;
+  color: #718096;
+  font-size: 0.85rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.breadcrumb a {
+  color: #4a5568;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.breadcrumb a:hover {
+  color: #2d3748;
+}
+
+/* メインコンテンツ */
+main {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+/* コースヘッダー */
+.course-header {
+  background: linear-gradient(135deg, #52af77 0%, #3d8b5c 100%);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.course-header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+}
+
+.course-header h1 {
+  color: #fff;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 1;
+  font-weight: 700;
+}
+
+.course-meta {
+  display: flex;
+  gap: 0.5rem;
+  color: #fff;
+  font-size: 0.9rem;
+  position: relative;
+  z-index: 1;
+  flex-wrap: wrap;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: rgba(255, 255, 255, 0.25);
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  backdrop-filter: blur(10px);
+  font-size: 0.85rem;
+}
+
+.meta-label {
+  font-weight: bold;
+  opacity: 0.9;
+}
+
+/* サマリーボックス */
+.summary-box {
+  background: #fff;
+  border-left: 4px solid #52af77;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.summary-box-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2d5016;
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.02em;
+}
+
+.summary-box-content {
+  font-size: 0.95rem;
+  color: #3d5a3d;
+  line-height: 1.7;
+}
+
+/* 特性ボックス */
+.characteristics-box {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
+}
+
+.characteristics-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.02em;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #52af77;
+}
+
+.gauge-item {
+  margin-bottom: 1.5rem;
+}
+
+.gauge-item:last-child {
+  margin-bottom: 0;
+}
+
+.gauge-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #4a5568;
+  margin-bottom: 0.5rem;
+}
+
+.gauge-track {
+  position: relative;
+  height: 8px;
+  background: linear-gradient(90deg, #e2e8f0 0%, #cbd5e0 50%, #e2e8f0 100%);
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.gauge-indicator {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 16px;
+  height: 16px;
+  background: #52af77;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 2;
+}
+
+.gauge-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #718096;
+}
+
+.gauge-result {
+  font-size: 0.85rem;
+  color: #2d5016;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 0.25rem;
+}
+
+/* 買いの法則・消しの法則 */
+.buying-rules-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.buying-rules-section {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+}
+
+.buying-rules-header {
+  padding: 1.25rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.05em;
+  position: relative;
+}
+
+.buying-rules-header::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.positive-header {
+  background: linear-gradient(135deg, #52af77 0%, #3d8b5c 100%);
+}
+
+.negative-header {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+}
+
+.buying-cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: #f8fafc;
+}
+
+.buying-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.buying-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.positive-card {
+  border-color: #52af77;
+}
+
+.positive-card:hover {
+  border-color: #3d8b5c;
+  box-shadow: 0 8px 16px rgba(82, 175, 119, 0.15);
+}
+
+.negative-card {
+  border-color: #dc2626;
+}
+
+.negative-card:hover {
+  border-color: #b91c1c;
+  box-shadow: 0 8px 16px rgba(220, 38, 38, 0.15);
+}
+
+.card-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748b;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.card-name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+}
+
+.card-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #2d5016;
+  font-feature-settings: 'tnum';
+  letter-spacing: -0.02em;
+}
+
+.card-note {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #991b1b;
+}
+
+@media (min-width: 640px) {
+  .buying-cards {
+    grid-template-columns: 1fr 1fr;
   }
 }
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
+/* セクション */
+.section {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+.section-title {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #2d3748;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+.section-title::before {
+  content: '';
+  width: 3px;
+  height: 20px;
+  background: #52af77;
+  border-radius: 2px;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+/* グラフエリア */
+.chart-container {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: #f8faf8;
+  border-radius: 8px;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+.bar-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.bar-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.bar-label {
+  min-width: 80px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.bar-visual {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.bar-fill-container {
+  flex: 1;
+  height: 24px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #52af77 0%, #3d8b5c 100%);
+  transition: width 0.5s ease;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 0.5rem;
+}
+
+.bar-value {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #2d5016;
+  min-width: 45px;
+  text-align: right;
+}
+
+/* アコーディオンボタン */
+.show-more-container {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.show-more-button {
+  background: linear-gradient(135deg, #52af77 0%, #3d8b5c 100%);
+  color: #fff;
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.show-more-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.show-more-button:active {
+  transform: translateY(0);
+}
+
+/* モバイル最適化テーブル */
+.mobile-table-container {
+  background: white;
+  overflow: hidden;
+  margin: 1rem 0;
+  border-top: 2px solid #666;
+  border-bottom: 2px solid #666;
+  border-left: 3px solid #fff;
+}
+
+.mobile-table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mobile-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 800px;
+}
+
+/* ヘッダー */
+.mobile-data-table thead {
+  background: white;
+  border-bottom: 2px solid #666;
+}
+
+.mobile-data-table th {
+  padding: 12px 8px;
+  font-weight: 600;
+  font-size: 12px;
+  color: #000;
+  text-align: center;
+  white-space: nowrap;
+  border-right: 1px solid #ddd;
+  border-bottom: 2px solid #666;
+}
+
+.mobile-data-table th:first-child {
+  border-left: none;
+}
+
+.mobile-data-table th:last-child {
+  border-right: none;
+}
+
+/* 固定列のスタイル */
+.mobile-sticky-col {
+  position: sticky;
+  background: white !important;
+  z-index: 20;
+}
+
+.mobile-col-rank {
+  left: 0;
+  width: 35px;
+  min-width: 35px;
+  text-align: center !important;
+  border-left: none !important;
+  border-right: none !important;
+  background: white !important;
+  z-index: 21 !important;
+}
+
+.mobile-col-name {
+  left: 35px;
+  width: 100px !important;
+  min-width: 100px !important;
+  padding-left: 12px !important;
+  padding-right: 12px !important;
+  border-left: none !important;
+  border-right: 2px solid #666 !important;
+  white-space: nowrap;
+  transition: width 0.2s ease, min-width 0.2s ease, border-right 0.2s ease;
+  background: white !important;
+  z-index: 20 !important;
+}
+
+/* ヘッダーの名前列は中央寄せ */
+.mobile-data-table thead .mobile-col-name-header {
+  text-align: center !important;
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+  background: white;
+}
+
+/* ボディの名前列は左寄せ */
+.mobile-name-cell {
+  text-align: left !important;
+}
+
+/* スクロール時に名前列を短くする */
+.mobile-data-table thead .mobile-col-name-narrow {
+  position: sticky !important;
+  left: 35px !important;
+  width: 60px !important;
+  min-width: 60px !important;
+  max-width: 60px !important;
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+  border-left: none !important;
+  border-right: none !important;
+  background: white !important;
+  z-index: 21 !important;
+}
+
+/* スクロール時の2列目右側に枠線を追加（ヘッダー） */
+.mobile-data-table thead .mobile-col-name-narrow::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 2px;
+  height: 100%;
+  background: #666;
+  z-index: 22;
+}
+
+.mobile-data-table tbody .mobile-col-name-narrow {
+  position: sticky !important;
+  left: 35px !important;
+  width: 60px !important;
+  min-width: 60px !important;
+  max-width: 60px !important;
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+  border-left: none !important;
+  border-right: none !important;
+  background: white !important;
+  z-index: 11 !important;
+}
+
+/* スクロール時の2列目右側に枠線を追加（ボディ） */
+.mobile-data-table tbody .mobile-col-name-narrow::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 2px;
+  height: 100%;
+  background: #666;
+  z-index: 12;
+}
+
+.mobile-data-table .mobile-sticky-body.mobile-col-name-narrow {
+  position: sticky !important;
+  left: 35px !important;
+  width: 60px !important;
+  min-width: 60px !important;
+  max-width: 60px !important;
+  border-left: none !important;
+  border-right: none !important;
+  background: white !important;
+  z-index: 11 !important;
+}
+
+/* Body部分の固定列 */
+.mobile-sticky-body {
+  background: white !important;
+  z-index: 11 !important;
+}
+
+.mobile-row-even .mobile-sticky-body {
+  background: white;
+}
+
+.mobile-row-odd .mobile-sticky-body {
+  background: white;
+}
+
+/* スクロール列 */
+.mobile-scroll-col {
+  padding: 10px 8px;
+  text-align: center;
+  min-width: 70px;
+  border-right: 1px solid #ddd;
+}
+
+.mobile-scroll-col:first-child {
+  border-left: none;
+}
+
+.mobile-scroll-col:last-child {
+  border-right: none;
+}
+
+/* 行のスタイル */
+.mobile-data-table tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+.mobile-data-table tbody td {
+  border-top: 1px solid #e5e5e5;
+}
+
+.mobile-data-table tbody tr:first-child td {
+  border-top: none;
+}
+
+.mobile-row-even {
+  background: white;
+}
+
+.mobile-row-odd {
+  background: white;
+}
+
+.mobile-data-table tbody tr:hover {
+  background: #f5f5f5 !important;
+}
+
+.mobile-data-table tbody tr:hover .mobile-sticky-body {
+  background: #f5f5f5 !important;
+}
+
+/* 順位 - 全て同じデザイン */
+.mobile-rank-badge,
+.mobile-rank-normal {
+  display: inline-block;
+  font-weight: 600;
+  font-size: 13px;
+  color: #666;
+}
+
+/* 1位のハイライト */
+.mobile-rank-1 {
+  display: inline-block;
+  font-weight: 600;
+  font-size: 13px;
+  color: #333;
+  background: #FCEA7F;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* 2位のハイライト */
+.mobile-rank-2 {
+  display: inline-block;
+  font-weight: 600;
+  font-size: 13px;
+  color: #333;
+  background: #CBDEFF;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* 3位のハイライト */
+.mobile-rank-3 {
+  display: inline-block;
+  font-weight: 600;
+  font-size: 13px;
+  color: #333;
+  background: #EFC79F;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* 名前セル */
+.mobile-name-cell {
+  font-weight: 600;
+  color: #1a1a1a;
+  font-size: 13px;
+}
+
+/* 勝利数 */
+.mobile-col-wins {
+  font-weight: 400;
+  color: #333;
+}
+
+/* レート・回収率 */
+.mobile-col-rate {
+  font-weight: 400;
+  color: #333;
+}
+
+.mobile-col-payback {
+  font-weight: 400;
+  color: #333;
+}
+
+/* 各カラムの最大値ハイライト */
+.mobile-col-max-value {
+  background: #CAFEE3 !important;
+  font-weight: 600 !important;
+  color: #1a1a1a !important;
+}
+
+/* ハイライト */
+.mobile-highlight {
+  background: #CAFEE3 !important;
+  font-weight: 600 !important;
+  color: #1a1a1a !important;
+  padding: 2px 4px !important;
+  border-radius: 3px !important;
+  display: inline-block !important;
+}
+
+/* レスポンシブ対応 */
+@media (min-width: 768px) {
+  main {
+    max-width: 1200px;
+    padding: 2rem;
+  }
+  
+  .course-header {
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .course-header h1 {
+    font-size: 2rem;
+  }
+  
+  .summary-box {
+    padding: 1.5rem;
+  }
+  
+  .characteristics-box {
+    padding: 2rem;
+  }
+  
+  .buying-cards {
+    grid-template-columns: 1fr 1fr;
+    padding: 2rem;
+  }
+  
+  .section {
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .section-title {
+    font-size: 1.5rem;
+  }
+  
+  .bar-label {
+    min-width: 100px;
+    font-size: 0.9rem;
+  }
+  
+  .bar-fill-container {
+    height: 28px;
+  }
+}
+
+@media (max-width: 768px) {
+  .mobile-data-table {
+    font-size: 12px;
+    min-width: 700px;
+  }
+  
+  .mobile-data-table th,
+  .mobile-data-table td {
+    padding: 8px 6px;
+  }
+  
+  .mobile-col-rank {
+    width: 30px;
+    min-width: 30px;
+    background: white !important;
+    z-index: 21 !important;
+  }
+  
+  .mobile-col-name {
+    left: 30px;
+    width: 100px !important;
+    min-width: 100px !important;
+    padding-left: 8px !important;
+    background: white !important;
+    z-index: 20 !important;
+  }
+  
+  .mobile-data-table thead .mobile-col-name-narrow {
+    position: sticky !important;
+    left: 30px !important;
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+    border-left: none !important;
+    border-right: none !important;
+    background: white !important;
+    z-index: 21 !important;
+  }
+  
+  .mobile-data-table thead .mobile-col-name-narrow::after {
+    width: 2px;
+    background: #666;
+    z-index: 22;
+  }
+  
+  .mobile-data-table tbody .mobile-col-name-narrow {
+    position: sticky !important;
+    left: 30px !important;
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+    border-left: none !important;
+    border-right: none !important;
+    background: white !important;
+    z-index: 11 !important;
+  }
+  
+  .mobile-data-table tbody .mobile-col-name-narrow::after {
+    width: 2px;
+    background: #666;
+    z-index: 12;
+  }
+  
+  .mobile-data-table .mobile-sticky-body.mobile-col-name-narrow {
+    position: sticky !important;
+    left: 30px !important;
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+    border-left: none !important;
+    border-right: none !important;
+    background: white !important;
+    z-index: 11 !important;
+  }
+  
+  .mobile-name-cell {
+    font-size: 12px;
+  }
+  
+  .mobile-scroll-col {
+    min-width: 60px;
+  }
+  
+  .mobile-rank-badge,
+  .mobile-rank-normal {
+    font-size: 12px;
+  }
+  
+  .mobile-rank-1 {
+    font-size: 12px;
+    color: #333;
+    background: #FCEA7F;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  
+  .mobile-rank-2 {
+    font-size: 12px;
+    color: #333;
+    background: #CBDEFF;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  
+  .mobile-rank-3 {
+    font-size: 12px;
+    color: #333;
+    background: #EFC79F;
+    padding: 2px 6px;
+    border-radius: 4px;
   }
 }
