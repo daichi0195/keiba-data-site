@@ -463,7 +463,7 @@ main {
 /* ヘッダー */
 .mobile-data-table thead {
   background: white;
-  border-bottom: 1px solid #000;
+  border-bottom: 2px solid #000;
 }
 
 .mobile-data-table th {
@@ -870,6 +870,24 @@ main {
   
   .mobile-scroll-col {
     min-width: 60px;
+  }
+  
+  /* 1着・2着・3着を狭く (4列目・5列目・6列目) */
+  .mobile-data-table tbody td:nth-child(4),
+  .mobile-data-table tbody td:nth-child(5),
+  .mobile-data-table tbody td:nth-child(6) {
+    min-width: 40px !important;
+    max-width: 40px !important;
+    padding: 8px 2px !important;
+  }
+  
+  /* ヘッダーも同様に */
+  .mobile-data-table thead th:nth-child(4),
+  .mobile-data-table thead th:nth-child(5),
+  .mobile-data-table thead th:nth-child(6) {
+    min-width: 40px !important;
+    max-width: 40px !important;
+    padding: 8px 2px !important;
   }
   
   .mobile-rank-badge,
