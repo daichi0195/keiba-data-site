@@ -787,7 +787,7 @@ main {
 
 @media (max-width: 768px) {
   .mobile-data-table {
-    font-size: 12px;
+    font-size: 14px;
     min-width: 700px;
   }
   
@@ -865,7 +865,7 @@ main {
   }
   
   .mobile-name-cell {
-    font-size: 12px;
+    font-size: 14px;
   }
   
   .mobile-scroll-col {
@@ -874,11 +874,11 @@ main {
   
   .mobile-rank-badge,
   .mobile-rank-normal {
-    font-size: 12px;
+    font-size: 14px;
   }
   
   .mobile-rank-1 {
-    font-size: 12px;
+    font-size: 14px;
     color: #333;
     background: #FCEA7F;
     padding: 2px 6px;
@@ -886,7 +886,7 @@ main {
   }
   
   .mobile-rank-2 {
-    font-size: 12px;
+    font-size: 14px;
     color: #333;
     background: #CBDEFF;
     padding: 2px 6px;
@@ -894,7 +894,7 @@ main {
   }
   
   .mobile-rank-3 {
-    font-size: 12px;
+    font-size: 14px;
     color: #333;
     background: #EFC79F;
     padding: 2px 6px;
