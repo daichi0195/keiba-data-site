@@ -1,3 +1,6 @@
+/* ===== SectionNav.module.css ===== */
+
+/* ナビ全体の固定位置 */
 .sectionNav {
   position: fixed;
   bottom: 1rem;
@@ -8,19 +11,22 @@
   pointer-events: none;
 }
 
-/* 横スクロール可能なナビゲーション */
+/* 横スクロール可能なナビゲーションコンテナ */
 .navContainer {
   display: flex;
   gap: 0.5rem;
-  overflow-x: auto; /* ✅ 横スクロールを有効化 */
-  -webkit-overflow-scrolling: touch; /* ✅ スマホでスムーズスクロール */
-  scroll-snap-type: x mandatory; /* ✅ ボタン単位でスナップ */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
   max-width: 100%;
   padding: 0.5rem;
-  justify-content: flex-start; /* ✅ 左寄せに変更 */
+  justify-content: flex-start;
   pointer-events: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
 }
 
+/* スクロールバー（Chrome用） */
 .navContainer::-webkit-scrollbar {
   height: 6px;
 }
@@ -30,10 +36,14 @@
   border-radius: 3px;
 }
 
-/* ボタン */
+/* ===== ボタンスタイル ===== */
 .navButton {
-  flex: 0 0 auto; /* ✅ 幅固定で折り返さない */
-  scroll-snap-align: start; /* ✅ スナップ対象 */
+  display: flex; /* ✅ 中央寄せのため追加 */
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  flex: 0 0 auto; /* 折り返さず横並び */
+  scroll-snap-align: start;
   max-width: 150px;
   padding: 0.75rem 1.5rem;
   border: 2px solid #e2e8f0;
@@ -50,7 +60,12 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* ホバー */
+/* ボタン内のテキストを確実に中央揃え */
+.navButton > * {
+  line-height: 1;
+}
+
+/* ===== ホバー時 ===== */
 .navButton:hover {
   border-color: #52af77;
   color: #2d5016;
@@ -59,7 +74,7 @@
   transform: translateY(-2px);
 }
 
-/* アクティブ */
+/* ===== アクティブ時 ===== */
 .navButton.active {
   background: linear-gradient(135deg, #52af77 0%, #3d8b5c 100%);
   color: #fff;
@@ -68,11 +83,23 @@
   box-shadow: 0 6px 20px rgba(82, 175, 119, 0.4);
 }
 
-/* モバイル */
+/* ===== モバイル（SP） ===== */
 @media (max-width: 768px) {
   .navButton {
     padding: 0.625rem 1rem;
     font-size: 0.8125rem;
     max-width: 120px;
+  }
+
+  .navContainer {
+    gap: 0.4rem;
+    padding: 0.4rem 0.5rem;
+  }
+}
+
+/* ===== スクロールスナップ補正（任意） ===== */
+@media (hover: none) {
+  .navButton:active {
+    transform: scale(0.97);
   }
 }

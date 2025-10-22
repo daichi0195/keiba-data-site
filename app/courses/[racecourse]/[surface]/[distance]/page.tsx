@@ -368,8 +368,8 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
     { id: 'gate-section',        label: '枠順別' },
     { id: 'running-style-section', label: '脚質別' },
     { id: 'jockey-section',      label: '騎手別' },
-    { id: 'bloodline-section',   label: '血統別（種牡馬）' },
-    { id: 'dam-sire-section',    label: '血統別（母父）' },   // ★ 追加
+    { id: 'bloodline-section',   label: '血統別(種牡馬)' },
+    { id: 'dam-sire-section',    label: '血統別(母父)' },   // ★ 追加
     { id: 'trainer-section',     label: '調教師別' },         // ★ 追加
   ];  
 

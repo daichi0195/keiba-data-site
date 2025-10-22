@@ -1,71 +1,87 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styles from './SectionNav.module.css';
 
-type NavItem = {
-  id: string;
-  label: string;
-};
+type Item = { id: string; label: string };
 
-type Props = {
-  items: NavItem[];
-};
+export default function SectionNav({ items }: { items: Item[] }) {
+  const [activeId, setActiveId] = useState<string>(items[0]?.id ?? '');
 
-export default function SectionNav({ items }: Props) {
-  const [activeSection, setActiveSection] = useState<string>(items[0]?.id || '');
+  const containerRef = useRef<HTMLDivElement>(null);
+  const btnRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
+  // ★ 交差判定（既存ロジックがある場合はそれを使用）
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY + 150; // ナビバーの高さ分オフセット
+    const sections = items
+      .map(i => document.getElementById(i.id))
+      .filter((el): el is HTMLElement => !!el);
 
-      // 各セクションの位置を確認
-      for (const item of items) {
-        const section = document.getElementById(item.id);
-        if (section) {
-          const sectionTop = section.offsetTop;
-          const sectionBottom = sectionTop + section.offsetHeight;
+    const io = new IntersectionObserver(
+      (entries) => {
+        // 一番 viewport 上部に近いものをactiveに
+        const visible = entries
+          .filter(e => e.isIntersecting)
+          .sort((a, b) => Math.abs(a.boundingClientRect.top) - Math.abs(b.boundingClientRect.top));
 
-          if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
-            setActiveSection(item.id);
-            break;
-          }
+        if (visible[0]) {
+          const id = visible[0].target.id;
+          setActiveId(id);
         }
+      },
+      {
+        root: null,
+        threshold: [0.1, 0.25, 0.5],
+        rootMargin: '-20% 0px -60% 0px', // 上を優先（調整可）
       }
-    };
+    );
 
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // 初期状態を設定
-
-    return () => window.removeEventListener('scroll', handleScroll);
+    sections.forEach(s => io.observe(s));
+    return () => io.disconnect();
   }, [items]);
 
-  const scrollToSection = (id: string) => {
-    const section = document.getElementById(id);
-    if (section) {
-      const offsetTop = section.offsetTop - 100; // ナビバーの高さ分を考慮
-      window.scrollTo({
-        top: offsetTop,
-        behavior: 'smooth',
-      });
-    }
+  // ★ activeId が変わったらナビを「左寄せ表示」にスライド
+  useEffect(() => {
+    const container = containerRef.current;
+    const btn = btnRefs.current[activeId ?? ''];
+    if (!container || !btn) return;
+
+    // ボタンの左端座標（コンテナ基準）を計算
+    const targetLeft = btn.offsetLeft - container.offsetLeft;
+
+    // 左に少し余白を残して気持ちよく見せたい場合は差し引く
+    const padding = 8; // px
+    const left = Math.max(0, targetLeft - padding);
+
+    container.scrollTo({
+      left,
+      behavior: 'smooth',
+    });
+  }, [activeId]);
+
+  const handleClick = (id: string) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    // クリック時に該当セクションへスムーズスクロール
+    const y = el.getBoundingClientRect().top + window.scrollY - 80; // ヘッダーぶん調整
+    window.scrollTo({ top: y, behavior: 'smooth' });
   };
 
   return (
-    <nav className={styles.sectionNav}>
-      <div className={styles.navContainer}>
+    <div className={styles.sectionNav}>
+      <div className={styles.navContainer} ref={containerRef}>
         {items.map((item) => (
           <button
             key={item.id}
-            className={`${styles.navButton} ${
-              activeSection === item.id ? styles.active : ''
-            }`}
-            onClick={() => scrollToSection(item.id)}
+            ref={(el) => (btnRefs.current[item.id] = el)}
+            className={`${styles.navButton} ${activeId === item.id ? styles.active : ''}`}
+            onClick={() => handleClick(item.id)}
+            type="button"
           >
             {item.label}
           </button>
         ))}
       </div>
-    </nav>
+    </div>
   );
 }
