@@ -3,6 +3,8 @@ import Link from 'next/link';
 import DataTable from '@/components/DataTable';
 import GateTable from '@/components/GateTable';
 import SectionNav from '@/components/SectionNav';
+import RunningStyleTable from '@/components/RunningStyleTable';
+import PopularityTable from '@/components/PopularityTable';
 
 // モックデータ
 const mockData = {
@@ -45,6 +47,15 @@ const mockData = {
             }
           }
         },
+        popularity_stats: {
+          fav1:      { races: 240, wins: 86, places_2: 62, places_3: 38, win_rate: 35.8, quinella_rate: 61.7, place_rate: 77.5, win_payback: 82,  place_payback: 88 },
+          fav2:      { races: 240, wins: 58, places_2: 60, places_3: 46, win_rate: 24.2, quinella_rate: 49.2, place_rate: 68.3, win_payback: 90,  place_payback: 92 },
+          fav3:      { races: 240, wins: 37, places_2: 48, places_3: 52, win_rate: 15.4, quinella_rate: 35.8, place_rate: 57.5, win_payback: 94,  place_payback: 96 },
+          fav4:      { races: 240, wins: 25, places_2: 36, places_3: 45, win_rate: 10.4, quinella_rate: 25.4, place_rate: 44.2, win_payback: 96,  place_payback: 98 },
+          fav5:      { races: 240, wins: 18, places_2: 28, places_3: 36, win_rate: 7.5,  quinella_rate: 19.2, place_rate: 34.2, win_payback: 98,  place_payback: 100 },
+          fav6to9:   { races: 480, wins: 28, places_2: 52, places_3: 74, win_rate: 5.8,  quinella_rate: 16.7, place_rate: 32.1, win_payback: 102, place_payback: 104 },
+          fav10plus: { races: 360, wins: 12, places_2: 24, places_3: 42, win_rate: 3.3,  quinella_rate: 10.0, place_rate: 21.7, win_payback: 108, place_payback: 110 },
+        },        
         gate_stats: [
           { 
             gate: 1, 
@@ -151,6 +162,60 @@ const mockData = {
             place_payback: 94
           },
         ],
+        running_style_stats: [
+          {
+            style: 'escape',
+            style_label: '逃げ',
+            races: 180,
+            wins: 38,
+            places_2: 32,
+            places_3: 28,
+            win_rate: 21.1,
+            place_rate: 38.9,
+            quinella_rate: 54.4,
+            win_payback: 95,
+            place_payback: 88
+          },
+          {
+            style: 'lead',
+            style_label: '先行',
+            races: 320,
+            wins: 72,
+            places_2: 65,
+            places_3: 58,
+            win_rate: 22.5,
+            place_rate: 42.8,
+            quinella_rate: 60.9,
+            win_payback: 102,
+            place_payback: 93
+          },
+          {
+            style: 'pursue',
+            style_label: '差し',
+            races: 280,
+            wins: 58,
+            places_2: 62,
+            places_3: 54,
+            win_rate: 20.7,
+            place_rate: 42.9,
+            quinella_rate: 62.1,
+            win_payback: 88,
+            place_payback: 90
+          },
+          {
+            style: 'close',
+            style_label: '追込',
+            races: 150,
+            wins: 22,
+            places_2: 26,
+            places_3: 28,
+            win_rate: 14.7,
+            place_rate: 32.0,
+            quinella_rate: 50.7,
+            win_payback: 75,
+            place_payback: 82
+          },
+        ],
         jockey_stats: [
           { rank: 1, name: '武豊', races: 48, wins: 15, places_2: 8, places_3: 6, win_rate: 31.3, place_rate: 47.9, quinella_rate: 60.4, win_payback: 95, place_payback: 88 },
           { rank: 2, name: '川田将雅', races: 42, wins: 13, places_2: 7, places_3: 5, win_rate: 31.0, place_rate: 47.6, quinella_rate: 59.5, win_payback: 92, place_payback: 85 },
@@ -196,6 +261,50 @@ const mockData = {
           { rank: 14, name: 'ネオユニヴァース', races: 26, wins: 5, places_2: 4, places_3: 3, win_rate: 19.2, place_rate: 34.6, quinella_rate: 46.2, win_payback: 65, place_payback: 66 },
           { rank: 15, name: 'ゼンノロブロイ', races: 25, wins: 4, places_2: 4, places_3: 3, win_rate: 16.0, place_rate: 32.0, quinella_rate: 44.0, win_payback: 62, place_payback: 64 },
         ],
+        dam_sire_stats: [
+          { rank: 1,  name: 'サンデーサイレンス', races: 62, wins: 18, places_2: 12, places_3: 9, win_rate: 29.0, quinella_rate: 48.4, place_rate: 62.9, win_payback: 102, place_payback: 95 },
+          { rank: 2,  name: 'キングカメハメハ', races: 58, wins: 15, places_2: 10, places_3: 8, win_rate: 25.9, quinella_rate: 43.1, place_rate: 56.9, win_payback: 97, place_payback: 91 },
+          { rank: 3,  name: 'クロフネ', races: 55, wins: 13, places_2: 9, places_3: 7, win_rate: 23.6, quinella_rate: 40.0, place_rate: 52.7, win_payback: 95, place_payback: 90 },
+          { rank: 4,  name: 'マンハッタンカフェ', races: 50, wins: 12, places_2: 8, places_3: 6, win_rate: 24.0, quinella_rate: 40.0, place_rate: 52.0, win_payback: 94, place_payback: 88 },
+          { rank: 5,  name: 'フレンチデピュティ', races: 49, wins: 11, places_2: 8, places_3: 5, win_rate: 22.4, quinella_rate: 38.8, place_rate: 49.0, win_payback: 92, place_payback: 86 },
+          { rank: 6,  name: 'ダイワメジャー', races: 47, wins: 10, places_2: 8, places_3: 5, win_rate: 21.3, quinella_rate: 38.3, place_rate: 48.9, win_payback: 90, place_payback: 85 },
+          { rank: 7,  name: 'ゼンノロブロイ', races: 45, wins: 10, places_2: 7, places_3: 5, win_rate: 22.2, quinella_rate: 37.8, place_rate: 48.9, win_payback: 93, place_payback: 87 },
+          { rank: 8,  name: 'ネオユニヴァース', races: 43, wins: 9, places_2: 7, places_3: 5, win_rate: 20.9, quinella_rate: 37.2, place_rate: 48.8, win_payback: 91, place_payback: 86 },
+          { rank: 9,  name: 'スペシャルウィーク', races: 41, wins: 9, places_2: 6, places_3: 4, win_rate: 22.0, quinella_rate: 36.6, place_rate: 46.3, win_payback: 90, place_payback: 84 },
+          { rank: 10, name: 'ハーツクライ', races: 40, wins: 8, places_2: 6, places_3: 4, win_rate: 20.0, quinella_rate: 35.0, place_rate: 45.0, win_payback: 88, place_payback: 83 },
+          { rank: 11, name: 'ブライアンズタイム', races: 39, wins: 8, places_2: 6, places_3: 4, win_rate: 20.5, quinella_rate: 35.9, place_rate: 46.1, win_payback: 86, place_payback: 82 },
+          { rank: 12, name: 'シンボリクリスエス', races: 38, wins: 7, places_2: 5, places_3: 4, win_rate: 18.4, quinella_rate: 31.6, place_rate: 42.1, win_payback: 85, place_payback: 80 },
+          { rank: 13, name: 'マーベラスサンデー', races: 36, wins: 7, places_2: 5, places_3: 4, win_rate: 19.4, quinella_rate: 33.3, place_rate: 44.4, win_payback: 84, place_payback: 80 },
+          { rank: 14, name: 'アグネスタキオン', races: 35, wins: 6, places_2: 5, places_3: 3, win_rate: 17.1, quinella_rate: 31.4, place_rate: 40.0, win_payback: 82, place_payback: 78 },
+          { rank: 15, name: 'タニノギムレット', races: 34, wins: 6, places_2: 5, places_3: 3, win_rate: 17.6, quinella_rate: 32.3, place_rate: 41.1, win_payback: 83, place_payback: 79 },
+          { rank: 16, name: 'ステイゴールド', races: 33, wins: 6, places_2: 4, places_3: 3, win_rate: 18.2, quinella_rate: 30.3, place_rate: 39.4, win_payback: 81, place_payback: 77 },
+          { rank: 17, name: 'マツリダゴッホ', races: 32, wins: 5, places_2: 4, places_3: 3, win_rate: 15.6, quinella_rate: 28.1, place_rate: 37.5, win_payback: 80, place_payback: 76 },
+          { rank: 18, name: 'ゴールドアリュール', races: 31, wins: 5, places_2: 4, places_3: 3, win_rate: 16.1, quinella_rate: 29.0, place_rate: 38.7, win_payback: 79, place_payback: 75 },
+          { rank: 19, name: 'フジキセキ', races: 30, wins: 5, places_2: 4, places_3: 2, win_rate: 16.7, quinella_rate: 30.0, place_rate: 36.7, win_payback: 78, place_payback: 74 },
+          { rank: 20, name: 'エルコンドルパサー', races: 29, wins: 4, places_2: 3, places_3: 2, win_rate: 13.8, quinella_rate: 24.1, place_rate: 31.0, win_payback: 77, place_payback: 73 },
+        ],
+        trainer_stats: [
+          { rank: 1,  name: '矢作芳人', races: 60, wins: 15, places_2: 10, places_3: 8, win_rate: 25.0, quinella_rate: 41.7, place_rate: 55.0, win_payback: 98, place_payback: 92 },
+          { rank: 2,  name: '国枝栄', races: 58, wins: 14, places_2: 9, places_3: 7, win_rate: 24.1, quinella_rate: 39.7, place_rate: 51.7, win_payback: 96, place_payback: 90 },
+          { rank: 3,  name: '友道康夫', races: 56, wins: 13, places_2: 9, places_3: 6, win_rate: 23.2, quinella_rate: 39.3, place_rate: 50.0, win_payback: 95, place_payback: 89 },
+          { rank: 4,  name: '堀宣行', races: 54, wins: 13, places_2: 8, places_3: 6, win_rate: 24.1, quinella_rate: 38.9, place_rate: 50.0, win_payback: 93, place_payback: 88 },
+          { rank: 5,  name: '中内田充正', races: 52, wins: 12, places_2: 8, places_3: 6, win_rate: 23.1, quinella_rate: 38.5, place_rate: 50.0, win_payback: 92, place_payback: 87 },
+          { rank: 6,  name: '安田隆行', races: 50, wins: 11, places_2: 8, places_3: 5, win_rate: 22.0, quinella_rate: 38.0, place_rate: 48.0, win_payback: 90, place_payback: 85 },
+          { rank: 7,  name: '池江泰寿', races: 49, wins: 10, places_2: 7, places_3: 5, win_rate: 20.4, quinella_rate: 34.7, place_rate: 44.9, win_payback: 89, place_payback: 84 },
+          { rank: 8,  name: '藤原英昭', races: 48, wins: 10, places_2: 7, places_3: 4, win_rate: 20.8, quinella_rate: 35.4, place_rate: 43.8, win_payback: 88, place_payback: 83 },
+          { rank: 9,  name: '木村哲也', races: 47, wins: 9, places_2: 7, places_3: 4, win_rate: 19.1, quinella_rate: 34.0, place_rate: 42.6, win_payback: 87, place_payback: 82 },
+          { rank: 10, name: '高野友和', races: 46, wins: 9, places_2: 7, places_3: 4, win_rate: 19.6, quinella_rate: 34.8, place_rate: 43.5, win_payback: 86, place_payback: 81 },
+          { rank: 11, name: '斎藤誠', races: 45, wins: 8, places_2: 7, places_3: 4, win_rate: 17.8, quinella_rate: 33.3, place_rate: 42.2, win_payback: 85, place_payback: 80 },
+          { rank: 12, name: '手塚貴久', races: 44, wins: 8, places_2: 6, places_3: 4, win_rate: 18.2, quinella_rate: 31.8, place_rate: 40.9, win_payback: 84, place_payback: 79 },
+          { rank: 13, name: '田中博康', races: 43, wins: 7, places_2: 6, places_3: 4, win_rate: 16.3, quinella_rate: 30.2, place_rate: 39.5, win_payback: 83, place_payback: 78 },
+          { rank: 14, name: '西村真幸', races: 42, wins: 7, places_2: 6, places_3: 3, win_rate: 16.7, quinella_rate: 31.0, place_rate: 38.1, win_payback: 82, place_payback: 77 },
+          { rank: 15, name: '鹿戸雄一', races: 41, wins: 7, places_2: 5, places_3: 3, win_rate: 17.1, quinella_rate: 29.3, place_rate: 36.6, win_payback: 81, place_payback: 76 },
+          { rank: 16, name: '中竹和也', races: 40, wins: 6, places_2: 5, places_3: 3, win_rate: 15.0, quinella_rate: 27.5, place_rate: 35.0, win_payback: 80, place_payback: 75 },
+          { rank: 17, name: '奥村豊', races: 39, wins: 6, places_2: 5, places_3: 3, win_rate: 15.4, quinella_rate: 28.2, place_rate: 35.9, win_payback: 79, place_payback: 74 },
+          { rank: 18, name: '松永幹夫', races: 38, wins: 6, places_2: 4, places_3: 3, win_rate: 15.8, quinella_rate: 26.3, place_rate: 34.2, win_payback: 78, place_payback: 73 },
+          { rank: 19, name: '加藤征弘', races: 37, wins: 5, places_2: 4, places_3: 3, win_rate: 13.5, quinella_rate: 24.3, place_rate: 32.4, win_payback: 77, place_payback: 72 },
+          { rank: 20, name: '松田国英', races: 36, wins: 5, places_2: 4, places_3: 2, win_rate: 13.9, quinella_rate: 25.0, place_rate: 30.6, win_payback: 76, place_payback: 71 },
+        ]        
       },
     },
   },
@@ -240,17 +349,29 @@ export default async function CoursePage({ params }: Props) {
     return <div>データが見つかりません</div>;
   }
 
-  const { course_info, gate_stats, jockey_stats, pedigree_stats } = data;
+  const { course_info, gate_stats, running_style_stats, popularity_stats, jockey_stats, pedigree_stats, dam_sire_stats, trainer_stats } = data;
   
   const top5Jockeys = jockey_stats.slice(0, 5);
   const top5Pedigrees = pedigree_stats.slice(0, 5);
 
+  // 競馬場名の末尾「競馬場」を省いた短縮名（例：中山競馬場 -> 中山）
+const courseShort =
+(racecourseNames[resolvedParams.racecourse] ??
+  String(course_info.racecourse || '').replace(/競馬場$/, ''));
+
+// 「中山芝1800m」のようなSEO用接頭辞
+const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`;
+
   // セクションナビゲーション用のアイテム
   const navItems = [
-    { id: 'gate-section', label: '枠順別' },
-    { id: 'jockey-section', label: '騎手別' },
-    { id: 'bloodline-section', label: '血統別' },
-  ];
+    { id: 'popularity-section', label: '人気別' },      // ある場合
+    { id: 'gate-section',        label: '枠順別' },
+    { id: 'running-style-section', label: '脚質別' },
+    { id: 'jockey-section',      label: '騎手別' },
+    { id: 'bloodline-section',   label: '血統別（種牡馬）' },
+    { id: 'dam-sire-section',    label: '血統別（母父）' },   // ★ 追加
+    { id: 'trainer-section',     label: '調教師別' },         // ★ 追加
+  ];  
 
   return (
     <>
@@ -371,70 +492,67 @@ export default async function CoursePage({ params }: Props) {
           </div>
         </div>
         
-        <div id="gate-section">
-          <GateTable 
-            title="枠順別成績"
-            data={gate_stats}
-          />
-        </div>
+        {/* === 人気別 === */}
+<section id="popularity-section">
+  <PopularityTable
+    title={`${seoPrefix} 人気別データ`}
+    data={popularity_stats}
+  />
+</section>
 
-        <div id="jockey-section">
-          <div className="section">
-            <h2 className="section-title">騎手別成績</h2>
-            
-            <div className="chart-container">
-              <h3 style={{ fontSize: '1rem', marginBottom: '1rem', color: '#2d3748', fontWeight: 600 }}>TOP5 勝率</h3>
-              <div className="bar-chart">
-                {top5Jockeys.map((jockey: any) => (
-                  <div key={jockey.rank} className="bar-item">
-                    <div className="bar-label">{jockey.name}</div>
-                    <div className="bar-visual">
-                      <div className="bar-fill-container">
-                        <div className="bar-fill" style={{ width: `${jockey.win_rate * 2.5}%` }}></div>
-                      </div>
-                      <div className="bar-value">{jockey.win_rate}%</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-          
-          <DataTable 
-            title="騎手別成績 詳細データ"
-            data={jockey_stats}
-            initialShow={10}
-          />
-        </div>
-        
-        <div id="bloodline-section">
-          <div className="section">
-            <h2 className="section-title">血統別成績</h2>
-            
-            <div className="chart-container">
-              <h3 style={{ fontSize: '1rem', marginBottom: '1rem', color: '#2d3748', fontWeight: 600 }}>TOP5 勝率</h3>
-              <div className="bar-chart">
-                {top5Pedigrees.map((pedigree: any) => (
-                  <div key={pedigree.rank} className="bar-item">
-                    <div className="bar-label">{pedigree.name}</div>
-                    <div className="bar-visual">
-                      <div className="bar-fill-container">
-                        <div className="bar-fill" style={{ width: `${pedigree.win_rate * 2.5}%` }}></div>
-                      </div>
-                      <div className="bar-value">{pedigree.win_rate}%</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-          
-          <DataTable 
-            title="血統別成績 詳細データ"
-            data={pedigree_stats}
-            initialShow={10}
-          />
-        </div>
+{/* === 枠順別 === */}
+<section id="gate-section">
+  <GateTable
+    title={`${seoPrefix} 枠順別データ`}
+    data={gate_stats}
+  />
+</section>
+
+{/* === 脚質別 === */}
+<section id="running-style-section">
+  <RunningStyleTable
+    title={`${seoPrefix} 脚質別データ`}
+    data={running_style_stats}
+  />
+</section>
+
+{/* === 騎手別 === */}
+<section id="jockey-section">
+  <DataTable
+    title={`${seoPrefix} 騎手別データ`}
+    data={jockey_stats}
+    initialShow={10}
+  />
+</section>
+
+{/* === 血統別（種牡馬） === */}
+<section id="bloodline-section">
+  <DataTable
+    title={`${seoPrefix} 血統別(種牡馬)データ`}
+    data={pedigree_stats}
+    initialShow={10}
+  />
+</section>
+
+{/* === 血統別（母父） === */}
+<section id="dam-sire-section">
+  <DataTable
+    title={`${seoPrefix} 血統別(母父)データ`}
+    data={dam_sire_stats}
+    initialShow={10}
+  />
+</section>
+
+{/* === 調教師別 === */}
+<section id="trainer-section">
+  <DataTable
+    title={`${seoPrefix} 調教師別データ`}
+    data={trainer_stats}
+    initialShow={10}
+  />
+</section>
+
+
       </main>
     </>
   );

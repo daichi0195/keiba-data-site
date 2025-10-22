@@ -920,3 +920,25 @@ main {
     border-radius: 4px;
   }
 }
+
+/* ===== 見出しは外側装飾で統一 ===== */
+h2.section-title {
+  font-size: 1.25rem;        /* PC */
+  font-weight: 700;
+  color: #2d3748;
+  margin: 12px 0 6px;        /* 上を詰める */
+  padding-left: 8px;
+  border-left: 4px solid #4caf50; /* 緑バーはこれだけ */
+  line-height: 1.3;
+}
+
+/* 念のため、どこかで定義されている ::before を全無効化 */
+h2.section-title::before { content: none !important; }
+
+/* SPで少し小さく＋さらにタイト */
+@media (max-width: 768px) {
+  h2.section-title {
+    font-size: 1.1rem;
+    margin: 8px 0 6px;
+  }
+}

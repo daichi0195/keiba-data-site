@@ -1,0 +1,198 @@
+/* 脚質別テーブル専用スタイル */
+
+.tableContainer {
+    background: white;
+    overflow: hidden;
+    margin: 1rem 0;
+    border-top: 2px solid #000;
+    border-bottom: 1px solid #ddd;
+    border-left: 3px solid #fff;
+  }
+  
+  .tableScroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    min-width: 600px;
+  }
+  
+  /* ヘッダー */
+  .table thead {
+    background: white;
+    border-bottom: 2px solid #000;
+  }
+  
+  .table th {
+    padding: 12px 8px;
+    font-weight: 600;
+    font-size: 13px;
+    color: #000;
+    text-align: center;
+    white-space: nowrap;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #000;
+  }
+  
+  .table th:first-child {
+    border-left: none;
+  }
+  
+  .table th:last-child {
+    border-right: none;
+  }
+  
+  /* 脚質列（1列目）固定 */
+  .styleCol {
+    position: sticky;
+    left: 0;
+    width: 80px;
+    min-width: 80px;
+    text-align: center !important;
+    border-left: none !important;
+    border-right: none !important;
+    background: white !important;
+    z-index: 21 !important;
+    position: relative;
+  }
+  
+  /* ヘッダーの脚質列 */
+  .table thead .styleCol {
+    position: sticky;
+    left: 0;
+    background: white !important;
+    z-index: 21 !important;
+  }
+  
+  /* ボディの脚質列 */
+  .table tbody .styleCol {
+    position: sticky;
+    left: 0;
+    background: white !important;
+    z-index: 11 !important;
+  }
+  
+  /* スクロール時も枠線を維持 */
+  .styleCol::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 1px;
+    height: 100%;
+    background: #000;
+  }
+  
+  .table thead .styleCol::after {
+    z-index: 22;
+  }
+  
+  .table tbody .styleCol::after {
+    z-index: 12;
+  }
+  
+  /* スクロール列 */
+  .scrollCol {
+    padding: 10px 8px;
+    text-align: center;
+    min-width: 70px;
+    border-right: 1px solid #ddd;
+  }
+  
+  .scrollCol:last-child {
+    border-right: none;
+  }
+  
+  /* 行のスタイル */
+  .table tbody tr {
+    transition: background-color 0.15s ease;
+  }
+  
+  .table tbody td {
+    border-top: 1px solid #e5e5e5;
+  }
+  
+  .table tbody tr:first-child td {
+    border-top: none;
+  }
+  
+  .rowEven {
+    background: white;
+  }
+  
+  .rowOdd {
+    background: white;
+  }
+  
+  .table tbody tr:hover {
+    background: #f5f5f5 !important;
+  }
+  
+  .table tbody tr:hover .styleCol {
+    background: #f5f5f5 !important;
+  }
+  
+  /* 脚質バッジ */
+  .styleBadge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 13px;
+    color: #333;
+    background: #f0f0f0;
+  }
+  
+  /* ハイライト */
+  .highlight {
+    background: #CAFEE3 !important;
+    font-weight: 600 !important;
+    color: #1a1a1a !important;
+    padding: 2px 4px !important;
+    border-radius: 3px !important;
+    display: inline-block !important;
+  }
+  
+  /* レスポンシブ */
+  @media (max-width: 768px) {
+    .table {
+      font-size: 13px;
+      min-width: 500px;
+    }
+    
+    .table th,
+    .table td {
+      padding: 8px 6px;
+    }
+    
+    .styleCol {
+      width: 60px;
+      min-width: 60px;
+    }
+    
+    .scrollCol {
+      min-width: 60px;
+    }
+    
+    /* モバイルでも1着・2着・3着の列幅を45pxに */
+    .table th:nth-child(3),
+    .table th:nth-child(4),
+    .table th:nth-child(5),
+    .table td:nth-child(3),
+    .table td:nth-child(4),
+    .table td:nth-child(5) {
+      min-width: 45px !important;
+      max-width: 45px !important;
+      width: 45px !important;
+      padding: 8px 4px !important;
+    }
+    
+    .styleBadge {
+      font-size: 12px;
+      padding: 3px 8px;
+    }
+  }
