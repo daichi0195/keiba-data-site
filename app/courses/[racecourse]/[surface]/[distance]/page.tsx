@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import DataTable from '@/components/DataTable';
+import GateTable from '@/components/GateTable';
 
 // モックデータ
 const mockData = {
@@ -43,6 +44,112 @@ const mockData = {
             }
           }
         },
+        gate_stats: [
+          { 
+            gate: 1, 
+            color: '#FFFFFF', 
+            races: 245, 
+            wins: 28, 
+            places_2: 30, 
+            places_3: 32, 
+            win_rate: 11.4, 
+            place_rate: 36.7, 
+            quinella_rate: 36.7,
+            win_payback: 85,    // 追加
+            place_payback: 92   // 追加
+          },
+          { 
+            gate: 2, 
+            color: '#222222', 
+            races: 245, 
+            wins: 32, 
+            places_2: 28, 
+            places_3: 30, 
+            win_rate: 13.1, 
+            place_rate: 36.7, 
+            quinella_rate: 36.7,
+            win_payback: 95,
+            place_payback: 88
+          },
+          { 
+            gate: 3, 
+            color: '#C62927', 
+            races: 245, 
+            wins: 35, 
+            places_2: 31, 
+            places_3: 28, 
+            win_rate: 14.3, 
+            place_rate: 38.4, 
+            quinella_rate: 38.4,
+            win_payback: 102,
+            place_payback: 95
+          },
+          { 
+            gate: 4, 
+            color: '#2573CD', 
+            races: 245, 
+            wins: 30, 
+            places_2: 33, 
+            places_3: 29, 
+            win_rate: 12.2, 
+            place_rate: 37.6, 
+            quinella_rate: 37.6,
+            win_payback: 88,
+            place_payback: 90
+          },
+          { 
+            gate: 5, 
+            color: '#FCEB3B', 
+            races: 245, 
+            wins: 29, 
+            places_2: 32, 
+            places_3: 31, 
+            win_rate: 11.8, 
+            place_rate: 37.6, 
+            quinella_rate: 37.6,
+            win_payback: 83,
+            place_payback: 89
+          },
+          { 
+            gate: 6, 
+            color: '#2F7D32', 
+            races: 245, 
+            wins: 31, 
+            places_2: 29, 
+            places_3: 30, 
+            win_rate: 12.7, 
+            place_rate: 36.7, 
+            quinella_rate: 36.7,
+            win_payback: 91,
+            place_payback: 87
+          },
+          { 
+            gate: 7, 
+            color: '#FAA727', 
+            races: 245, 
+            wins: 33, 
+            places_2: 30, 
+            places_3: 28, 
+            win_rate: 13.5, 
+            place_rate: 37.1, 
+            quinella_rate: 37.1,
+            win_payback: 98,
+            place_payback: 93
+          },
+          { 
+            gate: 8, 
+            color: '#F8BBD0', 
+            races: 245, 
+            wins: 27, 
+            places_2: 32, 
+            places_3: 37, 
+            win_rate: 11.0, 
+            place_rate: 39.2, 
+            quinella_rate: 39.2,
+            win_payback: 80,
+            place_payback: 94
+          },
+        ],
         jockey_stats: [
           { rank: 1, name: '武豊', races: 48, wins: 15, places_2: 8, places_3: 6, win_rate: 31.3, place_rate: 47.9, quinella_rate: 60.4, win_payback: 95, place_payback: 88 },
           { rank: 2, name: '川田将雅', races: 42, wins: 13, places_2: 7, places_3: 5, win_rate: 31.0, place_rate: 47.6, quinella_rate: 59.5, win_payback: 92, place_payback: 85 },
@@ -151,7 +258,7 @@ export default async function CoursePage({ params }: Props) {
     return <div>データが見つかりません</div>;
   }
 
-  const { course_info, jockey_stats, pedigree_stats } = data;
+  const { course_info, gate_stats, jockey_stats, pedigree_stats } = data;
   
   const top5Jockeys = jockey_stats.slice(0, 5);
   const top5Pedigrees = pedigree_stats.slice(0, 5);
@@ -273,6 +380,11 @@ export default async function CoursePage({ params }: Props) {
           </div>
         </div>
         
+        <GateTable 
+          title="枠順別成績"
+          data={gate_stats}
+        />
+
         <div className="section">
           <h2 className="section-title">騎手別成績</h2>
           
