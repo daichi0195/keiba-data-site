@@ -48,6 +48,7 @@ main {
   max-width: 100%;
   margin: 0 auto;
   padding: 1rem;
+  padding-bottom: 5rem; /* 下部ナビゲーション分の余白 */
 }
 
 /* コースヘッダー */
