@@ -524,7 +524,7 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
 
 {/* === 他のコースデータ一覧 === */}
 <section id="other-courses-section" className="section">
-  <h2 className="section-title">{courseShort}競馬場のコースデータ一覧</h2>
+  <h2 className="section-title" style={{ marginBottom: '1rem' }}>{courseShort}競馬場のコースデータ一覧</h2>
   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '0.75rem' }}>
     {/* 芝コース例 */}
     <Link href={`/courses/${resolvedParams.racecourse}/turf/1200`} style={{ textDecoration: 'none' }}>
