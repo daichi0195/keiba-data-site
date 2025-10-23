@@ -29,7 +29,7 @@
 
 body {
   font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
-  background: linear-gradient(135deg, #fbfcfb 0%, #f0fdf4 100%);
+  background: #fff;
   color: var(--text-dark);
   min-height: 100vh;
 }
@@ -79,16 +79,16 @@ main {
   max-width: 100%;
   margin: 0 auto;
   padding: 1rem;
-  padding-bottom: 5rem; /* 下部ナビゲーション分の余白 */
+  padding-bottom: 8rem; /* 下部ナビゲーション分の余白 */
 }
 
 /* コースヘッダー */
 .course-header {
-  background: var(--gradient-green);
+  background: linear-gradient(135deg, #0d5c2f 0%, #1db854 50%, #2ed963 100%);
   border-radius: 16px;
   padding: 2.5rem 2rem;
   margin-bottom: 1.5rem;
-  box-shadow: 0 8px 32px rgba(29, 184, 84, 0.15);
+  box-shadow: 0 12px 48px rgba(13, 92, 47, 0.25);
   position: relative;
   overflow: hidden;
 }
@@ -96,23 +96,38 @@ main {
 .course-header::before {
   content: '';
   position: absolute;
-  top: -40%;
-  right: -10%;
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, transparent 70%);
-  border-radius: 50%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 35px,
+      rgba(255, 255, 255, 0.03) 35px,
+      rgba(255, 255, 255, 0.03) 70px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 35px,
+      rgba(255, 255, 255, 0.02) 35px,
+      rgba(255, 255, 255, 0.02) 70px
+    );
+  pointer-events: none;
 }
 
 .course-header::after {
   content: '';
   position: absolute;
-  bottom: -20%;
-  left: -5%;
-  width: 200px;
-  height: 200px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+  top: -50%;
+  right: -15%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
   border-radius: 50%;
+  z-index: 1;
 }
 
 .course-header h1 {
@@ -120,10 +135,11 @@ main {
   font-size: 2rem;
   margin-bottom: 1.25rem;
   position: relative;
-  z-index: 1;
+  z-index: 2;
   font-weight: 800;
   letter-spacing: 0.01em;
   line-height: 1.2;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .course-meta {
@@ -132,7 +148,7 @@ main {
   color: #fff;
   font-size: 0.9rem;
   position: relative;
-  z-index: 1;
+  z-index: 2;
   flex-wrap: wrap;
 }
 
@@ -517,12 +533,12 @@ main {
 
 /* モバイル最適化テーブル */
 .mobile-table-container {
-  background: #fff;
+  background: white;
   overflow: hidden;
-  margin: 1.25rem 0;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-  border: 1px solid var(--border-subtle);
+  margin: 1rem 0;
+  border-top: 2px solid #000;
+  border-bottom: 1px solid #ddd;
+  border-left: 3px solid #fff;
 }
 
 .mobile-table-scroll {
@@ -746,37 +762,34 @@ main {
 /* 1位のハイライト */
 .mobile-rank-1 {
   display: inline-block;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 13px;
-  color: #fff;
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-  padding: 3px 8px;
-  border-radius: 6px;
-  box-shadow: 0 2px 4px rgba(245, 158, 11, 0.2);
+  color: #333;
+  background: #FCEA7F;
+  padding: 2px 6px;
+  border-radius: 4px;
 }
 
 /* 2位のハイライト */
 .mobile-rank-2 {
   display: inline-block;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 13px;
-  color: #fff;
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-  padding: 3px 8px;
-  border-radius: 6px;
-  box-shadow: 0 2px 4px rgba(139, 92, 246, 0.2);
+  color: #333;
+  background: #CBDEFF;
+  padding: 2px 6px;
+  border-radius: 4px;
 }
 
 /* 3位のハイライト */
 .mobile-rank-3 {
   display: inline-block;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 13px;
-  color: #fff;
-  background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
-  padding: 3px 8px;
-  border-radius: 6px;
-  box-shadow: 0 2px 4px rgba(236, 72, 153, 0.2);
+  color: #333;
+  background: #EFC79F;
+  padding: 2px 6px;
+  border-radius: 4px;
 }
 
 /* 名前セル */
@@ -1022,7 +1035,7 @@ h2.section-title::before { content: none !important; }
 /* SPで少し小さく＋さらにタイト */
 @media (max-width: 768px) {
   h2.section-title {
-    font-size: 1.15rem;
+    font-size: 1rem;
     margin: 1rem 0 0.5rem;
     padding-left: 10px;
   }

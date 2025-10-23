@@ -67,8 +67,8 @@
 
 /* ===== ホバー時 ===== */
 .navButton:hover {
-  border-color: #52af77;
-  color: #2d5016;
+  border-color: #1db854;
+  color: #1db854;
   background: rgba(248, 250, 248, 0.98);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
   transform: translateY(-2px);
@@ -76,11 +76,11 @@
 
 /* ===== アクティブ時 ===== */
 .navButton.active {
-  background: linear-gradient(135deg, #52af77 0%, #3d8b5c 100%);
+  background: linear-gradient(135deg, #1db854 0%, #0ea342 100%);
   color: #fff;
-  border-color: #52af77;
+  border-color: #1db854;
   font-weight: 700;
-  box-shadow: 0 6px 20px rgba(82, 175, 119, 0.4);
+  box-shadow: 0 6px 20px rgba(29, 184, 84, 0.4);
 }
 
 /* ===== モバイル（SP） ===== */

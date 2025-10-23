@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Footer from "@/components/Footer";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -13,11 +14,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      <body>
+      <body suppressHydrationWarning>
         <header>
           <div className="site-name">🏇 KEIBA DATA LAB</div>
         </header>
         {children}
+        <Footer />
       </body>
     </html>
   );

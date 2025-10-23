@@ -1,0 +1,303 @@
+/* Footer.module.css */
+
+.footer {
+  background: linear-gradient(180deg, #f5f5f5 0%, #e8e8e8 100%);
+  border-top: 1px solid #d0d0d0;
+  margin-top: 0;
+  padding: 0;
+  position: relative;
+}
+
+
+.footerInner {
+  padding: 3rem 1rem 2rem 1rem;
+}
+
+.footerContent {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* Column Styling */
+.footerColumn {
+  padding: 0 1rem;
+}
+
+.columnTitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 1rem;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid #1db854;
+  padding-bottom: 0.75rem;
+}
+
+/* Accordion Styling */
+.accordionList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.accordionItem {
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.accordionItem:hover {
+  border-color: #1db854;
+  box-shadow: 0 2px 8px rgba(29, 184, 84, 0.1);
+}
+
+.accordionTrigger {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.accordionTrigger:hover {
+  background: #fafafa;
+  color: #1db854;
+}
+
+.accordionIcon {
+  display: inline-block;
+  width: 1rem;
+  text-align: center;
+  transition: transform 0.2s ease;
+  color: #1db854;
+  font-size: 0.75rem;
+}
+
+.accordionContent {
+  background: #fff;
+  padding: 1.5rem;
+  border-top: 2px solid #1db854;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.surfaceGroup {
+  margin-bottom: 1.5rem;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  border-left: none;
+  box-shadow: none;
+}
+
+.surfaceGroup:last-child {
+  margin-bottom: 0;
+}
+
+.surfaceTitle {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.05em;
+  display: block;
+  text-transform: none;
+}
+
+.turfTitle {
+  color: #333;
+}
+
+.dirtTitle {
+  color: #333;
+}
+
+.courseList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 0.75rem;
+}
+
+.courseList li {
+  margin: 0;
+}
+
+.courseLink {
+  font-size: 0.8rem;
+  color: #333;
+  text-decoration: none;
+  padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  border: 1px solid #ddd;
+  background: #f9f9f9;
+  position: relative;
+  font-weight: 500;
+}
+
+.courseLink:hover {
+  background: #f0fdf4;
+  color: #1db854;
+  border-color: #1db854;
+  box-shadow: 0 2px 6px rgba(29, 184, 84, 0.15);
+  transform: translateY(-2px);
+}
+
+/* 芝コースのカード色分け */
+.turfCourseList .courseLink {
+  background: #f0fdf4;
+  border-color: #d1f0e5;
+  color: #0d5c2f;
+  font-weight: 600;
+}
+
+.turfCourseList .courseLink:hover {
+  background: #e8f9f0;
+  border-color: #1db854;
+  color: #1db854;
+  box-shadow: 0 2px 6px rgba(29, 184, 84, 0.2);
+}
+
+/* ダートコースのカード色分け */
+.dirtCourseList .courseLink {
+  background: #fef3e8;
+  border-color: #ffe5cc;
+  color: #6b4423;
+  font-weight: 600;
+}
+
+.dirtCourseList .courseLink:hover {
+  background: #ffe5cc;
+  border-color: #a67c52;
+  color: #a67c52;
+  box-shadow: 0 2px 6px rgba(166, 124, 82, 0.2);
+}
+
+/* Link List Styling */
+.linkList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.linkList li {
+  margin: 0;
+}
+
+.footerLink {
+  font-size: 0.95rem;
+  color: #666;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  display: inline-block;
+}
+
+.footerLink:hover {
+  color: #1db854;
+  transform: translateX(4px);
+}
+
+/* Footer Bottom */
+.footerBottom {
+  max-width: 1200px;
+  margin: 0 auto;
+  border-top: 1px solid #d0d0d0;
+  padding-top: 1.5rem;
+  text-align: center;
+}
+
+.footerBottomLinks {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem 0;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.footerBottomLinks li {
+  margin: 0;
+}
+
+.footerBottomLink {
+  font-size: 0.85rem;
+  color: #999;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footerBottomLink:hover {
+  color: #1db854;
+}
+
+.copyright {
+  font-size: 0.8rem;
+  color: #999;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .footerContent {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer {
+    padding: 1.5rem 1rem;
+  }
+
+  .footerContent {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .columnTitle {
+    font-size: 1rem;
+  }
+
+  .accordionTrigger {
+    padding: 0.65rem 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  .footerBottomLinks {
+    gap: 1rem;
+  }
+}
