@@ -79,7 +79,7 @@ main {
   max-width: 100%;
   margin: 0 auto;
   padding: 1rem;
-  padding-bottom: 8rem; /* 下部ナビゲーション分の余白 */
+  padding-bottom: 5rem; /* 下部ナビゲーション分の余白 */
 }
 
 /* コースヘッダー */
@@ -190,7 +190,7 @@ main {
   font-size: 1.1rem;
   font-weight: 700;
   color: var(--primary-green);
-  margin-bottom: 0.75rem;
+  margin-bottom: 1.5rem;
   letter-spacing: 0.02em;
 }
 
@@ -219,7 +219,7 @@ main {
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--text-dark);
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
   letter-spacing: 0.02em;
   padding-bottom: 1rem;
   border-bottom: 2px solid var(--primary-green);
@@ -424,7 +424,7 @@ main {
 
 .section-title {
   font-size: 1.3rem;
-  margin-bottom: 1.25rem;
+  margin-bottom: 2rem;
   color: var(--text-dark);
   display: flex;
   align-items: center;
@@ -555,7 +555,7 @@ main {
 
 /* ヘッダー */
 .mobile-data-table thead {
-  background: white;
+  background: #fafbfa;
   border-bottom: 2px solid #000;
 }
 
@@ -581,7 +581,6 @@ main {
 /* 固定列のスタイル */
 .mobile-sticky-col {
   position: sticky;
-  background: white !important;
   z-index: 20;
 }
 
@@ -592,7 +591,6 @@ main {
   text-align: center !important;
   border-left: none !important;
   border-right: none !important;
-  background: white !important;
   z-index: 21 !important;
 }
 
@@ -606,7 +604,6 @@ main {
   border-right: 1px solid #000 !important;
   white-space: nowrap;
   transition: width 0.2s ease, min-width 0.2s ease, border-right 0.2s ease;
-  background: white !important;
   z-index: 20 !important;
 }
 
@@ -690,17 +687,17 @@ main {
 
 /* Body部分の固定列 */
 .mobile-sticky-body {
-  background: white !important;
   z-index: 11 !important;
 }
 
 .mobile-row-even .mobile-sticky-body {
-  background: white;
+  background: #fafbfa !important;
 }
 
 .mobile-row-odd .mobile-sticky-body {
-  background: white;
+  background: #fff !important;
 }
+
 
 /* スクロール列 */
 .mobile-scroll-col {
@@ -735,18 +732,23 @@ main {
 }
 
 .mobile-row-even {
-  background: #fff;
+  background: #fafbfa;
 }
 
 .mobile-row-odd {
-  background: #fafbfa;
+  background: #fff;
 }
+
 
 .mobile-data-table tbody tr:hover {
   background: #f0fdf4 !important;
 }
 
 .mobile-data-table tbody tr:hover .mobile-sticky-body {
+  background: #f0fdf4 !important;
+}
+
+.mobile-data-table tbody tr:hover .mobile-sticky-col {
   background: #f0fdf4 !important;
 }
 
@@ -1019,7 +1021,7 @@ main {
 
 /* ===== 見出しは外側装飾で統一 ===== */
 h2.section-title {
-  font-size: 1.3rem;        /* PC */
+  font-size: 1.75rem;        /* PC */
   font-weight: 700;
   color: var(--text-dark);
   margin: 1.5rem 0 0.75rem;
@@ -1035,7 +1037,7 @@ h2.section-title::before { content: none !important; }
 /* SPで少し小さく＋さらにタイト */
 @media (max-width: 768px) {
   h2.section-title {
-    font-size: 1rem;
+    font-size: 1.2rem;
     margin: 1rem 0 0.5rem;
     padding-left: 10px;
   }

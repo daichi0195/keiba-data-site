@@ -400,6 +400,68 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
 
         <SectionNav items={navItems} />
 
+        {/* === コース特性セクション === */}
+        <div className="characteristics-box">
+          <div className="characteristics-title">コース特性</div>
+
+          {/* 脚質傾向 */}
+          <div className="gauge-item">
+            <div className="gauge-label">脚質傾向</div>
+            <div className="gauge-track">
+              <div className="gauge-indicator" style={{ left: `${course_info.characteristics.running_style * 25}%` }}></div>
+            </div>
+            <div className="gauge-labels">
+              <span>逃げ有利</span>
+              <span>互角</span>
+              <span>差し有利</span>
+              <span>追込有利</span>
+            </div>
+            <div className="gauge-result">
+              {course_info.characteristics.running_style === 1 && '逃げ馬が有利'}
+              {course_info.characteristics.running_style === 2 && '逃げ・先行が有利'}
+              {course_info.characteristics.running_style === 3 && '互角'}
+              {course_info.characteristics.running_style === 4 && '差し・追込が有利'}
+            </div>
+          </div>
+
+          {/* 荒れ度 */}
+          <div className="gauge-item">
+            <div className="gauge-label">荒れ度</div>
+            <div className="gauge-track">
+              <div className="gauge-indicator" style={{ left: `${(course_info.characteristics.volatility - 1) * 33.33}%` }}></div>
+            </div>
+            <div className="gauge-labels">
+              <span>堅い</span>
+              <span>中程度</span>
+              <span>荒れやすい</span>
+            </div>
+            <div className="gauge-result">
+              {course_info.characteristics.volatility === 1 && '堅い馬場'}
+              {course_info.characteristics.volatility === 2 && '中程度の荒れ'}
+              {course_info.characteristics.volatility === 3 && '荒れやすい馬場'}
+            </div>
+          </div>
+
+          {/* 枠順 */}
+          <div className="gauge-item">
+            <div className="gauge-label">枠順</div>
+            <div className="gauge-track">
+              <div className="gauge-indicator" style={{ left: `${(course_info.characteristics.gate_position - 1) * 33.33}%` }}></div>
+            </div>
+            <div className="gauge-labels">
+              <span>内枠有利</span>
+              <span>互角</span>
+              <span>外枠有利</span>
+            </div>
+            <div className="gauge-result">
+              {course_info.characteristics.gate_position === 1 && '内枠が有利'}
+              {course_info.characteristics.gate_position === 2 && '内枠やや有利'}
+              {course_info.characteristics.gate_position === 3 && '互角'}
+              {course_info.characteristics.gate_position === 4 && '外枠が有利'}
+            </div>
+          </div>
+        </div>
+
         {/* === 人気別 === */}
 <section id="popularity-section">
   <PopularityTable
@@ -460,6 +522,55 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
   />
 </section>
 
+{/* === 他のコースデータ一覧 === */}
+<section id="other-courses-section" className="section">
+  <h2 className="section-title">{courseShort}競馬場のコースデータ一覧</h2>
+  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '0.75rem' }}>
+    {/* 芝コース例 */}
+    <Link href={`/courses/${resolvedParams.racecourse}/turf/1200`} style={{ textDecoration: 'none' }}>
+      <div style={{ background: '#f0fdf4', border: '1px solid #d1f0e5', color: '#0d5c2f', padding: '0.75rem', borderRadius: '6px', textAlign: 'center', fontSize: '0.8rem', fontWeight: '600', transition: 'all 0.2s ease', cursor: 'pointer' }}>
+        芝 1200m
+      </div>
+    </Link>
+    <Link href={`/courses/${resolvedParams.racecourse}/turf/1600`} style={{ textDecoration: 'none' }}>
+      <div style={{ background: '#f0fdf4', border: '1px solid #d1f0e5', color: '#0d5c2f', padding: '0.75rem', borderRadius: '6px', textAlign: 'center', fontSize: '0.8rem', fontWeight: '600', transition: 'all 0.2s ease', cursor: 'pointer' }}>
+        芝 1600m
+      </div>
+    </Link>
+    <Link href={`/courses/${resolvedParams.racecourse}/turf/1800`} style={{ textDecoration: 'none' }}>
+      <div style={{ background: '#f0fdf4', border: '1px solid #d1f0e5', color: '#0d5c2f', padding: '0.75rem', borderRadius: '6px', textAlign: 'center', fontSize: '0.8rem', fontWeight: '600', transition: 'all 0.2s ease', cursor: 'pointer' }}>
+        芝 1800m
+      </div>
+    </Link>
+    <Link href={`/courses/${resolvedParams.racecourse}/turf/2000`} style={{ textDecoration: 'none' }}>
+      <div style={{ background: '#f0fdf4', border: '1px solid #d1f0e5', color: '#0d5c2f', padding: '0.75rem', borderRadius: '6px', textAlign: 'center', fontSize: '0.8rem', fontWeight: '600', transition: 'all 0.2s ease', cursor: 'pointer' }}>
+        芝 2000m
+      </div>
+    </Link>
+
+    {/* ダートコース例 */}
+    <Link href={`/courses/${resolvedParams.racecourse}/dirt/1000`} style={{ textDecoration: 'none' }}>
+      <div style={{ background: '#fef3e8', border: '1px solid #ffe5cc', color: '#6b4423', padding: '0.75rem', borderRadius: '6px', textAlign: 'center', fontSize: '0.8rem', fontWeight: '600', transition: 'all 0.2s ease', cursor: 'pointer' }}>
+        ダート 1000m
+      </div>
+    </Link>
+    <Link href={`/courses/${resolvedParams.racecourse}/dirt/1200`} style={{ textDecoration: 'none' }}>
+      <div style={{ background: '#fef3e8', border: '1px solid #ffe5cc', color: '#6b4423', padding: '0.75rem', borderRadius: '6px', textAlign: 'center', fontSize: '0.8rem', fontWeight: '600', transition: 'all 0.2s ease', cursor: 'pointer' }}>
+        ダート 1200m
+      </div>
+    </Link>
+    <Link href={`/courses/${resolvedParams.racecourse}/dirt/1400`} style={{ textDecoration: 'none' }}>
+      <div style={{ background: '#fef3e8', border: '1px solid #ffe5cc', color: '#6b4423', padding: '0.75rem', borderRadius: '6px', textAlign: 'center', fontSize: '0.8rem', fontWeight: '600', transition: 'all 0.2s ease', cursor: 'pointer' }}>
+        ダート 1400m
+      </div>
+    </Link>
+    <Link href={`/courses/${resolvedParams.racecourse}/dirt/1800`} style={{ textDecoration: 'none' }}>
+      <div style={{ background: '#fef3e8', border: '1px solid #ffe5cc', color: '#6b4423', padding: '0.75rem', borderRadius: '6px', textAlign: 'center', fontSize: '0.8rem', fontWeight: '600', transition: 'all 0.2s ease', cursor: 'pointer' }}>
+        ダート 1800m
+      </div>
+    </Link>
+  </div>
+</section>
 
       </main>
     </>
