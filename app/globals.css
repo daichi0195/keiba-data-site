@@ -718,6 +718,7 @@ main {
 /* 行のスタイル */
 .mobile-data-table tbody tr {
   transition: background-color 0.2s ease;
+  height: 44px;
 }
 
 .mobile-data-table tbody td {
@@ -725,6 +726,7 @@ main {
   padding: 12px 8px;
   font-size: 13px;
   color: var(--text-secondary);
+  vertical-align: middle;
 }
 
 .mobile-data-table tbody tr:first-child td {
@@ -763,35 +765,44 @@ main {
 
 /* 1位のハイライト */
 .mobile-rank-1 {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   font-weight: 600;
   font-size: 13px;
   color: #333;
   background: #FCEA7F;
   padding: 0 6px;
   border-radius: 4px;
+  height: 20px;
+  line-height: 1;
 }
 
 /* 2位のハイライト */
 .mobile-rank-2 {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   font-weight: 600;
   font-size: 13px;
   color: #333;
   background: #CBDEFF;
   padding: 0 6px;
   border-radius: 4px;
+  height: 20px;
+  line-height: 1;
 }
 
 /* 3位のハイライト */
 .mobile-rank-3 {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   font-weight: 600;
   font-size: 13px;
   color: #333;
   background: #EFC79F;
   padding: 0 6px;
   border-radius: 4px;
+  height: 20px;
+  line-height: 1;
 }
 
 /* 名前セル */
@@ -824,6 +835,7 @@ main {
   font-weight: 700 !important;
   color: var(--primary-green-dark) !important;
   border-radius: 4px !important;
+  padding: 0 6px !important;
 }
 
 /* ハイライト */
@@ -831,9 +843,12 @@ main {
   background: linear-gradient(135deg, #d1f0e5 0%, #e8f9f0 100%) !important;
   font-weight: 700 !important;
   color: var(--primary-green-dark) !important;
-  padding: 3px 6px !important;
+  padding: 0 6px !important;
   border-radius: 4px !important;
-  display: inline-block !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  height: 20px !important;
+  line-height: 1 !important;
 }
 
 /* レスポンシブ対応 */

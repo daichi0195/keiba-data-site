@@ -280,12 +280,19 @@
 
 @media (max-width: 768px) {
   .footer {
-    padding: 1.5rem 1rem;
+    padding: 0 1rem;
+  }
+
+  .footerInner {
+    padding: 2rem 0;
   }
 
   .footerContent {
     grid-template-columns: 1fr;
     gap: 1.5rem;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
   }
 
   .columnTitle {
@@ -299,5 +306,13 @@
 
   .footerBottomLinks {
     gap: 1rem;
+  }
+
+  .footerBottom {
+    max-width: 100%;
+    margin: 0 auto;
+    border-top: 1px solid #d0d0d0;
+    padding-top: 1.5rem;
+    text-align: center;
   }
 }
