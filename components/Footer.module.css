@@ -1,8 +1,8 @@
 /* Footer.module.css */
 
 .footer {
-  background: linear-gradient(180deg, #f5f5f5 0%, #e8e8e8 100%);
-  border-top: 1px solid #d0d0d0;
+  background: linear-gradient(180deg, #3d3d3d 0%, #2a2a2a 100%);
+  border-top: 1px solid #1a1a1a;
   margin-top: 0;
   padding: 0;
   position: relative;
@@ -30,10 +30,10 @@
 .columnTitle {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #333;
+  color: #ffffff;
   margin-bottom: 1rem;
   letter-spacing: 0.05em;
-  border-bottom: 2px solid #1db854;
+  border-bottom: 2px solid #606060;
   padding-bottom: 0.75rem;
 }
 
@@ -45,26 +45,26 @@
 }
 
 .accordionItem {
-  border: 1px solid #d0d0d0;
+  border: 1px solid #505050;
   border-radius: 6px;
   overflow: hidden;
   transition: all 0.2s ease;
 }
 
 .accordionItem:hover {
-  border-color: #1db854;
-  box-shadow: 0 2px 8px rgba(29, 184, 84, 0.1);
+  border-color: #707070;
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.05);
 }
 
 .accordionTrigger {
   width: 100%;
   padding: 0.75rem 1rem;
-  background: #fff;
+  background: #474747;
   border: none;
   cursor: pointer;
   font-size: 0.95rem;
   font-weight: 600;
-  color: #333;
+  color: #ffffff;
   text-align: left;
   display: flex;
   align-items: center;
@@ -73,8 +73,8 @@
 }
 
 .accordionTrigger:hover {
-  background: #fafafa;
-  color: #1db854;
+  background: #525252;
+  color: #ffffff;
 }
 
 .accordionIcon {
@@ -82,15 +82,17 @@
   width: 1rem;
   text-align: center;
   transition: transform 0.2s ease;
-  color: #1db854;
+  color: #ffffff;
   font-size: 0.75rem;
+  opacity: 0.7;
 }
 
 .accordionContent {
-  background: #fff;
+  background: #ffffff;
   padding: 1.5rem;
-  border-top: 2px solid #1db854;
+  border-top: 1px solid #e0e0e0;
   animation: slideDown 0.3s ease;
+  color: #333;
 }
 
 @keyframes slideDown {
@@ -128,11 +130,11 @@
 }
 
 .turfTitle {
-  color: #333;
+  color: #0d5c2f;
 }
 
 .dirtTitle {
-  color: #333;
+  color: #6b4423;
 }
 
 .courseList {
@@ -150,7 +152,7 @@
 
 .courseLink {
   font-size: 0.8rem;
-  color: #333;
+  color: #ffffff;
   text-decoration: none;
   padding: 0.75rem;
   display: flex;
@@ -159,17 +161,17 @@
   text-align: center;
   border-radius: 6px;
   transition: all 0.2s ease;
-  border: 1px solid #ddd;
-  background: #f9f9f9;
+  border: 1px solid #505050;
+  background: #474747;
   position: relative;
   font-weight: 500;
 }
 
 .courseLink:hover {
-  background: #f0fdf4;
-  color: #1db854;
-  border-color: #1db854;
-  box-shadow: 0 2px 6px rgba(29, 184, 84, 0.15);
+  background: #555;
+  color: #ffffff;
+  border-color: #606060;
+  box-shadow: 0 2px 6px rgba(255, 255, 255, 0.1);
   transform: translateY(-2px);
 }
 
@@ -219,14 +221,15 @@
 
 .footerLink {
   font-size: 0.95rem;
-  color: #666;
+  color: #ffffff;
   text-decoration: none;
   transition: all 0.2s ease;
   display: inline-block;
 }
 
 .footerLink:hover {
-  color: #1db854;
+  color: #ffffff;
+  opacity: 0.8;
   transform: translateX(4px);
 }
 
@@ -234,7 +237,7 @@
 .footerBottom {
   max-width: 1200px;
   margin: 0 auto;
-  border-top: 1px solid #d0d0d0;
+  border-top: 1px solid #505050;
   padding-top: 1.5rem;
   text-align: center;
 }
@@ -255,19 +258,21 @@
 
 .footerBottomLink {
   font-size: 0.85rem;
-  color: #999;
+  color: #ffffff;
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: opacity 0.2s ease;
 }
 
 .footerBottomLink:hover {
-  color: #1db854;
+  color: #ffffff;
+  opacity: 0.8;
 }
 
 .copyright {
   font-size: 0.8rem;
-  color: #999;
+  color: #ffffff;
   margin: 0;
+  opacity: 0.7;
 }
 
 /* Responsive Design */

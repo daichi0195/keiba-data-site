@@ -375,10 +375,6 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
 
   return (
     <>
-      <div className="breadcrumb">
-        <Link href="/">ホーム</Link> &gt; <Link href="/courses">コース</Link> &gt; <Link href={`/courses/${resolvedParams.racecourse}`}>{course_info.racecourse}</Link> &gt; {course_info.surface} &gt; {course_info.distance}m
-      </div>
-      
       <main>
         <div className="course-header">
           <h1>{course_info.racecourse} {course_info.surface}{course_info.distance}m</h1>
@@ -523,7 +519,7 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
 </section>
 
 {/* === 他のコースデータ一覧 === */}
-<section id="other-courses-section" className="section">
+<section id="other-courses-section" className="section" style={{ marginBottom: '0 !important' }}>
   <h2 className="section-title" style={{ marginBottom: '1rem' }}>{courseShort}競馬場のコースデータ一覧</h2>
   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '0.75rem' }}>
     {/* 芝コース例 */}
@@ -573,6 +569,11 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
 </section>
 
       </main>
+
+      {/* === パンくず（フルワイド） === */}
+      <div className="breadcrumb-footer">
+        <Link href="/">ホーム</Link> &gt; <Link href="/courses">コース</Link> &gt; <Link href={`/courses/${resolvedParams.racecourse}`}>{course_info.racecourse}</Link> &gt; {course_info.surface} &gt; {course_info.distance}m
+      </div>
     </>
   );
 }

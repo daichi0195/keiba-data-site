@@ -74,12 +74,43 @@ header {
   color: var(--primary-green);
 }
 
+/* パンくず（フルワイド） */
+.breadcrumb-footer {
+  background: #f5f7fa;
+  padding: 0.5rem 1rem;
+  color: var(--text-light);
+  font-size: 0.85rem;
+  border-top: 1px solid #e2e8f0;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  text-align: left;
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: calc(-50vw);
+  margin-right: calc(-50vw);
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.breadcrumb-footer a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.breadcrumb-footer a:hover {
+  color: var(--primary-green);
+}
+
 /* メインコンテンツ */
 main {
-  max-width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 1rem;
-  padding-bottom: 5rem; /* 下部ナビゲーション分の余白 */
+  padding-bottom: 2rem; /* 下部ナビゲーション分の余白 */
 }
 
 /* コースヘッダー */
@@ -856,6 +887,15 @@ main {
   main {
     max-width: 1200px;
     padding: 2rem;
+  }
+
+  .breadcrumb-footer {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    padding-left: calc(50vw - 600px);
+    padding-right: calc(50vw - 600px);
+    margin-top: 0;
+    margin-bottom: 0;
   }
   
   .course-header {
