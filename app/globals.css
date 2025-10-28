@@ -412,7 +412,7 @@ main {
 .evaluation-summary {
   font-size: 0.85rem;
   font-weight: 500;
-  color: var(--text-secondary);
+  color: var(--primary-green);
   cursor: pointer;
   padding: 0.5rem 0;
   list-style: none;
@@ -427,10 +427,18 @@ main {
 }
 
 .evaluation-summary:hover {
-  color: var(--primary-green);
+  color: var(--primary-green-dark);
   background: transparent;
   border: none;
   box-shadow: none;
+}
+
+details[open] > .evaluation-summary {
+  background: transparent;
+  border: 1px solid var(--primary-green);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  color: var(--primary-green);
 }
 
 .evaluation-summary::before {
