@@ -405,7 +405,7 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
             <div className="gauge-label">荒れやすさ</div>
             <div className="gauge-track">
               <div className="gauge-indicator" style={{ left: `${(course_info.characteristics.volatility - 1) * 50}%` }}></div>
-              <div className="gauge-horse-icon" style={{ left: `${(course_info.characteristics.volatility - 1) * 50}%` }}>🐴</div>
+              <div className="gauge-horse-icon" style={{ left: `${(course_info.characteristics.volatility - 1) * 50}%` }}>🏇</div>
             </div>
             <div className="gauge-labels">
               <span>堅い</span>
@@ -424,7 +424,7 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
             <div className="gauge-label">枠順傾向</div>
             <div className="gauge-track">
               <div className="gauge-indicator" style={{ left: `${(course_info.characteristics.gate_position - 1) * 33.33}%` }}></div>
-              <div className="gauge-horse-icon" style={{ left: `${(course_info.characteristics.gate_position - 1) * 33.33}%` }}>🐴</div>
+              <div className="gauge-horse-icon" style={{ left: `${(course_info.characteristics.gate_position - 1) * 33.33}%` }}>🏇</div>
             </div>
             <div className="gauge-labels">
               <span>内枠有利</span>
@@ -444,7 +444,7 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
             <div className="gauge-label">脚質傾向</div>
             <div className="gauge-track">
               <div className="gauge-indicator" style={{ left: `${course_info.characteristics.running_style * 25}%` }}></div>
-              <div className="gauge-horse-icon" style={{ left: `${course_info.characteristics.running_style * 25}%` }}>🐴</div>
+              <div className="gauge-horse-icon" style={{ left: `${course_info.characteristics.running_style * 25}%` }}>🏇</div>
             </div>
             <div className="gauge-labels">
               <span>逃げ有利</span>
