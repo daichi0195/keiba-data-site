@@ -481,6 +481,64 @@ details[open] > .evaluation-summary::before {
   }
 }
 
+/* 枠順別複勝率グラフ */
+.gate-place-rate-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.graph-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 1rem;
+}
+
+.gate-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.gate-chart-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.gate-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  min-width: 40px;
+  text-align: center;
+}
+
+.gate-bar-container {
+  flex: 1;
+  height: 20px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.gate-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+  opacity: 0.9;
+}
+
+.gate-rate {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  min-width: 35px;
+  text-align: right;
+}
+
 /* コース特性 - HorseRatingグリッド */
 .rating-grid {
   display: grid;

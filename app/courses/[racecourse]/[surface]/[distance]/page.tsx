@@ -474,6 +474,28 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
               {course_info.characteristics.gate_position === 4 && 'やや外有利'}
               {course_info.characteristics.gate_position === 5 && '外有利'}
             </div>
+
+            {/* 枠順別複勝率グラフ */}
+            <div className="gate-place-rate-section">
+              <div className="graph-title">枠順別複勝率</div>
+              <div className="gate-chart">
+                {gate_stats.map((gate) => (
+                  <div key={gate.gate} className="gate-chart-item">
+                    <div className="gate-label">枠{gate.gate}</div>
+                    <div className="gate-bar-container">
+                      <div
+                        className="gate-bar"
+                        style={{
+                          width: `${gate.place_rate}%`,
+                          backgroundColor: gate.color
+                        }}
+                      ></div>
+                    </div>
+                    <div className="gate-rate">{gate.place_rate}%</div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* 脚質傾向 */}
