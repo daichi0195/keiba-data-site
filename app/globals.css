@@ -481,6 +481,13 @@ details[open] > .evaluation-summary::before {
   }
 }
 
+/* セクション区切り線 */
+.section-divider {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
 /* 枠順別複勝率詳細 */
 .gate-place-rate-detail {
   display: flex;
@@ -489,9 +496,6 @@ details[open] > .evaluation-summary::before {
   background: #f8fafc;
   padding: 1rem;
   border-radius: 8px;
-  margin-top: 1.5rem;
-  border-top: 1px solid var(--border-subtle);
-  padding-top: 1.5rem;
 }
 
 .gate-detail-title {
