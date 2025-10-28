@@ -25,8 +25,9 @@ const mockData = {
             gate_position: 4
           },
           ranking: {
-            volatility_rank: 15,
             trifecta_avg_payback_rank: 8,
+            trifecta_avg_payback: 4520,
+            trifecta_avg_payback_median: 3850,
             total_courses: 64
           },
           buying_points: {
@@ -424,12 +425,18 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
             </div>
             <div className="gauge-ranking">
               <div className="ranking-item">
-                <span className="ranking-label">荒れやすさランキング</span>
-                <span className="ranking-value">{course_info.ranking.volatility_rank}位/{course_info.ranking.total_courses}コース</span>
-              </div>
-              <div className="ranking-item">
                 <span className="ranking-label">三連単平均配当ランキング</span>
                 <span className="ranking-value">{course_info.ranking.trifecta_avg_payback_rank}位/{course_info.ranking.total_courses}コース</span>
+              </div>
+              <div className="ranking-detail">
+                <div className="detail-row">
+                  <span className="detail-label">このコースの平均配当</span>
+                  <span className="detail-value">¥{course_info.ranking.trifecta_avg_payback.toLocaleString()}</span>
+                </div>
+                <div className="detail-row">
+                  <span className="detail-label">全体の中央値</span>
+                  <span className="detail-value">¥{course_info.ranking.trifecta_avg_payback_median.toLocaleString()}</span>
+                </div>
               </div>
             </div>
           </div>

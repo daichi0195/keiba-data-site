@@ -334,7 +334,7 @@ main {
 .gauge-ranking {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1rem;
   margin-top: 1.25rem;
   padding-top: 1.25rem;
   border-top: 1px solid var(--border-subtle);
@@ -362,6 +362,36 @@ main {
   border-radius: 6px;
   border: 1px solid var(--border-color);
   white-space: nowrap;
+}
+
+/* ランキング詳細情報 */
+.ranking-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: #f8fafc;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border-left: 3px solid var(--primary-green);
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.detail-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.detail-value {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-dark);
 }
 
 /* コース特性 - HorseRatingグリッド */
