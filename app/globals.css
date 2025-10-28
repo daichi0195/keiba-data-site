@@ -481,43 +481,54 @@ details[open] > .evaluation-summary::before {
   }
 }
 
-/* 枠順別複勝率グラフ */
-.gate-place-rate-section {
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--border-subtle);
+/* 枠順別複勝率詳細 */
+.gate-place-rate-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: #f8fafc;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
 }
 
-.graph-title {
+.gate-detail-title {
   font-size: 0.9rem;
   font-weight: 700;
   color: var(--text-dark);
-  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .gate-chart {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.6rem;
 }
 
 .gate-chart-item {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.6rem;
 }
 
-.gate-label {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-  min-width: 40px;
-  text-align: center;
+.gate-number-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
 }
 
 .gate-bar-container {
   flex: 1;
-  height: 20px;
+  height: 18px;
   background: #e2e8f0;
   border-radius: 4px;
   overflow: hidden;
@@ -527,15 +538,16 @@ details[open] > .evaluation-summary::before {
 .gate-bar {
   height: 100%;
   border-radius: 4px;
+  background: var(--primary-green);
   transition: width 0.3s ease;
-  opacity: 0.9;
+  opacity: 0.85;
 }
 
 .gate-rate {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--text-dark);
-  min-width: 35px;
+  min-width: 32px;
   text-align: right;
 }
 

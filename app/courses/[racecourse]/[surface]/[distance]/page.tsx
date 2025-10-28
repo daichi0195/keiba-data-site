@@ -476,18 +476,19 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
             </div>
 
             {/* 枠順別複勝率グラフ */}
-            <div className="gate-place-rate-section">
-              <div className="graph-title">枠順別複勝率</div>
+            <div className="gate-place-rate-detail">
+              <div className="gate-detail-title">枠順別複勝率</div>
               <div className="gate-chart">
                 {gate_stats.map((gate) => (
                   <div key={gate.gate} className="gate-chart-item">
-                    <div className="gate-label">枠{gate.gate}</div>
+                    <div className="gate-number-badge" style={{ backgroundColor: gate.color }}>
+                      {gate.gate}
+                    </div>
                     <div className="gate-bar-container">
                       <div
                         className="gate-bar"
                         style={{
-                          width: `${gate.place_rate}%`,
-                          backgroundColor: gate.color
+                          width: `${gate.place_rate}%`
                         }}
                       ></div>
                     </div>
