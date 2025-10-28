@@ -7,9 +7,31 @@ type Item = { id: string; label: string };
 
 export default function SectionNav({ items }: { items: Item[] }) {
   const [activeId, setActiveId] = useState<string>(items[0]?.id ?? '');
+  const [isFooterVisible, setIsFooterVisible] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const btnRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+
+  // ★ フッター可視性を検出
+  useEffect(() => {
+    const footerElement = document.querySelector('footer');
+    if (!footerElement) return;
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setIsFooterVisible(entry.isIntersecting);
+        });
+      },
+      {
+        root: null,
+        threshold: 0.1,
+      }
+    );
+
+    io.observe(footerElement);
+    return () => io.disconnect();
+  }, []);
 
   // ★ 交差判定（既存ロジックがある場合はそれを使用）
   useEffect(() => {
@@ -68,7 +90,7 @@ export default function SectionNav({ items }: { items: Item[] }) {
   };
 
   return (
-    <div className={styles.sectionNav}>
+    <div className={`${styles.sectionNav} ${isFooterVisible ? styles.hidden : ''}`}>
       <div className={styles.navContainer} ref={containerRef}>
         {items.map((item) => (
           <button

@@ -9,6 +9,13 @@
   z-index: 100;
   padding: 0 1rem;
   pointer-events: none;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* フッター表示時は非表示 */
+.sectionNav.hidden {
+  opacity: 0;
+  visibility: hidden;
 }
 
 /* 横スクロール可能なナビゲーションコンテナ */

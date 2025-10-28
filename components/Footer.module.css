@@ -10,6 +10,8 @@
 
 
 .footerInner {
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 3rem 1rem 2rem 1rem;
 }
 
@@ -239,6 +241,8 @@
   margin: 0 auto;
   border-top: 1px solid #505050;
   padding-top: 1.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
   text-align: center;
 }
 
