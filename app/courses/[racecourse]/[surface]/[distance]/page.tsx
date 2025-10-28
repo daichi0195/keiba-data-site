@@ -416,9 +416,7 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
             </div>
             <div className="gauge-labels">
               <span>堅い</span>
-              <span>やや堅い</span>
               <span>標準</span>
-              <span>やや荒れる</span>
               <span>荒れる</span>
             </div>
             <div className="gauge-result">
