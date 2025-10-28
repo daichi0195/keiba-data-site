@@ -24,6 +24,11 @@ const mockData = {
             volatility: 2,
             gate_position: 4
           },
+          ranking: {
+            volatility_rank: 15,
+            trifecta_avg_payback_rank: 8,
+            total_courses: 64
+          },
           buying_points: {
             positive: {
               jockey: {
@@ -416,6 +421,16 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
               {course_info.characteristics.volatility === 1 && '堅い馬場'}
               {course_info.characteristics.volatility === 2 && '中程度の荒れ'}
               {course_info.characteristics.volatility === 3 && '荒れやすい馬場'}
+            </div>
+            <div className="gauge-ranking">
+              <div className="ranking-item">
+                <span className="ranking-label">荒れやすさランキング</span>
+                <span className="ranking-value">{course_info.ranking.volatility_rank}位/{course_info.ranking.total_courses}コース</span>
+              </div>
+              <div className="ranking-item">
+                <span className="ranking-label">三連単平均配当ランキング</span>
+                <span className="ranking-value">{course_info.ranking.trifecta_avg_payback_rank}位/{course_info.ranking.total_courses}コース</span>
+              </div>
             </div>
           </div>
 
