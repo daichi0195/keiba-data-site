@@ -490,6 +490,8 @@ details[open] > .evaluation-summary::before {
   padding: 1rem;
   border-radius: 8px;
   margin-top: 1rem;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 1rem;
 }
 
 .gate-detail-title {
