@@ -481,7 +481,13 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
               <div className="gate-chart">
                 {gate_stats.map((gate) => (
                   <div key={gate.gate} className="gate-chart-item">
-                    <div className="gate-number-badge" style={{ backgroundColor: gate.color }}>
+                    <div
+                      className="gate-number-badge"
+                      style={{
+                        backgroundColor: gate.color,
+                        color: gate.gate === 1 ? '#000' : '#fff'
+                      }}
+                    >
                       {gate.gate}
                     </div>
                     <div className="gate-bar-container">
