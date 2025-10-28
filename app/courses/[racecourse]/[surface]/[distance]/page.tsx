@@ -405,11 +405,11 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
 
         {/* === コース特性セクション === */}
         <div className="characteristics-box">
-          <div className="characteristics-title">コース特性</div>
+          <h2 className="section-title">コース特性</h2>
 
           {/* 荒れやすさ */}
           <div className="gauge-item">
-            <div className="gauge-label">荒れやすさ</div>
+            <h3 className="gauge-label">荒れやすさ</h3>
             <div className="gauge-track">
               <div className="gauge-indicator" style={{ left: `${(course_info.characteristics.volatility - 1) * 25}%` }}></div>
               <div className="gauge-horse-icon" style={{ left: `${(course_info.characteristics.volatility - 1) * 25}%` }}>🏇</div>
@@ -457,7 +457,7 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
 
           {/* 枠順傾向 */}
           <div className="gauge-item">
-            <div className="gauge-label">枠順傾向</div>
+            <h3 className="gauge-label">枠順傾向</h3>
             <div className="gauge-track">
               <div className="gauge-indicator" style={{ left: `${(course_info.characteristics.gate_position - 1) * 25}%` }}></div>
               <div className="gauge-horse-icon" style={{ left: `${(course_info.characteristics.gate_position - 1) * 25}%` }}>🏇</div>
@@ -474,43 +474,43 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
               {course_info.characteristics.gate_position === 4 && 'やや外有利'}
               {course_info.characteristics.gate_position === 5 && '外有利'}
             </div>
-          </div>
 
-          {/* 区切り線 */}
-          <div className="section-divider"></div>
+            {/* 区切り線 */}
+            <div className="section-divider"></div>
 
-          {/* 枠順別複勝率グラフ */}
-          <div className="gate-place-rate-detail">
-            <div className="gate-detail-title">枠順別複勝率</div>
-            <div className="gate-chart">
-              {gate_stats.map((gate) => (
-                <div key={gate.gate} className="gate-chart-item">
-                  <div
-                    className="gate-number-badge"
-                    style={{
-                      backgroundColor: gate.color,
-                      color: gate.gate === 1 ? '#000' : '#fff'
-                    }}
-                  >
-                    {gate.gate}
-                  </div>
-                  <div className="gate-bar-container">
+            {/* 枠順別複勝率グラフ */}
+            <div className="gate-place-rate-detail">
+              <div className="gate-detail-title">枠順別複勝率</div>
+              <div className="gate-chart">
+                {gate_stats.map((gate) => (
+                  <div key={gate.gate} className="gate-chart-item">
                     <div
-                      className="gate-bar"
+                      className="gate-number-badge"
                       style={{
-                        width: `${gate.place_rate}%`
+                        backgroundColor: gate.color,
+                        color: gate.gate === 1 ? '#000' : '#fff'
                       }}
-                    ></div>
+                    >
+                      {gate.gate}
+                    </div>
+                    <div className="gate-bar-container">
+                      <div
+                        className="gate-bar"
+                        style={{
+                          width: `${gate.place_rate}%`
+                        }}
+                      ></div>
+                    </div>
+                    <div className="gate-rate">{gate.place_rate}%</div>
                   </div>
-                  <div className="gate-rate">{gate.place_rate}%</div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
 
           {/* 脚質傾向 */}
           <div className="gauge-item">
-            <div className="gauge-label">脚質傾向</div>
+            <h3 className="gauge-label">脚質傾向</h3>
             <div className="gauge-track">
               <div className="gauge-indicator" style={{ left: `${course_info.characteristics.running_style * 25}%` }}></div>
               <div className="gauge-horse-icon" style={{ left: `${course_info.characteristics.running_style * 25}%` }}>🏇</div>
