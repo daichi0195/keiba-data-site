@@ -402,6 +402,70 @@ main {
   color: var(--text-dark);
 }
 
+/* 評価方法アコーディオン */
+.evaluation-method {
+  margin-top: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.evaluation-summary {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--primary-green);
+  cursor: pointer;
+  padding: 0.5rem 0;
+  list-style: none;
+  user-select: none;
+  transition: color 0.2s ease;
+}
+
+.evaluation-summary:hover {
+  color: var(--primary-green-dark);
+}
+
+.evaluation-summary::before {
+  content: '▶ ';
+  display: inline-block;
+  margin-right: 0.5rem;
+  transition: transform 0.2s ease;
+}
+
+details[open] > .evaluation-summary::before {
+  transform: rotate(90deg);
+}
+
+.evaluation-content {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background: rgba(29, 184, 84, 0.05);
+  border-left: 3px solid var(--primary-green);
+  border-radius: 4px;
+  animation: slideDown 0.2s ease;
+}
+
+.evaluation-content p {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.evaluation-content p + p {
+  margin-top: 0.5rem;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* コース特性 - HorseRatingグリッド */
 .rating-grid {
   display: grid;
