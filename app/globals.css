@@ -293,6 +293,15 @@ main {
   z-index: 2;
 }
 
+.gauge-horse-icon {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.5rem;
+  z-index: 3;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
 .gauge-labels {
   display: flex;
   justify-content: space-between;
@@ -307,6 +316,19 @@ main {
   font-weight: 700;
   text-align: center;
   margin-top: 0.5rem;
+}
+
+/* コース特性 - HorseRatingグリッド */
+.rating-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .rating-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 /* 買いの法則・消しの法則 */

@@ -400,36 +400,17 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
         <div className="characteristics-box">
           <div className="characteristics-title">コース特性</div>
 
-          {/* 脚質傾向 */}
+          {/* 荒れやすさ */}
           <div className="gauge-item">
-            <div className="gauge-label">脚質傾向</div>
+            <div className="gauge-label">荒れやすさ</div>
             <div className="gauge-track">
-              <div className="gauge-indicator" style={{ left: `${course_info.characteristics.running_style * 25}%` }}></div>
-            </div>
-            <div className="gauge-labels">
-              <span>逃げ有利</span>
-              <span>互角</span>
-              <span>差し有利</span>
-              <span>追込有利</span>
-            </div>
-            <div className="gauge-result">
-              {course_info.characteristics.running_style === 1 && '逃げ馬が有利'}
-              {course_info.characteristics.running_style === 2 && '逃げ・先行が有利'}
-              {course_info.characteristics.running_style === 3 && '互角'}
-              {course_info.characteristics.running_style === 4 && '差し・追込が有利'}
-            </div>
-          </div>
-
-          {/* 荒れ度 */}
-          <div className="gauge-item">
-            <div className="gauge-label">荒れ度</div>
-            <div className="gauge-track">
-              <div className="gauge-indicator" style={{ left: `${(course_info.characteristics.volatility - 1) * 33.33}%` }}></div>
+              <div className="gauge-indicator" style={{ left: `${(course_info.characteristics.volatility - 1) * 50}%` }}></div>
+              <div className="gauge-horse-icon" style={{ left: `${(course_info.characteristics.volatility - 1) * 50}%` }}>🐴</div>
             </div>
             <div className="gauge-labels">
               <span>堅い</span>
-              <span>中程度</span>
-              <span>荒れやすい</span>
+              <span>標準</span>
+              <span>荒れ</span>
             </div>
             <div className="gauge-result">
               {course_info.characteristics.volatility === 1 && '堅い馬場'}
@@ -438,11 +419,12 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
             </div>
           </div>
 
-          {/* 枠順 */}
+          {/* 枠順傾向 */}
           <div className="gauge-item">
-            <div className="gauge-label">枠順</div>
+            <div className="gauge-label">枠順傾向</div>
             <div className="gauge-track">
               <div className="gauge-indicator" style={{ left: `${(course_info.characteristics.gate_position - 1) * 33.33}%` }}></div>
+              <div className="gauge-horse-icon" style={{ left: `${(course_info.characteristics.gate_position - 1) * 33.33}%` }}>🐴</div>
             </div>
             <div className="gauge-labels">
               <span>内枠有利</span>
@@ -454,6 +436,26 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
               {course_info.characteristics.gate_position === 2 && '内枠やや有利'}
               {course_info.characteristics.gate_position === 3 && '互角'}
               {course_info.characteristics.gate_position === 4 && '外枠が有利'}
+            </div>
+          </div>
+
+          {/* 脚質傾向 */}
+          <div className="gauge-item">
+            <div className="gauge-label">脚質傾向</div>
+            <div className="gauge-track">
+              <div className="gauge-indicator" style={{ left: `${course_info.characteristics.running_style * 25}%` }}></div>
+              <div className="gauge-horse-icon" style={{ left: `${course_info.characteristics.running_style * 25}%` }}>🐴</div>
+            </div>
+            <div className="gauge-labels">
+              <span>逃げ有利</span>
+              <span>互角</span>
+              <span>差し有利</span>
+            </div>
+            <div className="gauge-result">
+              {course_info.characteristics.running_style === 1 && '逃げ馬が有利'}
+              {course_info.characteristics.running_style === 2 && '逃げ・先行が有利'}
+              {course_info.characteristics.running_style === 3 && '互角'}
+              {course_info.characteristics.running_style === 4 && '差し・追込が有利'}
             </div>
           </div>
         </div>
