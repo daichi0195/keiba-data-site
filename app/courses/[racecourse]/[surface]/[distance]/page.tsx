@@ -411,18 +411,22 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
           <div className="gauge-item">
             <div className="gauge-label">荒れやすさ</div>
             <div className="gauge-track">
-              <div className="gauge-indicator" style={{ left: `${(course_info.characteristics.volatility - 1) * 50}%` }}></div>
-              <div className="gauge-horse-icon" style={{ left: `${(course_info.characteristics.volatility - 1) * 50}%` }}>🏇</div>
+              <div className="gauge-indicator" style={{ left: `${(course_info.characteristics.volatility - 1) * 25}%` }}></div>
+              <div className="gauge-horse-icon" style={{ left: `${(course_info.characteristics.volatility - 1) * 25}%` }}>🏇</div>
             </div>
             <div className="gauge-labels">
               <span>堅い</span>
+              <span>やや堅い</span>
               <span>標準</span>
-              <span>荒れ</span>
+              <span>やや荒れる</span>
+              <span>荒れる</span>
             </div>
             <div className="gauge-result">
-              {course_info.characteristics.volatility === 1 && '堅い馬場'}
-              {course_info.characteristics.volatility === 2 && '中程度の荒れ'}
-              {course_info.characteristics.volatility === 3 && '荒れやすい馬場'}
+              {course_info.characteristics.volatility === 1 && '堅い'}
+              {course_info.characteristics.volatility === 2 && 'やや堅い'}
+              {course_info.characteristics.volatility === 3 && '標準'}
+              {course_info.characteristics.volatility === 4 && 'やや荒れる'}
+              {course_info.characteristics.volatility === 5 && '荒れる'}
             </div>
             <div className="gauge-ranking">
               <div className="ranking-item">
