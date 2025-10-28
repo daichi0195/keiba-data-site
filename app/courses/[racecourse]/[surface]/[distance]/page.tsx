@@ -28,6 +28,7 @@ const mockData = {
             trifecta_avg_payback_rank: 8,
             trifecta_avg_payback: 4520,
             trifecta_median_payback: 3850,
+            trifecta_all_median_payback: 3200,
             total_courses: 64
           },
           buying_points: {
@@ -429,33 +430,17 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
                 <span className="ranking-value">{course_info.ranking.trifecta_avg_payback_rank}位/{course_info.ranking.total_courses}コース</span>
               </div>
               <div className="ranking-detail">
-                <div className="payback-chart">
-                  <div className="chart-item">
-                    <div className="chart-label">このコースの平均配当</div>
-                    <div className="chart-bar-container">
-                      <div
-                        className="chart-bar"
-                        style={{
-                          width: `${(course_info.ranking.trifecta_avg_payback / 5000) * 100}%`,
-                          backgroundColor: 'var(--primary-green)'
-                        }}
-                      ></div>
-                    </div>
-                    <div className="chart-value">¥{course_info.ranking.trifecta_avg_payback.toLocaleString()}</div>
-                  </div>
-                  <div className="chart-item">
-                    <div className="chart-label">このコースの中央値</div>
-                    <div className="chart-bar-container">
-                      <div
-                        className="chart-bar"
-                        style={{
-                          width: `${(course_info.ranking.trifecta_median_payback / 5000) * 100}%`,
-                          backgroundColor: '#94a3b8'
-                        }}
-                      ></div>
-                    </div>
-                    <div className="chart-value">¥{course_info.ranking.trifecta_median_payback.toLocaleString()}</div>
-                  </div>
+                <div className="detail-row">
+                  <span className="detail-label">このコースの平均配当</span>
+                  <span className="detail-value">¥{course_info.ranking.trifecta_avg_payback.toLocaleString()}</span>
+                </div>
+                <div className="detail-row">
+                  <span className="detail-label">このコースの中央値</span>
+                  <span className="detail-value">¥{course_info.ranking.trifecta_median_payback.toLocaleString()}</span>
+                </div>
+                <div className="detail-row">
+                  <span className="detail-label">全ての中央値</span>
+                  <span className="detail-value">¥{course_info.ranking.trifecta_all_median_payback.toLocaleString()}</span>
                 </div>
               </div>
             </div>
