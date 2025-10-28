@@ -439,16 +439,21 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
                   <span className="detail-label">全コースの中央値</span>
                   <span className="detail-value">¥{course_info.ranking.trifecta_all_median_payback.toLocaleString()}</span>
                 </div>
-                <details className="evaluation-method">
-                  <summary className="evaluation-summary">評価方法について</summary>
-                  <div className="evaluation-content">
-                    <p>このコースの「荒れやすさ」は、全国の競馬場における三連単の中央値（配当額）を基準に評価しています。</p>
-                    <p>三連単の中央値が高いほど、購入者の予想が外れやすく、本来の人気度よりも配当が高くなる傾向があります。これは、馬場状態や競走条件などの要因により、レース展開が予測しづらい（荒れやすい）ことを示しています。</p>
-                    <p>各コースの中央値を全コースで相対比較し、5段階で評価しています。</p>
-                  </div>
-                </details>
               </div>
             </div>
+
+            {/* 評価方法の説明 */}
+            <details className="evaluation-method">
+              <summary className="evaluation-summary">
+                <span className="summary-icon">❓</span>
+                <span className="summary-text">荒れやすさの評価方法について</span>
+              </summary>
+              <div className="evaluation-content">
+                <p>このコースの「荒れやすさ」は、全国の競馬場における三連単の中央値（配当額）を基準に評価しています。</p>
+                <p>三連単の中央値が高いほど、購入者の予想が外れやすく、本来の人気度よりも配当が高くなる傾向があります。これは、馬場状態や競走条件などの要因により、レース展開が予測しづらい（荒れやすい）ことを示しています。</p>
+                <p>各コースの中央値を全コースで相対比較し、5段階で評価しています。</p>
+              </div>
+            </details>
           </div>
 
           {/* 枠順傾向 */}

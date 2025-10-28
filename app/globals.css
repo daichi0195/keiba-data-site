@@ -404,35 +404,54 @@ main {
 
 /* 評価方法アコーディオン */
 .evaluation-method {
-  margin-top: 0.5rem;
-  padding-top: 0.75rem;
-  border-top: 1px solid var(--border-subtle);
+  margin-top: 1.5rem;
+  padding: 0;
+  border: none;
 }
 
 .evaluation-summary {
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  color: var(--primary-green);
+  color: var(--text-dark);
   cursor: pointer;
-  padding: 0.5rem 0;
+  padding: 0.75rem 1rem;
   list-style: none;
   user-select: none;
-  transition: color 0.2s ease;
+  transition: all 0.2s ease;
+  background: #f0fdf4;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .evaluation-summary:hover {
-  color: var(--primary-green-dark);
+  background: #e8f9f0;
+  border-color: var(--primary-green);
+  box-shadow: 0 2px 8px rgba(29, 184, 84, 0.1);
 }
 
-.evaluation-summary::before {
-  content: '▶ ';
+.summary-icon {
+  font-size: 1rem;
   display: inline-block;
-  margin-right: 0.5rem;
-  transition: transform 0.2s ease;
 }
 
-details[open] > .evaluation-summary::before {
-  transform: rotate(90deg);
+.summary-text {
+  flex: 1;
+}
+
+.evaluation-summary::after {
+  content: '▼';
+  display: inline-block;
+  font-size: 0.6rem;
+  margin-left: auto;
+  transition: transform 0.2s ease;
+  color: var(--primary-green);
+}
+
+details[open] > .evaluation-summary::after {
+  transform: rotate(-180deg);
 }
 
 .evaluation-content {
