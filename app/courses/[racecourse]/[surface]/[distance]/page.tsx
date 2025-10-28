@@ -430,10 +430,7 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
                 <span className="ranking-value">{course_info.ranking.trifecta_avg_payback_rank}位/{course_info.ranking.total_courses}コース</span>
               </div>
               <div className="ranking-detail">
-                <div className="detail-row">
-                  <span className="detail-label">このコースの平均配当</span>
-                  <span className="detail-value">¥{course_info.ranking.trifecta_avg_payback.toLocaleString()}</span>
-                </div>
+                <div className="ranking-detail-title">三連単配当</div>
                 <div className="detail-row">
                   <span className="detail-label">このコースの中央値</span>
                   <span className="detail-value">¥{course_info.ranking.trifecta_median_payback.toLocaleString()}</span>
