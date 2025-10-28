@@ -433,16 +433,20 @@ main {
   box-shadow: none;
 }
 
-.evaluation-summary::after {
+.evaluation-summary::before {
   content: '▼';
   display: inline-block;
   font-size: 0.5rem;
-  margin-left: 0.5rem;
+  margin-right: 0.5rem;
   transition: transform 0.2s ease;
   color: var(--text-secondary);
 }
 
-details[open] > .evaluation-summary::after {
+.evaluation-summary::after {
+  content: none;
+}
+
+details[open] > .evaluation-summary::before {
   transform: rotate(-180deg);
 }
 
