@@ -489,9 +489,9 @@ details[open] > .evaluation-summary::before {
   background: #f8fafc;
   padding: 1rem;
   border-radius: 8px;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
   border-top: 1px solid var(--border-subtle);
-  padding-top: 1rem;
+  padding-top: 1.5rem;
 }
 
 .gate-detail-title {
