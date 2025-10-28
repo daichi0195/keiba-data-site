@@ -290,9 +290,9 @@ main {
   right: 0;
   bottom: 0;
   background:
-    linear-gradient(90deg, transparent 24.9%, #fff 25%, #fff 25.1%, transparent 25.2%),
-    linear-gradient(90deg, transparent 49.9%, #fff 50%, #fff 50.1%, transparent 50.2%),
-    linear-gradient(90deg, transparent 74.9%, #fff 75%, #fff 75.1%, transparent 75.2%);
+    linear-gradient(90deg, transparent 24.8%, rgba(255, 255, 255, 1) 25%, rgba(255, 255, 255, 1) 25.2%, transparent 25.4%),
+    linear-gradient(90deg, transparent 49.8%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 1) 50.2%, transparent 50.4%),
+    linear-gradient(90deg, transparent 74.8%, rgba(255, 255, 255, 1) 75%, rgba(255, 255, 255, 1) 75.2%, transparent 75.4%);
   border-radius: 6px;
   pointer-events: none;
 }
