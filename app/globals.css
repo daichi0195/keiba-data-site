@@ -290,9 +290,9 @@ main {
   right: 0;
   bottom: 0;
   background:
-    linear-gradient(90deg, transparent 19.9%, #fff 20%, #fff 20.1%, transparent 20.2%),
+    linear-gradient(90deg, transparent 24.9%, #fff 25%, #fff 25.1%, transparent 25.2%),
     linear-gradient(90deg, transparent 49.9%, #fff 50%, #fff 50.1%, transparent 50.2%),
-    linear-gradient(90deg, transparent 79.9%, #fff 80%, #fff 80.1%, transparent 80.2%);
+    linear-gradient(90deg, transparent 74.9%, #fff 75%, #fff 75.1%, transparent 75.2%);
   border-radius: 6px;
   pointer-events: none;
 }
