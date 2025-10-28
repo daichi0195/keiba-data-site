@@ -524,6 +524,7 @@ details[open] > .evaluation-summary::before {
   font-weight: 700;
   color: #fff;
   flex-shrink: 0;
+  border: 1px solid #ddd;
 }
 
 .gate-bar-container {
