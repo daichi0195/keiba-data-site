@@ -52,10 +52,10 @@
 }
 
 .closeIcon {
-  background: #f0f0f0;
+  background: #1db854;
   border: none;
   font-size: 1.5rem;
-  color: #475569;
+  color: #ffffff;
   cursor: pointer;
   padding: 0;
   width: 32px;
@@ -64,11 +64,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: color 0.2s ease, background 0.2s ease;
+  transition: background 0.2s ease;
 }
 
 .closeIcon:hover {
-  color: #1db854;
+  background: #1a9f47;
 }
 
 /* モバイルメニューオーバーレイ */
