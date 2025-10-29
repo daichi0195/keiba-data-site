@@ -227,7 +227,7 @@ main {
 }
 
 .course-meta-section .meta-label {
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.7);
   font-weight: 600;
   opacity: 1;
@@ -1534,6 +1534,10 @@ details[open] .evaluation-content {
   border-right: none;
 }
 
+.mobile-data-table thead th.mobile-scroll-col {
+  background-color: #ffffff !important;
+}
+
 /* 行のスタイル */
 .mobile-data-table tbody tr {
   transition: background-color 0.2s ease;
@@ -1935,7 +1939,7 @@ h2.section-title::before { content: none !important; }
   }
 
   .course-meta-section .meta-label {
-    font-size: 0.6rem;
+    font-size: 0.7rem;
     color: rgba(255, 255, 255, 0.7);
     font-weight: 600;
     text-transform: uppercase;
