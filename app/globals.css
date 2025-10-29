@@ -246,6 +246,135 @@ main {
   box-shadow: 0 4px 20px rgba(29, 184, 84, 0.1);
 }
 
+/* === 注目ポイントセクション === */
+.highlights-box {
+  background: #fff;
+  border-radius: 14px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.highlights-box:hover {
+  box-shadow: 0 4px 20px rgba(29, 184, 84, 0.1);
+}
+
+.highlight-item {
+  margin-bottom: 2rem;
+}
+
+.highlight-item:last-child {
+  margin-bottom: 0;
+}
+
+.highlight-subsection {
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.highlight-subsection-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+  text-transform: none;
+}
+
+.highlight-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.75rem;
+}
+
+.highlight-card {
+  background: #fff;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 0.625rem;
+  transition: all 0.2s ease;
+}
+
+.highlight-card-strong {
+  background: #f0fdf4;
+  border: 1px solid var(--primary-green);
+}
+
+.highlight-card-strong:hover {
+  box-shadow: 0 2px 8px rgba(29, 184, 84, 0.15);
+  border-color: var(--primary-green-dark);
+}
+
+.highlight-card-weak {
+  background: #fffbf0;
+  border: 1px solid #f59e0b;
+}
+
+.highlight-card-weak:hover {
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15);
+  border-color: #d97706;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0;
+  gap: 0.25rem;
+}
+
+.highlight-card .card-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  flex: 1;
+  word-break: break-word;
+  line-height: 1;
+  margin: 0;
+}
+
+.card-badge {
+  display: none;
+}
+
+.card-badge-strong {
+  background: var(--primary-green);
+  color: #fff;
+}
+
+.card-badge-weak {
+  background: #f59e0b;
+  color: #fff;
+}
+
+.highlight-card .card-header {
+  margin-bottom: 0.5rem;
+}
+
+.card-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+}
+
+.stat-label {
+  color: var(--text-light);
+  font-weight: 500;
+}
+
+.stat-value {
+  color: var(--text-dark);
+  font-weight: 700;
+}
+
 .characteristics-title {
   font-size: 1.25rem;
   font-weight: 700;
@@ -316,11 +445,33 @@ main {
 }
 
 .gauge-labels {
-  display: flex;
-  justify-content: space-between;
   font-size: 0.8rem;
   color: var(--text-light);
   font-weight: 500;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+  height: 1.5rem;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.gauge-labels span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gauge-labels span:nth-child(1) {
+  justify-content: flex-start;
+}
+
+.gauge-labels span:nth-child(2) {
+  justify-content: center;
+}
+
+.gauge-labels span:nth-child(3) {
+  justify-content: flex-end;
 }
 
 .gauge-result {

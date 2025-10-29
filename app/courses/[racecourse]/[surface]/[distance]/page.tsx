@@ -32,25 +32,35 @@ const mockData = {
             total_courses: 64
           },
           buying_points: {
-            positive: {
-              jockey: {
-                name: '武豊',
-                value: '31.3%'
-              },
-              pedigree: {
-                name: 'キングカメハメハ産駒',
-                value: '34.4%'
-              }
+            jockey: {
+              strong: [
+                { name: '武豊', record: '75-58-42', win_rate: '31.3%', place_rate: '61.2%', win_payback: '115%', place_payback: '108%' },
+                { name: '岡部幸雄', record: '68-55-39', win_rate: '28.5%', place_rate: '59.8%', win_payback: '112%', place_payback: '106%' }
+              ],
+              weak: [
+                { name: '横山典弘', record: '22-18-15', win_rate: '12.3%', place_rate: '35.5%', win_payback: '85%', place_payback: '92%' },
+                { name: '藤岡佑介', record: '28-22-18', win_rate: '14.1%', place_rate: '38.2%', win_payback: '88%', place_payback: '95%' }
+              ]
             },
-            negative: {
-              gate: {
-                name: '内枠',
-                note: '不利'
-              },
-              running_style: {
-                name: '先行馬',
-                note: '苦戦傾向'
-              }
+            pedigree: {
+              strong: [
+                { name: 'キングカメハメハ', record: '89-68-51', win_rate: '34.4%', place_rate: '62.3%', win_payback: '118%', place_payback: '110%' },
+                { name: 'ディープインパクト', record: '76-61-47', win_rate: '29.8%', place_rate: '58.9%', win_payback: '114%', place_payback: '107%' }
+              ],
+              weak: [
+                { name: 'サンデーサイレンス', record: '31-24-19', win_rate: '15.2%', place_rate: '40.1%', win_payback: '86%', place_payback: '93%' },
+                { name: 'ハーツクライ', record: '35-28-22', win_rate: '16.7%', place_rate: '42.5%', win_payback: '89%', place_payback: '94%' }
+              ]
+            },
+            trainer: {
+              strong: [
+                { name: '国枝栄', record: '72-57-43', win_rate: '32.1%', place_rate: '60.5%', win_payback: '116%', place_payback: '109%' },
+                { name: '音無秀孝', record: '68-54-41', win_rate: '29.5%', place_rate: '57.8%', win_payback: '113%', place_payback: '105%' }
+              ],
+              weak: [
+                { name: '高橋亮', record: '20-16-12', win_rate: '11.8%', place_rate: '34.2%', win_payback: '84%', place_payback: '91%' },
+                { name: '藤岡健一', record: '25-20-15', win_rate: '13.4%', place_rate: '37.1%', win_payback: '87%', place_payback: '93%' }
+              ]
             }
           }
         },
@@ -360,6 +370,7 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
   // セクションナビゲーション用のアイテム
   const navItems = [
     { id: 'characteristics-section', label: 'コース特性' },
+    { id: 'highlights-section', label: '注目ポイント' },
     { id: 'popularity-section', label: '人気別' },      // ある場合
     { id: 'gate-section',        label: '枠順別' },
     { id: 'running-style-section', label: '脚質別' },
@@ -407,14 +418,14 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
             <div className="gauge-labels">
               <span>堅い</span>
               <span>標準</span>
-              <span>荒れる</span>
+              <span>荒れやすい</span>
             </div>
             <div className="gauge-result">
               {course_info.characteristics.volatility === 1 && '堅い'}
               {course_info.characteristics.volatility === 2 && 'やや堅い'}
               {course_info.characteristics.volatility === 3 && '標準'}
-              {course_info.characteristics.volatility === 4 && 'やや荒れる'}
-              {course_info.characteristics.volatility === 5 && '荒れる'}
+              {course_info.characteristics.volatility === 4 && 'やや荒れやすい'}
+              {course_info.characteristics.volatility === 5 && '荒れやすい'}
             </div>
             <div className="gauge-ranking">
               <div className="ranking-item">
@@ -438,7 +449,7 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
             <details className="evaluation-method">
               <summary className="evaluation-summary">荒れやすさの評価方法について</summary>
               <div className="evaluation-content">
-                <p>このコースの「荒れやすさ」は、全国の競馬場における三連単の中央値（配当額）を基準に評価しています。</p>
+                <p>このコースの「荒れやすさ」は、中央競馬の全てのコースにおける三連単の中央値（配当額）を基準に評価しています。</p>
                 <p>三連単の中央値が高いほど、購入者の予想が外れやすく、本来の人気度よりも配当が高くなる傾向があります。これは、馬場状態や競走条件などの要因により、レース展開が予測しづらい（荒れやすい）ことを示しています。</p>
                 <p>各コースの中央値を全コースで相対比較し、5段階で評価しています。</p>
               </div>
@@ -555,6 +566,224 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
             </div>
           </div>
         </div>
+        </section>
+
+        {/* === 注目ポイント === */}
+        <section id="highlights-section">
+          <div className="highlights-box">
+            <h2 className="section-title">注目ポイント</h2>
+
+            {/* 騎手セクション */}
+            <div className="highlight-item">
+              <h3 className="gauge-label">騎手</h3>
+
+              {/* 得意な騎手 */}
+              <div className="highlight-subsection">
+                <h4 className="highlight-subsection-title">このコースが得意な騎手</h4>
+                <div className="highlight-cards">
+                  {course_info.buying_points.jockey.strong.map((item: any) => (
+                    <div key={item.name} className="highlight-card highlight-card-strong">
+                      <div className="card-header">
+                        <div className="card-name">{item.name}</div>
+                      </div>
+                      <div className="card-stats">
+                        <div className="stat-item">
+                          <span className="stat-label">勝率</span>
+                          <span className="stat-value">{item.win_rate}</span>
+                        </div>
+                        <div className="stat-item">
+                          <span className="stat-label">複勝率</span>
+                          <span className="stat-value">{item.place_rate}</span>
+                        </div>
+                        <div className="stat-item">
+                          <span className="stat-label">単勝</span>
+                          <span className="stat-value">{item.win_payback}</span>
+                        </div>
+                        <div className="stat-item">
+                          <span className="stat-label">複勝</span>
+                          <span className="stat-value">{item.place_payback}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 苦手な騎手 */}
+              <div className="highlight-subsection">
+                <h4 className="highlight-subsection-title">このコースが苦手な騎手</h4>
+                <div className="highlight-cards">
+                  {course_info.buying_points.jockey.weak.map((item: any) => (
+                    <div key={item.name} className="highlight-card highlight-card-weak">
+                      <div className="card-header">
+                        <div className="card-name">{item.name}</div>
+                      </div>
+                      <div className="card-stats">
+                        <div className="stat-item">
+                          <span className="stat-label">勝率</span>
+                          <span className="stat-value">{item.win_rate}</span>
+                        </div>
+                        <div className="stat-item">
+                          <span className="stat-label">複勝率</span>
+                          <span className="stat-value">{item.place_rate}</span>
+                        </div>
+                        <div className="stat-item">
+                          <span className="stat-label">単勝</span>
+                          <span className="stat-value">{item.win_payback}</span>
+                        </div>
+                        <div className="stat-item">
+                          <span className="stat-label">複勝</span>
+                          <span className="stat-value">{item.place_payback}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="section-divider"></div>
+            </div>
+
+            {/* 血統セクション */}
+            <div className="highlight-item">
+              <h3 className="gauge-label">血統</h3>
+
+              {/* 得意な血統 */}
+              <div className="highlight-subsection">
+                <h4 className="highlight-subsection-title">このコースが得意な血統</h4>
+                <div className="highlight-cards">
+                  {course_info.buying_points.pedigree.strong.map((item: any) => (
+                    <div key={item.name} className="highlight-card highlight-card-strong">
+                      <div className="card-header">
+                        <div className="card-name">{item.name}</div>
+                      </div>
+                      <div className="card-stats">
+                        <div className="stat-item">
+                          <span className="stat-label">勝率</span>
+                          <span className="stat-value">{item.win_rate}</span>
+                        </div>
+                        <div className="stat-item">
+                          <span className="stat-label">複勝率</span>
+                          <span className="stat-value">{item.place_rate}</span>
+                        </div>
+                        <div className="stat-item">
+                          <span className="stat-label">単勝</span>
+                          <span className="stat-value">{item.win_payback}</span>
+                        </div>
+                        <div className="stat-item">
+                          <span className="stat-label">複勝</span>
+                          <span className="stat-value">{item.place_payback}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 苦手な血統 */}
+              <div className="highlight-subsection">
+                <h4 className="highlight-subsection-title">このコースが苦手な血統</h4>
+                <div className="highlight-cards">
+                  {course_info.buying_points.pedigree.weak.map((item: any) => (
+                    <div key={item.name} className="highlight-card highlight-card-weak">
+                      <div className="card-header">
+                        <div className="card-name">{item.name}</div>
+                      </div>
+                      <div className="card-stats">
+                        <div className="stat-item">
+                          <span className="stat-label">勝率</span>
+                          <span className="stat-value">{item.win_rate}</span>
+                        </div>
+                        <div className="stat-item">
+                          <span className="stat-label">複勝率</span>
+                          <span className="stat-value">{item.place_rate}</span>
+                        </div>
+                        <div className="stat-item">
+                          <span className="stat-label">単勝</span>
+                          <span className="stat-value">{item.win_payback}</span>
+                        </div>
+                        <div className="stat-item">
+                          <span className="stat-label">複勝</span>
+                          <span className="stat-value">{item.place_payback}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="section-divider"></div>
+            </div>
+
+            {/* 調教師セクション */}
+            <div className="highlight-item">
+              <h3 className="gauge-label">調教師</h3>
+
+              {/* 得意な調教師 */}
+              <div className="highlight-subsection">
+                <h4 className="highlight-subsection-title">このコースが得意な調教師</h4>
+                <div className="highlight-cards">
+                  {course_info.buying_points.trainer.strong.map((item: any) => (
+                    <div key={item.name} className="highlight-card highlight-card-strong">
+                      <div className="card-header">
+                        <div className="card-name">{item.name}</div>
+                      </div>
+                      <div className="card-stats">
+                        <div className="stat-item">
+                          <span className="stat-label">勝率</span>
+                          <span className="stat-value">{item.win_rate}</span>
+                        </div>
+                        <div className="stat-item">
+                          <span className="stat-label">複勝率</span>
+                          <span className="stat-value">{item.place_rate}</span>
+                        </div>
+                        <div className="stat-item">
+                          <span className="stat-label">単勝</span>
+                          <span className="stat-value">{item.win_payback}</span>
+                        </div>
+                        <div className="stat-item">
+                          <span className="stat-label">複勝</span>
+                          <span className="stat-value">{item.place_payback}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 苦手な調教師 */}
+              <div className="highlight-subsection">
+                <h4 className="highlight-subsection-title">このコースが苦手な調教師</h4>
+                <div className="highlight-cards">
+                  {course_info.buying_points.trainer.weak.map((item: any) => (
+                    <div key={item.name} className="highlight-card highlight-card-weak">
+                      <div className="card-header">
+                        <div className="card-name">{item.name}</div>
+                      </div>
+                      <div className="card-stats">
+                        <div className="stat-item">
+                          <span className="stat-label">勝率</span>
+                          <span className="stat-value">{item.win_rate}</span>
+                        </div>
+                        <div className="stat-item">
+                          <span className="stat-label">複勝率</span>
+                          <span className="stat-value">{item.place_rate}</span>
+                        </div>
+                        <div className="stat-item">
+                          <span className="stat-label">単勝</span>
+                          <span className="stat-value">{item.win_payback}</span>
+                        </div>
+                        <div className="stat-item">
+                          <span className="stat-label">複勝</span>
+                          <span className="stat-value">{item.place_payback}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
 
         {/* === 人気別 === */}
