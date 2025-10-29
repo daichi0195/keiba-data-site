@@ -85,6 +85,14 @@
   flex-direction: column;
 }
 
+.menuSectionTitle {
+  padding: 1rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1db854;
+  border-bottom: 1px solid #e2e8f0;
+}
+
 /* アコーディオンアイテム */
 .accordionItem {
   border-bottom: 1px solid #e2e8f0;

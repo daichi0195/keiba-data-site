@@ -152,6 +152,7 @@ export default function SectionNav({ items }: { items: Item[] }) {
           />
           <div className={styles.mobileMenu}>
             <div className={styles.mobileMenuContent}>
+              <div className={styles.menuSectionTitle}>コース別データ</div>
               {racecoursesData.map((racecourse) => (
                 <div key={racecourse.nameEn} className={styles.accordionItem}>
                   <button
