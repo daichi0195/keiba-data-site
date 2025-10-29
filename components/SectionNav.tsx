@@ -145,7 +145,7 @@ export default function SectionNav({ items }: { items: Item[] }) {
             <span></span>
           </>
         ) : (
-          <span className={styles.closeIcon}>✕</span>
+          <div className={styles.closeIcon}>✕</div>
         )}
       </button>
 

@@ -52,10 +52,22 @@
 }
 
 .closeIcon {
-  font-size: 24px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #475569;
+  cursor: pointer;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.closeIcon:hover {
   color: #1db854;
-  font-weight: bold;
-  line-height: 1;
 }
 
 /* モバイルメニューオーバーレイ */
