@@ -201,7 +201,7 @@ export default function HighlightsSection({ courseInfo }: HighlightsSectionProps
               ×
             </button>
             <h3 className="modal-title">条件について</h3>
-            <ul className="condition-list">
+            <div className="modal-conditions">
               {modalState.subsectionKey && [
                 { key: 'jockey-strong', conditions: ['直近3年間の出走回数20回以上', '複勝率TOP5以内かつ複勝回収率100%以上'] },
                 { key: 'jockey-upset', conditions: ['直近3年間の出走回数20回以上', '複勝率TOP5未満かつ複勝回収率100%以上'] },
@@ -213,9 +213,12 @@ export default function HighlightsSection({ courseInfo }: HighlightsSectionProps
                 { key: 'trainer-strong', conditions: ['直近3年間の出走回数20回以上', '複勝率TOP5以内かつ複勝回収率100%以上'] },
                 { key: 'trainer-weak', conditions: ['直近3年間の出走回数20回以上', '複勝率10%以下かつ複勝回収率30%未満'] },
               ].find(item => item.key === modalState.subsectionKey)?.conditions.map((condition, index) => (
-                <li key={index} className="condition-item">{condition}</li>
+                <div key={index} className="condition-item-wrapper">
+                  <span className="condition-number">{index + 1}</span>
+                  <span className="condition-text">{condition}</span>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
         </div>
       )}

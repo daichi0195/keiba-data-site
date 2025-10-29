@@ -280,6 +280,7 @@ main {
   align-items: center;
   gap: 0.5rem;
   margin-bottom: 0.75rem;
+  justify-content: space-between;
 }
 
 .highlight-subsection-title {
@@ -302,20 +303,21 @@ main {
 
 .condition-info-btn {
   background: none;
-  border: 1px solid #b8c5d6;
+  border: 1.5px solid #b8c5d6;
   color: #b8c5d6;
-  font-size: 0.65rem;
+  font-size: 0.7rem;
   cursor: pointer;
-  padding: 0.15rem 0.35rem;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
   flex-shrink: 0;
   border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  font-weight: 600;
+  width: 20px;
+  height: 20px;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .condition-info-btn:hover {
@@ -387,13 +389,30 @@ main {
   padding-right: 2rem;
 }
 
-.condition-modal .condition-list {
-  margin: 0;
-  padding-left: 1.25rem;
+.modal-conditions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-.condition-modal .condition-item {
+.condition-item-wrapper {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.condition-number {
   font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--primary-green);
+  min-width: 20px;
+  line-height: 1.6;
+}
+
+.condition-text {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
 }
 
 .highlight-cards {
