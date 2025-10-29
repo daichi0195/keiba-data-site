@@ -138,9 +138,15 @@ export default function SectionNav({ items }: { items: Item[] }) {
         type="button"
         aria-label="メニューを開く"
       >
-        <span></span>
-        <span></span>
-        <span></span>
+        {!isMenuOpen ? (
+          <>
+            <span></span>
+            <span></span>
+            <span></span>
+          </>
+        ) : (
+          <span className={styles.closeIcon}>×</span>
+        )}
       </button>
 
       {/* モバイルメニュー */}
