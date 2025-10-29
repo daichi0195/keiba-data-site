@@ -118,7 +118,7 @@ main {
   background: linear-gradient(135deg, #0d5c2f 0%, #1db854 50%, #2ed963 100%);
   border-radius: 16px;
   padding: 2.5rem 2rem 1.5rem;
-  margin-bottom: 1.5rem;
+  margin: 0;
   box-shadow: 0 12px 48px rgba(13, 92, 47, 0.25);
   position: relative;
   overflow: hidden;
