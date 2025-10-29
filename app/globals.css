@@ -337,6 +337,8 @@ main {
   color: var(--text-secondary);
   margin-bottom: 0;
   text-transform: none;
+  line-height: 1;
+  margin: 0;
 }
 
 .condition-list {
