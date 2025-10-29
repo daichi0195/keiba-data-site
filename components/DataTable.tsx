@@ -141,13 +141,13 @@ export default function DataTable({ title, data, initialShow = 10 }: Props) {
                     </span>
                   </td>
                   <td className="mobile-scroll-col mobile-col-rate">
-                    <span className={isHighlight(row.place_rate, maxPlaceRate) ? 'mobile-highlight' : ''}>
-                      {row.place_rate}%
+                    <span className={isHighlight(row.quinella_rate, maxQuinellaRate) ? 'mobile-highlight' : ''}>
+                      {row.quinella_rate}%
                     </span>
                   </td>
                   <td className="mobile-scroll-col mobile-col-rate">
-                    <span className={isHighlight(row.quinella_rate, maxQuinellaRate) ? 'mobile-highlight' : ''}>
-                      {row.quinella_rate}%
+                    <span className={isHighlight(row.place_rate, maxPlaceRate) ? 'mobile-highlight' : ''}>
+                      {row.place_rate}%
                     </span>
                   </td>
                   <td className="mobile-scroll-col mobile-col-payback">

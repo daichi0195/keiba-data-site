@@ -120,13 +120,13 @@ export default function GateTable({ title, data }: Props) {
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
-                    <span className={isHighlight(row.place_rate, maxPlaceRate) ? styles.highlight : ''}>
-                      {row.place_rate}%
+                    <span className={isHighlight(row.quinella_rate, maxQuinellaRate) ? styles.highlight : ''}>
+                      {row.quinella_rate}%
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
-                    <span className={isHighlight(row.quinella_rate, maxQuinellaRate) ? styles.highlight : ''}>
-                      {row.quinella_rate}%
+                    <span className={isHighlight(row.place_rate, maxPlaceRate) ? styles.highlight : ''}>
+                      {row.place_rate}%
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
