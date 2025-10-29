@@ -247,17 +247,17 @@ main {
 }
 
 /* === 注目ポイントセクション === */
-.highlights-box {
+#highlights-section > .highlights-box {
   background: #fff;
   border-radius: 14px;
   padding: 1.25rem;
   margin-bottom: 1.5rem;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-  border: 2px solid var(--border-color);
+  border: 2px solid var(--border-color) !important;
   transition: all 0.3s ease;
 }
 
-.highlights-box:hover {
+#highlights-section > .highlights-box:hover {
   box-shadow: 0 4px 20px rgba(29, 184, 84, 0.1);
 }
 
