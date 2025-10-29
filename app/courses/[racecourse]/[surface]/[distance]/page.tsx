@@ -6,6 +6,7 @@ import SectionNav from '@/components/SectionNav';
 import RunningStyleTable from '@/components/RunningStyleTable';
 import PopularityTable from '@/components/PopularityTable';
 import HighlightsSection from '@/components/HighlightsSection';
+import BarChartAnimation from '@/components/BarChartAnimation';
 
 // モックデータ
 const mockData = {
@@ -416,6 +417,7 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
 
         {/* === コース特性セクション === */}
         <section id="characteristics-section">
+        <BarChartAnimation>
         <div className="characteristics-box">
           <h2 className="section-title">コース特性</h2>
 
@@ -577,6 +579,7 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
             </div>
           </div>
         </div>
+        </BarChartAnimation>
         </section>
 
         {/* === 注目ポイント === */}
