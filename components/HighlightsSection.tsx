@@ -1,7 +1,5 @@
 'use client';
 
-import { useState } from 'react';
-
 interface HighlightsItem {
   name: string;
   record?: string;
@@ -14,73 +12,38 @@ interface HighlightsItem {
 interface HighlightsSectionProps {
   courseInfo: {
     buying_points: {
-      jockey: { strong: HighlightsItem[]; weak: HighlightsItem[] };
-      pedigree: { strong: HighlightsItem[]; weak: HighlightsItem[] };
+      jockey: { strong: HighlightsItem[]; upset?: HighlightsItem[]; weak: HighlightsItem[] };
+      pedigree: {
+        sire: { strong: HighlightsItem[]; weak: HighlightsItem[] };
+        dam_sire: { strong: HighlightsItem[]; weak: HighlightsItem[] };
+      };
       trainer: { strong: HighlightsItem[]; weak: HighlightsItem[] };
     };
   };
 }
 
 export default function HighlightsSection({ courseInfo }: HighlightsSectionProps) {
-  const [expandedCards, setExpandedCards] = useState<{
-    [key: string]: boolean;
-  }>({});
 
-  const toggleCard = (cardId: string) => {
-    setExpandedCards((prev) => ({
-      ...prev,
-      [cardId]: !prev[cardId],
-    }));
-  };
+  const renderCards = (items: HighlightsItem[], type: 'strong' | 'upset' | 'weak') => {
+    if (!items || items.length === 0) {
+      return (
+        <div className="highlight-cards">
+          <div className="highlight-card-empty">該当なし</div>
+        </div>
+      );
+    }
 
-  const renderCards = (items: HighlightsItem[], isStrong: boolean, sectionId: string) => {
+    const cardClass = (type === 'strong' || type === 'upset') ? 'highlight-card-strong' : 'highlight-card-weak';
+
     return (
       <div className="highlight-cards">
         {items.map((item) => {
-          const cardId = `${sectionId}-${item.name}`;
-          const isExpanded = expandedCards[cardId];
-
           return (
             <div
               key={item.name}
-              className={`highlight-card ${
-                isStrong ? 'highlight-card-strong' : 'highlight-card-weak'
-              } ${isExpanded ? 'expanded' : ''}`}
-              onClick={() => toggleCard(cardId)}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  toggleCard(cardId);
-                }
-              }}
+              className={`highlight-card ${cardClass}`}
             >
-              <div className="card-header">
-                <div className="card-name">{item.name}</div>
-                <span className={`card-toggle-icon ${isExpanded ? 'expanded' : ''}`}>
-                  ▼
-                </span>
-              </div>
-              {isExpanded && (
-                <div className="card-stats">
-                  <div className="stat-item">
-                    <span className="stat-label">勝率</span>
-                    <span className="stat-value">{item.win_rate}</span>
-                  </div>
-                  <div className="stat-item">
-                    <span className="stat-label">複勝率</span>
-                    <span className="stat-value">{item.place_rate}</span>
-                  </div>
-                  <div className="stat-item">
-                    <span className="stat-label">単勝</span>
-                    <span className="stat-value">{item.win_payback}</span>
-                  </div>
-                  <div className="stat-item">
-                    <span className="stat-label">複勝</span>
-                    <span className="stat-value">{item.place_payback}</span>
-                  </div>
-                </div>
-              )}
+              <div className="card-name">{item.name}</div>
             </div>
           );
         })}
@@ -89,15 +52,38 @@ export default function HighlightsSection({ courseInfo }: HighlightsSectionProps
   };
 
   const renderSubsection = (
-    sectionId: string,
     title: string,
     items: HighlightsItem[],
-    isStrong: boolean
+    type: 'strong' | 'upset' | 'weak'
   ) => {
+    const conditionMap = {
+      strong: [
+        '直近3年間の出走回数20回以上',
+        '複勝率TOP5以内かつ複勝回収率100%以上'
+      ],
+      upset: [
+        '直近3年間の出走回数20回以上',
+        '複勝率TOP5未満かつ複勝回収率100%以上'
+      ],
+      weak: [
+        '直近3年間の出走回数20回以上',
+        '複勝率10%以下かつ複勝回収率30%未満'
+      ]
+    };
+
+    const conditions = conditionMap[type];
+
     return (
-      <div key={sectionId} className="highlight-subsection">
-        <h4 className="highlight-subsection-title">{title}</h4>
-        {renderCards(items, isStrong, sectionId)}
+      <div className="highlight-subsection">
+        <div className="subsection-header">
+          <h4 className="highlight-subsection-title">{title}</h4>
+          <ul className="condition-list">
+            {conditions.map((condition, index) => (
+              <li key={index} className="condition-item">{condition}</li>
+            ))}
+          </ul>
+        </div>
+        {renderCards(items, type)}
       </div>
     );
   };
@@ -111,34 +97,53 @@ export default function HighlightsSection({ courseInfo }: HighlightsSectionProps
         <div className="highlight-item">
           <h3 className="gauge-label">騎手</h3>
           {renderSubsection(
-            'jockey-strong',
             'このコースが得意な騎手',
             courseInfo.buying_points.jockey.strong,
-            true
+            'strong'
+          )}
+          {courseInfo.buying_points.jockey.upset && courseInfo.buying_points.jockey.upset.length > 0 && (
+            renderSubsection(
+              'このコースでよく穴をあける騎手',
+              courseInfo.buying_points.jockey.upset,
+              'upset'
+            )
           )}
           {renderSubsection(
-            'jockey-weak',
             'このコースが苦手な騎手',
             courseInfo.buying_points.jockey.weak,
-            false
+            'weak'
           )}
           <div className="section-divider"></div>
         </div>
 
-        {/* 血統セクション */}
+        {/* 血統（種牡馬）セクション */}
         <div className="highlight-item">
-          <h3 className="gauge-label">血統</h3>
+          <h3 className="gauge-label">血統（種牡馬）</h3>
           {renderSubsection(
-            'pedigree-strong',
-            'このコースが得意な血統',
-            courseInfo.buying_points.pedigree.strong,
-            true
+            'このコースが得意な種牡馬',
+            courseInfo.buying_points.pedigree.sire.strong,
+            'strong'
           )}
           {renderSubsection(
-            'pedigree-weak',
-            'このコースが苦手な血統',
-            courseInfo.buying_points.pedigree.weak,
-            false
+            'このコースが苦手な種牡馬',
+            courseInfo.buying_points.pedigree.sire.weak,
+            'weak'
+          )}
+          <div className="section-divider"></div>
+        </div>
+
+        {/* 血統（母父）セクション */}
+        <div className="highlight-item">
+          <h3 className="gauge-label">血統（母父）</h3>
+          {renderSubsection(
+            'このコースが得意な母父',
+            courseInfo.buying_points.pedigree.dam_sire.strong,
+            'strong'
+          )}
+          {renderSubsection(
+            'このコースが苦手な母父',
+            courseInfo.buying_points.pedigree.dam_sire.weak,
+            'weak'
           )}
           <div className="section-divider"></div>
         </div>
@@ -147,18 +152,15 @@ export default function HighlightsSection({ courseInfo }: HighlightsSectionProps
         <div className="highlight-item">
           <h3 className="gauge-label">調教師</h3>
           {renderSubsection(
-            'trainer-strong',
             'このコースが得意な調教師',
             courseInfo.buying_points.trainer.strong,
-            true
+            'strong'
           )}
           {renderSubsection(
-            'trainer-weak',
             'このコースが苦手な調教師',
             courseInfo.buying_points.trainer.weak,
-            false
+            'weak'
           )}
-          <div className="section-divider"></div>
         </div>
       </div>
     </section>

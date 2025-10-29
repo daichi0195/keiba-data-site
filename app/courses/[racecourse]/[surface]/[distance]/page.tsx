@@ -38,20 +38,30 @@ const mockData = {
                 { name: '武豊', record: '75-58-42', win_rate: '31.3%', place_rate: '61.2%', win_payback: '115%', place_payback: '108%' },
                 { name: '岡部幸雄', record: '68-55-39', win_rate: '28.5%', place_rate: '59.8%', win_payback: '112%', place_payback: '106%' }
               ],
+              upset: [
+                { name: '川田将雅', record: '25-20-15', win_rate: '8.5%', place_rate: '9.8%', win_payback: '25%', place_payback: '28%' },
+                { name: '池添謙一', record: '22-18-12', win_rate: '7.2%', place_rate: '8.6%', win_payback: '28%', place_payback: '29%' }
+              ],
               weak: [
                 { name: '横山典弘', record: '22-18-15', win_rate: '12.3%', place_rate: '35.5%', win_payback: '85%', place_payback: '92%' },
                 { name: '藤岡佑介', record: '28-22-18', win_rate: '14.1%', place_rate: '38.2%', win_payback: '88%', place_payback: '95%' }
               ]
             },
             pedigree: {
-              strong: [
-                { name: 'キングカメハメハ', record: '89-68-51', win_rate: '34.4%', place_rate: '62.3%', win_payback: '118%', place_payback: '110%' },
-                { name: 'ディープインパクト', record: '76-61-47', win_rate: '29.8%', place_rate: '58.9%', win_payback: '114%', place_payback: '107%' }
-              ],
-              weak: [
-                { name: 'サンデーサイレンス', record: '31-24-19', win_rate: '15.2%', place_rate: '40.1%', win_payback: '86%', place_payback: '93%' },
-                { name: 'ハーツクライ', record: '35-28-22', win_rate: '16.7%', place_rate: '42.5%', win_payback: '89%', place_payback: '94%' }
-              ]
+              sire: {
+                strong: [
+                  { name: 'キングカメハメハ', record: '89-68-51', win_rate: '34.4%', place_rate: '62.3%', win_payback: '118%', place_payback: '110%' },
+                  { name: 'ディープインパクト', record: '76-61-47', win_rate: '29.8%', place_rate: '58.9%', win_payback: '114%', place_payback: '107%' }
+                ],
+                weak: [
+                  { name: 'サンデーサイレンス', record: '31-24-19', win_rate: '15.2%', place_rate: '40.1%', win_payback: '86%', place_payback: '93%' },
+                  { name: 'ハーツクライ', record: '35-28-22', win_rate: '16.7%', place_rate: '42.5%', win_payback: '89%', place_payback: '94%' }
+                ]
+              },
+              dam_sire: {
+                strong: [],
+                weak: []
+              }
             },
             trainer: {
               strong: [

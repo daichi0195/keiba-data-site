@@ -274,17 +274,40 @@ main {
   margin-bottom: 1.5rem;
 }
 
+.subsection-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
 .highlight-subsection-title {
   font-size: 0.9rem;
   font-weight: 600;
   color: var(--text-secondary);
-  margin-bottom: 0.75rem;
+  margin-bottom: 0;
   text-transform: none;
 }
 
+.condition-list {
+  list-style: disc;
+  padding-left: 1.25rem;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.condition-item {
+  font-size: 0.75rem;
+  color: var(--text-light);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
 .highlight-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 0.75rem;
 }
 
@@ -294,7 +317,9 @@ main {
   border-radius: 8px;
   padding: 0.625rem;
   transition: all 0.2s ease;
-  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
 }
 
 .highlight-card-strong {
@@ -317,40 +342,19 @@ main {
   border-color: #d97706;
 }
 
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0;
-  gap: 0.25rem;
-  min-height: 2rem;
-}
-
-.card-toggle-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.6rem;
-  color: var(--text-light);
-  transition: transform 0.2s ease;
-  margin-left: 0.25rem;
-  flex-shrink: 0;
-}
-
-.card-toggle-icon.expanded {
-  transform: rotate(180deg);
-}
-
 .highlight-card .card-name {
   font-size: 0.85rem;
   font-weight: 700;
   color: var(--text-dark);
-  flex: 1;
-  word-break: break-word;
   line-height: 1.2;
   margin: 0;
-  display: flex;
-  align-items: center;
+}
+
+.highlight-card-empty {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  font-weight: 500;
+  padding: 0.5rem 0;
 }
 
 .card-badge {
@@ -367,15 +371,6 @@ main {
   color: #fff;
 }
 
-.highlight-card .card-header {
-  margin-bottom: 0.5rem;
-}
-
-.card-stats {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-}
 
 .stat-item {
   display: flex;
@@ -965,7 +960,7 @@ details[open] .evaluation-content {
 
 .section-title {
   font-size: 1.3rem;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
   color: var(--text-dark);
   display: flex;
   align-items: center;
@@ -1604,6 +1599,6 @@ h2.section-title::before { content: none !important; }
 @media (max-width: 768px) {
   h2.section-title {
     font-size: 1.2rem;
-    margin: 1rem 0 0.5rem;
+    margin: 1rem 0 1.5rem;
   }
 }
