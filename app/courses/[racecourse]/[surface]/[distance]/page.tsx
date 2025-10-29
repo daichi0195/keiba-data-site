@@ -7,6 +7,7 @@ import RunningStyleTable from '@/components/RunningStyleTable';
 import PopularityTable from '@/components/PopularityTable';
 import HighlightsSection from '@/components/HighlightsSection';
 import BarChartAnimation from '@/components/BarChartAnimation';
+import VolatilityExplanation from '@/components/VolatilityExplanation';
 
 // モックデータ
 const mockData = {
@@ -423,7 +424,10 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
 
           {/* 荒れやすさ */}
           <div className="gauge-item">
-            <h3 className="gauge-label">荒れやすさ</h3>
+            <div className="gauge-header">
+              <h3 className="gauge-label">荒れやすさ</h3>
+              <VolatilityExplanation />
+            </div>
             <div className="gauge-track">
               <div className="gauge-indicator" style={{ left: `${(course_info.characteristics.volatility - 1) * 25}%` }}></div>
               <div className="gauge-horse-icon" style={{ left: `${(course_info.characteristics.volatility - 1) * 25}%` }}>🏇</div>
@@ -458,15 +462,6 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
               </div>
             </div>
 
-            {/* 評価方法の説明 */}
-            <details className="evaluation-method">
-              <summary className="evaluation-summary">荒れやすさの評価方法について</summary>
-              <div className="evaluation-content">
-                <p>このコースの「荒れやすさ」は、中央競馬の全てのコースにおける三連単の中央値（配当額）を基準に評価しています。</p>
-                <p>三連単の中央値が高いほど、購入者の予想が外れやすく、本来の人気度よりも配当が高くなる傾向があります。これは、馬場状態や競走条件などの要因により、レース展開が予測しづらい（荒れやすい）ことを示しています。</p>
-                <p>各コースの中央値を全コースで相対比較し、5段階で評価しています。</p>
-              </div>
-            </details>
           </div>
 
           {/* 区切り線 */}

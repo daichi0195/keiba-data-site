@@ -420,6 +420,82 @@ main {
   line-height: 1.6;
 }
 
+/* Volatilityボタンとモーダル */
+.volatility-info-btn {
+  background: none;
+  border: 1px solid #b8c5d6;
+  color: #b8c5d6;
+  font-size: 0.55rem;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.volatility-info-btn:hover {
+  color: var(--primary-green);
+  border-color: var(--primary-green);
+}
+
+.volatility-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.volatility-modal {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  max-width: 400px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+.volatility-explanation {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.explanation-item {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.explanation-number {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--primary-green);
+  min-width: 16px;
+  line-height: 1.6;
+}
+
+.explanation-text {
+  font-size: 0.9rem;
+  color: #8a97a8;
+  line-height: 1.6;
+}
+
 .highlight-cards {
   display: flex;
   flex-wrap: wrap;
@@ -520,6 +596,12 @@ main {
 
 .gauge-item:last-child {
   margin-bottom: 0;
+}
+
+.gauge-header {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
 }
 
 .gauge-label {
