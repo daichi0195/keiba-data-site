@@ -7,6 +7,7 @@ type Item = { id: string; label: string };
 
 export default function SectionNav({ items }: { items: Item[] }) {
   const [activeId, setActiveId] = useState<string>(items[0]?.id ?? '');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const btnRefs = useRef<Record<string, HTMLButtonElement | null>>({});
@@ -40,46 +41,51 @@ export default function SectionNav({ items }: { items: Item[] }) {
     return () => io.disconnect();
   }, [items]);
 
-  // ★ activeId が変わったらナビを「左寄せ表示」にスライド
-  useEffect(() => {
-    const container = containerRef.current;
-    const btn = btnRefs.current[activeId ?? ''];
-    if (!container || !btn) return;
-
-    // ボタンの左端座標（コンテナ基準）を計算
-    const targetLeft = btn.offsetLeft - container.offsetLeft;
-
-    // 左に少し余白を残して気持ちよく見せたい場合は差し引く
-    const padding = 8; // px
-    const left = Math.max(0, targetLeft - padding);
-
-    container.scrollTo({
-      left,
-      behavior: 'smooth',
-    });
-  }, [activeId]);
-
   const handleClick = (id: string) => {
     const el = document.getElementById(id);
     if (!el) return;
     // クリック時に該当セクションへスムーズスクロール
     const y = el.getBoundingClientRect().top + window.scrollY - 80; // ヘッダーぶん調整
     window.scrollTo({ top: y, behavior: 'smooth' });
+    // メニューを閉じる
+    setIsMenuOpen(false);
   };
 
   return (
-    <div className={styles.headerNav}>
-      {items.map((item) => (
-        <button
-          key={item.id}
-          ref={(el) => (btnRefs.current[item.id] = el)}
-          className={`${styles.navButton} ${activeId === item.id ? styles.active : ''}`}
-          onClick={() => handleClick(item.id)}
-          type="button"
-        >
-          {item.label}
-        </button>
-      ))}
-    </div>
+    <>
+      {/* ハンバーガーメニューボタン */}
+      <button
+        className={`${styles.hamburger} ${isMenuOpen ? styles.open : ''}`}
+        onClick={() => setIsMenuOpen(!isMenuOpen)}
+        type="button"
+        aria-label="メニューを開く"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      {/* モバイルメニュー */}
+      {isMenuOpen && (
+        <>
+          <div
+            className={styles.menuOverlay}
+            onClick={() => setIsMenuOpen(false)}
+          />
+          <div className={styles.mobileMenu}>
+            {items.map((item) => (
+              <button
+                key={item.id}
+                className={`${styles.mobileMenuItem} ${activeId === item.id ? styles.active : ''}`}
+                onClick={() => handleClick(item.id)}
+                type="button"
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+    </>
   );
 }
