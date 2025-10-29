@@ -114,7 +114,7 @@
 .mobileMenuContent::after {
   content: '';
   display: block;
-  height: 2rem;
+  height: 3rem;
   flex-shrink: 0;
 }
 
@@ -285,7 +285,7 @@
 }
 
 .comingSoonBox:last-of-type {
-  margin-bottom: 2rem;
+  margin-bottom: 4rem;
 }
 
 /* ===== モバイル（SP） ===== */
