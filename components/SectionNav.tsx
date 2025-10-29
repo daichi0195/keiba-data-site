@@ -194,6 +194,19 @@ export default function SectionNav({ items }: { items: Item[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const btnRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
+  // メニュー開閉時に背景スクロールを制御
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMenuOpen]);
+
   // ★ 交差判定（既存ロジックがある場合はそれを使用）
   useEffect(() => {
     const sections = items
