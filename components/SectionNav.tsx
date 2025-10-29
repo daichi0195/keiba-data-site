@@ -7,32 +7,9 @@ type Item = { id: string; label: string };
 
 export default function SectionNav({ items }: { items: Item[] }) {
   const [activeId, setActiveId] = useState<string>(items[0]?.id ?? '');
-  const [isFooterVisible, setIsFooterVisible] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const btnRefs = useRef<Record<string, HTMLButtonElement | null>>({});
-
-  // ★ フッター可視性を検出
-  useEffect(() => {
-    const footerElement = document.querySelector('footer');
-    if (!footerElement) return;
-
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          setIsFooterVisible(entry.isIntersecting);
-        });
-      },
-      {
-        root: null,
-        threshold: 0.1,
-      }
-    );
-
-    io.observe(footerElement);
-    return () => io.disconnect();
-  }, []);
 
   // ★ 交差判定（既存ロジックがある場合はそれを使用）
   useEffect(() => {
@@ -88,64 +65,21 @@ export default function SectionNav({ items }: { items: Item[] }) {
     // クリック時に該当セクションへスムーズスクロール
     const y = el.getBoundingClientRect().top + window.scrollY - 80; // ヘッダーぶん調整
     window.scrollTo({ top: y, behavior: 'smooth' });
-    // メニューを閉じる
-    setIsMenuOpen(false);
-  };
-
-  const handleMenuItemClick = (id: string) => {
-    handleClick(id);
   };
 
   return (
-    <div className={`${styles.sectionNav} ${isFooterVisible ? styles.hidden : ''}`}>
-      {/* ハンバーガーメニューボタン（SP用） */}
-      <button
-        className={`${styles.hamburger} ${isMenuOpen ? styles.open : ''}`}
-        onClick={() => setIsMenuOpen(!isMenuOpen)}
-        type="button"
-        aria-label="メニューを開く"
-      >
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-
-      {/* PC用ナビゲーション */}
-      <div className={styles.navContainer} ref={containerRef}>
-        {items.map((item) => (
-          <button
-            key={item.id}
-            ref={(el) => (btnRefs.current[item.id] = el)}
-            className={`${styles.navButton} ${activeId === item.id ? styles.active : ''}`}
-            onClick={() => handleClick(item.id)}
-            type="button"
-          >
-            {item.label}
-          </button>
-        ))}
-      </div>
-
-      {/* SP用モーダルメニュー */}
-      {isMenuOpen && (
-        <>
-          <div
-            className={styles.menuOverlay}
-            onClick={() => setIsMenuOpen(false)}
-          />
-          <div className={styles.mobileMenu}>
-            {items.map((item) => (
-              <button
-                key={item.id}
-                className={`${styles.mobileMenuItem} ${activeId === item.id ? styles.active : ''}`}
-                onClick={() => handleMenuItemClick(item.id)}
-                type="button"
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
-        </>
-      )}
+    <div className={styles.headerNav}>
+      {items.map((item) => (
+        <button
+          key={item.id}
+          ref={(el) => (btnRefs.current[item.id] = el)}
+          className={`${styles.navButton} ${activeId === item.id ? styles.active : ''}`}
+          onClick={() => handleClick(item.id)}
+          type="button"
+        >
+          {item.label}
+        </button>
+      ))}
     </div>
   );
 }

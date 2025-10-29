@@ -42,6 +42,10 @@ header {
   position: sticky;
   top: 0;
   z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
 }
 
 .site-name {
@@ -52,6 +56,7 @@ header {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   letter-spacing: 0.02em;
+  flex-shrink: 0;
 }
 
 /* パンくず */
