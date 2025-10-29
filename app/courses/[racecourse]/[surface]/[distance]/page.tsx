@@ -2,7 +2,6 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import DataTable from '@/components/DataTable';
 import GateTable from '@/components/GateTable';
-import SectionNav from '@/components/SectionNav';
 import RunningStyleTable from '@/components/RunningStyleTable';
 import PopularityTable from '@/components/PopularityTable';
 import HighlightsSection from '@/components/HighlightsSection';
@@ -419,8 +418,6 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
             </div>
           </div>
         </div>
-
-        <SectionNav items={navItems} />
 
         {/* === コース特性セクション === */}
         <section id="characteristics-section">
