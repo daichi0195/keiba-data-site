@@ -575,6 +575,10 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
 
         {/* === 注目ポイント === */}
         <HighlightsSection courseInfo={course_info} />
+
+        {/* === コース別データ === */}
+        <h2 className="section-title" style={{ marginTop: '2rem', marginBottom: '1.5rem' }}>コース別データ</h2>
+
         {/* === 人気別 === */}
 <section id="popularity-section">
   <PopularityTable
