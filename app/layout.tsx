@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Footer from "@/components/Footer";
+import SectionNav from "@/components/SectionNav";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -17,6 +18,7 @@ export default function RootLayout({
       <body suppressHydrationWarning>
         <header>
           <div className="site-name">🏇 KEIBA DATA LAB</div>
+          <SectionNav items={[]} />
         </header>
         {children}
         <Footer />
