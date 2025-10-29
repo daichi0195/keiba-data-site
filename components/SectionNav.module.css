@@ -3,41 +3,54 @@
 /* ===== ハンバーガーメニューボタン ===== */
 .hamburger {
   display: none;
-  flex-direction: column;
-  gap: 5px;
   background: none;
   border: none;
   cursor: pointer;
   padding: 0;
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
   position: relative;
   z-index: 110;
   pointer-events: auto;
-  align-items: center;
-  justify-content: center;
   margin-left: auto;
-  transition: all 0.3s ease;
 }
 
 .hamburger span {
-  width: 30px;
-  height: 3px;
+  position: absolute;
+  width: 24px;
+  height: 2.5px;
   background: #1db854;
-  border-radius: 2px;
-  transition: all 0.3s ease;
+  border-radius: 1px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  left: 0;
+  top: 50%;
+  transform-origin: center;
+}
+
+.hamburger span:nth-child(1) {
+  top: 4px;
+}
+
+.hamburger span:nth-child(2) {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.hamburger span:nth-child(3) {
+  top: calc(100% - 4px);
 }
 
 .hamburger.open span:nth-child(1) {
-  transform: translateY(11px) rotate(45deg);
+  transform: translateY(10px) rotate(45deg);
 }
 
 .hamburger.open span:nth-child(2) {
   opacity: 0;
+  transform: scale(0);
 }
 
 .hamburger.open span:nth-child(3) {
-  transform: translateY(-11px) rotate(-45deg);
+  transform: translateY(-10px) rotate(-45deg);
 }
 
 /* モバイルメニューオーバーレイ */
