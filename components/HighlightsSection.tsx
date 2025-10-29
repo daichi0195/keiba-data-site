@@ -203,19 +203,23 @@ export default function HighlightsSection({ courseInfo }: HighlightsSectionProps
             <h3 className="modal-title">条件について</h3>
             <div className="modal-conditions">
               {modalState.subsectionKey && [
-                { key: 'jockey-strong', conditions: ['直近3年間の出走回数20回以上', '複勝率TOP5以内かつ複勝回収率100%以上'] },
-                { key: 'jockey-upset', conditions: ['直近3年間の出走回数20回以上', '複勝率TOP5未満かつ複勝回収率100%以上'] },
-                { key: 'jockey-weak', conditions: ['直近3年間の出走回数20回以上', '複勝率10%以下かつ複勝回収率30%未満'] },
-                { key: 'sire-strong', conditions: ['直近3年間の出走回数20回以上', '複勝率TOP5以内かつ複勝回収率100%以上'] },
-                { key: 'sire-weak', conditions: ['直近3年間の出走回数20回以上', '複勝率10%以下かつ複勝回収率30%未満'] },
-                { key: 'dam-sire-strong', conditions: ['直近3年間の出走回数20回以上', '複勝率TOP5以内かつ複勝回収率100%以上'] },
-                { key: 'dam-sire-weak', conditions: ['直近3年間の出走回数20回以上', '複勝率10%以下かつ複勝回収率30%未満'] },
-                { key: 'trainer-strong', conditions: ['直近3年間の出走回数20回以上', '複勝率TOP5以内かつ複勝回収率100%以上'] },
-                { key: 'trainer-weak', conditions: ['直近3年間の出走回数20回以上', '複勝率10%以下かつ複勝回収率30%未満'] },
-              ].find(item => item.key === modalState.subsectionKey)?.conditions.map((condition, index) => (
-                <div key={index} className="condition-item-wrapper">
-                  <span className="condition-number">{index + 1}</span>
-                  <span className="condition-text">{condition}</span>
+                { key: 'jockey-strong', conditionGroups: [['直近3年間の出走回数20回以上'], ['複勝率TOP5以内かつ複勝回収率100%以上']] },
+                { key: 'jockey-upset', conditionGroups: [['直近3年間の出走回数20回以上'], ['複勝率TOP5未満かつ複勝回収率100%以上']] },
+                { key: 'jockey-weak', conditionGroups: [['直近3年間の出走回数20回以上'], ['複勝率10%以下'], ['複勝回収率30%未満']] },
+                { key: 'sire-strong', conditionGroups: [['直近3年間の出走回数20回以上'], ['複勝率TOP5以内かつ複勝回収率100%以上']] },
+                { key: 'sire-weak', conditionGroups: [['直近3年間の出走回数20回以上'], ['複勝率10%以下'], ['複勝回収率30%未満']] },
+                { key: 'dam-sire-strong', conditionGroups: [['直近3年間の出走回数20回以上'], ['複勝率TOP5以内かつ複勝回収率100%以上']] },
+                { key: 'dam-sire-weak', conditionGroups: [['直近3年間の出走回数20回以上'], ['複勝率10%以下'], ['複勝回収率30%未満']] },
+                { key: 'trainer-strong', conditionGroups: [['直近3年間の出走回数20回以上'], ['複勝率TOP5以内かつ複勝回収率100%以上']] },
+                { key: 'trainer-weak', conditionGroups: [['直近3年間の出走回数20回以上'], ['複勝率10%以下'], ['複勝回収率30%未満']] },
+              ].find(item => item.key === modalState.subsectionKey)?.conditionGroups.map((group, groupIndex) => (
+                <div key={groupIndex} className="condition-group">
+                  {group.map((condition, itemIndex) => (
+                    <div key={itemIndex} className="condition-item-wrapper">
+                      <span className="condition-number">{itemIndex + 1}</span>
+                      <span className="condition-text">{condition}</span>
+                    </div>
+                  ))}
                 </div>
               ))}
             </div>

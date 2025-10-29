@@ -278,9 +278,8 @@ main {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.3rem;
   margin-bottom: 0.75rem;
-  justify-content: space-between;
 }
 
 .highlight-subsection-title {
@@ -303,9 +302,9 @@ main {
 
 .condition-info-btn {
   background: none;
-  border: 1.5px solid #b8c5d6;
+  border: 1px solid #b8c5d6;
   color: #b8c5d6;
-  font-size: 0.7rem;
+  font-size: 0.55rem;
   cursor: pointer;
   padding: 0;
   display: flex;
@@ -314,8 +313,8 @@ main {
   transition: all 0.2s ease;
   flex-shrink: 0;
   border-radius: 50%;
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   font-weight: 700;
   line-height: 1;
 }
@@ -392,7 +391,13 @@ main {
 .modal-conditions {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
+}
+
+.condition-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .condition-item-wrapper {
@@ -405,7 +410,7 @@ main {
   font-size: 0.8rem;
   font-weight: 700;
   color: var(--primary-green);
-  min-width: 20px;
+  min-width: 16px;
   line-height: 1.6;
 }
 
