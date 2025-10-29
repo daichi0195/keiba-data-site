@@ -951,7 +951,7 @@ details[open] .evaluation-content {
   padding: 1.25rem;
   margin-bottom: 1.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  border: 1px solid var(--border-subtle);
+  border: 2px solid var(--border-color);
   transition: all 0.3s ease;
 }
 
