@@ -18,7 +18,9 @@ export default function RootLayout({
       <body suppressHydrationWarning>
         <header>
           <div className="site-name">🏇 KEIBA DATA LAB</div>
-          <SectionNav items={[]} />
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <SectionNav items={[]} />
+          </div>
         </header>
         {children}
         <Footer />

@@ -2,7 +2,7 @@
 
 /* ===== ハンバーガーメニューボタン ===== */
 .hamburger {
-  display: none !important;
+  display: none;
   flex-direction: column;
   gap: 5px;
   background: none;
