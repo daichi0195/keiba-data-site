@@ -216,7 +216,7 @@ export default function HighlightsSection({ courseInfo }: HighlightsSectionProps
                 <div key={groupIndex} className="condition-group">
                   {group.map((condition, itemIndex) => (
                     <div key={itemIndex} className="condition-item-wrapper">
-                      <span className="condition-number">{itemIndex + 1}</span>
+                      <span className="condition-number">{groupIndex + 1}</span>
                       <span className="condition-text">{condition}</span>
                     </div>
                   ))}
