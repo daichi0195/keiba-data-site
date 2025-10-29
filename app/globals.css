@@ -490,7 +490,8 @@ main {
   height: 18px;
   font-weight: 700;
   line-height: 1;
-  vertical-align: middle;
+  vertical-align: baseline;
+  margin-top: 0.15rem;
 }
 
 .volatility-info-btn:hover,
