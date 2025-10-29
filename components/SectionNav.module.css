@@ -8,54 +8,36 @@
   background: none;
   border: none;
   cursor: pointer;
-  padding: 8px;
-  width: 44px;
-  height: 44px;
+  padding: 0;
+  width: 30px;
+  height: 30px;
   position: relative;
   z-index: 110;
   pointer-events: auto;
   align-items: center;
   justify-content: center;
   margin-left: auto;
-  margin-right: 0;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.hamburger:hover {
-  background: rgba(29, 184, 84, 0.1);
-  border-radius: 8px;
+  transition: all 0.3s ease;
 }
 
 .hamburger span {
-  width: 24px;
-  height: 2.5px;
-  background: #0f172a;
-  border-radius: 1.25px;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  transform-origin: center;
-}
-
-.hamburger span:nth-child(1) {
-  margin-bottom: 4px;
-}
-
-.hamburger span:nth-child(3) {
-  margin-top: 4px;
+  width: 30px;
+  height: 3px;
+  background: #1db854;
+  border-radius: 2px;
+  transition: all 0.3s ease;
 }
 
 .hamburger.open span:nth-child(1) {
-  transform: rotate(45deg) translateY(11px);
-  background: #1db854;
+  transform: rotate(45deg) translateY(13px);
 }
 
 .hamburger.open span:nth-child(2) {
   opacity: 0;
-  transform: translateX(-10px);
 }
 
 .hamburger.open span:nth-child(3) {
-  transform: rotate(-45deg) translateY(-11px);
-  background: #1db854;
+  transform: rotate(-45deg) translateY(-13px);
 }
 
 /* モバイルメニューオーバーレイ */
@@ -76,16 +58,16 @@
   position: fixed;
   top: 0;
   right: 0;
-  width: 100%;
-  max-width: 100%;
+  width: 80vw;
+  max-width: 300px;
   height: 100vh;
   background: #ffffff;
-  box-shadow: none;
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.15);
   z-index: 105;
   overflow-y: auto;
-  padding-top: 0;
+  padding-top: 4rem;
   flex-direction: column;
-  animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: slideInRight 0.3s ease;
 }
 
 @keyframes slideInRight {
@@ -105,78 +87,55 @@
 
 /* アコーディオンアイテム */
 .accordionItem {
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid #e2e8f0;
   background: #ffffff;
 }
 
 .accordionTrigger {
   width: 100%;
-  padding: 1.25rem 1.5rem;
+  padding: 1rem 1.5rem;
   background: transparent;
   border: none;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: #0f172a;
   text-align: left;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 0.75rem;
   transition: all 0.2s ease;
 }
 
 .accordionTrigger:hover {
-  background: rgba(29, 184, 84, 0.05);
   color: #1db854;
-}
-
-.accordionTrigger:active {
-  background: rgba(29, 184, 84, 0.1);
 }
 
 .accordionIcon {
-  display: inline-flex;
-  width: 1.25rem;
-  height: 1.25rem;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  color: #1db854;
-  font-size: 0.5rem;
-  opacity: 1;
+  display: inline-block;
+  width: 1rem;
+  text-align: center;
+  transition: transform 0.2s ease;
+  color: #475569;
+  font-size: 0.75rem;
+  opacity: 0.7;
   flex-shrink: 0;
 }
 
-.accordionItem:has(.accordionTrigger:hover) .accordionIcon {
-  color: #1db854;
-}
-
 .accordionContent {
-  background: #f9fafb;
-  padding: 0.5rem 0;
+  background: #ffffff;
+  padding: 0;
   display: flex;
   flex-direction: column;
   gap: 0;
-  animation: expandDown 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes expandDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .courseLink {
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   color: #475569;
   text-decoration: none;
-  padding: 0.875rem 1.5rem 0.875rem 3rem;
+  padding: 0.75rem 1.5rem 0.75rem 2.5rem;
   display: block;
   border-radius: 0;
   transition: all 0.2s ease;
@@ -184,31 +143,12 @@
   border: none;
   font-weight: 500;
   text-align: left;
-  position: relative;
-}
-
-.courseLink::before {
-  content: '';
-  position: absolute;
-  left: 1.5rem;
-  top: 50%;
-  width: 4px;
-  height: 4px;
-  background: #d1f0e5;
-  border-radius: 50%;
-  transform: translateY(-50%);
-  transition: all 0.2s ease;
+  border-bottom: 1px solid #f0fdf4;
 }
 
 .courseLink:hover {
-  background: rgba(29, 184, 84, 0.08);
+  background: #f0fdf4;
   color: #1db854;
-  padding-left: 3.25rem;
-}
-
-.courseLink:hover::before {
-  background: #1db854;
-  left: 1.25rem;
 }
 
 .mobileMenuItem {
