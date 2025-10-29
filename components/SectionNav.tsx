@@ -1,13 +1,76 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import styles from './SectionNav.module.css';
 
 type Item = { id: string; label: string };
 
+interface Course {
+  name: string;
+  distance: number;
+  surface: 'turf' | 'dirt';
+  variant?: string;
+}
+
+interface Racecourse {
+  name: string;
+  nameEn: string;
+  courses: Course[];
+}
+
+const racecoursesData: Racecourse[] = [
+  {
+    name: '中山競馬場',
+    nameEn: 'nakayama',
+    courses: [
+      { name: '芝 1200m', distance: 1200, surface: 'turf' },
+      { name: '芝 1600m', distance: 1600, surface: 'turf' },
+      { name: '芝 1800m', distance: 1800, surface: 'turf' },
+      { name: '芝 2000m', distance: 2000, surface: 'turf' },
+      { name: 'ダート 1200m', distance: 1200, surface: 'dirt' },
+      { name: 'ダート 1800m', distance: 1800, surface: 'dirt' },
+    ],
+  },
+  {
+    name: '東京競馬場',
+    nameEn: 'tokyo',
+    courses: [
+      { name: '芝 1400m', distance: 1400, surface: 'turf' },
+      { name: '芝 1600m', distance: 1600, surface: 'turf' },
+      { name: '芝 2000m', distance: 2000, surface: 'turf' },
+      { name: 'ダート 1400m', distance: 1400, surface: 'dirt' },
+      { name: 'ダート 1600m', distance: 1600, surface: 'dirt' },
+    ],
+  },
+  {
+    name: '阪神競馬場',
+    nameEn: 'hanshin',
+    courses: [
+      { name: '芝 1400m', distance: 1400, surface: 'turf' },
+      { name: '芝 1800m', distance: 1800, surface: 'turf' },
+      { name: '芝 2000m', distance: 2000, surface: 'turf' },
+      { name: 'ダート 1400m', distance: 1400, surface: 'dirt' },
+      { name: 'ダート 1800m', distance: 1800, surface: 'dirt' },
+    ],
+  },
+  {
+    name: '京都競馬場',
+    nameEn: 'kyoto',
+    courses: [
+      { name: '芝 1200m', distance: 1200, surface: 'turf' },
+      { name: '芝 1600m', distance: 1600, surface: 'turf' },
+      { name: '芝 2000m', distance: 2000, surface: 'turf' },
+      { name: 'ダート 1200m', distance: 1200, surface: 'dirt' },
+      { name: 'ダート 1800m', distance: 1800, surface: 'dirt' },
+    ],
+  },
+];
+
 export default function SectionNav({ items }: { items: Item[] }) {
   const [activeId, setActiveId] = useState<string>(items[0]?.id ?? '');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [expandedRacecourse, setExpandedRacecourse] = useState<Record<string, boolean>>({});
 
   const containerRef = useRef<HTMLDivElement>(null);
   const btnRefs = useRef<Record<string, HTMLButtonElement | null>>({});
@@ -51,6 +114,21 @@ export default function SectionNav({ items }: { items: Item[] }) {
     setIsMenuOpen(false);
   };
 
+  const toggleRacecourse = (racecourseNameEn: string) => {
+    setExpandedRacecourse((prev) => ({
+      ...prev,
+      [racecourseNameEn]: !prev[racecourseNameEn],
+    }));
+  };
+
+  const getCourseUrl = (racecourse: Racecourse, course: Course): string => {
+    const surfaceEn = course.surface === 'turf' ? 'turf' : 'dirt';
+    if (course.variant) {
+      return '#';
+    }
+    return `/courses/${racecourse.nameEn}/${surfaceEn}/${course.distance}`;
+  };
+
   return (
     <>
       {/* ハンバーガーメニューボタン */}
@@ -73,16 +151,36 @@ export default function SectionNav({ items }: { items: Item[] }) {
             onClick={() => setIsMenuOpen(false)}
           />
           <div className={styles.mobileMenu}>
-            {items.map((item) => (
-              <button
-                key={item.id}
-                className={`${styles.mobileMenuItem} ${activeId === item.id ? styles.active : ''}`}
-                onClick={() => handleClick(item.id)}
-                type="button"
-              >
-                {item.label}
-              </button>
-            ))}
+            <div className={styles.mobileMenuContent}>
+              {racecoursesData.map((racecourse) => (
+                <div key={racecourse.nameEn} className={styles.accordionItem}>
+                  <button
+                    className={styles.accordionTrigger}
+                    onClick={() => toggleRacecourse(racecourse.nameEn)}
+                  >
+                    <span className={styles.accordionIcon}>
+                      {expandedRacecourse[racecourse.nameEn] ? '▼' : '▶'}
+                    </span>
+                    {racecourse.name}
+                  </button>
+
+                  {expandedRacecourse[racecourse.nameEn] && (
+                    <div className={styles.accordionContent}>
+                      {racecourse.courses.map((course) => (
+                        <Link
+                          key={`${racecourse.nameEn}-${course.name}`}
+                          href={getCourseUrl(racecourse, course)}
+                          className={styles.courseLink}
+                          onClick={() => setIsMenuOpen(false)}
+                        >
+                          {course.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         </>
       )}
