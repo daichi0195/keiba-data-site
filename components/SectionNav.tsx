@@ -329,6 +329,20 @@ export default function SectionNav({ items }: { items: Item[] }) {
               >
                 全調教師成績
               </button>
+
+              <div className={styles.menuSectionTitle}>血統別データ</div>
+              <button
+                className={styles.simpleMenuLink}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                種牡馬別成績
+              </button>
+              <button
+                className={styles.simpleMenuLink}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                母父別成績
+              </button>
             </div>
           </div>
         </>

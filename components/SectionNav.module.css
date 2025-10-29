@@ -99,7 +99,7 @@
 }
 
 .mobileMenuContent {
-  padding: 0;
+  padding: 0 0 2rem 0;
   display: flex;
   flex-direction: column;
   min-height: 100%;
