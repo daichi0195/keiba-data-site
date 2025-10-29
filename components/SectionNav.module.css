@@ -122,6 +122,10 @@
   align-items: center;
 }
 
+.menuSectionTitle:first-of-type {
+  margin-top: 0;
+}
+
 /* アコーディオンアイテム */
 .accordionItem {
   border-bottom: 1px solid #e2e8f0;
