@@ -262,6 +262,15 @@ main {
   font-size: 0.95rem;
 }
 
+.meta-sub-text {
+  font-size: 0.8rem !important;
+  font-weight: 400 !important;
+  opacity: 0.85 !important;
+  display: inline !important;
+  margin-left: 0.2rem !important;
+  letter-spacing: -0.02em !important;
+}
+
 /* サマリーボックス */
 .summary-box {
   background: #fff;
@@ -1911,11 +1920,22 @@ h2.section-title::before { content: none !important; }
 
   .course-meta-section {
     display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.6rem;
     margin: 0;
     padding: 0;
     background: transparent;
+  }
+
+  .course-meta-section .meta-item:first-child {
+    flex: 0 0 100%;
+  }
+
+  .course-meta-section .meta-item:nth-child(2),
+  .course-meta-section .meta-item:nth-child(3) {
+    flex: 1;
+    min-width: 0;
   }
 
   .course-meta-section .meta-item {
@@ -1947,5 +1967,14 @@ h2.section-title::before { content: none !important; }
     font-size: 0.9rem;
     font-weight: 700;
     color: #fff;
+  }
+
+  .meta-sub-text {
+    font-size: 0.73rem !important;
+    font-weight: 400 !important;
+    opacity: 0.85 !important;
+    display: inline !important;
+    margin-left: 0.2rem !important;
+    letter-spacing: -0.02em !important;
   }
 }
