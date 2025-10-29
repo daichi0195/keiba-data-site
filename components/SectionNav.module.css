@@ -3,16 +3,19 @@
 /* ===== ハンバーガーメニューボタン ===== */
 .hamburger {
   display: none;
-  background: none;
+  background: #f0f0f0;
   border: none;
   cursor: pointer;
   padding: 0;
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   position: relative;
   z-index: 110;
   pointer-events: auto;
   margin-left: auto;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
 }
 
 .hamburger span {
