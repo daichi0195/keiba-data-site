@@ -24,6 +24,7 @@
   border-radius: 1px;
   left: 0;
   transform-origin: center;
+  transition: all 0.3s ease;
 }
 
 .hamburger span:nth-child(1) {
@@ -50,30 +51,6 @@
 .hamburger.open span:nth-child(3) {
   top: 50%;
   transform: translateY(-50%) rotate(-45deg);
-}
-
-.closeIcon {
-  background: #1db854;
-  border: none;
-  font-size: 1.2rem;
-  color: #ffffff;
-  cursor: pointer;
-  padding: 0;
-  width: 24px;
-  height: 24px;
-  min-width: 24px;
-  min-height: 24px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s ease;
-  flex-shrink: 0;
-  margin-top: -2px;
-}
-
-.closeIcon:hover {
-  background: #1a9f47;
 }
 
 /* モバイルメニューオーバーレイ */
