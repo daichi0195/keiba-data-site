@@ -8,6 +8,8 @@ import PopularityTable from '@/components/PopularityTable';
 import HighlightsSection from '@/components/HighlightsSection';
 import BarChartAnimation from '@/components/BarChartAnimation';
 import VolatilityExplanation from '@/components/VolatilityExplanation';
+import GatePositionExplanation from '@/components/GatePositionExplanation';
+import RunningStyleExplanation from '@/components/RunningStyleExplanation';
 
 // モックデータ
 const mockData = {
@@ -469,7 +471,10 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
 
           {/* 枠順傾向 */}
           <div className="gauge-item">
-            <h3 className="gauge-label">枠順傾向</h3>
+            <div className="gauge-header">
+              <h3 className="gauge-label">枠順傾向</h3>
+              <GatePositionExplanation />
+            </div>
             <div className="gauge-track">
               <div className="gauge-indicator" style={{ left: `${(course_info.characteristics.gate_position - 1) * 25}%` }}></div>
               <div className="gauge-horse-icon" style={{ left: `${(course_info.characteristics.gate_position - 1) * 25}%` }}>🏇</div>
@@ -522,7 +527,10 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
 
           {/* 脚質傾向 */}
           <div className="gauge-item">
-            <h3 className="gauge-label">脚質傾向</h3>
+            <div className="gauge-header">
+              <h3 className="gauge-label">脚質傾向</h3>
+              <RunningStyleExplanation />
+            </div>
             <div className="gauge-track">
               <div className="gauge-indicator" style={{ left: `${(course_info.characteristics.running_style - 1) * 25}%` }}></div>
               <div className="gauge-horse-icon" style={{ left: `${(course_info.characteristics.running_style - 1) * 25}%` }}>🏇</div>

@@ -420,8 +420,9 @@ main {
   line-height: 1.6;
 }
 
-/* Volatilityボタンとモーダル */
-.volatility-info-btn {
+/* 汎用情報ボタン */
+.volatility-info-btn,
+.info-btn {
   background: none;
   border: 1px solid #b8c5d6;
   color: #b8c5d6;
@@ -440,12 +441,14 @@ main {
   line-height: 1;
 }
 
-.volatility-info-btn:hover {
+.volatility-info-btn:hover,
+.info-btn:hover {
   color: var(--primary-green);
   border-color: var(--primary-green);
 }
 
-.volatility-modal-overlay {
+.volatility-modal-overlay,
+.explanation-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -458,7 +461,8 @@ main {
   z-index: 100;
 }
 
-.volatility-modal {
+.volatility-modal,
+.explanation-modal {
   background: #fff;
   border-radius: 12px;
   padding: 1.5rem;
@@ -470,7 +474,8 @@ main {
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
 }
 
-.volatility-explanation {
+.volatility-explanation,
+.explanation-content {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
