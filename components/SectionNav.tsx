@@ -158,7 +158,7 @@ export default function SectionNav({ items }: { items: Item[] }) {
                     className={styles.accordionTrigger}
                     onClick={() => toggleRacecourse(racecourse.nameEn)}
                   >
-                    <span className={styles.accordionIcon}>
+                    <span className={`${styles.accordionIcon} ${expandedRacecourse[racecourse.nameEn] ? styles.expanded : ''}`}>
                       {expandedRacecourse[racecourse.nameEn] ? '▼' : '▶'}
                     </span>
                     {racecourse.name}
