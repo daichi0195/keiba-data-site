@@ -2,7 +2,7 @@
 
 /* ===== ハンバーガーメニューボタン ===== */
 .hamburger {
-  display: none;
+  display: none !important;
   flex-direction: column;
   gap: 5px;
   background: none;
@@ -97,6 +97,14 @@
 /* ===== モバイル（SP） ===== */
 @media (max-width: 768px) {
   .hamburger {
+    display: flex;
+  }
+
+  .menuOverlay {
+    display: block;
+  }
+
+  .mobileMenu {
     display: flex;
   }
 }
