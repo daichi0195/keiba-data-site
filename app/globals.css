@@ -253,7 +253,7 @@ main {
   padding: 1.25rem;
   margin-bottom: 1.5rem;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-  border: 1px solid var(--border-color);
+  border: 2px solid var(--border-color);
   transition: all 0.3s ease;
 }
 
@@ -293,6 +293,7 @@ main {
   list-style: disc;
   padding-left: 1.25rem;
   margin: 0;
+  margin-top: 0.75rem;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
@@ -1148,7 +1149,7 @@ details[open] .evaluation-content {
   text-align: center !important;
   padding-left: 8px !important;
   padding-right: 8px !important;
-  background: white;
+  background: #fafbfa;
 }
 
 /* ボディの名前列は左寄せ */
@@ -1167,7 +1168,7 @@ details[open] .evaluation-content {
   padding-right: 8px !important;
   border-left: none !important;
   border-right: none !important;
-  background: white !important;
+  background: #fafbfa !important;
   z-index: 21 !important;
 }
 
@@ -1193,8 +1194,17 @@ details[open] .evaluation-content {
   padding-right: 8px !important;
   border-left: none !important;
   border-right: none !important;
-  background: white !important;
   z-index: 11 !important;
+}
+
+/* 偶数行の名前列背景 */
+.mobile-row-even .mobile-col-name-narrow {
+  background: #fafbfa !important;
+}
+
+/* 奇数行の名前列背景 */
+.mobile-row-odd .mobile-col-name-narrow {
+  background: #fff !important;
 }
 
 /* スクロール時の2列目右側に枠線を追加（ボディ） */
@@ -1217,7 +1227,6 @@ details[open] .evaluation-content {
   max-width: 60px !important;
   border-left: none !important;
   border-right: none !important;
-  background: white !important;
   z-index: 11 !important;
 }
 
@@ -1481,16 +1490,16 @@ details[open] .evaluation-content {
     padding-right: 6px !important;
     border-left: none !important;
     border-right: none !important;
-    background: white !important;
+    background: #fafbfa !important;
     z-index: 21 !important;
   }
-  
+
   .mobile-data-table thead .mobile-col-name-narrow::after {
     width: 1px;
     background: #000;
     z-index: 22;
   }
-  
+
   .mobile-data-table tbody .mobile-col-name-narrow {
     position: sticky !important;
     left: 30px !important;
@@ -1501,16 +1510,23 @@ details[open] .evaluation-content {
     padding-right: 6px !important;
     border-left: none !important;
     border-right: none !important;
-    background: white !important;
     z-index: 11 !important;
   }
-  
+
+  .mobile-row-even .mobile-data-table tbody .mobile-col-name-narrow {
+    background: #fafbfa !important;
+  }
+
+  .mobile-row-odd .mobile-data-table tbody .mobile-col-name-narrow {
+    background: #fff !important;
+  }
+
   .mobile-data-table tbody .mobile-col-name-narrow::after {
     width: 1px;
     background: #000;
     z-index: 12;
   }
-  
+
   .mobile-data-table .mobile-sticky-body.mobile-col-name-narrow {
     position: sticky !important;
     left: 30px !important;
@@ -1519,7 +1535,6 @@ details[open] .evaluation-content {
     max-width: 60px !important;
     border-left: none !important;
     border-right: none !important;
-    background: white !important;
     z-index: 11 !important;
   }
   

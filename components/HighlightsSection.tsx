@@ -77,13 +77,13 @@ export default function HighlightsSection({ courseInfo }: HighlightsSectionProps
       <div className="highlight-subsection">
         <div className="subsection-header">
           <h4 className="highlight-subsection-title">{title}</h4>
-          <ul className="condition-list">
-            {conditions.map((condition, index) => (
-              <li key={index} className="condition-item">{condition}</li>
-            ))}
-          </ul>
         </div>
         {renderCards(items, type)}
+        <ul className="condition-list">
+          {conditions.map((condition, index) => (
+            <li key={index} className="condition-item">{condition}</li>
+          ))}
+        </ul>
       </div>
     );
   };
