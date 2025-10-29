@@ -86,14 +86,15 @@
 }
 
 .menuSectionTitle {
-  padding: 0.75rem 1.5rem;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: #666;
+  padding: 1.25rem 1.5rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #1db854;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  border-bottom: 2px solid #1db854;
-  background: #f9fafb;
+  letter-spacing: 0.15em;
+  background: linear-gradient(135deg, rgba(29, 184, 84, 0.08) 0%, rgba(29, 184, 84, 0.03) 100%);
+  border-left: 3px solid #1db854;
+  position: relative;
 }
 
 /* アコーディオンアイテム */
