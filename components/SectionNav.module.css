@@ -8,7 +8,7 @@
   cursor: pointer;
   padding: 0;
   width: 24px;
-  height: 24px;
+  height: 18px;
   position: relative;
   z-index: 110;
   pointer-events: auto;
@@ -18,25 +18,23 @@
 .hamburger span {
   position: absolute;
   width: 24px;
-  height: 2.5px;
+  height: 2px;
   background: #1db854;
   border-radius: 1px;
   left: 0;
-  top: 50%;
   transform-origin: center;
 }
 
 .hamburger span:nth-child(1) {
-  top: 4px;
+  top: 0;
 }
 
 .hamburger span:nth-child(2) {
-  top: 50%;
-  transform: translateY(-50%);
+  top: 8px;
 }
 
 .hamburger span:nth-child(3) {
-  top: calc(100% - 4px);
+  top: 16px;
 }
 
 .hamburger.open span:nth-child(1) {
