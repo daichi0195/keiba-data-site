@@ -209,13 +209,14 @@ main {
 /* コンテンツ領域のメタ情報セクション */
 .course-meta-section {
   display: flex;
-  gap: 1rem;
-  margin: 1.5rem 0;
-  padding: 1.5rem;
-  background: #f5f7fa;
-  border-radius: 8px;
-  border-left: 4px solid var(--primary-green);
+  gap: 2rem;
+  margin: 1rem 0;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  border: none;
   flex-wrap: wrap;
+  font-size: 0.85rem;
 }
 
 .course-meta-section .meta-item {
@@ -223,21 +224,22 @@ main {
   padding: 0;
   border: none;
   backdrop-filter: none;
-  font-size: 0.9rem;
-  gap: 0.5rem;
-  flex-direction: column;
+  font-size: 0.85rem;
+  gap: 0.3rem;
+  flex-direction: row;
+  align-items: center;
 }
 
 .course-meta-section .meta-label {
-  font-size: 0.8rem;
-  color: #666;
-  font-weight: 500;
+  font-size: 0.85rem;
+  color: #999;
+  font-weight: 400;
   opacity: 1;
 }
 
 .course-meta-section .meta-item span:last-child {
   color: var(--text-dark);
-  font-weight: 600;
+  font-weight: 500;
 }
 
 /* サマリーボックス */
