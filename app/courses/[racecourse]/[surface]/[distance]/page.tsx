@@ -402,23 +402,25 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
       <main>
         <div className="course-header">
           <h1>{course_info.racecourse} {course_info.surface}{course_info.distance}m</h1>
-          <div className="course-meta">
-            <div className="meta-item">
-              <span className="meta-label">対象レース数:</span>
-              <span>{course_info.total_races}レース</span>
-            </div>
-            <div className="meta-item">
-              <span className="meta-label">取得期間:</span>
-              <span>{course_info.data_period}</span>
-            </div>
-            <div className="meta-item">
-              <span className="meta-label">最終更新:</span>
-              <span>{course_info.last_updated}</span>
-            </div>
-          </div>
         </div>
 
         <SectionNav items={navItems} />
+
+        {/* === データ情報セクション === */}
+        <div className="course-meta-section">
+          <div className="meta-item">
+            <span className="meta-label">対象レース数:</span>
+            <span>{course_info.total_races}レース</span>
+          </div>
+          <div className="meta-item">
+            <span className="meta-label">取得期間:</span>
+            <span>{course_info.data_period}</span>
+          </div>
+          <div className="meta-item">
+            <span className="meta-label">最終更新:</span>
+            <span>{course_info.last_updated}</span>
+          </div>
+        </div>
 
         {/* === コース特性セクション === */}
         <section id="characteristics-section">
