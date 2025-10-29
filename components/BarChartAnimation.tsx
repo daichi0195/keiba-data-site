@@ -9,43 +9,30 @@ interface BarChartAnimationProps {
 export default function BarChartAnimation({ children }: BarChartAnimationProps) {
   useEffect(() => {
     // DOMが完全に読み込まれた後に実行
-    const initializeObserver = () => {
-      const section = document.getElementById('characteristics-section');
-      console.log('BarChartAnimation: section element found:', section);
+    const initializeObservers = () => {
+      // 各表要素が画面内に入ったときにアニメーションを開始
+      const gateDetailElement = document.querySelector('.gate-place-rate-detail');
+      const runningStyleDetailElement = document.querySelector('.running-style-place-rate-detail');
 
-      if (!section) {
-        console.error('BarChartAnimation: characteristics-section not found');
-        return;
-      }
+      console.log('BarChartAnimation: gate-place-rate-detail element found:', gateDetailElement);
+      console.log('BarChartAnimation: running-style-place-rate-detail element found:', runningStyleDetailElement);
 
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
-            console.log('BarChartAnimation: IntersectionObserver triggered', {
-              isIntersecting: entry.isIntersecting,
-              intersectionRatio: entry.intersectionRatio
-            });
-
             if (entry.isIntersecting) {
-              // セクション内のすべての横棒グラフに.visibleクラスを追加
-              const gateBars = section.querySelectorAll('.gate-bar');
-              const runningStyleBars = section.querySelectorAll('.running-style-bar');
+              const container = entry.target as HTMLElement;
+              const bars = container.querySelectorAll('.gate-bar, .running-style-bar');
 
-              console.log('BarChartAnimation: Found gate-bars:', gateBars.length);
-              console.log('BarChartAnimation: Found running-style-bars:', runningStyleBars.length);
+              console.log('BarChartAnimation: Table element visible, found bars:', bars.length);
 
-              gateBars.forEach((bar, index) => {
-                console.log(`Adding visible class to gate-bar ${index}`);
-                bar.classList.add('visible');
-              });
-
-              runningStyleBars.forEach((bar, index) => {
-                console.log(`Adding visible class to running-style-bar ${index}`);
+              bars.forEach((bar, index) => {
+                console.log(`Adding visible class to bar ${index}`);
                 bar.classList.add('visible');
               });
 
               // 一度アニメーションしたら監視を解除
-              observer.unobserve(section);
+              observer.unobserve(container);
             }
           });
         },
@@ -55,24 +42,31 @@ export default function BarChartAnimation({ children }: BarChartAnimationProps) 
         }
       );
 
-      console.log('BarChartAnimation: Starting to observe section');
-      observer.observe(section);
+      // 各表要素を監視
+      if (gateDetailElement) {
+        console.log('BarChartAnimation: Starting to observe gate-place-rate-detail');
+        observer.observe(gateDetailElement);
+      }
+
+      if (runningStyleDetailElement) {
+        console.log('BarChartAnimation: Starting to observe running-style-place-rate-detail');
+        observer.observe(runningStyleDetailElement);
+      }
 
       return () => {
-        if (section) {
-          observer.unobserve(section);
-        }
+        if (gateDetailElement) observer.unobserve(gateDetailElement);
+        if (runningStyleDetailElement) observer.unobserve(runningStyleDetailElement);
       };
     };
 
     // ページ読み込み完了後に実行
     if (document.readyState === 'loading') {
       console.log('BarChartAnimation: DOM still loading, waiting for DOMContentLoaded');
-      document.addEventListener('DOMContentLoaded', initializeObserver);
-      return () => document.removeEventListener('DOMContentLoaded', initializeObserver);
+      document.addEventListener('DOMContentLoaded', initializeObservers);
+      return () => document.removeEventListener('DOMContentLoaded', initializeObservers);
     } else {
       console.log('BarChartAnimation: DOM already loaded, initializing now');
-      initializeObserver();
+      initializeObservers();
     }
   }, []);
 
