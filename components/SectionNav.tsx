@@ -300,6 +300,22 @@ export default function SectionNav({ items }: { items: Item[] }) {
                   )}
                 </div>
               ))}
+
+              <div className={styles.menuSectionTitle}>騎手別データ</div>
+              <button
+                className={styles.simpleMenuLink}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                全騎手成績
+              </button>
+
+              <div className={styles.menuSectionTitle}>調教師別データ</div>
+              <button
+                className={styles.simpleMenuLink}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                全調教師成績
+              </button>
             </div>
           </div>
         </>
