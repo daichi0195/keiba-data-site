@@ -439,6 +439,7 @@ main {
   height: 16px;
   font-weight: 700;
   line-height: 1;
+  vertical-align: middle;
 }
 
 .volatility-info-btn:hover,
@@ -597,6 +598,7 @@ main {
   margin-bottom: 1rem;
   margin-top: 1.5rem;
   overflow: hidden;
+  line-height: 1.15rem;
 }
 
 .gauge-label {
