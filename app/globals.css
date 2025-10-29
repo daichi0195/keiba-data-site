@@ -726,8 +726,16 @@ details[open] .evaluation-content {
   height: 100%;
   border-radius: 4px;
   background: var(--primary-green);
-  transition: width 0.3s ease;
+  transition: width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   opacity: 0.85;
+}
+
+.gate-bar:not(.visible) {
+  width: 0 !important;
+}
+
+.gate-bar.visible {
+  animation: expandWidth 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
 .gate-rate {
@@ -797,8 +805,16 @@ details[open] .evaluation-content {
   height: 100%;
   border-radius: 4px;
   background: var(--primary-green);
-  transition: width 0.3s ease;
+  transition: width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   opacity: 0.85;
+}
+
+.running-style-bar:not(.visible) {
+  width: 0 !important;
+}
+
+.running-style-bar.visible {
+  animation: expandWidth 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
 .running-style-rate {
@@ -1036,6 +1052,9 @@ details[open] .evaluation-content {
   align-items: center;
   justify-content: flex-end;
   padding-right: 0.75rem;
+}
+
+.bar-fill:not(.visible) {
   width: 0 !important;
 }
 
