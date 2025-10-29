@@ -489,6 +489,8 @@ main {
   font-weight: 700;
   line-height: 1;
   vertical-align: middle;
+  margin-left: 0.3rem;
+  margin-right: 0.1rem;
 }
 
 .volatility-info-btn:hover,
@@ -969,7 +971,7 @@ details[open] .evaluation-content {
   height: 100%;
   border-radius: 4px;
   background: var(--primary-green);
-  transition: width 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   opacity: 0.85;
 }
 
@@ -978,7 +980,7 @@ details[open] .evaluation-content {
 }
 
 .gate-bar.visible {
-  animation: expandWidth 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation: expandWidth 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
 .gate-rate {
@@ -1048,7 +1050,7 @@ details[open] .evaluation-content {
   height: 100%;
   border-radius: 4px;
   background: var(--primary-green);
-  transition: width 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   opacity: 0.85;
 }
 
@@ -1057,7 +1059,7 @@ details[open] .evaluation-content {
 }
 
 .running-style-bar.visible {
-  animation: expandWidth 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation: expandWidth 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
 .running-style-rate {
@@ -1290,7 +1292,7 @@ details[open] .evaluation-content {
 .bar-fill {
   height: 100%;
   background: var(--gradient-green);
-  transition: width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -1302,7 +1304,7 @@ details[open] .evaluation-content {
 }
 
 .bar-fill.visible {
-  animation: expandWidth 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation: expandWidth 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
 .bar-value {
