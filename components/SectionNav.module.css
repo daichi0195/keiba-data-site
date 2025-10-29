@@ -147,17 +147,17 @@
   display: inline-block;
   width: 1rem;
   text-align: center;
-  transition: transform 0.2s ease, color 0.2s ease;
+  transition: transform 0.2s ease;
   color: #475569;
   font-size: 0.75rem;
   opacity: 0.7;
   flex-shrink: 0;
 }
 
-/* 展開時はアイコンを緑色に */
+/* 展開時もアイコンの色は変わらない */
 .accordionIcon.expanded {
-  color: #1db854;
-  opacity: 1;
+  color: #475569;
+  opacity: 0.7;
 }
 
 .accordionContent {
