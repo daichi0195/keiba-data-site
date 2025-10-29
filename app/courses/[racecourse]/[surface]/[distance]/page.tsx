@@ -23,6 +23,8 @@ const mockData = {
           surface_en: 'dirt',
           distance: 1800,
           total_races: 245,
+          data_period: '2019年1月～2024年12月',
+          last_updated: '2024年12月31日',
           summary: '武豊騎手が勝率31.3%でトップ。キングカメハメハ産駒が勝率34.4%で好走。フェブラリーステークスの舞台。',
           characteristics: {
             running_style: 4,
@@ -402,16 +404,16 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
           <h1>{course_info.racecourse} {course_info.surface}{course_info.distance}m</h1>
           <div className="course-meta">
             <div className="meta-item">
-              <span className="meta-label">馬場:</span>
-              <span>{course_info.surface}</span>
-            </div>
-            <div className="meta-item">
-              <span className="meta-label">距離:</span>
-              <span>{course_info.distance}m</span>
-            </div>
-            <div className="meta-item">
-              <span className="meta-label">総レース数:</span>
+              <span className="meta-label">対象レース数:</span>
               <span>{course_info.total_races}レース</span>
+            </div>
+            <div className="meta-item">
+              <span className="meta-label">取得期間:</span>
+              <span>{course_info.data_period}</span>
+            </div>
+            <div className="meta-item">
+              <span className="meta-label">最終更新:</span>
+              <span>{course_info.last_updated}</span>
             </div>
           </div>
         </div>
