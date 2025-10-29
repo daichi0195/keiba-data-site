@@ -146,9 +146,24 @@
   border-bottom: 1px solid #f0fdf4;
 }
 
-.courseLink:hover {
+/* 芝コース */
+.courseLink.turf {
+  color: #0d5c2f;
+}
+
+.courseLink.turf:hover {
   background: #f0fdf4;
   color: #1db854;
+}
+
+/* ダートコース */
+.courseLink.dirt {
+  color: #6b4423;
+}
+
+.courseLink.dirt:hover {
+  background: #fef3e8;
+  color: #a67c52;
 }
 
 .mobileMenuItem {

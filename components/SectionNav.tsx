@@ -170,7 +170,7 @@ export default function SectionNav({ items }: { items: Item[] }) {
                         <Link
                           key={`${racecourse.nameEn}-${course.name}`}
                           href={getCourseUrl(racecourse, course)}
-                          className={styles.courseLink}
+                          className={`${styles.courseLink} ${course.surface === 'turf' ? styles.turf : styles.dirt}`}
                           onClick={() => setIsMenuOpen(false)}
                         >
                           {course.name}
