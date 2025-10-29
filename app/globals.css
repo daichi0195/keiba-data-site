@@ -117,15 +117,15 @@ main {
 .course-header {
   background: linear-gradient(135deg, #0d5c2f 0%, #1db854 50%, #2ed963 100%);
   border-radius: 16px;
-  padding: 2.5rem 2rem 1.5rem;
-  margin: 0;
+  padding: 2rem 2rem;
+  margin: 0 0 2rem 0;
   box-shadow: 0 12px 48px rgba(13, 92, 47, 0.25);
   position: relative;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: stretch;
 }
 
 .course-header::before {
@@ -168,14 +168,14 @@ main {
 .course-header h1 {
   color: #fff;
   font-size: 2rem;
-  margin: 0;
+  margin: 0 0 1.5rem 0;
   position: relative;
   z-index: 2;
   font-weight: 800;
   letter-spacing: 0.01em;
   line-height: 1.2;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  text-align: center;
+  text-align: left;
 }
 
 .course-meta {
@@ -206,40 +206,60 @@ main {
   opacity: 0.95;
 }
 
-/* コンテンツ領域のメタ情報セクション */
+/* ヘッダー内のメタ情報セクション */
 .course-meta-section {
   display: flex;
-  gap: 2rem;
-  margin: 1rem 0;
+  gap: 1rem;
+  margin: 0;
   padding: 0;
   background: transparent;
   border-radius: 0;
   border: none;
   flex-wrap: wrap;
   font-size: 0.85rem;
+  flex-direction: row;
+  backdrop-filter: none;
 }
 
 .course-meta-section .meta-item {
-  background: transparent;
-  padding: 0;
-  border: none;
-  backdrop-filter: none;
+  background: rgba(255, 255, 255, 0.12);
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  backdrop-filter: blur(12px);
   font-size: 0.85rem;
-  gap: 0.3rem;
-  flex-direction: row;
-  align-items: center;
+  gap: 0.4rem;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  transition: all 0.2s ease;
+  flex: 1;
+  min-width: 140px;
+}
+
+.course-meta-section .meta-item:hover {
+  background: rgba(255, 255, 255, 0.16);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.course-meta-section .meta-item:last-child {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .course-meta-section .meta-label {
-  font-size: 0.85rem;
-  color: #999;
-  font-weight: 400;
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
   opacity: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
 .course-meta-section .meta-item span:last-child {
-  color: var(--text-dark);
-  font-weight: 500;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
 }
 
 /* サマリーボックス */
@@ -1880,35 +1900,52 @@ h2.section-title::before { content: none !important; }
   }
 
   .course-header {
-    padding: 1.5rem 2rem;
-    margin: 0;
+    padding: 1.5rem 1.5rem;
+    margin: 0 0 1.5rem 0;
   }
 
   .course-header h1 {
-    font-size: 1.5rem;
-    margin: 0;
+    font-size: 1.3rem;
+    margin: 0 0 1rem 0;
   }
 
   .course-meta-section {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    margin: 0.8rem 0;
+    gap: 0.8rem;
+    margin: 0;
+    padding: 0;
+    background: transparent;
   }
 
   .course-meta-section .meta-item {
-    flex-direction: row;
-    gap: 0.5rem;
-    padding: 0;
-    border: none;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 0.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(12px);
     text-align: left;
   }
 
+  .course-meta-section .meta-item:hover {
+    background: rgba(255, 255, 255, 0.16);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  }
+
   .course-meta-section .meta-label {
-    font-size: 0.85rem;
+    font-size: 0.6rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
   }
 
   .course-meta-section .meta-item span:last-child {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
   }
 }
