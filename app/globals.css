@@ -1392,6 +1392,7 @@ details[open] .evaluation-content {
 /* 固定列のスタイル */
 .mobile-sticky-col {
   position: sticky;
+  background: #ffffff !important;
   z-index: 20;
 }
 
@@ -1415,6 +1416,7 @@ details[open] .evaluation-content {
   border-right: 1px solid #000 !important;
   white-space: nowrap;
   transition: width 0.2s ease, min-width 0.2s ease, border-right 0.2s ease;
+  background: #ffffff !important;
   z-index: 20 !important;
 }
 
@@ -1423,7 +1425,7 @@ details[open] .evaluation-content {
   text-align: center !important;
   padding-left: 8px !important;
   padding-right: 8px !important;
-  background: #fafbfa;
+  background: #ffffff !important;
 }
 
 /* ボディの名前列は左寄せ */
@@ -1442,7 +1444,7 @@ details[open] .evaluation-content {
   padding-right: 8px !important;
   border-left: none !important;
   border-right: none !important;
-  background: #fafbfa !important;
+  background: #ffffff !important;
   z-index: 21 !important;
 }
 
@@ -1764,7 +1766,7 @@ details[open] .evaluation-content {
     padding-right: 6px !important;
     border-left: none !important;
     border-right: none !important;
-    background: #fafbfa !important;
+    background: #ffffff !important;
     z-index: 21 !important;
   }
 
