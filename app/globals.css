@@ -592,7 +592,7 @@ main {
 
 .gauge-header {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   gap: 0.3rem;
   margin-bottom: 1rem;
   margin-top: 1.5rem;
