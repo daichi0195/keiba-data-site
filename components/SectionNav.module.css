@@ -42,7 +42,7 @@
 .hamburger.open span:nth-child(1) {
   top: 50%;
   left: 50%;
-  width: 17px;
+  width: 20px;
   transform: translate(-50%, -50%) rotate(45deg);
   transform-origin: center;
 }
@@ -54,7 +54,7 @@
 .hamburger.open span:nth-child(3) {
   top: 50%;
   left: 50%;
-  width: 17px;
+  width: 20px;
   transform: translate(-50%, -50%) rotate(-45deg);
   transform-origin: center;
 }
