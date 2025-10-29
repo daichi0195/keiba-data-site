@@ -7,12 +7,13 @@
   border: none;
   cursor: pointer;
   padding: 0;
-  width: auto;
-  height: auto;
+  width: 24px;
+  height: 18px;
   position: relative;
   z-index: 110;
   pointer-events: auto;
   margin-left: auto;
+  flex-shrink: 0;
 }
 
 .hamburger span {
