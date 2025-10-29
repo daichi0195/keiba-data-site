@@ -122,6 +122,9 @@ main {
   box-shadow: 0 12px 48px rgba(13, 92, 47, 0.25);
   position: relative;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .course-header::before {
