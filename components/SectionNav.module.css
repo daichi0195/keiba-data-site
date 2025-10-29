@@ -16,12 +16,39 @@
 }
 
 .hamburger span {
-  display: block;
+  position: absolute;
   width: 24px;
   height: 2px;
   background: #1db854;
   border-radius: 1px;
-  margin: 6px 0;
+  left: 0;
+  transform-origin: center;
+}
+
+.hamburger span:nth-child(1) {
+  top: 0;
+}
+
+.hamburger span:nth-child(2) {
+  top: 8px;
+}
+
+.hamburger span:nth-child(3) {
+  top: 16px;
+}
+
+.hamburger.open span:nth-child(1) {
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.hamburger.open span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.open span:nth-child(3) {
+  top: 50%;
+  transform: translateY(-50%) rotate(-45deg);
 }
 
 /* モバイルメニューオーバーレイ */
