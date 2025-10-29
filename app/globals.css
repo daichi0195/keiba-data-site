@@ -1550,7 +1550,7 @@ details[open] .evaluation-content {
   border-top: 1px solid #f0f0f0;
   padding: 12px 8px;
   font-size: 13px;
-  color: var(--text-secondary);
+  color: #000;
   vertical-align: middle;
 }
 
@@ -1585,7 +1585,7 @@ details[open] .evaluation-content {
   display: inline-block;
   font-weight: 600;
   font-size: 13px;
-  color: #666;
+  color: #000;
 }
 
 /* 1位のハイライト */
