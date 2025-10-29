@@ -25,7 +25,10 @@ interface HighlightsSectionProps {
 }
 
 export default function HighlightsSection({ courseInfo }: HighlightsSectionProps) {
-  const [expandedStates, setExpandedStates] = useState<{ [key: string]: boolean }>({});
+  const [modalState, setModalState] = useState<{ isOpen: boolean; subsectionKey: string | null }>({
+    isOpen: false,
+    subsectionKey: null
+  });
 
   const renderCards = (items: HighlightsItem[], type: 'strong' | 'upset' | 'weak') => {
     if (!items || items.length === 0) {
@@ -76,13 +79,12 @@ export default function HighlightsSection({ courseInfo }: HighlightsSectionProps
     };
 
     const conditions = conditionMap[type];
-    const isExpanded = expandedStates[subsectionKey] || false;
 
-    const toggleExpanded = () => {
-      setExpandedStates((prev) => ({
-        ...prev,
-        [subsectionKey]: !prev[subsectionKey]
-      }));
+    const openModal = () => {
+      setModalState({
+        isOpen: true,
+        subsectionKey: subsectionKey
+      });
     };
 
     return (
@@ -90,21 +92,15 @@ export default function HighlightsSection({ courseInfo }: HighlightsSectionProps
         <div className="subsection-header">
           <h4 className="highlight-subsection-title">{title}</h4>
           <button
-            className="condition-toggle-btn"
-            onClick={toggleExpanded}
-            aria-expanded={isExpanded}
+            className="condition-info-btn"
+            onClick={openModal}
+            aria-label="条件を確認"
+            title="条件を確認"
           >
-            {isExpanded ? '▼' : '▶'}
+            ?
           </button>
         </div>
         {renderCards(items, type)}
-        {isExpanded && (
-          <ul className="condition-list">
-            {conditions.map((condition, index) => (
-              <li key={index} className="condition-item">{condition}</li>
-            ))}
-          </ul>
-        )}
       </div>
     );
   };
@@ -193,6 +189,36 @@ export default function HighlightsSection({ courseInfo }: HighlightsSectionProps
           )}
         </div>
       </div>
+
+      {/* モーダル */}
+      {modalState.isOpen && (
+        <div className="condition-modal-overlay" onClick={() => setModalState({ isOpen: false, subsectionKey: null })}>
+          <div className="condition-modal" onClick={(e) => e.stopPropagation()}>
+            <button
+              className="modal-close-btn"
+              onClick={() => setModalState({ isOpen: false, subsectionKey: null })}
+            >
+              ×
+            </button>
+            <h3 className="modal-title">条件について</h3>
+            <ul className="condition-list">
+              {modalState.subsectionKey && [
+                { key: 'jockey-strong', conditions: ['直近3年間の出走回数20回以上', '複勝率TOP5以内かつ複勝回収率100%以上'] },
+                { key: 'jockey-upset', conditions: ['直近3年間の出走回数20回以上', '複勝率TOP5未満かつ複勝回収率100%以上'] },
+                { key: 'jockey-weak', conditions: ['直近3年間の出走回数20回以上', '複勝率10%以下かつ複勝回収率30%未満'] },
+                { key: 'sire-strong', conditions: ['直近3年間の出走回数20回以上', '複勝率TOP5以内かつ複勝回収率100%以上'] },
+                { key: 'sire-weak', conditions: ['直近3年間の出走回数20回以上', '複勝率10%以下かつ複勝回収率30%未満'] },
+                { key: 'dam-sire-strong', conditions: ['直近3年間の出走回数20回以上', '複勝率TOP5以内かつ複勝回収率100%以上'] },
+                { key: 'dam-sire-weak', conditions: ['直近3年間の出走回数20回以上', '複勝率10%以下かつ複勝回収率30%未満'] },
+                { key: 'trainer-strong', conditions: ['直近3年間の出走回数20回以上', '複勝率TOP5以内かつ複勝回収率100%以上'] },
+                { key: 'trainer-weak', conditions: ['直近3年間の出走回数20回以上', '複勝率10%以下かつ複勝回収率30%未満'] },
+              ].find(item => item.key === modalState.subsectionKey)?.conditions.map((condition, index) => (
+                <li key={index} className="condition-item">{condition}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
