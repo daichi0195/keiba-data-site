@@ -1890,26 +1890,25 @@ h2.section-title::before { content: none !important; }
   }
 
   .course-meta-section {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
     margin: 0.8rem 0;
   }
 
   .course-meta-section .meta-item {
-    flex-direction: column;
-    gap: 0.3rem;
-    padding: 0.8rem;
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
-    text-align: center;
+    flex-direction: row;
+    gap: 0.5rem;
+    padding: 0;
+    border: none;
+    text-align: left;
   }
 
   .course-meta-section .meta-label {
-    font-size: 0.7rem;
+    font-size: 0.85rem;
   }
 
   .course-meta-section .meta-item span:last-child {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
 }
