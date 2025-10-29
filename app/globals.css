@@ -477,7 +477,7 @@ main {
   background: none;
   border: 1px solid #b8c5d6;
   color: #b8c5d6;
-  font-size: 0.55rem;
+  font-size: 0.75rem;
   cursor: pointer;
   padding: 0;
   display: flex;
@@ -486,8 +486,8 @@ main {
   transition: all 0.2s ease;
   flex-shrink: 0;
   border-radius: 50%;
-  width: 14px;
-  height: 14px;
+  width: 18px;
+  height: 18px;
   font-weight: 700;
   line-height: 1;
   vertical-align: middle;
