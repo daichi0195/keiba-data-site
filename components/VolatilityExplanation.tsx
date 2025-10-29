@@ -35,10 +35,7 @@ export default function VolatilityExplanation() {
             <h3 className="modal-title">荒れやすさの評価方法について</h3>
             <div className="volatility-explanation">
               {explanationPoints.map((point, index) => (
-                <div key={index} className="explanation-item">
-                  <span className="explanation-number">{index + 1}</span>
-                  <span className="explanation-text">{point}</span>
-                </div>
+                <p key={index} className="explanation-paragraph">{point}</p>
               ))}
             </div>
           </div>
