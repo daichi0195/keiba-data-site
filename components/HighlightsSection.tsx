@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+
 interface HighlightsItem {
   name: string;
   record?: string;
@@ -23,6 +25,7 @@ interface HighlightsSectionProps {
 }
 
 export default function HighlightsSection({ courseInfo }: HighlightsSectionProps) {
+  const [expandedStates, setExpandedStates] = useState<{ [key: string]: boolean }>({});
 
   const renderCards = (items: HighlightsItem[], type: 'strong' | 'upset' | 'weak') => {
     if (!items || items.length === 0) {
@@ -54,7 +57,8 @@ export default function HighlightsSection({ courseInfo }: HighlightsSectionProps
   const renderSubsection = (
     title: string,
     items: HighlightsItem[],
-    type: 'strong' | 'upset' | 'weak'
+    type: 'strong' | 'upset' | 'weak',
+    subsectionKey: string
   ) => {
     const conditionMap = {
       strong: [
@@ -72,18 +76,35 @@ export default function HighlightsSection({ courseInfo }: HighlightsSectionProps
     };
 
     const conditions = conditionMap[type];
+    const isExpanded = expandedStates[subsectionKey] || false;
+
+    const toggleExpanded = () => {
+      setExpandedStates((prev) => ({
+        ...prev,
+        [subsectionKey]: !prev[subsectionKey]
+      }));
+    };
 
     return (
       <div className="highlight-subsection">
         <div className="subsection-header">
           <h4 className="highlight-subsection-title">{title}</h4>
+          <button
+            className="condition-toggle-btn"
+            onClick={toggleExpanded}
+            aria-expanded={isExpanded}
+          >
+            {isExpanded ? '▼' : '▶'}
+          </button>
         </div>
         {renderCards(items, type)}
-        <ul className="condition-list">
-          {conditions.map((condition, index) => (
-            <li key={index} className="condition-item">{condition}</li>
-          ))}
-        </ul>
+        {isExpanded && (
+          <ul className="condition-list">
+            {conditions.map((condition, index) => (
+              <li key={index} className="condition-item">{condition}</li>
+            ))}
+          </ul>
+        )}
       </div>
     );
   };
@@ -99,19 +120,22 @@ export default function HighlightsSection({ courseInfo }: HighlightsSectionProps
           {renderSubsection(
             'このコースが得意な騎手',
             courseInfo.buying_points.jockey.strong,
-            'strong'
+            'strong',
+            'jockey-strong'
           )}
           {courseInfo.buying_points.jockey.upset && courseInfo.buying_points.jockey.upset.length > 0 && (
             renderSubsection(
               'このコースでよく穴をあける騎手',
               courseInfo.buying_points.jockey.upset,
-              'upset'
+              'upset',
+              'jockey-upset'
             )
           )}
           {renderSubsection(
             'このコースが苦手な騎手',
             courseInfo.buying_points.jockey.weak,
-            'weak'
+            'weak',
+            'jockey-weak'
           )}
           <div className="section-divider"></div>
         </div>
@@ -122,12 +146,14 @@ export default function HighlightsSection({ courseInfo }: HighlightsSectionProps
           {renderSubsection(
             'このコースが得意な種牡馬',
             courseInfo.buying_points.pedigree.sire.strong,
-            'strong'
+            'strong',
+            'sire-strong'
           )}
           {renderSubsection(
             'このコースが苦手な種牡馬',
             courseInfo.buying_points.pedigree.sire.weak,
-            'weak'
+            'weak',
+            'sire-weak'
           )}
           <div className="section-divider"></div>
         </div>
@@ -138,12 +164,14 @@ export default function HighlightsSection({ courseInfo }: HighlightsSectionProps
           {renderSubsection(
             'このコースが得意な母父',
             courseInfo.buying_points.pedigree.dam_sire.strong,
-            'strong'
+            'strong',
+            'dam-sire-strong'
           )}
           {renderSubsection(
             'このコースが苦手な母父',
             courseInfo.buying_points.pedigree.dam_sire.weak,
-            'weak'
+            'weak',
+            'dam-sire-weak'
           )}
           <div className="section-divider"></div>
         </div>
@@ -154,12 +182,14 @@ export default function HighlightsSection({ courseInfo }: HighlightsSectionProps
           {renderSubsection(
             'このコースが得意な調教師',
             courseInfo.buying_points.trainer.strong,
-            'strong'
+            'strong',
+            'trainer-strong'
           )}
           {renderSubsection(
             'このコースが苦手な調教師',
             courseInfo.buying_points.trainer.weak,
-            'weak'
+            'weak',
+            'trainer-weak'
           )}
         </div>
       </div>
