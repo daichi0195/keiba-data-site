@@ -401,7 +401,7 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
     <>
       <main>
         <div className="course-header">
-          <h1>{course_info.racecourse} {course_info.surface}{course_info.distance}mのコースデータ・成績分析</h1>
+          <h1>{course_info.racecourse} {course_info.surface}{course_info.distance}m</h1>
           <div className="course-meta">
             <div className="meta-item">
               <span className="meta-label">対象レース数:</span>
