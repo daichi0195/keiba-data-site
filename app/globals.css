@@ -407,7 +407,7 @@ main {
 }
 
 .condition-number {
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   font-weight: 700;
   color: var(--primary-green);
   min-width: 16px;
@@ -415,7 +415,7 @@ main {
 }
 
 .condition-text {
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: #8a97a8;
   line-height: 1.6;
 }
