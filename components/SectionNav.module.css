@@ -21,7 +21,6 @@
   height: 2.5px;
   background: #1db854;
   border-radius: 1px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   left: 0;
   top: 50%;
   transform-origin: center;
@@ -46,7 +45,6 @@
 
 .hamburger.open span:nth-child(2) {
   opacity: 0;
-  transform: scale(0);
 }
 
 .hamburger.open span:nth-child(3) {
