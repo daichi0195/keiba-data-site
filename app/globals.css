@@ -294,6 +294,7 @@ main {
   border-radius: 8px;
   padding: 0.625rem;
   transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .highlight-card-strong {
@@ -322,6 +323,21 @@ main {
   align-items: center;
   margin-bottom: 0;
   gap: 0.25rem;
+}
+
+.card-toggle-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  color: var(--text-light);
+  transition: transform 0.2s ease;
+  margin-left: 0.25rem;
+  flex-shrink: 0;
+}
+
+.card-toggle-icon.expanded {
+  transform: rotate(180deg);
 }
 
 .highlight-card .card-name {
