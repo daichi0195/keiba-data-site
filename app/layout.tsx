@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import Footer from "@/components/Footer";
 import SectionNav from "@/components/SectionNav";
 import "./globals.css";
@@ -17,7 +18,9 @@ export default function RootLayout({
     <html lang="ja">
       <body suppressHydrationWarning>
         <header>
-          <div className="site-name">🏇 KEIBA DATA LAB</div>
+          <Link href="/" className="site-name" style={{ textDecoration: 'none', cursor: 'pointer' }}>
+            🏇 KEIBA DATA LAB
+          </Link>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <SectionNav items={[]} />
           </div>
