@@ -192,28 +192,13 @@ class GoogleAdsCustomerReport:
             # 結果をリストに格納
             results = []
 
-            # マイクロ単位の値を変換するメトリクスの定義（変換後のカラム名にマッピング）
-            micros_metrics_mapping = {
-                'active_view_measurable_cost_micros': 'active_view_measurable_cost',
-                'average_order_value_micros': 'average_order_value',
-                'cost_micros': 'cost',
-                'cost_of_goods_sold_micros': 'cost_of_goods_sold',
-                'cross_device_conversions_value_micros': 'cross_device_conversions_value',
-                'cross_sell_cost_of_goods_sold_micros': 'cross_sell_cost_of_goods_sold',
-                'cross_sell_gross_profit_micros': 'cross_sell_gross_profit',
-                'cross_sell_revenue_micros': 'cross_sell_revenue',
-                'gross_profit_micros': 'gross_profit',
-                'lead_cost_of_goods_sold_micros': 'lead_cost_of_goods_sold',
-                'lead_gross_profit_micros': 'lead_gross_profit',
-                'lead_revenue_micros': 'lead_revenue',
-                'revenue_micros': 'revenue',
-            }
 
             # SELECT句の順番に従ってメトリクスを追加（74行目〜179行目の順序と同じ）
+            # カラム名は_microsをそのまま保持
             metrics_in_select_order = [
                 ('impressions', 'impressions'),
                 ('clicks', 'clicks'),
-                ('cost_micros', 'cost'),
+                ('cost_micros', 'cost_micros'),
                 ('conversions', 'conversions'),
                 ('conversions_value', 'conversions_value'),
                 ('ctr', 'ctr'),
@@ -256,20 +241,20 @@ class GoogleAdsCustomerReport:
                 ('cost_per_all_conversions', 'cost_per_all_conversions'),
                 ('value_per_all_conversions', 'value_per_all_conversions'),
                 ('average_cart_size', 'average_cart_size'),
-                ('average_order_value_micros', 'average_order_value'),
+                ('average_order_value_micros', 'average_order_value_micros'),
                 ('orders', 'orders'),
-                ('revenue_micros', 'revenue'),
+                ('revenue_micros', 'revenue_micros'),
                 ('units_sold', 'units_sold'),
-                ('cost_of_goods_sold_micros', 'cost_of_goods_sold'),
-                ('gross_profit_micros', 'gross_profit'),
+                ('cost_of_goods_sold_micros', 'cost_of_goods_sold_micros'),
+                ('gross_profit_micros', 'gross_profit_micros'),
                 ('gross_profit_margin', 'gross_profit_margin'),
-                ('cross_sell_cost_of_goods_sold_micros', 'cross_sell_cost_of_goods_sold'),
-                ('cross_sell_gross_profit_micros', 'cross_sell_gross_profit'),
-                ('cross_sell_revenue_micros', 'cross_sell_revenue'),
+                ('cross_sell_cost_of_goods_sold_micros', 'cross_sell_cost_of_goods_sold_micros'),
+                ('cross_sell_gross_profit_micros', 'cross_sell_gross_profit_micros'),
+                ('cross_sell_revenue_micros', 'cross_sell_revenue_micros'),
                 ('cross_sell_units_sold', 'cross_sell_units_sold'),
-                ('lead_cost_of_goods_sold_micros', 'lead_cost_of_goods_sold'),
-                ('lead_gross_profit_micros', 'lead_gross_profit'),
-                ('lead_revenue_micros', 'lead_revenue'),
+                ('lead_cost_of_goods_sold_micros', 'lead_cost_of_goods_sold_micros'),
+                ('lead_gross_profit_micros', 'lead_gross_profit_micros'),
+                ('lead_revenue_micros', 'lead_revenue_micros'),
                 ('lead_units_sold', 'lead_units_sold'),
                 ('new_customer_lifetime_value', 'new_customer_lifetime_value'),
                 ('all_new_customer_lifetime_value', 'all_new_customer_lifetime_value'),
@@ -278,11 +263,11 @@ class GoogleAdsCustomerReport:
                 ('conversions_unique_query_clusters', 'conversions_unique_query_clusters'),
                 ('active_view_cpm', 'active_view_cpm'),
                 ('active_view_ctr', 'active_view_ctr'),
-                ('active_view_measurable_cost_micros', 'active_view_measurable_cost'),
+                ('active_view_measurable_cost_micros', 'active_view_measurable_cost_micros'),
                 ('active_view_measurable_impressions', 'active_view_measurable_impressions'),
                 ('cost_converted_currency_per_platform_comparable_conversion', 'cost_converted_currency_per_platform_comparable_conversion'),
                 ('cost_per_platform_comparable_conversion', 'cost_per_platform_comparable_conversion'),
-                ('cross_device_conversions_value_micros', 'cross_device_conversions_value'),
+                ('cross_device_conversions_value_micros', 'cross_device_conversions_value_micros'),
                 ('platform_comparable_conversions', 'platform_comparable_conversions'),
                 ('platform_comparable_conversions_by_conversion_date', 'platform_comparable_conversions_by_conversion_date'),
                 ('platform_comparable_conversions_from_interactions_rate', 'platform_comparable_conversions_from_interactions_rate'),
@@ -328,18 +313,10 @@ class GoogleAdsCustomerReport:
                     result['date'] = row.segments.date
                     result['customer_id'] = row.customer.id
 
-                    # SELECT句の順番に従ってメトリクスを追加
+                    # SELECT句の順番に従ってメトリクスを追加（マイクロ単位の変換はしない）
                     for original_name, output_name in metrics_in_select_order:
                         metric_value = getattr(row.metrics, original_name, None)
-                        if original_name in micros_metrics_mapping:
-                            # マイクロ単位のメトリクスは変換
-                            if metric_value is not None:
-                                result[output_name] = metric_value / 1_000_000
-                            else:
-                                result[output_name] = None
-                        else:
-                            # マイクロ単位ではないメトリクスはそのまま
-                            result[output_name] = metric_value
+                        result[output_name] = metric_value
 
                     results.append(result)
 
@@ -377,11 +354,9 @@ def main():
     # 環境変数 GOOGLE_ADS_CUSTOMER_ID から取得可能
     CUSTOMER_ID = os.getenv("GOOGLE_ADS_CUSTOMER_ID", "1234567890")
 
-    # 取得期間（過去30日間の例）
-    end_date = datetime.now()
-    start_date = end_date - timedelta(days=30)
-    START_DATE = start_date.strftime("%Y-%m-%d")
-    END_DATE = end_date.strftime("%Y-%m-%d")
+    # 取得期間（2024年10月1日〜10月31日）
+    START_DATE = "2024-10-01"
+    END_DATE = "2024-10-31"
 
     # ===== CSV出力パスの設定 =====
     output_dir = "google/account"
