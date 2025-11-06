@@ -1,0 +1,414 @@
+"""
+Google Ads API - アカウント単位レポート取得スクリプト
+
+このスクリプトは、Google Ads APIを使用してアカウント単位のパフォーマンスデータを取得し、
+CSV ファイルに出力します。
+サーチキャンペーンとディスプレイキャンペーン両方に対応しています。
+"""
+
+from google.ads.googleads.client import GoogleAdsClient
+from google.ads.googleads.errors import GoogleAdsException
+import pandas as pd
+import json
+from datetime import datetime, timedelta, timezone
+import sys
+import os
+
+
+class GoogleAdsCustomerReport:
+    """Google Ads アカウント単位レポート取得クラス"""
+
+    def __init__(self):
+        """
+        初期化（環境変数から認証情報を取得）
+
+        環境変数:
+            GOOGLE_ADS_DEVELOPER_TOKEN: Developer Token
+            GOOGLE_ADS_CLIENT_ID: OAuth2 Client ID
+            GOOGLE_ADS_CLIENT_SECRET: OAuth2 Client Secret
+            GOOGLE_ADS_REFRESH_TOKEN: OAuth2 Refresh Token
+            GOOGLE_ADS_LOGIN_CUSTOMER_ID: ログインカスタマーID
+        """
+        # 環境変数から認証情報を取得
+        credentials = {
+            "developer_token": os.getenv("GOOGLE_ADS_DEVELOPER_TOKEN"),
+            "client_id": os.getenv("GOOGLE_ADS_CLIENT_ID"),
+            "client_secret": os.getenv("GOOGLE_ADS_CLIENT_SECRET"),
+            "refresh_token": os.getenv("GOOGLE_ADS_REFRESH_TOKEN"),
+            "use_proto_plus": True,
+        }
+
+        # ログインカスタマーIDがあれば追加
+        login_customer_id = os.getenv("GOOGLE_ADS_LOGIN_CUSTOMER_ID")
+        if login_customer_id:
+            credentials["login_customer_id"] = login_customer_id
+
+        # 必須項目の確認
+        required_keys = ["developer_token", "client_id", "client_secret", "refresh_token"]
+        missing_keys = [k for k in required_keys if not credentials[k]]
+        if missing_keys:
+            raise ValueError(f"Missing required environment variables: {', '.join(missing_keys)}")
+
+        # クライアント作成
+        self.client = GoogleAdsClient.load_from_dict(credentials)
+    
+    def get_customer_metrics(self, customer_id, start_date, end_date):
+        """
+        アカウント単位のメトリクスを取得
+        
+        Args:
+            customer_id (str): Google Ads顧客ID（例: "1234567890"）
+            start_date (str): 開始日（YYYY-MM-DD形式）
+            end_date (str): 終了日（YYYY-MM-DD形式）
+            
+        Returns:
+            pd.DataFrame: アカウント単位のメトリクスデータ
+        """
+        ga_service = self.client.get_service("GoogleAdsService")
+        
+        # クエリの構築（CUSTOMER レベルでサポートされているすべてのメトリクス）
+        query = f"""
+            SELECT
+                customer.id,
+                segments.date,
+                metrics.absolute_top_impression_percentage,
+                metrics.active_view_cpm,
+                metrics.active_view_ctr,
+                metrics.active_view_impressions,
+                metrics.active_view_measurability,
+                metrics.active_view_measurable_cost_micros,
+                metrics.active_view_measurable_impressions,
+                metrics.active_view_viewability,
+                metrics.all_conversions,
+                metrics.all_conversions_by_conversion_date,
+                metrics.all_conversions_from_interactions_rate,
+                metrics.all_conversions_from_location_asset_click_to_call,
+                metrics.all_conversions_from_location_asset_directions,
+                metrics.all_conversions_from_location_asset_menu,
+                metrics.all_conversions_from_location_asset_order,
+                metrics.all_conversions_from_location_asset_other_engagement,
+                metrics.all_conversions_from_location_asset_store_visits,
+                metrics.all_conversions_from_location_asset_website,
+                metrics.all_conversions_value,
+                metrics.all_conversions_value_by_conversion_date,
+                metrics.all_new_customer_lifetime_value,
+                metrics.average_cart_size,
+                metrics.average_cost,
+                metrics.average_cpc,
+                metrics.average_cpe,
+                metrics.average_cpm,
+                metrics.average_order_value_micros,
+                metrics.average_video_watch_time_duration_millis,
+                metrics.clicks,
+                metrics.clicks_unique_query_clusters,
+                metrics.content_budget_lost_impression_share,
+                metrics.content_impression_share,
+                metrics.content_rank_lost_impression_share,
+                metrics.conversions,
+                metrics.conversions_by_conversion_date,
+                metrics.conversions_from_interactions_rate,
+                metrics.conversions_unique_query_clusters,
+                metrics.conversions_value,
+                metrics.conversions_value_by_conversion_date,
+                metrics.cost_converted_currency_per_platform_comparable_conversion,
+                metrics.cost_micros,
+                metrics.cost_of_goods_sold_micros,
+                metrics.cost_per_all_conversions,
+                metrics.cost_per_conversion,
+                metrics.cost_per_platform_comparable_conversion,
+                metrics.cross_device_conversions,
+                metrics.cross_device_conversions_value_micros,
+                metrics.cross_sell_cost_of_goods_sold_micros,
+                metrics.cross_sell_gross_profit_micros,
+                metrics.cross_sell_revenue_micros,
+                metrics.cross_sell_units_sold,
+                metrics.ctr,
+                metrics.eligible_impressions_from_location_asset_store_reach,
+                metrics.engagement_rate,
+                metrics.engagements,
+                metrics.general_invalid_click_rate,
+                metrics.general_invalid_clicks,
+                metrics.gross_profit_margin,
+                metrics.gross_profit_micros,
+                metrics.impressions,
+                metrics.impressions_unique_query_clusters,
+                metrics.interaction_event_types,
+                metrics.interaction_rate,
+                metrics.interactions,
+                metrics.invalid_click_rate,
+                metrics.invalid_clicks,
+                metrics.lead_cost_of_goods_sold_micros,
+                metrics.lead_gross_profit_micros,
+                metrics.lead_revenue_micros,
+                metrics.lead_units_sold,
+                metrics.new_customer_lifetime_value,
+                metrics.orders,
+                metrics.platform_comparable_conversions,
+                metrics.platform_comparable_conversions_by_conversion_date,
+                metrics.platform_comparable_conversions_from_interactions_rate,
+                metrics.platform_comparable_conversions_from_interactions_value_per_interaction,
+                metrics.platform_comparable_conversions_value,
+                metrics.platform_comparable_conversions_value_by_conversion_date,
+                metrics.platform_comparable_conversions_value_per_cost,
+                metrics.revenue_micros,
+                metrics.search_budget_lost_impression_share,
+                metrics.search_exact_match_impression_share,
+                metrics.search_impression_share,
+                metrics.search_rank_lost_impression_share,
+                metrics.sk_ad_network_installs,
+                metrics.sk_ad_network_total_conversions,
+                metrics.top_impression_percentage,
+                metrics.trueview_average_cpv,
+                metrics.units_sold,
+                metrics.value_per_all_conversions,
+                metrics.value_per_all_conversions_by_conversion_date,
+                metrics.value_per_conversion,
+                metrics.value_per_conversions_by_conversion_date,
+                metrics.value_per_platform_comparable_conversion,
+                metrics.value_per_platform_comparable_conversions_by_conversion_date,
+                metrics.video_trueview_view_rate,
+                metrics.video_trueview_views,
+                metrics.video_watch_time_duration_millis,
+                metrics.view_through_conversions,
+                metrics.view_through_conversions_from_location_asset_click_to_call,
+                metrics.view_through_conversions_from_location_asset_directions,
+                metrics.view_through_conversions_from_location_asset_menu,
+                metrics.view_through_conversions_from_location_asset_order,
+                metrics.view_through_conversions_from_location_asset_other_engagement,
+                metrics.view_through_conversions_from_location_asset_store_visits,
+                metrics.view_through_conversions_from_location_asset_website
+            FROM
+                customer
+            WHERE
+                segments.date BETWEEN '{start_date}' AND '{end_date}'
+            ORDER BY
+                segments.date ASC
+        """
+        
+        try:
+            # データ取得
+            stream = ga_service.search_stream(customer_id=customer_id, query=query)
+
+            # 結果をリストに格納
+            results = []
+
+            # マイクロ単位の値を変換するメトリクスの定義（変換後のカラム名にマッピング）
+            micros_metrics_mapping = {
+                'active_view_measurable_cost_micros': 'active_view_measurable_cost',
+                'average_order_value_micros': 'average_order_value',
+                'cost_micros': 'cost',
+                'cost_of_goods_sold_micros': 'cost_of_goods_sold',
+                'cross_device_conversions_value_micros': 'cross_device_conversions_value',
+                'cross_sell_cost_of_goods_sold_micros': 'cross_sell_cost_of_goods_sold',
+                'cross_sell_gross_profit_micros': 'cross_sell_gross_profit',
+                'cross_sell_revenue_micros': 'cross_sell_revenue',
+                'gross_profit_micros': 'gross_profit',
+                'lead_cost_of_goods_sold_micros': 'lead_cost_of_goods_sold',
+                'lead_gross_profit_micros': 'lead_gross_profit',
+                'lead_revenue_micros': 'lead_revenue',
+                'revenue_micros': 'revenue',
+            }
+
+            # SELECT句の順番に従ってメトリクスを追加（74行目〜179行目の順序と同じ）
+            metrics_in_select_order = [
+                ('absolute_top_impression_percentage', 'absolute_top_impression_percentage'),
+                ('active_view_cpm', 'active_view_cpm'),
+                ('active_view_ctr', 'active_view_ctr'),
+                ('active_view_impressions', 'active_view_impressions'),
+                ('active_view_measurability', 'active_view_measurability'),
+                ('active_view_measurable_cost_micros', 'active_view_measurable_cost'),
+                ('active_view_measurable_impressions', 'active_view_measurable_impressions'),
+                ('active_view_viewability', 'active_view_viewability'),
+                ('all_conversions', 'all_conversions'),
+                ('all_conversions_by_conversion_date', 'all_conversions_by_conversion_date'),
+                ('all_conversions_from_interactions_rate', 'all_conversions_from_interactions_rate'),
+                ('all_conversions_from_location_asset_click_to_call', 'all_conversions_from_location_asset_click_to_call'),
+                ('all_conversions_from_location_asset_directions', 'all_conversions_from_location_asset_directions'),
+                ('all_conversions_from_location_asset_menu', 'all_conversions_from_location_asset_menu'),
+                ('all_conversions_from_location_asset_order', 'all_conversions_from_location_asset_order'),
+                ('all_conversions_from_location_asset_other_engagement', 'all_conversions_from_location_asset_other_engagement'),
+                ('all_conversions_from_location_asset_store_visits', 'all_conversions_from_location_asset_store_visits'),
+                ('all_conversions_from_location_asset_website', 'all_conversions_from_location_asset_website'),
+                ('all_conversions_value', 'all_conversions_value'),
+                ('all_conversions_value_by_conversion_date', 'all_conversions_value_by_conversion_date'),
+                ('all_new_customer_lifetime_value', 'all_new_customer_lifetime_value'),
+                ('average_cart_size', 'average_cart_size'),
+                ('average_cost', 'average_cost'),
+                ('average_cpc', 'average_cpc'),
+                ('average_cpe', 'average_cpe'),
+                ('average_cpm', 'average_cpm'),
+                ('average_order_value_micros', 'average_order_value'),
+                ('average_video_watch_time_duration_millis', 'average_video_watch_time_duration_millis'),
+                ('clicks', 'clicks'),
+                ('clicks_unique_query_clusters', 'clicks_unique_query_clusters'),
+                ('content_budget_lost_impression_share', 'content_budget_lost_impression_share'),
+                ('content_impression_share', 'content_impression_share'),
+                ('content_rank_lost_impression_share', 'content_rank_lost_impression_share'),
+                ('conversions', 'conversions'),
+                ('conversions_by_conversion_date', 'conversions_by_conversion_date'),
+                ('conversions_from_interactions_rate', 'conversions_from_interactions_rate'),
+                ('conversions_unique_query_clusters', 'conversions_unique_query_clusters'),
+                ('conversions_value', 'conversions_value'),
+                ('conversions_value_by_conversion_date', 'conversions_value_by_conversion_date'),
+                ('cost_converted_currency_per_platform_comparable_conversion', 'cost_converted_currency_per_platform_comparable_conversion'),
+                ('cost_micros', 'cost'),
+                ('cost_of_goods_sold_micros', 'cost_of_goods_sold'),
+                ('cost_per_all_conversions', 'cost_per_all_conversions'),
+                ('cost_per_conversion', 'cost_per_conversion'),
+                ('cost_per_platform_comparable_conversion', 'cost_per_platform_comparable_conversion'),
+                ('cross_device_conversions', 'cross_device_conversions'),
+                ('cross_device_conversions_value_micros', 'cross_device_conversions_value'),
+                ('cross_sell_cost_of_goods_sold_micros', 'cross_sell_cost_of_goods_sold'),
+                ('cross_sell_gross_profit_micros', 'cross_sell_gross_profit'),
+                ('cross_sell_revenue_micros', 'cross_sell_revenue'),
+                ('cross_sell_units_sold', 'cross_sell_units_sold'),
+                ('ctr', 'ctr'),
+                ('eligible_impressions_from_location_asset_store_reach', 'eligible_impressions_from_location_asset_store_reach'),
+                ('engagement_rate', 'engagement_rate'),
+                ('engagements', 'engagements'),
+                ('general_invalid_click_rate', 'general_invalid_click_rate'),
+                ('general_invalid_clicks', 'general_invalid_clicks'),
+                ('gross_profit_margin', 'gross_profit_margin'),
+                ('gross_profit_micros', 'gross_profit'),
+                ('impressions', 'impressions'),
+                ('impressions_unique_query_clusters', 'impressions_unique_query_clusters'),
+                ('interaction_event_types', 'interaction_event_types'),
+                ('interaction_rate', 'interaction_rate'),
+                ('interactions', 'interactions'),
+                ('invalid_click_rate', 'invalid_click_rate'),
+                ('invalid_clicks', 'invalid_clicks'),
+                ('lead_cost_of_goods_sold_micros', 'lead_cost_of_goods_sold'),
+                ('lead_gross_profit_micros', 'lead_gross_profit'),
+                ('lead_revenue_micros', 'lead_revenue'),
+                ('lead_units_sold', 'lead_units_sold'),
+                ('new_customer_lifetime_value', 'new_customer_lifetime_value'),
+                ('orders', 'orders'),
+                ('platform_comparable_conversions', 'platform_comparable_conversions'),
+                ('platform_comparable_conversions_by_conversion_date', 'platform_comparable_conversions_by_conversion_date'),
+                ('platform_comparable_conversions_from_interactions_rate', 'platform_comparable_conversions_from_interactions_rate'),
+                ('platform_comparable_conversions_from_interactions_value_per_interaction', 'platform_comparable_conversions_from_interactions_value_per_interaction'),
+                ('platform_comparable_conversions_value', 'platform_comparable_conversions_value'),
+                ('platform_comparable_conversions_value_by_conversion_date', 'platform_comparable_conversions_value_by_conversion_date'),
+                ('platform_comparable_conversions_value_per_cost', 'platform_comparable_conversions_value_per_cost'),
+                ('revenue_micros', 'revenue'),
+                ('search_budget_lost_impression_share', 'search_budget_lost_impression_share'),
+                ('search_exact_match_impression_share', 'search_exact_match_impression_share'),
+                ('search_impression_share', 'search_impression_share'),
+                ('search_rank_lost_impression_share', 'search_rank_lost_impression_share'),
+                ('sk_ad_network_installs', 'sk_ad_network_installs'),
+                ('sk_ad_network_total_conversions', 'sk_ad_network_total_conversions'),
+                ('top_impression_percentage', 'top_impression_percentage'),
+                ('trueview_average_cpv', 'trueview_average_cpv'),
+                ('units_sold', 'units_sold'),
+                ('value_per_all_conversions', 'value_per_all_conversions'),
+                ('value_per_all_conversions_by_conversion_date', 'value_per_all_conversions_by_conversion_date'),
+                ('value_per_conversion', 'value_per_conversion'),
+                ('value_per_conversions_by_conversion_date', 'value_per_conversions_by_conversion_date'),
+                ('value_per_platform_comparable_conversion', 'value_per_platform_comparable_conversion'),
+                ('value_per_platform_comparable_conversions_by_conversion_date', 'value_per_platform_comparable_conversions_by_conversion_date'),
+                ('video_trueview_view_rate', 'video_trueview_view_rate'),
+                ('video_trueview_views', 'video_trueview_views'),
+                ('video_watch_time_duration_millis', 'video_watch_time_duration_millis'),
+                ('view_through_conversions', 'view_through_conversions'),
+                ('view_through_conversions_from_location_asset_click_to_call', 'view_through_conversions_from_location_asset_click_to_call'),
+                ('view_through_conversions_from_location_asset_directions', 'view_through_conversions_from_location_asset_directions'),
+                ('view_through_conversions_from_location_asset_menu', 'view_through_conversions_from_location_asset_menu'),
+                ('view_through_conversions_from_location_asset_order', 'view_through_conversions_from_location_asset_order'),
+                ('view_through_conversions_from_location_asset_other_engagement', 'view_through_conversions_from_location_asset_other_engagement'),
+                ('view_through_conversions_from_location_asset_store_visits', 'view_through_conversions_from_location_asset_store_visits'),
+                ('view_through_conversions_from_location_asset_website', 'view_through_conversions_from_location_asset_website'),
+            ]
+
+            # データを処理
+            for batch in stream:
+                for row in batch.results:
+                    result = {}
+
+                    # SELECT句の順番通りにメトリクスを追加
+                    result['customer_id'] = row.customer.id
+                    result['date'] = row.segments.date
+
+                    # SELECT句の順番に従ってメトリクスを追加
+                    for original_name, output_name in metrics_in_select_order:
+                        metric_value = getattr(row.metrics, original_name, None)
+                        if original_name in micros_metrics_mapping:
+                            # マイクロ単位のメトリクスは変換
+                            if metric_value is not None:
+                                result[output_name] = metric_value / 1_000_000
+                            else:
+                                result[output_name] = None
+                        else:
+                            # マイクロ単位ではないメトリクスはそのまま
+                            result[output_name] = metric_value
+
+                    results.append(result)
+
+            # DataFrameに変換
+            df = pd.DataFrame(results)
+
+            # metrics_in_select_orderから列順を生成
+            column_order = ['customer_id', 'date'] + [output_name for _, output_name in metrics_in_select_order]
+
+            # 存在する列のみを、指定された順番で選択
+            existing_columns = [col for col in column_order if col in df.columns]
+
+            # デバッグ出力
+            sys.stderr.write(f"列順確認: {len(existing_columns)}個の列\n")
+            sys.stderr.write(f"最初の5列: {existing_columns[:5]}\n")
+            sys.stderr.write(f"最後の5列: {existing_columns[-5:]}\n")
+
+            df = df[existing_columns]
+
+            return df
+            
+        except GoogleAdsException as ex:
+            sys.stderr.write(f"Google Ads APIエラー (Request ID: {ex.request_id}):\n")
+            for error in ex.failure.errors:
+                sys.stderr.write(f"  {error.message}\n")
+            sys.exit(1)
+
+
+
+def main():
+    """メイン処理"""
+
+    # ===== 設定 =====
+    # Google Ads顧客ID（ハイフンなし、例: "1234567890"）
+    # 環境変数 GOOGLE_ADS_CUSTOMER_ID から取得可能
+    CUSTOMER_ID = os.getenv("GOOGLE_ADS_CUSTOMER_ID", "1234567890")
+
+    # 取得期間（過去30日間の例）
+    end_date = datetime.now()
+    start_date = end_date - timedelta(days=30)
+    START_DATE = start_date.strftime("%Y-%m-%d")
+    END_DATE = end_date.strftime("%Y-%m-%d")
+
+    # ===== CSV出力パスの設定 =====
+    output_dir = "google/account"
+    os.makedirs(output_dir, exist_ok=True)
+
+    # タイムスタンプをファイル名に含める
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    output_file = os.path.join(output_dir, f"customer_report_{timestamp}.csv")
+
+    # ===== データ取得 =====
+    # レポート取得インスタンスを作成（環境変数から認証情報を取得）
+    try:
+        report = GoogleAdsCustomerReport()
+    except ValueError as e:
+        sys.stderr.write(f"設定エラー: {str(e)}\n")
+        sys.exit(1)
+
+    # データ取得
+    df = report.get_customer_metrics(CUSTOMER_ID, START_DATE, END_DATE)
+
+    # CSV ファイルに出力
+    if len(df) > 0:
+        df.to_csv(output_file, index=False, encoding="utf-8")
+    else:
+        sys.stderr.write("警告: 出力するデータがありません\n")
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
