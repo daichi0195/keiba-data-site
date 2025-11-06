@@ -318,44 +318,31 @@ def get_accounts(env: str, client_id: str, client_secret: str, developer_token: 
         _jlog("ERROR", where="get_accounts", **_exc_payload(e))
         return []
 
-def resolve_period(include_today: bool, days: int, start_date: Optional[str] = None,
-                   end_date: Optional[str] = None) -> Tuple[date, int]:
-    """期間設定（デフォルトで当日を含む / 開始日・終了日を指定可能）
+def resolve_period(start_date: str, end_date: str) -> Tuple[date, date, int]:
+    """期間設定（バックフィル専用）
 
     Args:
-        include_today: 当日を含むか（start_date/end_dateが指定されていない場合のみ有効）
-        days: 取得日数（start_date/end_dateが指定されていない場合のみ有効）
-        start_date: 開始日（YYYY-MM-DD形式、オプション）
-        end_date: 終了日（YYYY-MM-DD形式、オプション）
+        start_date: 開始日（YYYY-MM-DD形式）
+        end_date: 終了日（YYYY-MM-DD形式）
 
     Returns:
-        (終了日, 日数) のタプル
+        (開始日, 終了日, 日数) のタプル
     """
-    # 開始日・終了日が両方指定されている場合
-    if start_date and end_date:
-        try:
-            start_dt = datetime.strptime(start_date, "%Y-%m-%d").date()
-            end_dt = datetime.strptime(end_date, "%Y-%m-%d").date()
+    try:
+        start_dt = datetime.strptime(start_date, "%Y-%m-%d").date()
+        end_dt = datetime.strptime(end_date, "%Y-%m-%d").date()
 
-            if start_dt > end_dt:
-                raise ValueError(f"開始日({start_date})が終了日({end_date})より後になっています")
+        if start_dt > end_dt:
+            raise ValueError(f"開始日({start_date})が終了日({end_date})より後になっています")
 
-            calculated_days = (end_dt - start_dt).days + 1
-            _jlog("INFO", where="resolve_period.date_range",
-                  start_date=start_date, end_date=end_date, days=calculated_days)
-            return end_dt, calculated_days
-        except ValueError as e:
-            _jlog("ERROR", where="resolve_period.date_parse",
-                  error=str(e), start_date=start_date, end_date=end_date)
-            raise
-
-    # 従来の動作（daysとinclude_todayを使用）
-    jst_now = datetime.now(JST)
-    if include_today:
-        end_dt = jst_now.date()
-    else:
-        end_dt = (jst_now - timedelta(days=1)).date()
-    return end_dt, days
+        calculated_days = (end_dt - start_dt).days + 1
+        _jlog("INFO", where="resolve_period",
+              start_date=start_date, end_date=end_date, days=calculated_days)
+        return start_dt, end_dt, calculated_days
+    except ValueError as e:
+        _jlog("ERROR", where="resolve_period.parse",
+              error=str(e), start_date=start_date, end_date=end_date)
+        raise
 
 def make_report_time(factory, end_dt: date, days: int):
     """レポート期間の設定"""
@@ -831,7 +818,7 @@ def process_account(env: str, client_id: str, client_secret: str,
     factory = rep_client.factory
 
     time_obj, start_dt, end_dt = make_report_time(factory, end_dt_for_all, days)
-    print(f"  期間: {start_dt.isoformat()} ～ {end_dt.isoformat()} (JST, 当日未確定回避設定に準拠)")
+    print(f"  期間: {start_dt.isoformat()} ～ {end_dt.isoformat()}")
 
     results = {"account_id": account_id, "account_name": account_name, "success": True, "skipped": False, "reports": {}}
 
@@ -870,17 +857,21 @@ def process_account(env: str, client_id: str, client_secret: str,
     return results
 
 def main():
-    """メイン処理"""
+    """メイン処理（バックフィル専用）"""
     import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--secret-id", default=os.getenv("SECRET_ID", "microsoft-ads-connection"))
-    parser.add_argument("--aws-region", default=os.getenv("AWS_REGION", "ap-northeast-1"))
-    parser.add_argument("--days", type=int, default=7, help="取得日数（終了日を含む）")
-    parser.add_argument("--include-today", action="store_true", help="当日を含める（未確定の可能性あり）")
-    parser.add_argument("--start-date", type=str, help="取得開始日（YYYY-MM-DD形式、バックフィル用）")
-    parser.add_argument("--end-date", type=str, help="取得終了日（YYYY-MM-DD形式、バックフィル用）")
+    parser = argparse.ArgumentParser(
+        description="Microsoft広告レポート バックフィル取得ツール"
+    )
+    parser.add_argument("--secret-id", default=os.getenv("SECRET_ID", "microsoft-ads-connection"),
+                        help="AWS Secrets ManagerのシークレットID")
+    parser.add_argument("--aws-region", default=os.getenv("AWS_REGION", "ap-northeast-1"),
+                        help="AWSリージョン")
+    parser.add_argument("--start-date", type=str, required=True,
+                        help="取得開始日（YYYY-MM-DD形式）【必須】")
+    parser.add_argument("--end-date", type=str, required=True,
+                        help="取得終了日（YYYY-MM-DD形式）【必須】")
     parser.add_argument("--max-workers", type=int, default=int(os.getenv("MAX_WORKERS", "10")),
-                        help="アカウント並列実行のワーカー数（デフォルト 10）")
+                        help="アカウント並列実行のワーカー数（デフォルト: 10）")
 
     args, unknown = parser.parse_known_args()
     if unknown:
@@ -914,34 +905,18 @@ def main():
     # レポートタイプ
     report_types = ["Account", "Campaign", "AdGroup", "Ad"]
 
-    # 期間指定のバリデーション
-    if (args.start_date and not args.end_date) or (not args.start_date and args.end_date):
-        logger.error("--start-date と --end-date は両方指定する必要があります")
-        sys.exit(2)
-
-    # 期間（デフォルトで当日を含む7日間、または指定された日付範囲）
-    end_dt_for_all, days = resolve_period(
-        include_today=True,
-        days=args.days,
-        start_date=args.start_date,
-        end_date=args.end_date
-    )
-
-    # 開始日を計算（表示用）
-    start_dt_for_all = end_dt_for_all - timedelta(days=days - 1)
+    # 期間設定（バックフィル専用）
+    start_dt_for_all, end_dt_for_all, days = resolve_period(args.start_date, args.end_date)
 
     print("="*80)
-    print("Microsoft広告 全アカウントレポート一括取得 → S3 (最適化版)")
+    print("Microsoft広告 バックフィルレポート取得 → S3")
     print("="*80)
     print(f"Secret ID: {args.secret_id}")
     print(f"Redirect URI: {redirect_uri}")
     print(f"S3 Bucket: {s3_bucket}")
     print(f"S3 Prefix: {s3_prefix}")
     print(f"レポートタイプ: {', '.join(report_types)}")
-    if args.start_date and args.end_date:
-        print(f"期間: {start_dt_for_all} ～ {end_dt_for_all} ({days}日分、バックフィルモード)")
-    else:
-        print(f"期間: {days}日分 / 終了日={end_dt_for_all}（当日含む / JST基準）")
+    print(f"期間: {start_dt_for_all} ～ {end_dt_for_all} ({days}日分)")
     print(f"並列ワーカー数: {args.max_workers}")
     print("="*80)
 
