@@ -858,6 +858,14 @@ def process_account(env: str, client_id: str, client_secret: str,
 
 def main():
     """メイン処理（バックフィル専用）"""
+
+    # ========================================
+    # ここで日付を直接指定してください
+    # ========================================
+    DEFAULT_START_DATE = "2024-01-01"  # 開始日
+    DEFAULT_END_DATE = "2024-01-31"    # 終了日
+    # ========================================
+
     import argparse
     parser = argparse.ArgumentParser(
         description="Microsoft広告レポート バックフィル取得ツール"
@@ -866,16 +874,20 @@ def main():
                         help="AWS Secrets ManagerのシークレットID")
     parser.add_argument("--aws-region", default=os.getenv("AWS_REGION", "ap-northeast-1"),
                         help="AWSリージョン")
-    parser.add_argument("--start-date", type=str, required=True,
-                        help="取得開始日（YYYY-MM-DD形式）【必須】")
-    parser.add_argument("--end-date", type=str, required=True,
-                        help="取得終了日（YYYY-MM-DD形式）【必須】")
+    parser.add_argument("--start-date", type=str, default=None,
+                        help="取得開始日（YYYY-MM-DD形式）※未指定時はコード内のデフォルト値を使用")
+    parser.add_argument("--end-date", type=str, default=None,
+                        help="取得終了日（YYYY-MM-DD形式）※未指定時はコード内のデフォルト値を使用")
     parser.add_argument("--max-workers", type=int, default=int(os.getenv("MAX_WORKERS", "10")),
                         help="アカウント並列実行のワーカー数（デフォルト: 10）")
 
     args, unknown = parser.parse_known_args()
     if unknown:
         logger.warning(f"ignored extra args: {unknown}")
+
+    # 日付が指定されていない場合はデフォルト値を使用
+    start_date = args.start_date or DEFAULT_START_DATE
+    end_date = args.end_date or DEFAULT_END_DATE
 
     # Secrets Manager
     secret = load_secret_json(args.secret_id, args.aws_region)
@@ -906,7 +918,7 @@ def main():
     report_types = ["Account", "Campaign", "AdGroup", "Ad"]
 
     # 期間設定（バックフィル専用）
-    start_dt_for_all, end_dt_for_all, days = resolve_period(args.start_date, args.end_date)
+    start_dt_for_all, end_dt_for_all, days = resolve_period(start_date, end_date)
 
     print("="*80)
     print("Microsoft広告 バックフィルレポート取得 → S3")
