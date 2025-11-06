@@ -350,9 +350,68 @@ def main():
     """メイン処理"""
 
     # ===== 設定 =====
-    # Google Ads顧客ID（ハイフンなし、例: "1234567890"）
-    # 環境変数 GOOGLE_ADS_CUSTOMER_ID から取得可能
-    CUSTOMER_ID = os.getenv("GOOGLE_ADS_CUSTOMER_ID", "1234567890")
+    # Google Ads顧客IDリスト（ハイフンなし）
+    CUSTOMER_IDS = [
+        "4961469341",
+        "6894368146",
+        "2783604345",
+        "6859985803",
+        "9406791086",
+        "5789491088",
+        "1398700707",
+        "9248803011",
+        "8904889601",
+        "3473772260",
+        "9282755845",
+        "9756568719",
+        "7141717397",
+        "3326796703",
+        "2146065998",
+        "7008943696",
+        "8948393517",
+        "5901735533",
+        "1604315242",
+        "8014870713",
+        "9188915901",
+        "2376279764",
+        "6784714046",
+        "3186702349",
+        "5241802133",
+        "8811177595",
+        "2426916146",
+        "2351271327",
+        "6843241868",
+        "6516219701",
+        "1524340564",
+        "7287455480",
+        "4921536963",
+        "5923713050",
+        "6849143343",
+        "1127698641",
+        "9579881713",
+        "6346981731",
+        "1633684295",
+        "1048539674",
+        "2431781756",
+        "5176818378",
+        "5274109209",
+        "3610617294",
+        "4764030511",
+        "9766426811",
+        "7673899894",
+        "1882201996",
+        "9812385017",
+        "3108309417",
+        "9056742960",
+        "3628708276",
+        "3343639468",
+        "8524288797",
+        "5617914717",
+        "6988015696",
+        "1753365409",
+        "2184325696",
+        "4646105268",
+    ]
 
     # 取得期間（2024年10月1日〜10月31日）
     START_DATE = "2024-10-01"
@@ -374,12 +433,31 @@ def main():
         sys.stderr.write(f"設定エラー: {str(e)}\n")
         sys.exit(1)
 
-    # データ取得
-    df = report.get_customer_metrics(CUSTOMER_ID, START_DATE, END_DATE)
+    # 全アカウントのデータを格納するリスト
+    all_dfs = []
 
-    # CSV ファイルに出力
-    if len(df) > 0:
-        df.to_csv(output_file, index=False, encoding="utf-8")
+    # 各アカウントのデータを取得
+    for i, customer_id in enumerate(CUSTOMER_IDS, 1):
+        sys.stderr.write(f"[{i}/{len(CUSTOMER_IDS)}] アカウント {customer_id} のデータを取得中...\n")
+        try:
+            df = report.get_customer_metrics(customer_id, START_DATE, END_DATE)
+            if len(df) > 0:
+                all_dfs.append(df)
+                sys.stderr.write(f"  → {len(df)}行のデータを取得しました\n")
+            else:
+                sys.stderr.write(f"  → データがありませんでした\n")
+        except Exception as e:
+            sys.stderr.write(f"  → エラー: {str(e)}\n")
+            continue
+
+    # 全データを結合
+    if len(all_dfs) > 0:
+        combined_df = pd.concat(all_dfs, ignore_index=True)
+        sys.stderr.write(f"\n合計 {len(combined_df)}行のデータを取得しました\n")
+
+        # CSV ファイルに出力
+        combined_df.to_csv(output_file, index=False, encoding="utf-8")
+        sys.stderr.write(f"ファイルに出力しました: {output_file}\n")
     else:
         sys.stderr.write("警告: 出力するデータがありません\n")
         sys.exit(1)
