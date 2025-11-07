@@ -116,6 +116,49 @@ def fetch_account_ids(token: str, base_account_id: int) -> List[int]:
                 pass
     return sorted(set(out))
 
+# =============== リトライヘルパー ===============
+import random
+
+def with_retry(fn, max_retries: int = 3):
+    """
+    レート制限エラー時のリトライロジック
+
+    Args:
+        fn: 実行する関数
+        max_retries: 最大リトライ回数
+
+    Returns:
+        関数の実行結果
+    """
+    for attempt in range(max_retries + 1):
+        try:
+            return fn()
+        except requests.HTTPError as e:
+            status_code = e.response.status_code if e.response else None
+
+            # レート制限エラーかチェック
+            is_rate_limit = False
+            if status_code == 429 or (e.response and "Frequency limit exceeded" in e.response.text):
+                is_rate_limit = True
+
+            # リトライ可能なエラーか判定
+            retriable = status_code in (429, 500, 502, 503, 504) or is_rate_limit
+
+            if not retriable or attempt == max_retries:
+                raise
+
+            # エクスポネンシャルバックオフ（2, 4, 8秒 + ランダム）
+            wait_time = (2 ** (attempt + 1)) + random.uniform(0.5, 2.0)
+            log_warn(f"Rate limit hit, retrying in {wait_time:.1f}s (attempt {attempt + 1}/{max_retries})...")
+            time.sleep(wait_time)
+
+        except (requests.ConnectionError, requests.Timeout) as e:
+            if attempt == max_retries:
+                raise
+            wait_time = (2 ** (attempt + 1)) + random.uniform(0.5, 2.0)
+            log_warn(f"Connection error, retrying in {wait_time:.1f}s (attempt {attempt + 1}/{max_retries})...")
+            time.sleep(wait_time)
+
 # =============== レポート作成・取得 ===============
 def add_report_custom_date(token: str, base_account_id: int, account_id: int,
                           fields: List[str], report_type: str,
@@ -138,12 +181,16 @@ def add_report_custom_date(token: str, base_account_id: int, account_id: int,
 
     body = {"accountId": int(account_id), "operand": [operand]}
 
-    time.sleep(0.5)  # レート制限対策
+    time.sleep(2.0)  # レート制限対策（0.5秒 → 2秒に増加）
 
-    r = requests.post(url, headers=hdr(token, base_account_id), json=body, timeout=90)
-    if r.status_code != 200:
-        log_error(f"/add -> {r.text}")
-        r.raise_for_status()
+    def _request():
+        r = requests.post(url, headers=hdr(token, base_account_id), json=body, timeout=90)
+        if r.status_code != 200:
+            log_error(f"/add -> {r.text}")
+            r.raise_for_status()
+        return r
+
+    r = with_retry(_request, max_retries=3)
 
     payload = r.json() or {}
     vals = ((payload.get("rval") or {}).get("values") or [])
@@ -159,12 +206,16 @@ def get_status(token: str, base_account_id: int, account_id: int, job_id: int) -
     url = SEARCH_BASE + PATHS["report_get"]
     body = {"accountId": int(account_id), "reportJobIds": [int(job_id)]}
 
-    time.sleep(0.5)
+    time.sleep(1.0)  # レート制限対策
 
-    r = requests.post(url, headers=hdr(token, base_account_id), json=body, timeout=60)
-    if r.status_code != 200:
-        log_error(f"/get_status account_id={account_id}, job_id={job_id} -> Status {r.status_code}: {r.text}")
-        r.raise_for_status()
+    def _request():
+        r = requests.post(url, headers=hdr(token, base_account_id), json=body, timeout=60)
+        if r.status_code != 200:
+            log_error(f"/get_status account_id={account_id}, job_id={job_id} -> Status {r.status_code}: {r.text}")
+            r.raise_for_status()
+        return r
+
+    r = with_retry(_request, max_retries=3)
 
     vals = ((r.json().get("rval") or {}).get("values") or [])
     rep = vals[0].get("reportDefinition") if vals else {}
@@ -175,12 +226,16 @@ def download_csv_text(token: str, base_account_id: int, account_id: int, job_id:
     url = SEARCH_BASE + PATHS["report_download"]
     body = {"accountId": int(account_id), "reportJobId": int(job_id)}
 
-    time.sleep(0.5)
+    time.sleep(1.0)  # レート制限対策
 
-    r = requests.post(url, headers=hdr(token, base_account_id), json=body, timeout=300)
-    if r.status_code != 200:
-        log_error(f"/download account_id={account_id}, job_id={job_id} -> Status {r.status_code}: {r.text}")
-        r.raise_for_status()
+    def _request():
+        r = requests.post(url, headers=hdr(token, base_account_id), json=body, timeout=300)
+        if r.status_code != 200:
+            log_error(f"/download account_id={account_id}, job_id={job_id} -> Status {r.status_code}: {r.text}")
+            r.raise_for_status()
+        return r
+
+    r = with_retry(_request, max_retries=3)
 
     raw = r.content
     # Gzip解凍
@@ -351,8 +406,8 @@ def fetch_report(token: str, base_account_id: int, account_id: int,
             start_date, end_date
         )
 
-        # ステータスチェック（最大60回、1秒間隔）
-        max_wait = 60
+        # ステータスチェック（最大40回、2秒間隔）
+        max_wait = 40
         for i in range(max_wait):
             status = get_status(token, base_account_id, account_id, job_id)
 
@@ -369,7 +424,7 @@ def fetch_report(token: str, base_account_id: int, account_id: int,
 
             # まだ処理中
             if i < max_wait - 1:
-                time.sleep(1)
+                time.sleep(2.0)  # ポーリング間隔を2秒に変更
 
         log_error(f"    ✗ {entity}: Timeout waiting for report completion")
         return []
@@ -445,8 +500,8 @@ def main():
     # レポートタイプ（Search広告のみ）
     entities = ["account", "campaign", "adgroup", "adgroupad"]
 
-    # 並列ワーカー数
-    max_workers = int(os.getenv("MAX_WORKERS", "5"))
+    # 並列ワーカー数（レート制限対策のため少なめに設定）
+    max_workers = int(os.getenv("MAX_WORKERS", "2"))
 
     print("="*80)
     print("Yahoo広告 Search ローカル取得")
