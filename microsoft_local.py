@@ -380,31 +380,10 @@ def get_entity_type(report_type: str) -> str:
     }
     return mapping.get(report_type, report_type.lower())
 
-def save_to_csv(rows: List[Dict], output_dir: str, entity_type: str,
-                account_id: int, timestamp: str) -> str:
-    """CSVファイルとして保存"""
-    if not rows:
-        return ""
-
-    # ディレクトリ作成
-    entity_dir = os.path.join(output_dir, entity_type)
-    os.makedirs(entity_dir, exist_ok=True)
-
-    # ファイル名生成
-    filename = f"{entity_type}_report_{account_id}_{timestamp}.csv"
-    filepath = os.path.join(entity_dir, filename)
-
-    # DataFrameに変換してCSV出力
-    df = pd.DataFrame(rows)
-    df.to_csv(filepath, index=False, encoding="utf-8")
-
-    return filepath
-
 def fetch_report(env: str, auth_rep: AuthorizationData, report_type: str,
                 account_id: int, account_name: str, time_obj,
-                output_dir: str, timestamp: str,
                 start_dt: date, end_dt: date) -> Tuple[int, List[Dict]]:
-    """レポート取得とCSV保存"""
+    """レポート取得"""
     entity_type = get_entity_type(report_type)
     _jlog("INFO", where="fetch_report.start", report_type=report_type,
           account_id=account_id, account_name=account_name,
@@ -496,11 +475,6 @@ def fetch_report(env: str, auth_rep: AuthorizationData, report_type: str,
                   account_id=account_id, account_name=account_name)
             return 0, []
 
-        # CSV保存
-        filepath = save_to_csv(rows, output_dir, entity_type, account_id, timestamp)
-        if filepath:
-            _jlog("INFO", where="fetch_report.saved", filepath=filepath, rows=len(rows))
-
         _jlog("INFO", where="fetch_report.done", report_type=report_type,
               account_id=account_id, account_name=account_name,
               rows=len(rows), period=f"{start_dt}..{end_dt}", entity=entity_type)
@@ -519,7 +493,6 @@ def process_account(env: str, client_id: str, client_secret: str,
                     redirect_uri: str,
                     account_id: int, account_name: str,
                     report_types: List[str],
-                    output_dir: str, timestamp: str,
                     start_dt: date, end_dt: date) -> Dict[str, Any]:
     print("\n" + "="*80)
     print(f"アカウント: {account_name} (ID: {account_id})")
@@ -531,7 +504,7 @@ def process_account(env: str, client_id: str, client_secret: str,
     if not parent_customer_id:
         _jlog("ERROR", where="process_account.parent_customer_not_found",
               account_id=account_id, account_name=account_name)
-        return {"account_id": account_id, "account_name": account_name, "success": False, "skipped": False}
+        return {"account_id": account_id, "account_name": account_name, "success": False, "skipped": False, "data": {}}
 
     auth_rep = build_auth(env, client_id, client_secret, developer_token, refresh_token, redirect_uri,
                           account_id_header=account_id, customer_id_header=parent_customer_id)
@@ -543,39 +516,37 @@ def process_account(env: str, client_id: str, client_secret: str,
     time_obj = make_report_time(factory, start_dt, end_dt)
     print(f"  期間: {start_dt.isoformat()} ～ {end_dt.isoformat()}")
 
-    results = {"account_id": account_id, "account_name": account_name, "success": True, "skipped": False, "reports": {}}
+    results = {"account_id": account_id, "account_name": account_name, "success": True, "skipped": False, "data": {}}
 
     if "Account" in report_types:
         print(f"  Accountレポート取得中...")
-        row_count, _ = fetch_report(env, auth_rep, "Account", account_id, account_name, time_obj,
-                                    output_dir, timestamp,
-                                    start_dt, end_dt)
+        row_count, rows = fetch_report(env, auth_rep, "Account", account_id, account_name, time_obj,
+                                       start_dt, end_dt)
         if row_count > 0:
             print(f"    ✓ 完了: {row_count}行")
-            results["reports"]["Account"] = {"rows": row_count}
+            results["data"]["Account"] = rows
         else:
             print(f"    ⚠️ データなし")
             print(f"  → アカウントレベルでデータなし。後続レポートをスキップします。")
-            results["reports"]["Account"] = {"rows": 0}
+            results["data"]["Account"] = []
             results["skipped"] = True
             for report_type in report_types:
                 if report_type != "Account":
-                    results["reports"][report_type] = {"rows": 0}
+                    results["data"][report_type] = []
             return results
 
     for report_type in report_types:
         if report_type == "Account":
             continue
         print(f"  {report_type}レポート取得中...")
-        row_count, _ = fetch_report(env, auth_rep, report_type, account_id, account_name, time_obj,
-                                    output_dir, timestamp,
-                                    start_dt, end_dt)
+        row_count, rows = fetch_report(env, auth_rep, report_type, account_id, account_name, time_obj,
+                                       start_dt, end_dt)
         if row_count > 0:
             print(f"    ✓ 完了: {row_count}行")
-            results["reports"][report_type] = {"rows": row_count}
+            results["data"][report_type] = rows
         else:
             print(f"    ⚠️ データなし")
-            results["reports"][report_type] = {"rows": 0}
+            results["data"][report_type] = []
 
     return results
 
@@ -654,7 +625,6 @@ def main():
             result = process_account(
                 env, client_id, client_secret, developer_token, refresh_token, redirect_uri,
                 account_id, account_name, report_types,
-                OUTPUT_DIR, timestamp,
                 start_dt=START_DATE, end_dt=END_DATE
             )
             all_results.append(result)
@@ -665,7 +635,6 @@ def main():
                     process_account,
                     env, client_id, client_secret, developer_token, refresh_token, redirect_uri,
                     account_id, account_name, report_types,
-                    OUTPUT_DIR, timestamp,
                     START_DATE, END_DATE
                 ): (account_id, account_name)
                 for account_id, account_name in accounts
@@ -679,9 +648,42 @@ def main():
 
     elapsed_time = time.time() - start_time
 
+    # レポートタイプごとにデータを結合してCSV出力
+    print(f"\n{'='*80}")
+    print("CSV出力処理")
+    print(f"{'='*80}")
+
+    for report_type in report_types:
+        entity_type = get_entity_type(report_type)
+        all_rows = []
+
+        # 全アカウントのデータを収集
+        for result in all_results:
+            if result.get('success') and report_type in result.get('data', {}):
+                rows = result['data'][report_type]
+                if rows:
+                    all_rows.extend(rows)
+
+        if all_rows:
+            # ディレクトリ作成
+            entity_dir = os.path.join(OUTPUT_DIR, entity_type)
+            os.makedirs(entity_dir, exist_ok=True)
+
+            # ファイル名生成
+            filename = f"{entity_type}_report_{timestamp}.csv"
+            filepath = os.path.join(entity_dir, filename)
+
+            # DataFrameに変換してCSV出力
+            df = pd.DataFrame(all_rows)
+            df.to_csv(filepath, index=False, encoding="utf-8")
+
+            print(f"  ✓ {report_type}: {len(all_rows)}行 → {filepath}")
+        else:
+            print(f"  ⚠️ {report_type}: データなし")
+
     # サマリー
     print(f"\n{'='*80}")
-    print("処理完了サマリー")
+    print("アカウント別処理サマリー")
     print(f"{'='*80}")
     for result in all_results:
         print(f"\n{result['account_name']} (ID: {result['account_id']})")
@@ -689,9 +691,10 @@ def main():
             print(f"  ⏭️  アカウントレベルでデータなし（後続レポートスキップ）")
             continue
         if result['success']:
-            for report_type, report_data in result['reports'].items():
-                if report_data['rows'] > 0:
-                    print(f"  ✓ {report_type}: {report_data['rows']}行")
+            for report_type in report_types:
+                rows = result.get('data', {}).get(report_type, [])
+                if rows:
+                    print(f"  ✓ {report_type}: {len(rows)}行")
                 else:
                     print(f"  ⚠️ {report_type}: データなし")
         else:
