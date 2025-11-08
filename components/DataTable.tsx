@@ -27,6 +27,7 @@ export default function DataTable({ title, data, initialShow = 10 }: Props) {
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const prevShowAllRef = useRef(false);
   
   const displayData = showAll ? data : data.slice(0, initialShow);
   
@@ -52,11 +53,15 @@ export default function DataTable({ title, data, initialShow = 10 }: Props) {
     }
   }, []);
 
-  // テーブル展開/折畳時にボタンを視界に入れる
+  // テーブル折畳時（閉じる時）のみボタンを視界に入れる
   useEffect(() => {
-    if (buttonRef.current) {
-      buttonRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    // 閉じる時のみスクロール（showAll が true から false へ）
+    if (prevShowAllRef.current === true && showAll === false) {
+      if (buttonRef.current) {
+        buttonRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
     }
+    prevShowAllRef.current = showAll;
   }, [showAll]);
   
   // 各カラムの最大値を取得（全カラム対応）
