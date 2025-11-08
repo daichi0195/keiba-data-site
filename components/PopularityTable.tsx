@@ -36,10 +36,6 @@ const BAND_ROWS: { key: PopularityBand; label: string }[] = [
 ];
 
 const METRIC_COLS: { key: MetricKey; label: string; suffix?: string }[] = [
-  { key: 'races', label: '出走数' },
-  { key: 'wins', label: '1着' },
-  { key: 'places_2', label: '2着' },
-  { key: 'places_3', label: '3着' },
   { key: 'win_rate', label: '勝率', suffix: '%' },
   { key: 'quinella_rate', label: '連対率', suffix: '%' },
   { key: 'place_rate', label: '複勝率', suffix: '%' },

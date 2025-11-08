@@ -41,10 +41,6 @@ export default function RunningStyleTable({ title, data }: Props) {
   }, []);
   
   // 各カラムの最大値を取得
-  const maxRaces = Math.max(...data.map(d => d.races));
-  const maxWins = Math.max(...data.map(d => d.wins));
-  const maxPlaces2 = Math.max(...data.map(d => d.places_2));
-  const maxPlaces3 = Math.max(...data.map(d => d.places_3));
   const maxWinRate = Math.max(...data.map(d => d.win_rate));
   const maxPlaceRate = Math.max(...data.map(d => d.place_rate));
   const maxQuinellaRate = Math.max(...data.map(d => d.quinella_rate));
@@ -65,10 +61,6 @@ export default function RunningStyleTable({ title, data }: Props) {
                 <th className={styles.styleCol}>
                   脚質
                 </th>
-                <th className={styles.scrollCol}>出走数</th>
-                <th className={styles.scrollCol}>1着</th>
-                <th className={styles.scrollCol}>2着</th>
-                <th className={styles.scrollCol}>3着</th>
                 <th className={styles.scrollCol}>勝率</th>
                 <th className={styles.scrollCol}>連対率</th>
                 <th className={styles.scrollCol}>複勝率</th>
@@ -85,27 +77,6 @@ export default function RunningStyleTable({ title, data }: Props) {
                   <td className={styles.styleCol}>
                     <span className={styles.styleBadge}>
                       {row.style_label}
-                    </span>
-                  </td>
-                  
-                  <td className={styles.scrollCol}>
-                    <span className={isHighlight(row.races, maxRaces) ? styles.highlight : ''}>
-                      {row.races}
-                    </span>
-                  </td>
-                  <td className={styles.scrollCol}>
-                    <span className={isHighlight(row.wins, maxWins) ? styles.highlight : ''}>
-                      {row.wins}
-                    </span>
-                  </td>
-                  <td className={styles.scrollCol}>
-                    <span className={isHighlight(row.places_2, maxPlaces2) ? styles.highlight : ''}>
-                      {row.places_2}
-                    </span>
-                  </td>
-                  <td className={styles.scrollCol}>
-                    <span className={isHighlight(row.places_3, maxPlaces3) ? styles.highlight : ''}>
-                      {row.places_3}
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
