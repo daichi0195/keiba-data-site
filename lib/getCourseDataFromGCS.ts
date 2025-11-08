@@ -81,9 +81,31 @@ export async function getCourseDataFromGCS(
       });
     }
 
+    // popularity_stats を配列からオブジェクト形式に変換
+    if (data.popularity_stats && Array.isArray(data.popularity_stats)) {
+      const popularityObject: Record<string, any> = {};
+      data.popularity_stats.forEach((item: any) => {
+        const key = item.popularity_group || item.key;
+        if (key) {
+          popularityObject[key] = {
+            races: typeof item.races === 'string' ? parseInt(item.races, 10) : item.races,
+            wins: typeof item.wins === 'string' ? parseInt(item.wins, 10) : item.wins,
+            places_2: typeof item.places_2 === 'string' ? parseInt(item.places_2, 10) : item.places_2,
+            places_3: typeof item.places_3 === 'string' ? parseInt(item.places_3, 10) : item.places_3,
+            win_rate: typeof item.win_rate === 'string' ? parseFloat(item.win_rate) : item.win_rate,
+            place_rate: typeof item.place_rate === 'string' ? parseFloat(item.place_rate) : item.place_rate,
+            quinella_rate: typeof item.quinella_rate === 'string' ? parseFloat(item.quinella_rate) : item.quinella_rate,
+            win_payback: typeof item.win_payback === 'string' ? parseInt(item.win_payback, 10) : item.win_payback,
+            place_payback: typeof item.place_payback === 'string' ? parseInt(item.place_payback, 10) : item.place_payback,
+          };
+        }
+      });
+      data.popularity_stats = popularityObject;
+    }
+
     console.log('✅ Course data loaded from GCS');
     console.log('  - Gate stats:', data.gate_stats?.length || 0, 'gates');
-    console.log('  - Popularity stats:', data.popularity_stats?.length || 0, 'groups');
+    console.log('  - Popularity stats:', Object.keys(data.popularity_stats || {}).length, 'groups');
     console.log('  - Jockey stats:', data.jockey_stats?.length || 0, 'jockeys');
     console.log('  - Trainer stats:', data.trainer_stats?.length || 0, 'trainers');
 
