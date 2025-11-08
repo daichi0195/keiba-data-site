@@ -9,6 +9,10 @@ import BarChartAnimation from '@/components/BarChartAnimation';
 import VolatilityExplanation from '@/components/VolatilityExplanation';
 import GatePositionExplanation from '@/components/GatePositionExplanation';
 import RunningStyleExplanation from '@/components/RunningStyleExplanation';
+import { getCourseDataFromGCS } from '@/lib/getCourseDataFromGCS';
+
+// ISR: 週1回（604800秒）再生成
+export const revalidate = 604800;
 
 // モックデータ
 const mockData = {
@@ -364,11 +368,43 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CoursePage({ params }: Props) {
   const resolvedParams = await params;
-  const data = (mockData as any)[resolvedParams.racecourse]?.[resolvedParams.surface]?.[resolvedParams.distance];
-  
-  if (!data) {
+  const mockData_data = (mockData as any)[resolvedParams.racecourse]?.[resolvedParams.surface]?.[resolvedParams.distance];
+
+  if (!mockData_data) {
     return <div>データが見つかりません</div>;
   }
+
+  // ===== GCSから全データを取得 =====
+  let data = { ...mockData_data }; // モックデータをコピー
+
+  try {
+    const gcsData = await getCourseDataFromGCS(
+      resolvedParams.racecourse,
+      resolvedParams.surface,
+      parseInt(resolvedParams.distance)
+    );
+
+    // GCSデータで上書き
+    if (gcsData.gate_stats) {
+      data.gate_stats = gcsData.gate_stats;
+    }
+    if (gcsData.popularity_stats) {
+      data.popularity_stats = gcsData.popularity_stats;
+    }
+    if (gcsData.jockey_stats) {
+      data.jockey_stats = gcsData.jockey_stats;
+    }
+    if (gcsData.trainer_stats) {
+      data.trainer_stats = gcsData.trainer_stats;
+    }
+
+    console.log('✅ All data loaded from GCS successfully');
+
+  } catch (error) {
+    console.error('⚠️ Failed to load data from GCS, using mock data:', error);
+    // エラー時はモックデータのまま
+  }
+  // ===== ここまで =====
 
   const { course_info, gate_stats, running_style_stats, popularity_stats, jockey_stats, pedigree_stats, dam_sire_stats, trainer_stats } = data;
   

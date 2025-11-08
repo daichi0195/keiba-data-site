@@ -1,0 +1,96 @@
+const BASE_URL = 'https://storage.googleapis.com/umadata';
+
+// 枠番ごとの色を定義
+const GATE_COLORS: Record<number, string> = {
+  1: '#FFFFFF',
+  2: '#222222',
+  3: '#C62927',
+  4: '#2573CD',
+  5: '#E4CA3C',
+  6: '#58AF4A',
+  7: '#FAA727',
+  8: '#DC6179',
+};
+
+export async function getCourseDataFromGCS(
+  racecourse: string,
+  surface: string,
+  distance: number
+) {
+  // キャッシュバスターを付けてCDNキャッシュを回避
+  const timestamp = Math.floor(Date.now() / 3600000); // 1時間単位
+  const url = `${BASE_URL}/course/${racecourse}/${surface}/${distance}.json?v=${timestamp}`;
+
+  console.log('🔍 Fetching course data from GCS:', url);
+
+  try {
+    const response = await fetch(url, {
+      next: { revalidate: 3600 }, // 1時間キャッシュ
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    const text = await response.text();
+    let data: any = {};
+
+    // JSON形式（統合JSON）またはNDJSON形式（複数行のJSON）に対応
+    // 統合JSON形式を優先して試す（複数行でもOK）
+    try {
+      if (text.trim().startsWith('{') && text.trim().endsWith('}')) {
+        // 統合JSON形式（1つのJSONオブジェクト）
+        data = JSON.parse(text);
+      } else if (text.trim().startsWith('[') && text.trim().endsWith(']')) {
+        // JSON配列形式
+        data.gate_stats = JSON.parse(text);
+      } else {
+        throw new Error('Not JSON format');
+      }
+    } catch {
+      // NDJSON形式（複数行のJSON）の場合
+      const lines = text.trim().split('\n').filter(line => line.trim());
+
+      // 最初の行がgate_statsと判定（"gate"フィールドを持つ）
+      if (lines.length > 0) {
+        const firstLine = JSON.parse(lines[0]);
+        if (firstLine.gate !== undefined) {
+          // gate_stats として処理
+          data.gate_stats = lines.map(line => JSON.parse(line));
+        }
+      }
+    }
+
+    // gate_stats に color フィールドを追加
+    if (data.gate_stats && Array.isArray(data.gate_stats)) {
+      data.gate_stats = data.gate_stats.map((gate: any) => {
+        const gateNumber = typeof gate.gate === 'string' ? parseInt(gate.gate, 10) : gate.gate;
+        return {
+          gate: gateNumber,
+          color: GATE_COLORS[gateNumber] || '#999999',
+          races: typeof gate.races === 'string' ? parseInt(gate.races, 10) : gate.races,
+          wins: typeof gate.wins === 'string' ? parseInt(gate.wins, 10) : gate.wins,
+          places_2: typeof gate.places_2 === 'string' ? parseInt(gate.places_2, 10) : gate.places_2,
+          places_3: typeof gate.places_3 === 'string' ? parseInt(gate.places_3, 10) : gate.places_3,
+          win_rate: typeof gate.win_rate === 'string' ? parseFloat(gate.win_rate) : gate.win_rate,
+          place_rate: typeof gate.place_rate === 'string' ? parseFloat(gate.place_rate) : gate.place_rate,
+          quinella_rate: typeof gate.quinella_rate === 'string' ? parseFloat(gate.quinella_rate) : gate.quinella_rate,
+          win_payback: typeof gate.win_payback === 'string' ? parseInt(gate.win_payback, 10) : gate.win_payback,
+          place_payback: typeof gate.place_payback === 'string' ? parseInt(gate.place_payback, 10) : gate.place_payback,
+        };
+      });
+    }
+
+    console.log('✅ Course data loaded from GCS');
+    console.log('  - Gate stats:', data.gate_stats?.length || 0, 'gates');
+    console.log('  - Popularity stats:', data.popularity_stats?.length || 0, 'groups');
+    console.log('  - Jockey stats:', data.jockey_stats?.length || 0, 'jockeys');
+    console.log('  - Trainer stats:', data.trainer_stats?.length || 0, 'trainers');
+
+    return data;
+
+  } catch (error) {
+    console.error('❌ Failed to fetch course data:', error);
+    throw error;
+  }
+}
