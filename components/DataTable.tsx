@@ -26,6 +26,7 @@ export default function DataTable({ title, data, initialShow = 10 }: Props) {
   const [showAll, setShowAll] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   
   const displayData = showAll ? data : data.slice(0, initialShow);
   
@@ -43,13 +44,20 @@ export default function DataTable({ title, data, initialShow = 10 }: Props) {
       const scrollLeft = target.scrollLeft;
       setIsScrolled(scrollLeft > 5);
     };
-    
+
     const scrollElement = scrollRef.current;
     if (scrollElement) {
       scrollElement.addEventListener('scroll', handleScroll);
       return () => scrollElement.removeEventListener('scroll', handleScroll);
     }
   }, []);
+
+  // テーブル展開/折畳時にボタンを視界に入れる
+  useEffect(() => {
+    if (buttonRef.current) {
+      buttonRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }, [showAll]);
   
   // 各カラムの最大値を取得（全カラム対応）
   const maxRaces = Math.max(...data.map(d => d.races));
@@ -169,8 +177,9 @@ export default function DataTable({ title, data, initialShow = 10 }: Props) {
       
       {data.length > initialShow && (
         <div className="show-more-container">
-          <button 
-            className="show-more-button" 
+          <button
+            ref={buttonRef}
+            className="show-more-button"
             onClick={() => setShowAll(!showAll)}
           >
             {showAll ? '▲ 閉じる' : `▼ さらに表示（残り${data.length - initialShow}件）`}
