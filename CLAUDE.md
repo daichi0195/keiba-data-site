@@ -2,6 +2,14 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## 📚 Documentation Index
+
+For comprehensive project documentation, please refer to:
+
+- **[ARCHITECTURE.md](./ARCHITECTURE.md)**: システム全体のアーキテクチャ、技術スタック、データフロー、デプロイメント戦略
+- **[COMPONENTS.md](./COMPONENTS.md)**: 全コンポーネントの詳細リファレンス、Props型定義、開発ベストプラクティス
+- **[CLAUDE.md](./CLAUDE.md)** (このファイル): 開発時のクイックリファレンス、コーディング規約、ワークフロー
+
 ## Quick Start Commands
 
 ```bash
