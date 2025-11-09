@@ -107,11 +107,11 @@ export default function DataTable({ title, data, initialShow = 10 }: Props) {
                 <th className="mobile-scroll-col">1着</th>
                 <th className="mobile-scroll-col">2着</th>
                 <th className="mobile-scroll-col">3着</th>
-                <th className="mobile-scroll-col">勝率</th>
-                <th className="mobile-scroll-col">連対率</th>
-                <th className="mobile-scroll-col">複勝率</th>
-                <th className="mobile-scroll-col">単勝回収率</th>
-                <th className="mobile-scroll-col">複勝回収率</th>
+                <th className="mobile-scroll-col mobile-col-rate">勝率</th>
+                <th className="mobile-scroll-col mobile-col-rate">連対率</th>
+                <th className="mobile-scroll-col mobile-col-rate">複勝率</th>
+                <th className="mobile-scroll-col mobile-col-payback">単勝回収率</th>
+                <th className="mobile-scroll-col mobile-col-payback">複勝回収率</th>
               </tr>
             </thead>
             <tbody>

@@ -1911,7 +1911,22 @@ details[open] .evaluation-content {
     min-width: 90px !important;
     max-width: 90px !important;
   }
-  
+
+  /* クラスベースのセレクタで率・回収率の幅を直接指定 */
+  .mobile-data-table th.mobile-col-rate,
+  .mobile-data-table td.mobile-col-rate {
+    width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
+  }
+
+  .mobile-data-table th.mobile-col-payback,
+  .mobile-data-table td.mobile-col-payback {
+    width: 90px !important;
+    min-width: 90px !important;
+    max-width: 90px !important;
+  }
+
   .mobile-rank-badge,
   .mobile-rank-normal {
     font-size: 13px;
