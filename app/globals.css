@@ -1419,7 +1419,6 @@ details[open] .evaluation-content {
   border-left: none !important;
   border-right: 1px solid #000 !important;
   white-space: nowrap;
-  transition: width 0.2s ease, min-width 0.2s ease, border-right 0.2s ease;
   background: #ffffff !important;
   z-index: 20 !important;
 }
@@ -1742,7 +1741,7 @@ details[open] .evaluation-content {
   .mobile-data-table {
     font-size: 13px;
     min-width: 730px;
-    table-layout: fixed;
+    table-layout: auto;
   }
 
   .mobile-data-table th,
@@ -1753,6 +1752,7 @@ details[open] .evaluation-content {
   .mobile-col-rank {
     width: 30px !important;
     min-width: 30px !important;
+    max-width: 30px !important;
     background: white !important;
     z-index: 21 !important;
   }
@@ -1761,6 +1761,7 @@ details[open] .evaluation-content {
     left: 30px;
     min-width: 100px !important;
     padding-left: 8px !important;
+    padding-right: 8px !important;
     background: white !important;
     z-index: 20 !important;
     white-space: nowrap;
