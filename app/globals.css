@@ -1825,8 +1825,8 @@ details[open] .evaluation-content {
   }
   
   .mobile-scroll-col {
-    width: 60px;
-    min-width: 60px;
+    width: 60px !important;
+    min-width: 60px !important;
   }
   
   /* 1着・2着・3着を狭く (4列目・5列目・6列目) */
