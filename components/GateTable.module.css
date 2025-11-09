@@ -159,13 +159,13 @@
   display: inline-block !important;
 }
 
-/* レスポンシブ - Force rebuild */
+/* レスポンシブ */
 @media (max-width: 768px) {
   .table {
     font-size: 13px;
-    width: 360px !important;
-    min-width: 360px !important;
-    max-width: 360px !important;
+    width: 500px !important;
+    min-width: 500px !important;
+    max-width: 500px !important;
     table-layout: fixed !important;
   }
 
@@ -175,31 +175,52 @@
     box-sizing: border-box !important;
   }
 
-  .gateCol {
+  /* 第1列：枠番 - 60px */
+  .table th:nth-child(1),
+  .table td:nth-child(1) {
     width: 60px !important;
     min-width: 60px !important;
     max-width: 60px !important;
   }
 
-  .scrollCol {
-    width: 60px !important;
-    min-width: 60px !important;
-    max-width: 60px !important;
+  /* 第2列：勝率 - 80px */
+  .table th:nth-child(2),
+  .table td:nth-child(2) {
+    width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
   }
 
-  /* 確実に60pxを適用 - より具体的なセレクタ */
-  .table th.scrollCol,
-  .table td.scrollCol {
-    width: 60px !important;
-    min-width: 60px !important;
-    max-width: 60px !important;
+  /* 第3列：連対率 - 80px */
+  .table th:nth-child(3),
+  .table td:nth-child(3) {
+    width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
   }
 
-  .table th.gateCol,
-  .table td.gateCol {
-    width: 60px !important;
-    min-width: 60px !important;
-    max-width: 60px !important;
+  /* 第4列：複勝率 - 80px */
+  .table th:nth-child(4),
+  .table td:nth-child(4) {
+    width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
+  }
+
+  /* 第5列：単勝回収率 - 100px */
+  .table th:nth-child(5),
+  .table td:nth-child(5) {
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
+  }
+
+  /* 第6列：複勝回収率 - 100px */
+  .table th:nth-child(6),
+  .table td:nth-child(6) {
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
   }
 
   .gateBadge {
