@@ -50,8 +50,8 @@
 .gateCol {
   position: sticky;
   left: 0;
-  width: 80px;
-  min-width: 80px;
+  width: 70px;
+  min-width: 70px;
   text-align: center !important;
   border-left: none !important;
   border-right: none !important;
@@ -175,12 +175,12 @@
     box-sizing: border-box !important;
   }
 
-  /* 第1列：枠番 - 80px */
+  /* 第1列：枠番 - 70px */
   .table th:nth-child(1),
   .table td:nth-child(1) {
-    width: 80px !important;
-    min-width: 80px !important;
-    max-width: 80px !important;
+    width: 70px !important;
+    min-width: 70px !important;
+    max-width: 70px !important;
   }
 
   /* 第2列：勝率 - 80px */
