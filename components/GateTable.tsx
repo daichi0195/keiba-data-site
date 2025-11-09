@@ -55,26 +55,26 @@ export default function GateTable({ title, data }: Props) {
       
       <div className={styles.tableContainer}>
         <div className={styles.tableScroll} ref={scrollRef}>
-          <table className={styles.table}>
+          <table className={styles.table} style={{ width: '360px', minWidth: '360px', maxWidth: '360px', tableLayout: 'fixed' }}>
             <thead>
               <tr>
-                <th className={styles.gateCol}>
+                <th className={styles.gateCol} style={{ width: '60px', minWidth: '60px', maxWidth: '60px' }}>
                   枠番
                 </th>
-                <th className={styles.scrollCol}>勝率</th>
-                <th className={styles.scrollCol}>連対率</th>
-                <th className={styles.scrollCol}>複勝率</th>
-                <th className={styles.scrollCol}>単勝回収率</th>
-                <th className={styles.scrollCol}>複勝回収率</th>
+                <th className={styles.scrollCol} style={{ width: '60px', minWidth: '60px', maxWidth: '60px' }}>勝率</th>
+                <th className={styles.scrollCol} style={{ width: '60px', minWidth: '60px', maxWidth: '60px' }}>連対率</th>
+                <th className={styles.scrollCol} style={{ width: '60px', minWidth: '60px', maxWidth: '60px' }}>複勝率</th>
+                <th className={styles.scrollCol} style={{ width: '60px', minWidth: '60px', maxWidth: '60px' }}>単勝回収率</th>
+                <th className={styles.scrollCol} style={{ width: '60px', minWidth: '60px', maxWidth: '60px' }}>複勝回収率</th>
               </tr>
             </thead>
             <tbody>
               {data.map((row, index) => (
-                <tr 
-                  key={row.gate} 
+                <tr
+                  key={row.gate}
                   className={index % 2 === 0 ? styles.rowEven : styles.rowOdd}
                 >
-                  <td className={styles.gateCol}>
+                  <td className={styles.gateCol} style={{ width: '60px', minWidth: '60px', maxWidth: '60px' }}>
                     <span
                       className={styles.gateBadge}
                       style={{
@@ -85,27 +85,27 @@ export default function GateTable({ title, data }: Props) {
                       {row.gate}
                     </span>
                   </td>
-                  <td className={styles.scrollCol}>
+                  <td className={styles.scrollCol} style={{ width: '60px', minWidth: '60px', maxWidth: '60px' }}>
                     <span className={isHighlight(row.win_rate, maxWinRate) ? styles.highlight : ''}>
                       {row.win_rate}%
                     </span>
                   </td>
-                  <td className={styles.scrollCol}>
+                  <td className={styles.scrollCol} style={{ width: '60px', minWidth: '60px', maxWidth: '60px' }}>
                     <span className={isHighlight(row.quinella_rate, maxQuinellaRate) ? styles.highlight : ''}>
                       {row.quinella_rate}%
                     </span>
                   </td>
-                  <td className={styles.scrollCol}>
+                  <td className={styles.scrollCol} style={{ width: '60px', minWidth: '60px', maxWidth: '60px' }}>
                     <span className={isHighlight(row.place_rate, maxPlaceRate) ? styles.highlight : ''}>
                       {row.place_rate}%
                     </span>
                   </td>
-                  <td className={styles.scrollCol}>
+                  <td className={styles.scrollCol} style={{ width: '60px', minWidth: '60px', maxWidth: '60px' }}>
                     <span className={isHighlight(row.win_payback, maxWinPayback) ? styles.highlight : ''}>
                       {row.win_payback}%
                     </span>
                   </td>
-                  <td className={styles.scrollCol}>
+                  <td className={styles.scrollCol} style={{ width: '60px', minWidth: '60px', maxWidth: '60px' }}>
                     <span className={isHighlight(row.place_payback, maxPlacePayback) ? styles.highlight : ''}>
                       {row.place_payback}%
                     </span>

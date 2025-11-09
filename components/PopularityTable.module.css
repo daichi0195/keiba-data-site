@@ -45,8 +45,8 @@
   .styleCol {
     position: sticky;
     left: 0;
-    width: 100px;
-    min-width: 100px;
+    width: 80px;
+    min-width: 80px;
     text-align: center !important;
     border-left: none !important;
     border-right: none !important;
@@ -124,26 +124,15 @@
     display: inline-block !important;
   }
   
-  /* レスポンシブ */
+  /* レスポンシブ - Force rebuild */
   @media (max-width: 768px) {
-    .table { font-size: 13px; min-width: 500px; }
-    .table th, .table td { padding: 8px 6px; }
-    .styleCol { width: 80px; min-width: 80px; }
-    .scrollCol { width: 60px; min-width: 60px; }
-  
-    /* （必要なら）1着・2着・3着の列幅を狭める */
-    .table th:nth-child(3),
-    .table th:nth-child(4),
-    .table th:nth-child(5),
-    .table td:nth-child(3),
-    .table td:nth-child(4),
-    .table td:nth-child(5) {
-      min-width: 45px !important;
-      max-width: 45px !important;
-      width: 45px !important;
-      padding: 8px 4px !important;
-    }
-  
+    .table { font-size: 13px; width: 360px !important; min-width: 360px !important; max-width: 360px !important; table-layout: fixed !important; }
+    .table th, .table td { padding: 8px 6px; box-sizing: border-box !important; }
+    .styleCol { width: 60px !important; min-width: 60px !important; max-width: 60px !important; }
+    .scrollCol { width: 60px !important; min-width: 60px !important; max-width: 60px !important; }
+    .table th.styleCol, .table td.styleCol { width: 60px !important; min-width: 60px !important; max-width: 60px !important; }
+    .table th.scrollCol, .table td.scrollCol { width: 60px !important; min-width: 60px !important; max-width: 60px !important; }
+
     .styleBadge { font-size: 12px; padding: 3px 8px; }
   }
   

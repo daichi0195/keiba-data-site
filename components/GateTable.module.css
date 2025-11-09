@@ -159,41 +159,49 @@
   display: inline-block !important;
 }
 
-/* レスポンシブ */
+/* レスポンシブ - Force rebuild */
 @media (max-width: 768px) {
   .table {
     font-size: 13px;
-    min-width: 500px;
+    width: 360px !important;
+    min-width: 360px !important;
+    max-width: 360px !important;
+    table-layout: fixed !important;
   }
-  
+
   .table th,
   .table td {
     padding: 8px 6px;
-  }
-  
-  .gateCol {
-    width: 60px;
-    min-width: 60px;
-  }
-  
-  .scrollCol {
-    width: 60px;
-    min-width: 60px;
+    box-sizing: border-box !important;
   }
 
-  /* モバイルでも1着・2着・3着の列幅を45pxに */
-  .table th:nth-child(3),
-  .table th:nth-child(4),
-  .table th:nth-child(5),
-  .table td:nth-child(3),
-  .table td:nth-child(4),
-  .table td:nth-child(5) {
-    min-width: 45px !important;
-    max-width: 45px !important;
-    width: 45px !important;
-    padding: 8px 4px !important;
+  .gateCol {
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
   }
-  
+
+  .scrollCol {
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+  }
+
+  /* 確実に60pxを適用 - より具体的なセレクタ */
+  .table th.scrollCol,
+  .table td.scrollCol {
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+  }
+
+  .table th.gateCol,
+  .table td.gateCol {
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+  }
+
   .gateBadge {
     width: 26px;
     height: 26px;

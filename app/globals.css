@@ -1739,6 +1739,7 @@ details[open] .evaluation-content {
   .mobile-data-table {
     font-size: 13px;
     min-width: 700px;
+    table-layout: fixed;
   }
   
   .mobile-data-table th,
@@ -1825,7 +1826,9 @@ details[open] .evaluation-content {
   }
   
   .mobile-scroll-col {
-    min-width: 60px;
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
   }
   
   /* 1着・2着・3着を狭く (4列目・5列目・6列目) */
