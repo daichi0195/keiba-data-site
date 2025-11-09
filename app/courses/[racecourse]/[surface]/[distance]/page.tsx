@@ -397,6 +397,15 @@ export default async function CoursePage({ params }: Props) {
     if (gcsData.trainer_stats) {
       data.trainer_stats = gcsData.trainer_stats;
     }
+    if (gcsData.pedigree_stats) {
+      data.pedigree_stats = gcsData.pedigree_stats;
+    }
+    if (gcsData.dam_sire_stats) {
+      data.dam_sire_stats = gcsData.dam_sire_stats;
+    }
+    if (gcsData.running_style_stats) {
+      data.running_style_stats = gcsData.running_style_stats;
+    }
 
     console.log('✅ All data loaded from GCS successfully');
 
