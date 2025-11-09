@@ -11,7 +11,8 @@
   width: 24px;
   height: 18px;
   position: fixed;
-  top: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
   right: 1rem;
   z-index: 110;
   pointer-events: auto;
