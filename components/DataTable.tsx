@@ -31,11 +31,17 @@ export default function DataTable({ title, data, initialShow = 10 }: Props) {
   
   const displayData = showAll ? data : data.slice(0, initialShow);
   
-  // 名前を3文字に制限する関数
+  // 名前を制限する関数
   const truncateName = (name: string, isNarrow: boolean) => {
-    if (!isNarrow) return name;
-    const truncated = name.substring(0, 3);
-    return truncated;
+    if (isNarrow) {
+      // スクロール時は3文字に制限
+      return name.substring(0, 3);
+    }
+    // 非スクロール時は9文字を超える場合は...を付ける
+    if (name.length > 9) {
+      return name.substring(0, 9) + '...';
+    }
+    return name;
   };
   
   // スクロール検知

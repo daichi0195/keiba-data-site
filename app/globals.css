@@ -1827,7 +1827,9 @@ details[open] .evaluation-content {
 
   /* 第3列：出走数 - 60px */
   .mobile-data-table thead th:nth-child(3),
-  .mobile-data-table tbody td:nth-child(3) {
+  .mobile-data-table tbody td:nth-child(3),
+  .mobile-data-table thead th.mobile-scroll-col:nth-child(3),
+  .mobile-data-table tbody td.mobile-scroll-col:nth-child(3) {
     width: 60px !important;
     min-width: 60px !important;
     max-width: 60px !important;
@@ -1862,7 +1864,9 @@ details[open] .evaluation-content {
 
   /* 第7列：勝率 - 80px */
   .mobile-data-table thead th:nth-child(7),
-  .mobile-data-table tbody td:nth-child(7) {
+  .mobile-data-table tbody td:nth-child(7),
+  .mobile-data-table thead th.mobile-scroll-col:nth-child(7),
+  .mobile-data-table tbody td.mobile-scroll-col:nth-child(7) {
     width: 80px !important;
     min-width: 80px !important;
     max-width: 80px !important;
@@ -1870,7 +1874,9 @@ details[open] .evaluation-content {
 
   /* 第8列：連対率 - 80px */
   .mobile-data-table thead th:nth-child(8),
-  .mobile-data-table tbody td:nth-child(8) {
+  .mobile-data-table tbody td:nth-child(8),
+  .mobile-data-table thead th.mobile-scroll-col:nth-child(8),
+  .mobile-data-table tbody td.mobile-scroll-col:nth-child(8) {
     width: 80px !important;
     min-width: 80px !important;
     max-width: 80px !important;
@@ -1878,7 +1884,9 @@ details[open] .evaluation-content {
 
   /* 第9列：複勝率 - 80px */
   .mobile-data-table thead th:nth-child(9),
-  .mobile-data-table tbody td:nth-child(9) {
+  .mobile-data-table tbody td:nth-child(9),
+  .mobile-data-table thead th.mobile-scroll-col:nth-child(9),
+  .mobile-data-table tbody td.mobile-scroll-col:nth-child(9) {
     width: 80px !important;
     min-width: 80px !important;
     max-width: 80px !important;
@@ -1886,7 +1894,9 @@ details[open] .evaluation-content {
 
   /* 第10列：単勝回収率 - 90px */
   .mobile-data-table thead th:nth-child(10),
-  .mobile-data-table tbody td:nth-child(10) {
+  .mobile-data-table tbody td:nth-child(10),
+  .mobile-data-table thead th.mobile-scroll-col:nth-child(10),
+  .mobile-data-table tbody td.mobile-scroll-col:nth-child(10) {
     width: 90px !important;
     min-width: 90px !important;
     max-width: 90px !important;
@@ -1894,7 +1904,9 @@ details[open] .evaluation-content {
 
   /* 第11列：複勝回収率 - 90px */
   .mobile-data-table thead th:nth-child(11),
-  .mobile-data-table tbody td:nth-child(11) {
+  .mobile-data-table tbody td:nth-child(11),
+  .mobile-data-table thead th.mobile-scroll-col:nth-child(11),
+  .mobile-data-table tbody td.mobile-scroll-col:nth-child(11) {
     width: 90px !important;
     min-width: 90px !important;
     max-width: 90px !important;
