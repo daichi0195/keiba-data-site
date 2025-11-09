@@ -288,6 +288,77 @@
   margin-bottom: 4rem;
 }
 
+/* ===== デスクトップ：セクションナビゲーション ===== */
+.headerNav {
+  display: none;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0 1rem;
+  gap: 1rem;
+  align-items: center;
+  white-space: nowrap;
+  padding-right: 2rem;
+}
+
+/* スクロールバーを非表示 */
+.headerNav::-webkit-scrollbar {
+  display: none;
+}
+.headerNav {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.navButton {
+  display: inline-block;
+  padding: 1rem 1.5rem;
+  background: transparent;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  white-space: nowrap;
+  position: relative;
+  transition: color 0.2s ease;
+  scroll-snap-align: start;
+  flex-shrink: 0;
+  border-bottom: 3px solid transparent;
+}
+
+.navButton:hover {
+  color: #1db854;
+}
+
+.navButton.active {
+  color: #1db854;
+  border-bottom-color: #1db854;
+}
+
+/* ===== デスクトップ（PC） ===== */
+@media (min-width: 769px) {
+  .headerNav {
+    display: flex;
+  }
+
+  .hamburger {
+    display: none;
+  }
+
+  .menuOverlay {
+    display: none;
+  }
+
+  .mobileMenu {
+    display: none;
+  }
+}
+
 /* ===== モバイル（SP） ===== */
 @media (max-width: 768px) {
   .hamburger {
@@ -300,5 +371,9 @@
 
   .mobileMenu {
     display: flex;
+  }
+
+  .headerNav {
+    display: none;
   }
 }

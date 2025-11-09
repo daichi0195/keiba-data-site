@@ -194,15 +194,16 @@ export default function SectionNav({ items }: { items: Item[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const btnRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
-  // ★ 交差判定（既存ロジックがある場合はそれを使用）
+  // ★ デスクトップ：セクション交差判定
   useEffect(() => {
     const sections = items
       .map(i => document.getElementById(i.id))
       .filter((el): el is HTMLElement => !!el);
 
+    if (sections.length === 0) return;
+
     const io = new IntersectionObserver(
       (entries) => {
-        // 一番 viewport 上部に近いものをactiveに
         const visible = entries
           .filter(e => e.isIntersecting)
           .sort((a, b) => Math.abs(a.boundingClientRect.top) - Math.abs(b.boundingClientRect.top));
@@ -215,7 +216,7 @@ export default function SectionNav({ items }: { items: Item[] }) {
       {
         root: null,
         threshold: [0.1, 0.25, 0.5],
-        rootMargin: '-20% 0px -60% 0px', // 上を優先（調整可）
+        rootMargin: '-20% 0px -60% 0px',
       }
     );
 
@@ -223,14 +224,27 @@ export default function SectionNav({ items }: { items: Item[] }) {
     return () => io.disconnect();
   }, [items]);
 
+  // ★ デスクトップ：ナビスクロール
+  useEffect(() => {
+    const container = containerRef.current;
+    const btn = btnRefs.current[activeId ?? ''];
+    if (!container || !btn) return;
+
+    const targetLeft = btn.offsetLeft - container.offsetLeft;
+    const padding = 8;
+    const left = Math.max(0, targetLeft - padding);
+
+    container.scrollTo({
+      left,
+      behavior: 'smooth',
+    });
+  }, [activeId]);
+
   const handleClick = (id: string) => {
     const el = document.getElementById(id);
     if (!el) return;
-    // クリック時に該当セクションへスムーズスクロール
-    const y = el.getBoundingClientRect().top + window.scrollY - 80; // ヘッダーぶん調整
+    const y = el.getBoundingClientRect().top + window.scrollY - 80;
     window.scrollTo({ top: y, behavior: 'smooth' });
-    // メニューを閉じる
-    setIsMenuOpen(false);
   };
 
   const toggleRacecourse = (racecourseNameEn: string) => {
@@ -250,7 +264,24 @@ export default function SectionNav({ items }: { items: Item[] }) {
 
   return (
     <>
-      {/* ハンバーガーメニューボタン */}
+      {/* ===== デスクトップ：セクションナビゲーション ===== */}
+      {items.length > 0 && (
+        <div className={styles.headerNav} ref={containerRef}>
+          {items.map((item) => (
+            <button
+              key={item.id}
+              ref={(el) => { if (el) btnRefs.current[item.id] = el; }}
+              className={`${styles.navButton} ${activeId === item.id ? styles.active : ''}`}
+              onClick={() => handleClick(item.id)}
+              type="button"
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* ===== モバイル：ハンバーガーメニュー ===== */}
       <button
         className={`${styles.hamburger} ${isMenuOpen ? styles.open : ''}`}
         onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -262,7 +293,6 @@ export default function SectionNav({ items }: { items: Item[] }) {
         <span></span>
       </button>
 
-      {/* モバイルメニュー */}
       {isMenuOpen && (
         <>
           <div
