@@ -669,6 +669,7 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
     title={`${seoPrefix} 騎手別データ`}
     data={jockey_stats}
     initialShow={10}
+    nameLabel="騎手名"
   />
 </section>
 
@@ -678,6 +679,7 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
     title={`${seoPrefix} 血統別(種牡馬)データ`}
     data={pedigree_stats}
     initialShow={10}
+    nameLabel="種牡馬名"
   />
 </section>
 
@@ -687,6 +689,7 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
     title={`${seoPrefix} 血統別(母父)データ`}
     data={dam_sire_stats}
     initialShow={10}
+    nameLabel="母父名"
   />
 </section>
 
@@ -696,6 +699,7 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
     title={`${seoPrefix} 調教師別データ`}
     data={trainer_stats}
     initialShow={10}
+    nameLabel="調教師名"
   />
 </section>
 

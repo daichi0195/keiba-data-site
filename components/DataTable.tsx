@@ -20,9 +20,10 @@ type Props = {
   title: string;
   data: DataRow[];
   initialShow?: number;
+  nameLabel?: string;
 };
 
-export default function DataTable({ title, data, initialShow = 10 }: Props) {
+export default function DataTable({ title, data, initialShow = 10, nameLabel = '名前' }: Props) {
   const [showAll, setShowAll] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -99,7 +100,7 @@ export default function DataTable({ title, data, initialShow = 10 }: Props) {
                 <th className="mobile-sticky-col mobile-col-rank"></th>
                 {/* 固定列: 名前 */}
                 <th className={`mobile-sticky-col mobile-col-name mobile-col-name-header ${isScrolled ? 'mobile-col-name-narrow' : ''}`}>
-                  名前
+                  {nameLabel}
                 </th>
                 
                 {/* スクロール列 */}
