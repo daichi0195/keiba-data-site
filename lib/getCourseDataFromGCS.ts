@@ -25,7 +25,7 @@ export async function getCourseDataFromGCS(
 
   try {
     const response = await fetch(url, {
-      next: { revalidate: 3600 }, // 1時間キャッシュ
+      next: { revalidate: false }, // ビルド時のみ取得、自動リバリデートなし
     });
 
     if (!response.ok) {
