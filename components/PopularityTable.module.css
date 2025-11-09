@@ -140,12 +140,12 @@
       box-sizing: border-box !important;
     }
 
-    /* 第1列：人気 - 60px */
+    /* 第1列：人気 - 80px */
     .table th:nth-child(1),
     .table td:nth-child(1) {
-      width: 60px !important;
-      min-width: 60px !important;
-      max-width: 60px !important;
+      width: 80px !important;
+      min-width: 80px !important;
+      max-width: 80px !important;
     }
 
     /* 第2列：勝率 - 80px */
@@ -172,20 +172,20 @@
       max-width: 80px !important;
     }
 
-    /* 第5列：単勝回収率 - 100px */
+    /* 第5列：単勝回収率 - 90px */
     .table th:nth-child(5),
     .table td:nth-child(5) {
-      width: 100px !important;
-      min-width: 100px !important;
-      max-width: 100px !important;
+      width: 90px !important;
+      min-width: 90px !important;
+      max-width: 90px !important;
     }
 
-    /* 第6列：複勝回収率 - 100px */
+    /* 第6列：複勝回収率 - 90px */
     .table th:nth-child(6),
     .table td:nth-child(6) {
-      width: 100px !important;
-      min-width: 100px !important;
-      max-width: 100px !important;
+      width: 90px !important;
+      min-width: 90px !important;
+      max-width: 90px !important;
     }
 
     .styleBadge {
