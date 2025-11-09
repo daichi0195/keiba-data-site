@@ -9,6 +9,8 @@ import BarChartAnimation from '@/components/BarChartAnimation';
 import VolatilityExplanation from '@/components/VolatilityExplanation';
 import GatePositionExplanation from '@/components/GatePositionExplanation';
 import RunningStyleExplanation from '@/components/RunningStyleExplanation';
+import SectionNav from '@/components/SectionNav';
+import BottomNav from '@/components/BottomNav';
 import { getCourseDataFromGCS } from '@/lib/getCourseDataFromGCS';
 
 // ISR: 週1回（604800秒）再生成
@@ -428,8 +430,23 @@ const courseShort =
 // 「中山芝1800m」のようなSEO用接頭辞
 const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`;
 
+  // ナビゲーション用のセクションアイテム
+  const navigationItems = [
+    { id: 'characteristics-section', label: 'コース特性' },
+    { id: 'highlights-section', label: '注目ポイント' },
+    { id: 'popularity-section', label: '人気別' },
+    { id: 'gate-section', label: '枠順別' },
+    { id: 'running-style-section', label: '脚質別' },
+    { id: 'jockey-section', label: '騎手別' },
+    { id: 'bloodline-section', label: '血統別(種牡馬)' },
+    { id: 'dam-sire-section', label: '血統別(母父)' },
+    { id: 'trainer-section', label: '調教師別' },
+  ];
+
   return (
     <>
+      <SectionNav />
+      <BottomNav items={navigationItems} />
       <main>
         <div className="course-header">
           <h1>{course_info.racecourse} {course_info.surface}{course_info.distance}m</h1>
@@ -619,7 +636,9 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
         </section>
 
         {/* === 注目ポイント === */}
-        <HighlightsSection courseInfo={course_info} />
+        <section id="highlights-section">
+          <HighlightsSection courseInfo={course_info} />
+        </section>
         {/* === 人気別 === */}
 <section id="popularity-section">
   <PopularityTable

@@ -1,0 +1,105 @@
+/* ===== BottomNav.module.css ===== */
+
+/* ナビ全体の固定位置 */
+.sectionNav {
+  position: fixed;
+  bottom: 1rem;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 0 1rem;
+  pointer-events: none;
+}
+
+/* 横スクロール可能なナビゲーションコンテナ */
+.navContainer {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  max-width: 100%;
+  padding: 0.5rem;
+  justify-content: flex-start;
+  pointer-events: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+/* スクロールバー（Chrome用） */
+.navContainer::-webkit-scrollbar {
+  height: 6px;
+}
+
+.navContainer::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+/* ===== ボタンスタイル ===== */
+.navButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  max-width: 150px;
+  padding: 0.75rem 1.5rem;
+  border: 2px solid #e2e8f0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  color: #64748b;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 50px;
+  white-space: nowrap;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* ボタン内のテキストを確実に中央揃え */
+.navButton > * {
+  line-height: 1;
+}
+
+/* ===== ホバー時 ===== */
+.navButton:hover {
+  border-color: #1db854;
+  color: #0d5c2f;
+  background: rgba(248, 250, 248, 0.98);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+/* ===== アクティブ時 ===== */
+.navButton.active {
+  background: linear-gradient(135deg, #1db854 0%, #17a047 100%);
+  color: #fff;
+  border-color: #1db854;
+  font-weight: 700;
+  box-shadow: 0 6px 20px rgba(29, 184, 84, 0.4);
+}
+
+/* ===== モバイル（SP） ===== */
+@media (max-width: 768px) {
+  .navButton {
+    padding: 0.625rem 1rem;
+    font-size: 0.8125rem;
+    max-width: 120px;
+  }
+
+  .navContainer {
+    gap: 0.4rem;
+    padding: 0.4rem 0.5rem;
+  }
+}
+
+/* ===== スクロールスナップ補正（任意） ===== */
+@media (hover: none) {
+  .navButton:active {
+    transform: scale(0.97);
+  }
+}
