@@ -1747,6 +1747,13 @@ details[open] .evaluation-content {
     padding: 8px 6px;
   }
 
+  /* mobile-scroll-colのデフォルト幅をリセット */
+  .mobile-data-table .mobile-scroll-col {
+    width: auto !important;
+    min-width: auto !important;
+    max-width: none !important;
+  }
+
   .mobile-col-rank {
     width: 30px;
     min-width: 30px;
@@ -1826,18 +1833,16 @@ details[open] .evaluation-content {
   }
 
   /* 第3列：出走数 - 60px */
-  .mobile-data-table thead th:nth-child(3),
-  .mobile-data-table tbody td:nth-child(3),
-  .mobile-data-table thead th.mobile-scroll-col:nth-child(3),
-  .mobile-data-table tbody td.mobile-scroll-col:nth-child(3) {
+  .mobile-data-table th:nth-child(3),
+  .mobile-data-table td:nth-child(3) {
     width: 60px !important;
     min-width: 60px !important;
     max-width: 60px !important;
   }
 
   /* 第4列：1着 - 40px */
-  .mobile-data-table thead th:nth-child(4),
-  .mobile-data-table tbody td:nth-child(4) {
+  .mobile-data-table th:nth-child(4),
+  .mobile-data-table td:nth-child(4) {
     width: 40px !important;
     min-width: 40px !important;
     max-width: 40px !important;
@@ -1845,8 +1850,8 @@ details[open] .evaluation-content {
   }
 
   /* 第5列：2着 - 40px */
-  .mobile-data-table thead th:nth-child(5),
-  .mobile-data-table tbody td:nth-child(5) {
+  .mobile-data-table th:nth-child(5),
+  .mobile-data-table td:nth-child(5) {
     width: 40px !important;
     min-width: 40px !important;
     max-width: 40px !important;
@@ -1854,8 +1859,8 @@ details[open] .evaluation-content {
   }
 
   /* 第6列：3着 - 40px */
-  .mobile-data-table thead th:nth-child(6),
-  .mobile-data-table tbody td:nth-child(6) {
+  .mobile-data-table th:nth-child(6),
+  .mobile-data-table td:nth-child(6) {
     width: 40px !important;
     min-width: 40px !important;
     max-width: 40px !important;
@@ -1863,50 +1868,40 @@ details[open] .evaluation-content {
   }
 
   /* 第7列：勝率 - 80px */
-  .mobile-data-table thead th:nth-child(7),
-  .mobile-data-table tbody td:nth-child(7),
-  .mobile-data-table thead th.mobile-scroll-col:nth-child(7),
-  .mobile-data-table tbody td.mobile-scroll-col:nth-child(7) {
+  .mobile-data-table th:nth-child(7),
+  .mobile-data-table td:nth-child(7) {
     width: 80px !important;
     min-width: 80px !important;
     max-width: 80px !important;
   }
 
   /* 第8列：連対率 - 80px */
-  .mobile-data-table thead th:nth-child(8),
-  .mobile-data-table tbody td:nth-child(8),
-  .mobile-data-table thead th.mobile-scroll-col:nth-child(8),
-  .mobile-data-table tbody td.mobile-scroll-col:nth-child(8) {
+  .mobile-data-table th:nth-child(8),
+  .mobile-data-table td:nth-child(8) {
     width: 80px !important;
     min-width: 80px !important;
     max-width: 80px !important;
   }
 
   /* 第9列：複勝率 - 80px */
-  .mobile-data-table thead th:nth-child(9),
-  .mobile-data-table tbody td:nth-child(9),
-  .mobile-data-table thead th.mobile-scroll-col:nth-child(9),
-  .mobile-data-table tbody td.mobile-scroll-col:nth-child(9) {
+  .mobile-data-table th:nth-child(9),
+  .mobile-data-table td:nth-child(9) {
     width: 80px !important;
     min-width: 80px !important;
     max-width: 80px !important;
   }
 
   /* 第10列：単勝回収率 - 90px */
-  .mobile-data-table thead th:nth-child(10),
-  .mobile-data-table tbody td:nth-child(10),
-  .mobile-data-table thead th.mobile-scroll-col:nth-child(10),
-  .mobile-data-table tbody td.mobile-scroll-col:nth-child(10) {
+  .mobile-data-table th:nth-child(10),
+  .mobile-data-table td:nth-child(10) {
     width: 90px !important;
     min-width: 90px !important;
     max-width: 90px !important;
   }
 
   /* 第11列：複勝回収率 - 90px */
-  .mobile-data-table thead th:nth-child(11),
-  .mobile-data-table tbody td:nth-child(11),
-  .mobile-data-table thead th.mobile-scroll-col:nth-child(11),
-  .mobile-data-table tbody td.mobile-scroll-col:nth-child(11) {
+  .mobile-data-table th:nth-child(11),
+  .mobile-data-table td:nth-child(11) {
     width: 90px !important;
     min-width: 90px !important;
     max-width: 90px !important;
