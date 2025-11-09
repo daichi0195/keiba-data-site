@@ -78,19 +78,19 @@ export default function PopularityTable({
 
       <div className={styles.tableContainer}>
         <div className={styles.tableScroll} ref={scrollRef} data-scrolled={isScrolled}>
-          <table className={styles.table} style={{ width: '360px', minWidth: '360px', maxWidth: '360px', tableLayout: 'fixed' }}>
+          <table className={styles.table}>
             <thead>
               <tr>
-                <th className={styles.styleCol} style={{ width: '60px', minWidth: '60px', maxWidth: '60px' }}>人気</th>
+                <th className={styles.styleCol}>人気</th>
                 {METRIC_COLS.map((col) => (
-                  <th key={col.key} className={styles.scrollCol} style={{ width: '60px', minWidth: '60px', maxWidth: '60px' }}>{col.label}</th>
+                  <th key={col.key} className={styles.scrollCol}>{col.label}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {BAND_ROWS.map((band, idx) => (
                 <tr key={band.key} className={idx % 2 === 0 ? styles.rowEven : styles.rowOdd}>
-                  <td className={styles.styleCol} style={{ width: '60px', minWidth: '60px', maxWidth: '60px' }}>
+                  <td className={styles.styleCol}>
                     <span className={styles.styleBadge}>{band.label}</span>
                   </td>
                   {METRIC_COLS.map((col) => {
@@ -98,7 +98,7 @@ export default function PopularityTable({
                     const disp = v === undefined || v === null ? '-' : `${v}${col.suffix ?? ''}`;
                     const isMax = typeof v === 'number' && v === maxByMetric[col.key];
                     return (
-                      <td key={col.key} className={styles.scrollCol} style={{ width: '60px', minWidth: '60px', maxWidth: '60px' }}>
+                      <td key={col.key} className={styles.scrollCol}>
                         <span className={isMax ? styles.highlight : ''}>{disp}</span>
                       </td>
                     );
