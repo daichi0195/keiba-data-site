@@ -1739,6 +1739,7 @@ details[open] .evaluation-content {
   .mobile-data-table {
     font-size: 13px;
     min-width: 700px;
+    table-layout: fixed;
   }
   
   .mobile-data-table th,

@@ -164,6 +164,7 @@
   .table {
     font-size: 13px;
     min-width: 500px;
+    table-layout: fixed;
   }
   
   .table th,
