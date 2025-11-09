@@ -37,10 +37,7 @@ export default function DataTable({ title, data, initialShow = 10 }: Props) {
       // スクロール時は3文字に制限
       return name.substring(0, 3);
     }
-    // 非スクロール時は9文字を超える場合は...を付ける
-    if (name.length > 9) {
-      return name.substring(0, 9) + '...';
-    }
+    // 非スクロール時はCSS (text-overflow: ellipsis) に任せる
     return name;
   };
   
