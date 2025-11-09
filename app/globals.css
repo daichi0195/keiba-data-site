@@ -1741,7 +1741,7 @@ details[open] .evaluation-content {
   .mobile-data-table {
     font-size: 13px;
     min-width: 730px;
-    table-layout: auto !important;
+    table-layout: fixed !important;
   }
 
   .mobile-data-table th,
