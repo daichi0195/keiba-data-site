@@ -177,9 +177,10 @@
   }
   
   .scrollCol {
+    width: 60px;
     min-width: 60px;
   }
-  
+
   /* モバイルでも1着・2着・3着の列幅を45pxに */
   .table th:nth-child(3),
   .table th:nth-child(4),
