@@ -126,7 +126,7 @@
   
   /* レスポンシブ */
   @media (max-width: 768px) {
-    .table { font-size: 13px; min-width: 500px; table-layout: fixed; }
+    .table { font-size: 13px; min-width: 360px; table-layout: fixed; }
     .table th, .table td { padding: 8px 6px; }
     .styleCol { width: 60px !important; min-width: 60px !important; max-width: 60px !important; }
     .scrollCol { width: 60px !important; min-width: 60px !important; max-width: 60px !important; }
