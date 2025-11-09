@@ -124,7 +124,7 @@
     display: inline-block !important;
   }
   
-  /* レスポンシブ */
+  /* レスポンシブ - Force rebuild */
   @media (max-width: 768px) {
     .table { font-size: 13px; min-width: 360px; table-layout: fixed; }
     .table th, .table td { padding: 8px 6px; }

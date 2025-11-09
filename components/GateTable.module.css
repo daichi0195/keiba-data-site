@@ -159,7 +159,7 @@
   display: inline-block !important;
 }
 
-/* レスポンシブ */
+/* レスポンシブ - Force rebuild */
 @media (max-width: 768px) {
   .table {
     font-size: 13px;
