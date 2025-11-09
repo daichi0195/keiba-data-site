@@ -1413,12 +1413,16 @@ details[open] .evaluation-content {
 
 .mobile-col-name {
   left: 35px;
+  width: 100px !important;
   min-width: 100px !important;
+  max-width: 100px !important;
   padding-left: 12px !important;
   padding-right: 12px !important;
   border-left: none !important;
   border-right: 1px solid #000 !important;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   background: #ffffff !important;
   z-index: 20 !important;
 }
@@ -1741,7 +1745,7 @@ details[open] .evaluation-content {
   .mobile-data-table {
     font-size: 13px;
     min-width: 730px;
-    table-layout: auto;
+    table-layout: fixed !important;
   }
 
   .mobile-data-table th,
@@ -1759,12 +1763,16 @@ details[open] .evaluation-content {
 
   .mobile-col-name {
     left: 30px;
+    width: 100px !important;
     min-width: 100px !important;
+    max-width: 100px !important;
     padding-left: 8px !important;
     padding-right: 8px !important;
     background: white !important;
     z-index: 20 !important;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .mobile-data-table thead .mobile-col-name-narrow {
@@ -1903,7 +1911,22 @@ details[open] .evaluation-content {
     min-width: 90px !important;
     max-width: 90px !important;
   }
-  
+
+  /* クラスベースのセレクタで率・回収率の幅を直接指定 */
+  .mobile-data-table th.mobile-col-rate,
+  .mobile-data-table td.mobile-col-rate {
+    width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
+  }
+
+  .mobile-data-table th.mobile-col-payback,
+  .mobile-data-table td.mobile-col-payback {
+    width: 90px !important;
+    min-width: 90px !important;
+    max-width: 90px !important;
+  }
+
   .mobile-rank-badge,
   .mobile-rank-normal {
     font-size: 13px;
