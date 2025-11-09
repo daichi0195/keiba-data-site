@@ -99,7 +99,8 @@
 .scrollCol {
   padding: 10px 8px;
   text-align: center;
-  min-width: 70px;
+  width: 90px;
+  min-width: 90px;
   border-right: 1px solid #ddd;
 }
 
