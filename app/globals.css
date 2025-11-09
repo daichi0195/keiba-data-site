@@ -1413,9 +1413,9 @@ details[open] .evaluation-content {
 
 .mobile-col-name {
   left: 35px;
-  width: 120px !important;
-  min-width: 120px !important;
-  max-width: 120px !important;
+  width: 100px !important;
+  min-width: 100px !important;
+  max-width: 100px !important;
   padding-left: 12px !important;
   padding-right: 12px !important;
   border-left: none !important;
@@ -1744,7 +1744,7 @@ details[open] .evaluation-content {
 @media (max-width: 767px) {
   .mobile-data-table {
     font-size: 13px;
-    min-width: 750px;
+    min-width: 730px;
     table-layout: fixed !important;
   }
 
@@ -1763,9 +1763,9 @@ details[open] .evaluation-content {
 
   .mobile-col-name {
     left: 30px;
-    width: 120px !important;
-    min-width: 120px !important;
-    max-width: 120px !important;
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
     padding-left: 8px !important;
     padding-right: 8px !important;
     background: white !important;
