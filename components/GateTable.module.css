@@ -181,19 +181,6 @@
     min-width: 60px;
   }
 
-  /* モバイルでも1着・2着・3着の列幅を45pxに */
-  .table th:nth-child(3),
-  .table th:nth-child(4),
-  .table th:nth-child(5),
-  .table td:nth-child(3),
-  .table td:nth-child(4),
-  .table td:nth-child(5) {
-    min-width: 45px !important;
-    max-width: 45px !important;
-    width: 45px !important;
-    padding: 8px 4px !important;
-  }
-  
   .gateBadge {
     width: 26px;
     height: 26px;
