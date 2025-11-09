@@ -162,15 +162,18 @@
   @media (max-width: 768px) {
     .table {
       font-size: 13px;
-      min-width: 360px;
-      table-layout: fixed;
+      width: 360px !important;
+      min-width: 360px !important;
+      max-width: 360px !important;
+      table-layout: fixed !important;
     }
-    
+
     .table th,
     .table td {
       padding: 8px 6px;
+      box-sizing: border-box !important;
     }
-    
+
     .styleCol {
       width: 60px !important;
       min-width: 60px !important;
@@ -178,6 +181,21 @@
     }
 
     .scrollCol {
+      width: 60px !important;
+      min-width: 60px !important;
+      max-width: 60px !important;
+    }
+
+    /* 確実に60pxを適用 - より具体的なセレクタ */
+    .table th.styleCol,
+    .table td.styleCol {
+      width: 60px !important;
+      min-width: 60px !important;
+      max-width: 60px !important;
+    }
+
+    .table th.scrollCol,
+    .table td.scrollCol {
       width: 60px !important;
       min-width: 60px !important;
       max-width: 60px !important;

@@ -126,10 +126,12 @@
   
   /* レスポンシブ - Force rebuild */
   @media (max-width: 768px) {
-    .table { font-size: 13px; min-width: 360px; table-layout: fixed; }
-    .table th, .table td { padding: 8px 6px; }
+    .table { font-size: 13px; width: 360px !important; min-width: 360px !important; max-width: 360px !important; table-layout: fixed !important; }
+    .table th, .table td { padding: 8px 6px; box-sizing: border-box !important; }
     .styleCol { width: 60px !important; min-width: 60px !important; max-width: 60px !important; }
     .scrollCol { width: 60px !important; min-width: 60px !important; max-width: 60px !important; }
+    .table th.styleCol, .table td.styleCol { width: 60px !important; min-width: 60px !important; max-width: 60px !important; }
+    .table th.scrollCol, .table td.scrollCol { width: 60px !important; min-width: 60px !important; max-width: 60px !important; }
 
     .styleBadge { font-size: 12px; padding: 3px 8px; }
   }
