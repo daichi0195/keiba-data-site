@@ -45,8 +45,8 @@
   .styleCol {
     position: sticky;
     left: 0;
-    width: 70px;
-    min-width: 70px;
+    width: 75px;
+    min-width: 75px;
     text-align: center !important;
     border-left: none !important;
     border-right: none !important;
@@ -140,12 +140,12 @@
       box-sizing: border-box !important;
     }
 
-    /* 第1列：人気 - 70px */
+    /* 第1列：人気 - 75px */
     .table th:nth-child(1),
     .table td:nth-child(1) {
-      width: 70px !important;
-      min-width: 70px !important;
-      max-width: 70px !important;
+      width: 75px !important;
+      min-width: 75px !important;
+      max-width: 75px !important;
     }
 
     /* 第2列：勝率 - 80px */
