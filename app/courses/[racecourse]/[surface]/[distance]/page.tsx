@@ -505,7 +505,7 @@ export default async function CoursePage({ params }: Props) {
   data.course_info.data_period = dataPeriod;
   data.course_info.last_updated = formattedDate;
 
-  const { course_info, gate_stats, running_style_stats, popularity_stats, jockey_stats, pedigree_stats, dam_sire_stats, trainer_stats } = data;
+  const { course_info, gate_stats, running_style_stats, running_style_trends, popularity_stats, jockey_stats, pedigree_stats, dam_sire_stats, trainer_stats } = data;
   
   const top5Jockeys = jockey_stats.slice(0, 5);
   const top5Pedigrees = pedigree_stats.slice(0, 5);
