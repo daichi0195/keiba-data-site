@@ -157,27 +157,27 @@ export default function DataTable({ title, data, initialShow = 10, nameLabel = '
                   </td>
                   <td className="mobile-scroll-col mobile-col-rate">
                     <span className={isHighlight(row.win_rate, maxWinRate) ? 'mobile-highlight' : ''}>
-                      {row.win_rate}%
+                      {(row.win_rate).toFixed(1)}%
                     </span>
                   </td>
                   <td className="mobile-scroll-col mobile-col-rate">
                     <span className={isHighlight(row.quinella_rate, maxQuinellaRate) ? 'mobile-highlight' : ''}>
-                      {row.quinella_rate}%
+                      {(row.quinella_rate).toFixed(1)}%
                     </span>
                   </td>
                   <td className="mobile-scroll-col mobile-col-rate">
                     <span className={isHighlight(row.place_rate, maxPlaceRate) ? 'mobile-highlight' : ''}>
-                      {row.place_rate}%
+                      {(row.place_rate).toFixed(1)}%
                     </span>
                   </td>
                   <td className="mobile-scroll-col mobile-col-payback">
                     <span className={isHighlight(row.win_payback, maxWinPayback) ? 'mobile-highlight' : ''}>
-                      {row.win_payback}%
+                      {(row.win_payback).toFixed(1)}%
                     </span>
                   </td>
                   <td className="mobile-scroll-col mobile-col-payback">
                     <span className={isHighlight(row.place_payback, maxPlacePayback) ? 'mobile-highlight' : ''}>
-                      {row.place_payback}%
+                      {(row.place_payback).toFixed(1)}%
                     </span>
                   </td>
                 </tr>

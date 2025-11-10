@@ -87,27 +87,27 @@ export default function GateTable({ title, data }: Props) {
                   </td>
                   <td className={styles.scrollCol}>
                     <span className={isHighlight(row.win_rate, maxWinRate) ? styles.highlight : ''}>
-                      {row.win_rate}%
+                      {(row.win_rate).toFixed(1)}%
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
                     <span className={isHighlight(row.quinella_rate, maxQuinellaRate) ? styles.highlight : ''}>
-                      {row.quinella_rate}%
+                      {(row.quinella_rate).toFixed(1)}%
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
                     <span className={isHighlight(row.place_rate, maxPlaceRate) ? styles.highlight : ''}>
-                      {row.place_rate}%
+                      {(row.place_rate).toFixed(1)}%
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
                     <span className={isHighlight(row.win_payback, maxWinPayback) ? styles.highlight : ''}>
-                      {row.win_payback}%
+                      {(row.win_payback).toFixed(1)}%
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
                     <span className={isHighlight(row.place_payback, maxPlacePayback) ? styles.highlight : ''}>
-                      {row.place_payback}%
+                      {(row.place_payback).toFixed(1)}%
                     </span>
                   </td>
                 </tr>

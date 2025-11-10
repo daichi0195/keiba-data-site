@@ -95,7 +95,7 @@ export default function PopularityTable({
                   </td>
                   {METRIC_COLS.map((col) => {
                     const v = data?.[band.key]?.[col.key];
-                    const disp = v === undefined || v === null ? '-' : `${v}${col.suffix ?? ''}`;
+                    const disp = v === undefined || v === null ? '-' : `${typeof v === 'number' && col.suffix === '%' ? (v).toFixed(1) : v}${col.suffix ?? ''}`;
                     const isMax = typeof v === 'number' && v === maxByMetric[col.key];
                     return (
                       <td key={col.key} className={styles.scrollCol}>
