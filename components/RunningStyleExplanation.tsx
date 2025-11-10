@@ -6,9 +6,7 @@ export default function RunningStyleExplanation() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const explanationPoints = [
-    '「脚質傾向」は、逃げ、先行、追込、差しなどの脚質ごとの複勝率を基準に評価しています。',
-    'コースの特性（直線の長さ、カーブの大きさ、スタート地点など）により、特定の脚質が有利または不利になります。',
-    '各コースの脚質データを全コースで相対比較し、5段階で評価しています。'
+    '逃げ・先行（逃、先）と差し・追込（差、追）の複勝率を比較し、逃げ・先行有利〜差し・追込有利を判定しています。'
   ];
 
   return (
@@ -36,6 +34,16 @@ export default function RunningStyleExplanation() {
               {explanationPoints.map((point, index) => (
                 <p key={index} className="explanation-paragraph">{point}</p>
               ))}
+              <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #e2e8f0', fontSize: '0.85rem', color: '#475569', lineHeight: '1.5' }}>
+                <p style={{ margin: '0 0 0.5rem 0' }}><strong>評価方法</strong></p>
+                <ul style={{ margin: '0.5rem 0 0 1.5rem', paddingLeft: 0, fontSize: '0.85rem' }}>
+                  <li>逃げ・先行の複勝率が差し・追込より5%以上高い：逃げ・先行有利</li>
+                  <li>逃げ・先行の複勝率が差し・追込より2%以上高い：やや逃げ・先行有利</li>
+                  <li>複勝率の差がほぼない：互角</li>
+                  <li>差し・追込の複勝率が逃げ・先行より2%以上高い：やや差し・追込有利</li>
+                  <li>差し・追込の複勝率が逃げ・先行より5%以上高い：差し・追込有利</li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
