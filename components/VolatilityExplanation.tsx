@@ -36,7 +36,7 @@ export default function VolatilityExplanation() {
                 <p key={index} className="explanation-paragraph">{point}</p>
               ))}
               <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #e2e8f0', fontSize: '0.85rem', color: '#475569', lineHeight: '1.5' }}>
-                <p style={{ margin: '0 0 0.5rem 0' }}><strong>計算対象データ：</strong></p>
+                <p style={{ margin: '0 0 0.5rem 0' }}><strong>対象コース：</strong></p>
                 <ul style={{ margin: '0.5rem 0 0 1.5rem', paddingLeft: 0, fontSize: '0.85rem' }}>
                   <li>直近3年間のレースデータを使用</li>
                   <li>障害のコースは除外</li>
