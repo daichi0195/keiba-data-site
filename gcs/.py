@@ -212,12 +212,12 @@ def get_volatility_stats(client):
     ranking_query = f"""
     WITH all_medians AS (
       SELECT
-        PERCENTILE_CONT(CAST(rm.sanrentan AS FLOAT64), 0.5) as global_median
+        PERCENTILE_CONT(SAFE.CAST(rm.sanrentan AS FLOAT64), 0.5) as global_median
       FROM
         `{DATASET}.race_master` rm
       WHERE
         rm.sanrentan IS NOT NULL
-        AND SAFE.FLOAT64(rm.sanrentan) > 0
+        AND SAFE.CAST(rm.sanrentan AS FLOAT64) > 0
         AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
     ),
     course_medians_ranked AS (
@@ -225,14 +225,14 @@ def get_volatility_stats(client):
         venue_name,
         surface,
         distance,
-        PERCENTILE_CONT(CAST(sanrentan AS FLOAT64), 0.5) as course_median,
-        ROW_NUMBER() OVER (ORDER BY PERCENTILE_CONT(CAST(sanrentan AS FLOAT64), 0.5) DESC) as rank,
+        PERCENTILE_CONT(SAFE.CAST(sanrentan AS FLOAT64), 0.5) as course_median,
+        ROW_NUMBER() OVER (ORDER BY PERCENTILE_CONT(SAFE.CAST(sanrentan AS FLOAT64), 0.5) DESC) as rank,
         COUNT(*) OVER () as total_courses
       FROM
         `{DATASET}.race_master` rm
       WHERE
         rm.sanrentan IS NOT NULL
-        AND SAFE.FLOAT64(rm.sanrentan) > 0
+        AND SAFE.CAST(rm.sanrentan AS FLOAT64) > 0
         AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
       GROUP BY
         venue_name,
@@ -273,13 +273,13 @@ def get_volatility_stats(client):
             venue_name,
             surface,
             distance,
-            PERCENTILE_CONT(CAST(sanrentan AS FLOAT64), 0.5) as course_median,
-            PERCENT_RANK() OVER (ORDER BY PERCENTILE_CONT(CAST(sanrentan AS FLOAT64), 0.5)) as percentile
+            PERCENTILE_CONT(SAFE.CAST(sanrentan AS FLOAT64), 0.5) as course_median,
+            PERCENT_RANK() OVER (ORDER BY PERCENTILE_CONT(SAFE.CAST(sanrentan AS FLOAT64), 0.5)) as percentile
           FROM
             `{DATASET}.race_master` rm
           WHERE
             rm.sanrentan IS NOT NULL
-            AND SAFE.FLOAT64(rm.sanrentan) > 0
+            AND SAFE.CAST(rm.sanrentan AS FLOAT64) > 0
             AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
           GROUP BY
             venue_name,
