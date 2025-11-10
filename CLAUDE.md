@@ -224,3 +224,10 @@ Configuration:
 - Verify sticky column positioning in CSS Module
 - Test horizontal scroll on mobile viewports
 - Check max value highlighting logic (compares all numeric columns)
+
+## Language Preference
+
+**日本語での対応が必須です。**
+- All responses should be in Japanese (日本語)
+- Use Japanese terminology for racing concepts (e.g., 脚質傾向, 複勝率, etc.)
+- Maintain Japanese comments in code for consistency with existing codebase
