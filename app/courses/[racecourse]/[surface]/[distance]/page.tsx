@@ -414,18 +414,7 @@ export default async function CoursePage({ params }: Props) {
       }
       data.course_info.characteristics = gcsData.characteristics;
     }
-    if (gcsData.data_period) {
-      if (!data.course_info) {
-        data.course_info = {};
-      }
-      data.course_info.data_period = gcsData.data_period;
-    }
-    if (gcsData.last_updated) {
-      if (!data.course_info) {
-        data.course_info = {};
-      }
-      data.course_info.last_updated = gcsData.last_updated;
-    }
+    // GCSで既に course_info に data_period が設定されているため、ここでは処理不要
 
     console.log('✅ All data loaded from GCS successfully');
 
@@ -434,6 +423,17 @@ export default async function CoursePage({ params }: Props) {
     // エラー時はモックデータのまま
   }
   // ===== ここまで =====
+
+  // ビルド時の日付を最終更新日として設定
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1);
+  const day = String(today.getDate());
+  const formattedDate = `${year}年${month}月${day}日`;
+  if (!data.course_info) {
+    data.course_info = {};
+  }
+  data.course_info.last_updated = formattedDate;
 
   const { course_info, gate_stats, running_style_stats, popularity_stats, jockey_stats, pedigree_stats, dam_sire_stats, trainer_stats } = data;
   

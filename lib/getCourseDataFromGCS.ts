@@ -134,8 +134,7 @@ export async function getCourseDataFromGCS(
     console.log('  - Jockey stats:', data.jockey_stats?.length || 0, 'jockeys');
     console.log('  - Trainer stats:', data.trainer_stats?.length || 0, 'trainers');
     console.log('  - Characteristics:', data.characteristics ? '✓' : '✗');
-    console.log('  - Data period:', data.course_info?.data_period ? '✓' : '✗');
-    console.log('  - Last updated:', data.course_info?.last_updated ? '✓' : '✗');
+    console.log('  - Data period:', data.data_period ? '✓' : '✗');
 
     return data;
 
