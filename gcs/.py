@@ -24,7 +24,7 @@ SURFACE_EN = 'dirt'
 
 
 def get_gate_stats(client):
-    """枠順別データを取得"""
+    """枠順別データを取得（過去3年間）"""
     query = f"""
     SELECT
       rr.bracket_number as gate,
@@ -44,6 +44,7 @@ def get_gate_stats(client):
       rm.venue_name = '{VENUE}'
       AND rm.surface = '{SURFACE}'
       AND rm.distance = {DISTANCE}
+      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
     GROUP BY rr.bracket_number
     ORDER BY rr.bracket_number
     """
@@ -57,10 +58,10 @@ def get_gate_stats(client):
 
 
 def get_popularity_stats(client):
-    """人気別データを取得"""
+    """人気別データを取得（過去3年間）"""
     query = f"""
-    SELECT 
-      CASE 
+    SELECT
+      CASE
         WHEN rr.popularity = 1 THEN 'fav1'
         WHEN rr.popularity = 2 THEN 'fav2'
         WHEN rr.popularity = 3 THEN 'fav3'
@@ -78,14 +79,15 @@ def get_popularity_stats(client):
       ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
       ROUND(COALESCE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), 0) / COUNT(*), 0) as win_payback,
       ROUND(COALESCE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), 0) / COUNT(*), 0) as place_payback
-    FROM 
+    FROM
       `{DATASET}.race_master` rm
       JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
-    WHERE 
+    WHERE
       rm.venue_name = '{VENUE}'
       AND rm.surface = '{SURFACE}'
       AND rm.distance = {DISTANCE}
       AND rr.popularity IS NOT NULL
+      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
     GROUP BY popularity_group
     """
     
@@ -102,11 +104,11 @@ def get_popularity_stats(client):
 
 
 def get_jockey_stats(client):
-    """騎手別データを取得"""
+    """騎手別データを取得（過去3年間）"""
     query = f"""
-    SELECT 
+    SELECT
       ROW_NUMBER() OVER (
-        ORDER BY 
+        ORDER BY
           SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) DESC,
           ROUND(AVG(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) DESC,
           j.jockey_name ASC
@@ -130,9 +132,10 @@ def get_jockey_stats(client):
       AND rm.surface = '{SURFACE}'
       AND rm.distance = {DISTANCE}
       AND rr.jockey_id IS NOT NULL
+      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
     GROUP BY j.jockey_name
     HAVING COUNT(*) >= 5
-    ORDER BY 
+    ORDER BY
       wins DESC,
       win_rate DESC,
       name ASC
@@ -148,7 +151,7 @@ def get_jockey_stats(client):
 
 
 def get_trainer_stats(client):
-    """調教師別データを取得"""
+    """調教師別データを取得（過去3年間）"""
     query = f"""
     SELECT
       ROW_NUMBER() OVER (
@@ -176,6 +179,7 @@ def get_trainer_stats(client):
       AND rm.surface = '{SURFACE}'
       AND rm.distance = {DISTANCE}
       AND rr.trainer_id IS NOT NULL
+      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
     GROUP BY t.trainer_name
     HAVING COUNT(*) >= 5
     ORDER BY
@@ -194,7 +198,7 @@ def get_trainer_stats(client):
 
 
 def get_total_races(client):
-    """対象コースの総レース数を取得"""
+    """対象コースの総レース数を取得（過去3年間）"""
     query = f"""
     SELECT
       COUNT(*) as total_races
@@ -204,6 +208,7 @@ def get_total_races(client):
       rm.venue_name = '{VENUE}'
       AND rm.surface = '{SURFACE}'
       AND rm.distance = {DISTANCE}
+      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
     """
 
     try:
