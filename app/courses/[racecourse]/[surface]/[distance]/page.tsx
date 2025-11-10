@@ -412,7 +412,13 @@ export default async function CoursePage({ params }: Props) {
       }
       data.course_info.characteristics = gcsData.characteristics;
     }
-    if (gcsData.course_info?.total_races) {
+    // Handle both root-level total_races and course_info.total_races
+    if (gcsData.total_races) {
+      if (!data.course_info) {
+        data.course_info = {};
+      }
+      data.course_info.total_races = gcsData.total_races;
+    } else if (gcsData.course_info?.total_races) {
       if (!data.course_info) {
         data.course_info = {};
       }
