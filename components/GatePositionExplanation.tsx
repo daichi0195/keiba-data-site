@@ -34,9 +34,15 @@ export default function GatePositionExplanation() {
               {explanationPoints.map((point, index) => (
                 <p key={index} className="explanation-paragraph">{point}</p>
               ))}
-              <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #e2e8f0', fontSize: '0.85rem', color: '#475569', lineHeight: '1.6' }}>
+              <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #e2e8f0', fontSize: '0.85rem', color: '#475569', lineHeight: '1.5' }}>
                 <p style={{ margin: '0 0 0.5rem 0' }}><strong>評価方法</strong></p>
-                <p style={{ margin: '0.3rem 0' }}>内枠の複勝率が外枠より5%以上高い場合は「内有利」、2%以上高い場合は「やや内有利」と評価します。逆に外枠の複勝率が内枠より高い場合は「外有利」「やや外有利」と評価し、差がほぼない場合は「互角」と判定します。</p>
+                <ul style={{ margin: '0.5rem 0 0 1.5rem', paddingLeft: 0, fontSize: '0.85rem' }}>
+                  <li>内枠の複勝率が外枠より5%以上高い：内有利</li>
+                  <li>内枠の複勝率が外枠より2%以上高い：やや内有利</li>
+                  <li>複勝率の差がほぼない：互角</li>
+                  <li>外枠の複勝率が内枠より2%以上高い：やや外有利</li>
+                  <li>外枠の複勝率が内枠より5%以上高い：外有利</li>
+                </ul>
               </div>
             </div>
           </div>
