@@ -406,6 +406,9 @@ export default async function CoursePage({ params }: Props) {
     if (gcsData.running_style_stats) {
       data.running_style_stats = gcsData.running_style_stats;
     }
+    if (gcsData.running_style_trends) {
+      data.running_style_trends = gcsData.running_style_trends;
+    }
     if (gcsData.characteristics) {
       if (!data.course_info) {
         data.course_info = {};
@@ -720,6 +723,41 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
                 })}
               </div>
             </div>
+
+            {/* 脚質傾向（2分化） */}
+            {running_style_trends && running_style_trends.length > 0 && (
+              <div className="running-style-trend-detail">
+                <div className="running-style-detail-title">脚質傾向（2分化）</div>
+                <div className="running-style-trend-chart">
+                  {running_style_trends.map((trend) => {
+                    // 傾向値に基づいてバーの色を変更
+                    const trendColor =
+                      trend.trend_value >= 3 ? '#52af77' :  // 緑：有利
+                      trend.trend_value === 2 ? '#fbb040' :  // 黄：互角
+                      '#d32f2f';  // 赤：不利
+
+                    return (
+                      <div key={trend.trend_group} className="running-style-trend-item">
+                        <div className="trend-label">{trend.trend_label}</div>
+                        <div className="trend-bar-container">
+                          <div
+                            className="trend-bar"
+                            style={{
+                              width: `${(trend.trend_value / 4) * 100}%`,
+                              backgroundColor: trendColor
+                            }}
+                          ></div>
+                        </div>
+                        <div className="trend-stats">
+                          <span className="trend-races">{trend.races}頭</span>
+                          <span className="trend-rate">{trend.place_rate.toFixed(1)}%</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         </div>
         </BarChartAnimation>
