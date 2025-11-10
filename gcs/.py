@@ -194,13 +194,12 @@ def get_trainer_stats(client):
 
 
 def get_total_races(client):
-    """対象コースの総出走数を取得"""
+    """対象コースの総レース数を取得"""
     query = f"""
     SELECT
       COUNT(*) as total_races
     FROM
       `{DATASET}.race_master` rm
-      JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
     WHERE
       rm.venue_name = '{VENUE}'
       AND rm.surface = '{SURFACE}'
