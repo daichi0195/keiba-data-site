@@ -103,6 +103,23 @@ export async function getCourseDataFromGCS(
       data.popularity_stats = popularityObject;
     }
 
+    // running_style_stats を処理（型変換）
+    if (data.running_style_stats && Array.isArray(data.running_style_stats)) {
+      data.running_style_stats = data.running_style_stats.map((item: any) => ({
+        style: item.style || '',
+        style_label: item.style_label || '',
+        races: typeof item.races === 'string' ? parseInt(item.races, 10) : item.races,
+        wins: typeof item.wins === 'string' ? parseInt(item.wins, 10) : item.wins,
+        places_2: typeof item.places_2 === 'string' ? parseInt(item.places_2, 10) : item.places_2,
+        places_3: typeof item.places_3 === 'string' ? parseInt(item.places_3, 10) : item.places_3,
+        win_rate: typeof item.win_rate === 'string' ? parseFloat(item.win_rate) : item.win_rate,
+        place_rate: typeof item.place_rate === 'string' ? parseFloat(item.place_rate) : item.place_rate,
+        quinella_rate: typeof item.quinella_rate === 'string' ? parseFloat(item.quinella_rate) : item.quinella_rate,
+        win_payback: typeof item.win_payback === 'string' ? parseInt(item.win_payback, 10) : item.win_payback,
+        place_payback: typeof item.place_payback === 'string' ? parseInt(item.place_payback, 10) : item.place_payback,
+      }));
+    }
+
     // characteristics データを処理（数値型に変換）
     if (data.characteristics) {
       data.characteristics = {

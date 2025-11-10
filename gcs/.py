@@ -434,6 +434,106 @@ def get_dam_sire_stats(client):
         raise
 
 
+def get_running_style_stats(client):
+    """脚質別データを取得（過去3年間）
+
+    脚質の定義：
+    - 逃げ: 最終コーナー以外（1,2,3番目）のいずれかを1位で通過
+    - 先行: 逃げに該当しない馬で、最終コーナーを4位以内で通過
+    - 差し: 逃げ・先行に該当しない馬で、最終コーナーが出走頭数の3分の2以内（出走頭数≧8）
+    - 追込: 逃げ・先行・差しに該当しない馬
+    """
+    query = f"""
+    WITH corner_data AS (
+      SELECT
+        rm.race_id,
+        rr.horse_id,
+        rr.finish_position,
+        rm.entry_count,
+        SPLIT(rr.corner_positions, ',') as corner_array
+      FROM
+        `{DATASET}.race_master` rm
+        JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
+      WHERE
+        rm.venue_name = '{VENUE}'
+        AND rm.surface = '{SURFACE}'
+        AND rm.distance = {DISTANCE}
+        AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+        AND rr.corner_positions IS NOT NULL
+        AND ARRAY_LENGTH(SPLIT(rr.corner_positions, ',')) = 4
+    ),
+    corner_parsed AS (
+      SELECT
+        race_id,
+        horse_id,
+        finish_position,
+        entry_count,
+        CAST(corner_array[OFFSET(0)] AS INT64) as corner_1,
+        CAST(corner_array[OFFSET(1)] AS INT64) as corner_2,
+        CAST(corner_array[OFFSET(2)] AS INT64) as corner_3,
+        CAST(corner_array[OFFSET(3)] AS INT64) as corner_4
+      FROM
+        corner_data
+    ),
+    running_style_classified AS (
+      SELECT
+        CASE
+          -- 逃げ: 最終コーナー以外（1,2,3番目）のいずれかが1位
+          WHEN COALESCE(corner_1, 0) = 1 OR COALESCE(corner_2, 0) = 1 OR COALESCE(corner_3, 0) = 1
+            THEN 'escape'
+          -- 先行: 逃げに該当しない且つ最終コーナーが4位以内
+          WHEN COALESCE(corner_4, 999) <= 4
+            THEN 'lead'
+          -- 差し: 逃げ・先行に該当しない且つ最終コーナーが出走頭数の3分の2以内（出走頭数≧8）
+          WHEN entry_count >= 8 AND COALESCE(corner_4, 999) <= CAST(entry_count * 2 / 3 AS INT64)
+            THEN 'pursue'
+          -- 追込: それ以外
+          ELSE 'close'
+        END as running_style,
+        finish_position
+      FROM
+        corner_parsed
+    )
+    SELECT
+      running_style,
+      CASE
+        WHEN running_style = 'escape' THEN '逃げ'
+        WHEN running_style = 'lead' THEN '先行'
+        WHEN running_style = 'pursue' THEN '差し'
+        WHEN running_style = 'close' THEN '追込'
+      END as style_label,
+      COUNT(*) as races,
+      SUM(CASE WHEN finish_position = 1 THEN 1 ELSE 0 END) as wins,
+      SUM(CASE WHEN finish_position = 2 THEN 1 ELSE 0 END) as places_2,
+      SUM(CASE WHEN finish_position = 3 THEN 1 ELSE 0 END) as places_3,
+      ROUND(AVG(CASE WHEN finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) as win_rate,
+      ROUND(AVG(CASE WHEN finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
+      ROUND(AVG(CASE WHEN finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
+      0 as win_payback,
+      0 as place_payback
+    FROM
+      running_style_classified
+    WHERE
+      running_style IS NOT NULL
+    GROUP BY
+      running_style, style_label
+    ORDER BY
+      CASE running_style
+        WHEN 'escape' THEN 1
+        WHEN 'lead' THEN 2
+        WHEN 'pursue' THEN 3
+        WHEN 'close' THEN 4
+      END
+    """
+
+    try:
+        results = client.query(query).result()
+        return [dict(row) for row in results]
+    except Exception as e:
+        print(f"   ⚠️  Error fetching running style stats: {str(e)}", file=sys.stderr)
+        raise
+
+
 def get_total_races(client):
     """対象コースの総レース数を取得（過去3年間）"""
     query = f"""
@@ -494,6 +594,10 @@ def main():
         dam_sire_stats = get_dam_sire_stats(bq_client)
         print(f"   ✅ {len(dam_sire_stats)} dam_sires")
 
+        print("📊 Fetching running style stats...")
+        running_style_stats = get_running_style_stats(bq_client)
+        print(f"   ✅ {len(running_style_stats)} running styles")
+
         print("📊 Fetching total races...")
         total_races = get_total_races(bq_client)
         print(f"   ✅ Total races: {total_races}")
@@ -507,6 +611,7 @@ def main():
             'trainer_stats': trainer_stats,
             'pedigree_stats': pedigree_stats,
             'dam_sire_stats': dam_sire_stats,
+            'running_style_stats': running_style_stats,
             'characteristics': {
                 'volatility': volatility_stats['volatility'],
                 'trifecta_median_payback': volatility_stats['trifecta_median_payback'],
