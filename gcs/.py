@@ -450,6 +450,7 @@ def get_running_style_stats(client):
         rr.horse_id,
         rr.finish_position,
         rm.entry_count,
+        rr.last_3f_time,
         SPLIT(rr.corner_positions, '-') as corner_array
       FROM
         `{DATASET}.race_master` rm
@@ -468,6 +469,7 @@ def get_running_style_stats(client):
         horse_id,
         finish_position,
         entry_count,
+        last_3f_time,
         corner_array,
         ARRAY_LENGTH(corner_array) as corner_count,
         -- 各コーナーを取得（存在しない場合はNULL）
@@ -475,7 +477,9 @@ def get_running_style_stats(client):
         CAST(IF(ARRAY_LENGTH(corner_array) >= 2, corner_array[OFFSET(1)], NULL) AS INT64) as corner_2,
         CAST(IF(ARRAY_LENGTH(corner_array) >= 3, corner_array[OFFSET(2)], NULL) AS INT64) as corner_3,
         -- 最終コーナーを動的に取得
-        CAST(corner_array[OFFSET(ARRAY_LENGTH(corner_array)-1)] AS INT64) as final_corner
+        CAST(corner_array[OFFSET(ARRAY_LENGTH(corner_array)-1)] AS INT64) as final_corner,
+        -- 各レース内での上がり（ラスト3ハロン）ランク（タイムが短い順）
+        RANK() OVER (PARTITION BY race_id ORDER BY last_3f_time ASC) as last_3f_rank
       FROM
         corner_data
     ),
@@ -492,14 +496,14 @@ def get_running_style_stats(client):
           -- 先行: 最終コーナーが第1集団（1位～出走馬/3）
           WHEN COALESCE(final_corner, 999) <= CAST(CEIL(entry_count / 3.0) AS INT64)
             THEN 'lead'
-          -- 差し: 最終コーナーが第2集団（出走馬/3+1～2*出走馬/3）かつ上がり3位以内
+          -- 差し: 最終コーナーが第2集団（出走馬/3+1～2*出走馬/3）かつ上がり（ラスト3F）が3位以内
           WHEN COALESCE(final_corner, 999) > CAST(CEIL(entry_count / 3.0) AS INT64)
             AND COALESCE(final_corner, 999) <= CAST(CEIL(2 * entry_count / 3.0) AS INT64)
-            AND finish_position <= 3
+            AND last_3f_rank <= 3
             THEN 'pursue'
-          -- 追込: 最終コーナーが第3集団（2*出走馬/3+1～）かつ上がり3位以内
+          -- 追込: 最終コーナーが第3集団（2*出走馬/3+1～）かつ上がり（ラスト3F）が3位以内
           WHEN COALESCE(final_corner, 999) > CAST(CEIL(2 * entry_count / 3.0) AS INT64)
-            AND finish_position <= 3
+            AND last_3f_rank <= 3
             THEN 'close'
           -- その他: カウント対象外（NULLを返す）
           ELSE NULL
