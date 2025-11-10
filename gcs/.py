@@ -272,8 +272,8 @@ def get_volatility_stats(client):
         rm.sanrentan IS NOT NULL
         AND rm.surface != '障害'
         AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
-        AND (rm.venue_name, rm.surface, rm.distance) IN (
-          SELECT venue_name, surface, distance
+        AND STRUCT(rm.venue_name, rm.surface, rm.distance) IN (
+          SELECT AS STRUCT venue_name, surface, distance
           FROM `{DATASET}.race_master`
           WHERE
             sanrentan IS NOT NULL
