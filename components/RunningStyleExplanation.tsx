@@ -37,11 +37,11 @@ export default function RunningStyleExplanation() {
               <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #e2e8f0', fontSize: '0.85rem', color: '#475569', lineHeight: '1.5' }}>
                 <p style={{ margin: '0 0 0.5rem 0' }}><strong>評価方法</strong></p>
                 <ul style={{ margin: '0.5rem 0 0 1.5rem', paddingLeft: 0, fontSize: '0.85rem' }}>
-                  <li>逃げ・先行の複勝率が差し・追込の1.5倍以上高い：逃げ・先行有利</li>
-                  <li>逃げ・先行の複勝率が差し・追込の1.2倍以上高い：やや逃げ・先行有利</li>
+                  <li>逃げ・先行の複勝率が差し・追込より5%以上高い：逃げ・先行有利</li>
+                  <li>逃げ・先行の複勝率が差し・追込より2%以上高い：やや逃げ・先行有利</li>
                   <li>複勝率の差がほぼない：互角</li>
-                  <li>差し・追込の複勝率が逃げ・先行の1.5倍以上高い：やや差し・追込有利</li>
-                  <li>差し・追込の複勝率が逃げ・先行の1.2倍以上高い：差し・追込有利</li>
+                  <li>差し・追込の複勝率が逃げ・先行より2%以上高い：やや差し・追込有利</li>
+                  <li>差し・追込の複勝率が逃げ・先行より5%以上高い：差し・追込有利</li>
                 </ul>
               </div>
             </div>

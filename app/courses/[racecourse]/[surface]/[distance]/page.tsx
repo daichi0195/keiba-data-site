@@ -455,28 +455,19 @@ export default async function CoursePage({ params }: Props) {
       }
     }
 
-    // running_style_trend_position を running_style_trends から計算（複勝率の比率ベース）
+    // running_style_trend_position を running_style_trends から計算（逃げ・先行有利〜差し・追込有利）
     if (data.running_style_trends && Array.isArray(data.running_style_trends) && data.running_style_trends.length === 2) {
       const earlyLead = data.running_style_trends.find(t => t.trend_group === 'early_lead');
       const comeback = data.running_style_trends.find(t => t.trend_group === 'comeback');
 
       if (earlyLead && comeback) {
-        const earlyLeadRate = earlyLead.place_rate || 0;
-        const comebackRate = comeback.place_rate || 0;
+        const diff = (earlyLead.place_rate || 0) - (comeback.place_rate || 0);
         let runningStyleTrendPosition = 3; // デフォルト: 互角
 
-        if (earlyLeadRate > 0 && comebackRate > 0) {
-          const ratio = earlyLeadRate / comebackRate;
-          if (ratio >= 1.5) {
-            runningStyleTrendPosition = 1;  // 逃げ・先行有利
-          } else if (ratio >= 1.2) {
-            runningStyleTrendPosition = 2;  // やや逃げ・先行有利
-          } else if (ratio < 1 / 1.5) {
-            runningStyleTrendPosition = 5;  // 差し・追込有利
-          } else if (ratio < 1 / 1.2) {
-            runningStyleTrendPosition = 4;  // やや差し・追込有利
-          }
-        }
+        if (diff >= 5) runningStyleTrendPosition = 1;         // 逃げ・先行有利
+        else if (diff >= 2) runningStyleTrendPosition = 2;    // やや逃げ・先行有利
+        else if (diff <= -5) runningStyleTrendPosition = 5;   // 差し・追込有利
+        else if (diff <= -2) runningStyleTrendPosition = 4;   // やや差し・追込有利
 
         if (!data.course_info) {
           data.course_info = {};
