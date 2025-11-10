@@ -115,6 +115,18 @@ export async function getCourseDataFromGCS(
         gate_position: typeof data.characteristics.gate_position === 'string'
           ? parseInt(data.characteristics.gate_position, 10)
           : data.characteristics.gate_position,
+        trifecta_median_payback: typeof data.characteristics.trifecta_median_payback === 'string'
+          ? parseInt(data.characteristics.trifecta_median_payback, 10)
+          : data.characteristics.trifecta_median_payback,
+        trifecta_all_median_payback: typeof data.characteristics.trifecta_all_median_payback === 'string'
+          ? parseInt(data.characteristics.trifecta_all_median_payback, 10)
+          : data.characteristics.trifecta_all_median_payback,
+        trifecta_avg_payback_rank: typeof data.characteristics.trifecta_avg_payback_rank === 'string'
+          ? parseInt(data.characteristics.trifecta_avg_payback_rank, 10)
+          : data.characteristics.trifecta_avg_payback_rank,
+        total_courses: typeof data.characteristics.total_courses === 'string'
+          ? parseInt(data.characteristics.total_courses, 10)
+          : data.characteristics.total_courses,
       };
     }
 
