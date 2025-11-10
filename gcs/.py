@@ -492,29 +492,24 @@ def get_running_style_stats(client):
         race_id,
         horse_id,
         finish_position,
-        COALESCE(win, 0) as win,
-        COALESCE(place, 0) as place,
+        win,
+        place,
         CASE
-          -- 逃げ: コーナーのいずれかが1位通過
           WHEN corner_count >= 1 AND (
             COALESCE(corner_1, 0) = 1 OR
             COALESCE(corner_2, 0) = 1 OR
             COALESCE(corner_3, 0) = 1
           )
             THEN 'escape'
-          -- 先行: 最終コーナーが第1集団（1位～出走馬/3）
           WHEN COALESCE(final_corner, 999) <= CAST(CEIL(entry_count / 3.0) AS INT64)
             THEN 'lead'
-          -- 差し: 最終コーナーが第2集団（出走馬/3+1～2*出走馬/3）かつ上がり（ラスト3F）が5位以内
           WHEN COALESCE(final_corner, 999) > CAST(CEIL(entry_count / 3.0) AS INT64)
             AND COALESCE(final_corner, 999) <= CAST(CEIL(2 * entry_count / 3.0) AS INT64)
             AND last_3f_rank <= 5
             THEN 'pursue'
-          -- 追込: 最終コーナーが第3集団（2*出走馬/3+1～）かつ上がり（ラスト3F）が5位以内
           WHEN COALESCE(final_corner, 999) > CAST(CEIL(2 * entry_count / 3.0) AS INT64)
             AND last_3f_rank <= 5
             THEN 'close'
-          -- その他: カウント対象外（NULLを返す）
           ELSE NULL
         END as running_style
       FROM
@@ -535,8 +530,14 @@ def get_running_style_stats(client):
       ROUND(SAFE_DIVIDE(SUM(CASE WHEN finish_position = 1 THEN 1 ELSE 0 END), COUNT(*)) * 100, 1) as win_rate,
       ROUND(SAFE_DIVIDE(SUM(CASE WHEN finish_position <= 2 THEN 1 ELSE 0 END), COUNT(*)) * 100, 1) as quinella_rate,
       ROUND(SAFE_DIVIDE(SUM(CASE WHEN finish_position <= 3 THEN 1 ELSE 0 END), COUNT(*)) * 100, 1) as place_rate,
-      ROUND(SAFE_DIVIDE(SUM(CASE WHEN finish_position = 1 THEN COALESCE(win, 0) ELSE 0 END), SUM(CASE WHEN finish_position = 1 THEN 1 ELSE 0 END) * 100), 1) as win_payback,
-      ROUND(SAFE_DIVIDE(SUM(CASE WHEN finish_position <= 3 THEN COALESCE(place, 0) ELSE 0 END), SUM(CASE WHEN finish_position <= 3 THEN 1 ELSE 0 END) * 100), 1) as place_payback
+      ROUND(SAFE_DIVIDE(
+        SUM(CASE WHEN finish_position = 1 THEN COALESCE(win, 0) ELSE 0 END),
+        COUNT(*) * 100
+      ) * 100, 1) as win_payback,
+      ROUND(SAFE_DIVIDE(
+        SUM(CASE WHEN finish_position <= 3 THEN COALESCE(place, 0) ELSE 0 END),
+        COUNT(*) * 100
+      ) * 100, 1) as place_payback
     FROM
       running_style_classified
     WHERE
