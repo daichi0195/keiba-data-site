@@ -424,6 +424,33 @@ export default async function CoursePage({ params }: Props) {
         };
       }
     }
+
+    // gate_position を gate_stats から計算（内枠有利〜外枠有利）
+    if (data.gate_stats && Array.isArray(data.gate_stats) && data.gate_stats.length > 0) {
+      const innerGates = data.gate_stats.filter(g => g.gate >= 1 && g.gate <= 4);
+      const outerGates = data.gate_stats.filter(g => g.gate >= 5 && g.gate <= 8);
+
+      if (innerGates.length > 0 && outerGates.length > 0) {
+        const innerAvgPlaceRate = innerGates.reduce((sum, g) => sum + (g.place_rate || 0), 0) / innerGates.length;
+        const outerAvgPlaceRate = outerGates.reduce((sum, g) => sum + (g.place_rate || 0), 0) / outerGates.length;
+
+        const diff = innerAvgPlaceRate - outerAvgPlaceRate;
+        let gatePosition = 3; // デフォルト: 互角
+
+        if (diff >= 5) gatePosition = 1;         // 内有利
+        else if (diff >= 2) gatePosition = 2;    // やや内有利
+        else if (diff <= -5) gatePosition = 5;   // 外有利
+        else if (diff <= -2) gatePosition = 4;   // やや外有利
+
+        if (!data.course_info) {
+          data.course_info = {};
+        }
+        if (!data.course_info.characteristics) {
+          data.course_info.characteristics = {};
+        }
+        data.course_info.characteristics.gate_position = gatePosition;
+      }
+    }
     // Handle both root-level total_races and course_info.total_races
     if (gcsData.total_races) {
       if (!data.course_info) {
