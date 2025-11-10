@@ -716,32 +716,6 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
                 {course_info.characteristics.running_style_trend_position === 5 && '差し・追込有利'}
               </div>
 
-              {/* 脚質傾向別複勝率グラフ */}
-              <div className="running-style-trend-detail">
-                <div className="running-style-detail-title">脚質傾向別複勝率</div>
-                <div className="running-style-trend-chart">
-                  {running_style_trends.map((trend) => (
-                    <div key={trend.trend_group} className="running-style-chart-item">
-                      <div className="running-style-badge" style={{
-                        backgroundColor: trend.trend_group === 'early_lead' ? '#e3f2fd' : '#fff3e0',
-                        color: trend.trend_group === 'early_lead' ? '#1976d2' : '#e65100'
-                      }}>
-                        {trend.trend_group === 'early_lead' ? '逃先' : '差追'}
-                      </div>
-                      <div className="running-style-bar-container">
-                        <div
-                          className="running-style-bar"
-                          style={{
-                            width: `${trend.place_rate}%`
-                          }}
-                        ></div>
-                      </div>
-                      <div className="running-style-rate">{trend.place_rate.toFixed(1)}%</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
               {/* 脚質別複勝率グラフ */}
               <div className="running-style-place-rate-detail">
                 <div className="running-style-detail-title">脚質別複勝率</div>
