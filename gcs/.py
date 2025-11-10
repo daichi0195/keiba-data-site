@@ -545,7 +545,9 @@ def get_running_style_stats(client):
     """
 
     try:
-        results = client.query(query).result()
+        from google.cloud.bigquery import QueryJobConfig
+        job_config = QueryJobConfig(use_query_cache=False)
+        results = client.query(query, job_config=job_config).result()
         return [dict(row) for row in results]
     except Exception as e:
         print(f"   ⚠️  Error fetching running style stats: {str(e)}", file=sys.stderr)
