@@ -758,7 +758,12 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
 
         {/* === 注目ポイント === */}
         <section id="highlights-section">
-          <HighlightsSection courseInfo={course_info} />
+          <HighlightsSection
+            jockey_stats={jockey_stats}
+            pedigree_stats={pedigree_stats}
+            dam_sire_stats={dam_sire_stats}
+            trainer_stats={trainer_stats}
+          />
         </section>
         {/* === 人気別 === */}
 <section id="popularity-section">

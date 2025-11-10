@@ -1,36 +1,81 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 
-interface HighlightsItem {
+interface StatItem {
+  rank?: number;
   name: string;
-  record?: string;
-  win_rate: string;
-  place_rate: string;
-  win_payback: string;
-  place_payback: string;
+  races: number;
+  wins?: number;
+  places_2?: number;
+  places_3?: number;
+  win_rate: number;
+  place_rate: number;
+  quinella_rate?: number;
+  win_payback: number;
+  place_payback: number;
 }
 
 interface HighlightsSectionProps {
-  courseInfo: {
-    buying_points: {
-      jockey: { strong: HighlightsItem[]; upset?: HighlightsItem[]; weak: HighlightsItem[] };
-      pedigree: {
-        sire: { strong: HighlightsItem[]; weak: HighlightsItem[] };
-        dam_sire: { strong: HighlightsItem[]; weak: HighlightsItem[] };
-      };
-      trainer: { strong: HighlightsItem[]; weak: HighlightsItem[] };
-    };
-  };
+  jockey_stats?: StatItem[];
+  pedigree_stats?: StatItem[];
+  dam_sire_stats?: StatItem[];
+  trainer_stats?: StatItem[];
 }
 
-export default function HighlightsSection({ courseInfo }: HighlightsSectionProps) {
+export default function HighlightsSection({
+  jockey_stats,
+  pedigree_stats,
+  dam_sire_stats,
+  trainer_stats
+}: HighlightsSectionProps) {
   const [modalState, setModalState] = useState<{ isOpen: boolean; subsectionKey: string | null }>({
     isOpen: false,
     subsectionKey: null
   });
 
-  const renderCards = (items: HighlightsItem[], type: 'strong' | 'upset' | 'weak') => {
+  // 条件評価関数
+  const evaluateItems = (items: StatItem[] | undefined) => {
+    if (!items || items.length === 0) {
+      return { strong: [], upset: [], weak: [] };
+    }
+
+    // place_rate のtop5の閾値を取得
+    const sortedByPlaceRate = [...items].sort((a, b) => b.place_rate - a.place_rate);
+    const top5PlaceRate = sortedByPlaceRate[4]?.place_rate ?? 0;
+
+    const strong: StatItem[] = [];
+    const upset: StatItem[] = [];
+    const weak: StatItem[] = [];
+
+    items.forEach((item) => {
+      // 出走回数20回以上の条件
+      if (item.races >= 20) {
+        // strong: place_rate が top5 以内 かつ place_payback >= 100
+        if (item.place_rate >= top5PlaceRate && item.place_payback >= 100) {
+          strong.push(item);
+        }
+        // weak: place_rate <= 10 かつ place_payback < 30
+        else if (item.place_rate <= 10 && item.place_payback < 30) {
+          weak.push(item);
+        }
+        // upset: place_rate が top5 未満 かつ place_payback >= 100
+        else if (item.place_rate < top5PlaceRate && item.place_payback >= 100) {
+          upset.push(item);
+        }
+      }
+    });
+
+    return { strong, upset, weak };
+  };
+
+  // 各カテゴリの評価結果をmemo化
+  const jockeyEvaluation = useMemo(() => evaluateItems(jockey_stats), [jockey_stats]);
+  const pedigreeEvaluation = useMemo(() => evaluateItems(pedigree_stats), [pedigree_stats]);
+  const damSireEvaluation = useMemo(() => evaluateItems(dam_sire_stats), [dam_sire_stats]);
+  const trainerEvaluation = useMemo(() => evaluateItems(trainer_stats), [trainer_stats]);
+
+  const renderCards = (items: StatItem[], type: 'strong' | 'upset' | 'weak') => {
     if (!items || items.length === 0) {
       return (
         <div className="highlight-cards">
@@ -59,27 +104,10 @@ export default function HighlightsSection({ courseInfo }: HighlightsSectionProps
 
   const renderSubsection = (
     title: string,
-    items: HighlightsItem[],
+    items: StatItem[],
     type: 'strong' | 'upset' | 'weak',
     subsectionKey: string
   ) => {
-    const conditionMap = {
-      strong: [
-        '直近3年間の出走回数20回以上',
-        '複勝率TOP5以内かつ複勝回収率100%以上'
-      ],
-      upset: [
-        '直近3年間の出走回数20回以上',
-        '複勝率TOP5未満かつ複勝回収率100%以上'
-      ],
-      weak: [
-        '直近3年間の出走回数20回以上',
-        '複勝率10%以下かつ複勝回収率30%未満'
-      ]
-    };
-
-    const conditions = conditionMap[type];
-
     const openModal = () => {
       setModalState({
         isOpen: true,
@@ -115,21 +143,21 @@ export default function HighlightsSection({ courseInfo }: HighlightsSectionProps
           <h3 className="gauge-label">騎手</h3>
           {renderSubsection(
             'このコースが得意な騎手',
-            courseInfo.buying_points.jockey.strong,
+            jockeyEvaluation.strong,
             'strong',
             'jockey-strong'
           )}
-          {courseInfo.buying_points.jockey.upset && courseInfo.buying_points.jockey.upset.length > 0 && (
+          {jockeyEvaluation.upset.length > 0 && (
             renderSubsection(
               'このコースでよく穴をあける騎手',
-              courseInfo.buying_points.jockey.upset,
+              jockeyEvaluation.upset,
               'upset',
               'jockey-upset'
             )
           )}
           {renderSubsection(
             'このコースが苦手な騎手',
-            courseInfo.buying_points.jockey.weak,
+            jockeyEvaluation.weak,
             'weak',
             'jockey-weak'
           )}
@@ -141,13 +169,13 @@ export default function HighlightsSection({ courseInfo }: HighlightsSectionProps
           <h3 className="gauge-label">血統（種牡馬）</h3>
           {renderSubsection(
             'このコースが得意な種牡馬',
-            courseInfo.buying_points.pedigree.sire.strong,
+            pedigreeEvaluation.strong,
             'strong',
             'sire-strong'
           )}
           {renderSubsection(
             'このコースが苦手な種牡馬',
-            courseInfo.buying_points.pedigree.sire.weak,
+            pedigreeEvaluation.weak,
             'weak',
             'sire-weak'
           )}
@@ -159,13 +187,13 @@ export default function HighlightsSection({ courseInfo }: HighlightsSectionProps
           <h3 className="gauge-label">血統（母父）</h3>
           {renderSubsection(
             'このコースが得意な母父',
-            courseInfo.buying_points.pedigree.dam_sire.strong,
+            damSireEvaluation.strong,
             'strong',
             'dam-sire-strong'
           )}
           {renderSubsection(
             'このコースが苦手な母父',
-            courseInfo.buying_points.pedigree.dam_sire.weak,
+            damSireEvaluation.weak,
             'weak',
             'dam-sire-weak'
           )}
@@ -177,13 +205,13 @@ export default function HighlightsSection({ courseInfo }: HighlightsSectionProps
           <h3 className="gauge-label">調教師</h3>
           {renderSubsection(
             'このコースが得意な調教師',
-            courseInfo.buying_points.trainer.strong,
+            trainerEvaluation.strong,
             'strong',
             'trainer-strong'
           )}
           {renderSubsection(
             'このコースが苦手な調教師',
-            courseInfo.buying_points.trainer.weak,
+            trainerEvaluation.weak,
             'weak',
             'trainer-weak'
           )}
