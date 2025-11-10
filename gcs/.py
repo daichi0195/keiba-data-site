@@ -224,6 +224,7 @@ def get_volatility_stats(client):
         AND rm.surface = '{SURFACE}'
         AND rm.distance = {DISTANCE}
         AND rm.sanrentan IS NOT NULL
+        AND rm.surface != '障害'
         AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
     ),
     course_median AS (
@@ -242,6 +243,7 @@ def get_volatility_stats(client):
         `{DATASET}.race_master` rm
       WHERE
         rm.sanrentan IS NOT NULL
+        AND rm.surface != '障害'
         AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
       GROUP BY
         venue_name,
@@ -266,6 +268,7 @@ def get_volatility_stats(client):
         `{DATASET}.race_master` rm
       WHERE
         rm.sanrentan IS NOT NULL
+        AND rm.surface != '障害'
         AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
     )
     SELECT
