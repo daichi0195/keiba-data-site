@@ -577,6 +577,16 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
               </div>
             </div>
 
+            {/* 荒れやすさ計算条件の注釈 */}
+            <div style={{
+              marginTop: '0.75rem',
+              fontSize: '0.75rem',
+              color: '#94a3b8',
+              lineHeight: '1.4'
+            }}>
+              ※障害のコース、3年間実施回数20回未満のコースは除外
+            </div>
+
           </div>
 
           {/* 区切り線 */}
