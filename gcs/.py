@@ -460,7 +460,7 @@ def get_running_style_stats(client):
         AND rm.distance = {DISTANCE}
         AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
         AND rr.corner_positions IS NOT NULL
-        AND ARRAY_LENGTH(SPLIT(rr.corner_positions, '-')) = 4
+        AND ARRAY_LENGTH(SPLIT(rr.corner_positions, '-')) > 0
     ),
     corner_parsed AS (
       SELECT
@@ -468,24 +468,32 @@ def get_running_style_stats(client):
         horse_id,
         finish_position,
         entry_count,
-        CAST(corner_array[OFFSET(0)] AS INT64) as corner_1,
-        CAST(corner_array[OFFSET(1)] AS INT64) as corner_2,
-        CAST(corner_array[OFFSET(2)] AS INT64) as corner_3,
-        CAST(corner_array[OFFSET(3)] AS INT64) as corner_4
+        corner_array,
+        ARRAY_LENGTH(corner_array) as corner_count,
+        -- 各コーナーを取得（存在しない場合はNULL）
+        CAST(IF(ARRAY_LENGTH(corner_array) >= 1, corner_array[OFFSET(0)], NULL) AS INT64) as corner_1,
+        CAST(IF(ARRAY_LENGTH(corner_array) >= 2, corner_array[OFFSET(1)], NULL) AS INT64) as corner_2,
+        CAST(IF(ARRAY_LENGTH(corner_array) >= 3, corner_array[OFFSET(2)], NULL) AS INT64) as corner_3,
+        -- 最終コーナーを動的に取得
+        CAST(corner_array[OFFSET(ARRAY_LENGTH(corner_array)-1)] AS INT64) as final_corner
       FROM
         corner_data
     ),
     running_style_classified AS (
       SELECT
         CASE
-          -- 逃げ: 最終コーナー以外（1,2,3番目）のいずれかが1位
-          WHEN COALESCE(corner_1, 0) = 1 OR COALESCE(corner_2, 0) = 1 OR COALESCE(corner_3, 0) = 1
+          -- 逃げ: 最終コーナー以外のいずれかが1位
+          WHEN corner_count >= 2 AND (
+            COALESCE(corner_1, 0) = 1 OR
+            COALESCE(corner_2, 0) = 1 OR
+            COALESCE(corner_3, 0) = 1
+          )
             THEN 'escape'
           -- 先行: 逃げに該当しない且つ最終コーナーが4位以内
-          WHEN COALESCE(corner_4, 999) <= 4
+          WHEN COALESCE(final_corner, 999) <= 4
             THEN 'lead'
           -- 差し: 逃げ・先行に該当しない且つ最終コーナーが出走頭数の3分の2以内（出走頭数≧8）
-          WHEN entry_count >= 8 AND COALESCE(corner_4, 999) <= CAST(entry_count * 2 / 3 AS INT64)
+          WHEN entry_count >= 8 AND COALESCE(final_corner, 999) <= CAST(entry_count * 2 / 3 AS INT64)
             THEN 'pursue'
           -- 追込: それ以外
           ELSE 'close'
