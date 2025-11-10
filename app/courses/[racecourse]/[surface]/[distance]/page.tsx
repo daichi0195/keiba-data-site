@@ -692,113 +692,90 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
           {/* 区切り線 */}
           <div className="section-divider"></div>
 
-          {/* 脚質傾向 */}
-          <div className="gauge-item">
-            <div className="gauge-header">
-              <h3 className="gauge-label">脚質傾向</h3>
-              <RunningStyleExplanation />
-            </div>
-            <div className="gauge-track">
-              <div className="gauge-indicator" style={{ left: `${(course_info.characteristics.running_style - 1) * 25}%` }}></div>
-              <div className="gauge-horse-icon" style={{ left: `${(course_info.characteristics.running_style - 1) * 25}%` }}>🏇</div>
-            </div>
-            <div className="gauge-labels">
-              <span>逃げ有利</span>
-              <span>互角</span>
-              <span>差し有利</span>
-            </div>
-            <div className="gauge-result">
-              {course_info.characteristics.running_style === 1 && '逃げ有利'}
-              {course_info.characteristics.running_style === 2 && 'やや逃げ有利'}
-              {course_info.characteristics.running_style === 3 && '互角'}
-              {course_info.characteristics.running_style === 4 && 'やや差し有利'}
-              {course_info.characteristics.running_style === 5 && '差し有利'}
-            </div>
+          {/* 脚質傾向（2分化） */}
+          {running_style_trends && running_style_trends.length > 0 && course_info.characteristics.running_style_trend_position && (
+            <div className="gauge-item">
+              <div className="gauge-header">
+                <h3 className="gauge-label">脚質傾向</h3>
+                <RunningStyleExplanation />
+              </div>
+              <div className="gauge-track">
+                <div className="gauge-indicator" style={{ left: `${(course_info.characteristics.running_style_trend_position - 1) * 25}%` }}></div>
+                <div className="gauge-horse-icon" style={{ left: `${(course_info.characteristics.running_style_trend_position - 1) * 25}%` }}>🏇</div>
+              </div>
+              <div className="gauge-labels">
+                <span>逃げ・先行有利</span>
+                <span>互角</span>
+                <span>差し・追込有利</span>
+              </div>
+              <div className="gauge-result">
+                {course_info.characteristics.running_style_trend_position === 1 && '逃げ・先行有利'}
+                {course_info.characteristics.running_style_trend_position === 2 && 'やや逃げ・先行有利'}
+                {course_info.characteristics.running_style_trend_position === 3 && '互角'}
+                {course_info.characteristics.running_style_trend_position === 4 && 'やや差し・追込有利'}
+                {course_info.characteristics.running_style_trend_position === 5 && '差し・追込有利'}
+              </div>
 
-            {/* 脚質別複勝率グラフ */}
-            <div className="running-style-place-rate-detail">
-              <div className="running-style-detail-title">脚質別複勝率</div>
-              <div className="running-style-chart">
-                {running_style_stats.map((style) => {
-                  // アイコンマッピング
-                  const styleIcons: { [key: string]: string } = {
-                    'escape': '逃',
-                    'lead': '先',
-                    'pursue': '差',
-                    'close': '追'
-                  };
-
-                  return (
-                    <div key={style.style} className="running-style-chart-item">
-                      <div className="running-style-badge">
-                        {styleIcons[style.style] || style.style_label}
+              {/* 脚質傾向別複勝率グラフ */}
+              <div className="running-style-trend-detail">
+                <div className="running-style-detail-title">脚質傾向別複勝率</div>
+                <div className="running-style-trend-chart">
+                  {running_style_trends.map((trend) => (
+                    <div key={trend.trend_group} className="running-style-chart-item">
+                      <div className="running-style-badge" style={{
+                        backgroundColor: trend.trend_group === 'early_lead' ? '#e3f2fd' : '#fff3e0',
+                        color: trend.trend_group === 'early_lead' ? '#1976d2' : '#e65100'
+                      }}>
+                        {trend.trend_group === 'early_lead' ? '逃先' : '差追'}
                       </div>
                       <div className="running-style-bar-container">
                         <div
                           className="running-style-bar"
                           style={{
-                            width: `${style.place_rate}%`
+                            width: `${trend.place_rate}%`
                           }}
                         ></div>
                       </div>
-                      <div className="running-style-rate">{style.place_rate.toFixed(1)}%</div>
+                      <div className="running-style-rate">{trend.place_rate.toFixed(1)}%</div>
                     </div>
-                  );
-                })}
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* 脚質傾向（2分化） */}
-            {running_style_trends && running_style_trends.length > 0 && course_info.characteristics.running_style_trend_position && (
-              <div className="gauge-item">
-                <div className="gauge-header">
-                  <h3 className="gauge-label">脚質傾向（2分化）</h3>
-                </div>
-                <div className="gauge-track">
-                  <div className="gauge-indicator" style={{ left: `${(course_info.characteristics.running_style_trend_position - 1) * 25}%` }}></div>
-                  <div className="gauge-horse-icon" style={{ left: `${(course_info.characteristics.running_style_trend_position - 1) * 25}%` }}>🏇</div>
-                </div>
-                <div className="gauge-labels">
-                  <span>逃げ・先行有利</span>
-                  <span>互角</span>
-                  <span>差し・追込有利</span>
-                </div>
-                <div className="gauge-result">
-                  {course_info.characteristics.running_style_trend_position === 1 && '逃げ・先行有利'}
-                  {course_info.characteristics.running_style_trend_position === 2 && 'やや逃げ・先行有利'}
-                  {course_info.characteristics.running_style_trend_position === 3 && '互角'}
-                  {course_info.characteristics.running_style_trend_position === 4 && 'やや差し・追込有利'}
-                  {course_info.characteristics.running_style_trend_position === 5 && '差し・追込有利'}
-                </div>
+              {/* 脚質別複勝率グラフ */}
+              <div className="running-style-place-rate-detail">
+                <div className="running-style-detail-title">脚質別複勝率</div>
+                <div className="running-style-chart">
+                  {running_style_stats.map((style) => {
+                    // アイコンマッピング
+                    const styleIcons: { [key: string]: string } = {
+                      'escape': '逃',
+                      'lead': '先',
+                      'pursue': '差',
+                      'close': '追'
+                    };
 
-                {/* 脚質傾向別複勝率グラフ */}
-                <div className="running-style-trend-detail">
-                  <div className="running-style-detail-title">脚質傾向別複勝率</div>
-                  <div className="running-style-trend-chart">
-                    {running_style_trends.map((trend) => (
-                      <div key={trend.trend_group} className="running-style-chart-item">
-                        <div className="running-style-badge" style={{
-                          backgroundColor: trend.trend_group === 'early_lead' ? '#e3f2fd' : '#fff3e0',
-                          color: trend.trend_group === 'early_lead' ? '#1976d2' : '#e65100'
-                        }}>
-                          {trend.trend_group === 'early_lead' ? '逃先' : '差追'}
+                    return (
+                      <div key={style.style} className="running-style-chart-item">
+                        <div className="running-style-badge">
+                          {styleIcons[style.style] || style.style_label}
                         </div>
                         <div className="running-style-bar-container">
                           <div
                             className="running-style-bar"
                             style={{
-                              width: `${trend.place_rate}%`
+                              width: `${style.place_rate}%`
                             }}
                           ></div>
                         </div>
-                        <div className="running-style-rate">{trend.place_rate.toFixed(1)}%</div>
+                        <div className="running-style-rate">{style.place_rate.toFixed(1)}%</div>
                       </div>
-                    ))}
-                  </div>
+                    );
+                  })}
                 </div>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
         </BarChartAnimation>
         </section>
