@@ -414,6 +414,18 @@ export default async function CoursePage({ params }: Props) {
       }
       data.course_info.characteristics = gcsData.characteristics;
     }
+    if (gcsData.data_period) {
+      if (!data.course_info) {
+        data.course_info = {};
+      }
+      data.course_info.data_period = gcsData.data_period;
+    }
+    if (gcsData.last_updated) {
+      if (!data.course_info) {
+        data.course_info = {};
+      }
+      data.course_info.last_updated = gcsData.last_updated;
+    }
 
     console.log('✅ All data loaded from GCS successfully');
 

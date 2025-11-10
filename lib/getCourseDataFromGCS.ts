@@ -118,12 +118,24 @@ export async function getCourseDataFromGCS(
       };
     }
 
+    // course_info の data_period と last_updated を処理
+    if (data.course_info) {
+      if (data.data_period) {
+        data.course_info.data_period = data.data_period;
+      }
+      if (data.last_updated) {
+        data.course_info.last_updated = data.last_updated;
+      }
+    }
+
     console.log('✅ Course data loaded from GCS');
     console.log('  - Gate stats:', data.gate_stats?.length || 0, 'gates');
     console.log('  - Popularity stats:', Object.keys(data.popularity_stats || {}).length, 'groups');
     console.log('  - Jockey stats:', data.jockey_stats?.length || 0, 'jockeys');
     console.log('  - Trainer stats:', data.trainer_stats?.length || 0, 'trainers');
     console.log('  - Characteristics:', data.characteristics ? '✓' : '✗');
+    console.log('  - Data period:', data.course_info?.data_period ? '✓' : '✗');
+    console.log('  - Last updated:', data.course_info?.last_updated ? '✓' : '✗');
 
     return data;
 
