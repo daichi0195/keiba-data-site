@@ -411,6 +411,18 @@ export default async function CoursePage({ params }: Props) {
         data.course_info = {};
       }
       data.course_info.characteristics = gcsData.characteristics;
+
+      // characteristics から ranking フィールドを抽出して course_info.ranking をセット
+      if (gcsData.characteristics.trifecta_median_payback !== undefined) {
+        data.course_info.ranking = {
+          trifecta_avg_payback_rank: gcsData.characteristics.trifecta_avg_payback_rank,
+          trifecta_median_payback: gcsData.characteristics.trifecta_median_payback,
+          trifecta_all_median_payback: gcsData.characteristics.trifecta_all_median_payback,
+          total_courses: gcsData.characteristics.total_courses,
+          // trifecta_avg_payback は元のモックデータから保持
+          trifecta_avg_payback: data.course_info.ranking?.trifecta_avg_payback || 0,
+        };
+      }
     }
     // Handle both root-level total_races and course_info.total_races
     if (gcsData.total_races) {
