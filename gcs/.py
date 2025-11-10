@@ -199,6 +199,126 @@ def get_trainer_stats(client):
         raise
 
 
+def get_volatility_stats(client):
+    """荒れやすさデータを取得（過去3年間）
+
+    - 全コースの三連単中央値
+    - このコースの三連単中央値
+    - ランキング（何位/全コース数）
+    - 荒れやすさスコア（1-5）
+    """
+
+    # Step 1: 全コースの三連単中央値と順位を計算
+    ranking_query = f"""
+    WITH all_medians AS (
+      SELECT
+        PERCENTILE_CONT(CAST(rm.sanrentan AS FLOAT64), 0.5) as global_median
+      FROM
+        `{DATASET}.race_master` rm
+      WHERE
+        rm.sanrentan IS NOT NULL
+        AND SAFE.FLOAT64(rm.sanrentan) > 0
+        AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+    ),
+    course_medians_ranked AS (
+      SELECT
+        venue_name,
+        surface,
+        distance,
+        PERCENTILE_CONT(CAST(sanrentan AS FLOAT64), 0.5) as course_median,
+        ROW_NUMBER() OVER (ORDER BY PERCENTILE_CONT(CAST(sanrentan AS FLOAT64), 0.5) DESC) as rank,
+        COUNT(*) OVER () as total_courses
+      FROM
+        `{DATASET}.race_master` rm
+      WHERE
+        rm.sanrentan IS NOT NULL
+        AND SAFE.FLOAT64(rm.sanrentan) > 0
+        AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+      GROUP BY
+        venue_name,
+        surface,
+        distance
+    )
+    SELECT
+      cmr.course_median as trifecta_median_payback,
+      am.global_median as trifecta_all_median_payback,
+      cmr.rank as trifecta_avg_payback_rank,
+      cmr.total_courses as total_courses
+    FROM
+      course_medians_ranked cmr
+      CROSS JOIN all_medians am
+    WHERE
+      cmr.venue_name = '{VENUE}'
+      AND cmr.surface = '{SURFACE}'
+      AND cmr.distance = {DISTANCE}
+    """
+
+    try:
+        results = client.query(ranking_query).result()
+        rows = list(results)
+        if not rows:
+            return None
+
+        row = rows[0]
+        course_median = float(row['trifecta_median_payback']) if row['trifecta_median_payback'] else 0
+        global_median = float(row['trifecta_all_median_payback']) if row['trifecta_all_median_payback'] else 0
+        rank = row['trifecta_avg_payback_rank']
+        total_courses = row['total_courses']
+
+        # Step 2: 荒れやすさスコア（1-5）を計算
+        # コースを5等分（quintile）に分けて、荒れやすさを評価
+        volatility_query = f"""
+        WITH course_medians_all AS (
+          SELECT
+            venue_name,
+            surface,
+            distance,
+            PERCENTILE_CONT(CAST(sanrentan AS FLOAT64), 0.5) as course_median,
+            PERCENT_RANK() OVER (ORDER BY PERCENTILE_CONT(CAST(sanrentan AS FLOAT64), 0.5)) as percentile
+          FROM
+            `{DATASET}.race_master` rm
+          WHERE
+            rm.sanrentan IS NOT NULL
+            AND SAFE.FLOAT64(rm.sanrentan) > 0
+            AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+          GROUP BY
+            venue_name,
+            surface,
+            distance
+        )
+        SELECT
+          CASE
+            WHEN percentile <= 0.2 THEN 1
+            WHEN percentile <= 0.4 THEN 2
+            WHEN percentile <= 0.6 THEN 3
+            WHEN percentile <= 0.8 THEN 4
+            ELSE 5
+          END as volatility_score
+        FROM
+          course_medians_all
+        WHERE
+          venue_name = '{VENUE}'
+          AND surface = '{SURFACE}'
+          AND distance = {DISTANCE}
+        """
+
+        volatility_results = client.query(volatility_query).result()
+        volatility_rows = list(volatility_results)
+        volatility_score = volatility_rows[0]['volatility_score'] if volatility_rows else 3
+
+        return {
+            'volatility': volatility_score,
+            'trifecta_median_payback': int(course_median),
+            'trifecta_all_median_payback': int(global_median),
+            'trifecta_avg_payback_rank': rank,
+            'total_courses': total_courses
+        }
+
+    except Exception as e:
+        print(f"   ⚠️  Error fetching volatility stats: {str(e)}", file=sys.stderr)
+        raise
+
+
 def get_pedigree_stats(client):
     """種牡馬別データを取得（過去3年間）"""
     query = f"""
@@ -341,6 +461,10 @@ def main():
         trainer_stats = get_trainer_stats(bq_client)
         print(f"   ✅ {len(trainer_stats)} trainers")
 
+        print("📊 Fetching volatility stats...")
+        volatility_stats = get_volatility_stats(bq_client)
+        print(f"   ✅ Volatility score: {volatility_stats['volatility']}, Rank: {volatility_stats['trifecta_avg_payback_rank']}/{volatility_stats['total_courses']}")
+
         print("📊 Fetching pedigree stats...")
         pedigree_stats = get_pedigree_stats(bq_client)
         print(f"   ✅ {len(pedigree_stats)} pedigrees")
@@ -362,6 +486,13 @@ def main():
             'trainer_stats': trainer_stats,
             'pedigree_stats': pedigree_stats,
             'dam_sire_stats': dam_sire_stats,
+            'characteristics': {
+                'volatility': volatility_stats['volatility'],
+                'trifecta_median_payback': volatility_stats['trifecta_median_payback'],
+                'trifecta_all_median_payback': volatility_stats['trifecta_all_median_payback'],
+                'trifecta_avg_payback_rank': volatility_stats['trifecta_avg_payback_rank'],
+                'total_courses': volatility_stats['total_courses']
+            }
         }
 
         # GCSにアップロード
