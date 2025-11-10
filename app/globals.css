@@ -1069,8 +1069,9 @@ details[open] .evaluation-content {
   font-size: 0.75rem;
   font-weight: 700;
   color: var(--text-dark);
-  min-width: 32px;
+  width: 45px;
   text-align: right;
+  flex-shrink: 0;
 }
 
 /* 脚質傾向（2分化）グラフ */
