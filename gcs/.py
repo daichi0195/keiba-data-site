@@ -249,6 +249,8 @@ def get_volatility_stats(client):
         venue_name,
         surface,
         distance
+      HAVING
+        COUNT(*) > 20
     ),
     all_courses_ranked AS (
       SELECT
@@ -270,6 +272,16 @@ def get_volatility_stats(client):
         rm.sanrentan IS NOT NULL
         AND rm.surface != '障害'
         AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+        AND (rm.venue_name, rm.surface, rm.distance) IN (
+          SELECT venue_name, surface, distance
+          FROM `{DATASET}.race_master`
+          WHERE
+            sanrentan IS NOT NULL
+            AND surface != '障害'
+            AND race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+          GROUP BY venue_name, surface, distance
+          HAVING COUNT(*) > 20
+        )
     )
     SELECT
       cm.course_median as trifecta_median_payback,
