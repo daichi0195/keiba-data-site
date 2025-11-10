@@ -450,7 +450,7 @@ def get_running_style_stats(client):
         rr.horse_id,
         rr.finish_position,
         rm.entry_count,
-        SPLIT(rr.corner_positions, ',') as corner_array
+        SPLIT(rr.corner_positions, '-') as corner_array
       FROM
         `{DATASET}.race_master` rm
         JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
@@ -460,7 +460,7 @@ def get_running_style_stats(client):
         AND rm.distance = {DISTANCE}
         AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
         AND rr.corner_positions IS NOT NULL
-        AND ARRAY_LENGTH(SPLIT(rr.corner_positions, ',')) = 4
+        AND ARRAY_LENGTH(SPLIT(rr.corner_positions, '-')) = 4
     ),
     corner_parsed AS (
       SELECT
