@@ -395,9 +395,9 @@ def get_dam_sire_stats(client):
         ORDER BY
           SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) DESC,
           ROUND(AVG(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) DESC,
-          h.mm ASC
+          h.mf ASC
       ) as rank,
-      h.mm as name,
+      h.mf as name,
       COUNT(*) as races,
       SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
       SUM(CASE WHEN rr.finish_position = 2 THEN 1 ELSE 0 END) as places_2,
@@ -415,9 +415,9 @@ def get_dam_sire_stats(client):
       rm.venue_name = '{VENUE}'
       AND rm.surface = '{SURFACE}'
       AND rm.distance = {DISTANCE}
-      AND h.mm IS NOT NULL
+      AND h.mf IS NOT NULL
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
-    GROUP BY h.mm
+    GROUP BY h.mf
     HAVING COUNT(*) >= 3
     ORDER BY
       wins DESC,
