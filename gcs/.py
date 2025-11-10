@@ -238,6 +238,7 @@ def get_volatility_stats(client):
         venue_name,
         surface,
         distance,
+        track_variant,
         APPROX_QUANTILES(CAST(REGEXP_EXTRACT(sanrentan, r': (\\d+)') AS FLOAT64), 100)[OFFSET(50)] as course_median
       FROM
         `{DATASET}.race_master` rm
@@ -248,7 +249,8 @@ def get_volatility_stats(client):
       GROUP BY
         venue_name,
         surface,
-        distance
+        distance,
+        track_variant
       HAVING
         COUNT(*) > 20
     ),
@@ -257,6 +259,7 @@ def get_volatility_stats(client):
         venue_name,
         surface,
         distance,
+        track_variant,
         course_median,
         ROW_NUMBER() OVER (ORDER BY course_median DESC) as rank,
         COUNT(*) OVER () as total_courses
@@ -272,14 +275,14 @@ def get_volatility_stats(client):
         rm.sanrentan IS NOT NULL
         AND rm.surface != '障害'
         AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
-        AND STRUCT(rm.venue_name, rm.surface, rm.distance) IN (
-          SELECT AS STRUCT venue_name, surface, distance
+        AND STRUCT(rm.venue_name, rm.surface, rm.distance, rm.track_variant) IN (
+          SELECT AS STRUCT venue_name, surface, distance, track_variant
           FROM `{DATASET}.race_master`
           WHERE
             sanrentan IS NOT NULL
             AND surface != '障害'
             AND race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
-          GROUP BY venue_name, surface, distance
+          GROUP BY venue_name, surface, distance, track_variant
           HAVING COUNT(*) > 20
         )
     )
