@@ -6,9 +6,7 @@ export default function GatePositionExplanation() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const explanationPoints = [
-    '「枠順傾向」は、1〜8の各枠番号から出走した馬の複勝率を基準に評価しています。',
-    '特定の枠番号から出走した馬が有利または不利になる傾向を示しており、馬場の広さ、コーナーまでの距離、競馬場の形状などの要因に影響されます。',
-    '各コースの枠順データを全コースで相対比較し、5段階で評価しています。'
+    '内枠（1-4枠）と外枠（5-8枠）の複勝率を比較し、内有利〜外有利を判定しています。'
   ];
 
   return (
@@ -36,6 +34,16 @@ export default function GatePositionExplanation() {
               {explanationPoints.map((point, index) => (
                 <p key={index} className="explanation-paragraph">{point}</p>
               ))}
+              <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #e2e8f0', fontSize: '0.85rem', color: '#475569', lineHeight: '1.5' }}>
+                <p style={{ margin: '0 0 0.5rem 0' }}><strong>評価方法</strong></p>
+                <ul style={{ margin: '0.5rem 0 0 1.5rem', paddingLeft: 0, fontSize: '0.85rem' }}>
+                  <li>内枠平均 - 外枠平均 ≥ 5%：内有利</li>
+                  <li>内枠平均 - 外枠平均 ≥ 2%：やや内有利</li>
+                  <li>-2% &lt; 差分 &lt; 2%：互角</li>
+                  <li>内枠平均 - 外枠平均 ≤ -2%：やや外有利</li>
+                  <li>内枠平均 - 外枠平均 ≤ -5%：外有利</li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
