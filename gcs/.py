@@ -449,6 +449,8 @@ def get_running_style_stats(client):
         rm.race_id,
         rr.horse_id,
         rr.finish_position,
+        rr.win,
+        rr.place,
         rm.entry_count,
         rr.last_3f_time,
         SPLIT(rr.corner_positions, '-') as corner_array
@@ -468,6 +470,8 @@ def get_running_style_stats(client):
         race_id,
         horse_id,
         finish_position,
+        win,
+        place,
         entry_count,
         last_3f_time,
         corner_array,
@@ -485,6 +489,11 @@ def get_running_style_stats(client):
     ),
     running_style_classified AS (
       SELECT
+        race_id,
+        horse_id,
+        finish_position,
+        COALESCE(win, 0) as win,
+        COALESCE(place, 0) as place,
         CASE
           -- 逃げ: コーナーのいずれかが1位通過
           WHEN corner_count >= 1 AND (
@@ -507,8 +516,7 @@ def get_running_style_stats(client):
             THEN 'close'
           -- その他: カウント対象外（NULLを返す）
           ELSE NULL
-        END as running_style,
-        finish_position
+        END as running_style
       FROM
         corner_parsed
     )
@@ -527,8 +535,8 @@ def get_running_style_stats(client):
       ROUND(SAFE_DIVIDE(SUM(CASE WHEN finish_position = 1 THEN 1 ELSE 0 END), COUNT(*)) * 100, 1) as win_rate,
       ROUND(SAFE_DIVIDE(SUM(CASE WHEN finish_position <= 2 THEN 1 ELSE 0 END), COUNT(*)) * 100, 1) as quinella_rate,
       ROUND(SAFE_DIVIDE(SUM(CASE WHEN finish_position <= 3 THEN 1 ELSE 0 END), COUNT(*)) * 100, 1) as place_rate,
-      0 as win_payback,
-      0 as place_payback
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN finish_position = 1 THEN COALESCE(win, 0) ELSE 0 END), COUNT(*)) / 100, 1) as win_payback,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN finish_position <= 3 THEN COALESCE(place, 0) ELSE 0 END), COUNT(*)) / 100, 1) as place_payback
     FROM
       running_style_classified
     WHERE
@@ -551,6 +559,140 @@ def get_running_style_stats(client):
         return [dict(row) for row in results]
     except Exception as e:
         print(f"   ⚠️  Error fetching running style stats: {str(e)}", file=sys.stderr)
+        raise
+
+
+def get_running_style_trends(client):
+    """脚質傾向データを取得（「逃げ・先行」と「差し・追込」に分類、5段階評価）"""
+    query = f"""
+    WITH corner_data AS (
+      SELECT
+        rm.race_id,
+        rr.horse_id,
+        rr.finish_position,
+        rr.win,
+        rr.place,
+        rm.entry_count,
+        rr.corner_positions,
+        rr.last_3f_time,
+        SPLIT(rr.corner_positions, '-') as corner_array
+      FROM
+        `{DATASET}.race_master` rm
+        JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
+      WHERE
+        rm.venue_name = '{VENUE}'
+        AND rm.surface = '{SURFACE}'
+        AND rm.distance = {DISTANCE}
+        AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+        AND rr.corner_positions IS NOT NULL
+        AND ARRAY_LENGTH(SPLIT(rr.corner_positions, '-')) > 0
+    ),
+    corner_parsed AS (
+      SELECT
+        race_id,
+        horse_id,
+        finish_position,
+        win,
+        place,
+        entry_count,
+        last_3f_time,
+        corner_array,
+        ARRAY_LENGTH(corner_array) as corner_count,
+        CAST(IF(ARRAY_LENGTH(corner_array) >= 1, corner_array[OFFSET(0)], NULL) AS INT64) as corner_1,
+        CAST(IF(ARRAY_LENGTH(corner_array) >= 2, corner_array[OFFSET(1)], NULL) AS INT64) as corner_2,
+        CAST(IF(ARRAY_LENGTH(corner_array) >= 3, corner_array[OFFSET(2)], NULL) AS INT64) as corner_3,
+        CAST(corner_array[OFFSET(ARRAY_LENGTH(corner_array)-1)] AS INT64) as final_corner,
+        RANK() OVER (PARTITION BY race_id ORDER BY last_3f_time ASC) as last_3f_rank
+      FROM
+        corner_data
+    ),
+    running_style_classified AS (
+      SELECT
+        race_id,
+        horse_id,
+        finish_position,
+        COALESCE(win, 0) as win,
+        COALESCE(place, 0) as place,
+        CASE
+          -- 逃げ: 最初の3コーナー（1,2,3番目）のいずれかを1位で通過
+          WHEN corner_count >= 1 AND (
+            COALESCE(corner_1, 0) = 1 OR
+            COALESCE(corner_2, 0) = 1 OR
+            COALESCE(corner_3, 0) = 1
+          )
+            THEN 'escape'
+          -- 先行: 最終コーナーが第1集団（1位～出走馬/3）
+          WHEN COALESCE(final_corner, 999) <= CAST(CEIL(entry_count / 3.0) AS INT64)
+            THEN 'lead'
+          -- 差し: 最終コーナーが第2集団（出走馬/3+1～2*出走馬/3）かつ上がり（ラスト3F）が5位以内
+          WHEN COALESCE(final_corner, 999) > CAST(CEIL(entry_count / 3.0) AS INT64)
+            AND COALESCE(final_corner, 999) <= CAST(CEIL(2 * entry_count / 3.0) AS INT64)
+            AND last_3f_rank <= 5
+            THEN 'pursue'
+          -- 追込: 最終コーナーが第3集団（2*出走馬/3+1～）かつ上がり（ラスト3F）が5位以内
+          WHEN COALESCE(final_corner, 999) > CAST(CEIL(2 * entry_count / 3.0) AS INT64)
+            AND last_3f_rank <= 5
+            THEN 'close'
+          -- その他: カウント対象外（NULLを返す）
+          ELSE NULL
+        END as running_style
+      FROM
+        corner_parsed
+    )
+    SELECT
+      CASE
+        WHEN running_style IN ('escape', 'lead') THEN 'early_lead'
+        WHEN running_style IN ('pursue', 'close') THEN 'comeback'
+      END as trend_group,
+      CASE
+        WHEN running_style IN ('escape', 'lead') THEN '逃げ・先行'
+        WHEN running_style IN ('pursue', 'close') THEN '差し・追込'
+      END as trend_label,
+      COUNT(*) as races,
+      SUM(CASE WHEN finish_position = 1 THEN 1 ELSE 0 END) as wins,
+      SUM(CASE WHEN finish_position = 2 THEN 1 ELSE 0 END) as places_2,
+      SUM(CASE WHEN finish_position = 3 THEN 1 ELSE 0 END) as places_3,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN finish_position = 1 THEN 1 ELSE 0 END), COUNT(*)) * 100, 1) as win_rate,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN finish_position <= 2 THEN 1 ELSE 0 END), COUNT(*)) * 100, 1) as quinella_rate,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN finish_position <= 3 THEN 1 ELSE 0 END), COUNT(*)) * 100, 1) as place_rate,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN finish_position = 1 THEN COALESCE(win, 0) ELSE 0 END), COUNT(*)) / 100, 1) as win_payback,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN finish_position <= 3 THEN COALESCE(place, 0) ELSE 0 END), COUNT(*)) / 100, 1) as place_payback
+    FROM
+      running_style_classified
+    WHERE
+      running_style IS NOT NULL
+    GROUP BY
+      trend_group, trend_label
+    ORDER BY
+      trend_group
+    """
+
+    try:
+        from google.cloud.bigquery import QueryJobConfig
+        job_config = QueryJobConfig(use_query_cache=False)
+        results = client.query(query, job_config=job_config).result()
+
+        # Convert results to dict and calculate trend_value (0-4 scale based on place_rate)
+        trends = [dict(row) for row in results]
+
+        # Calculate trend values based on place rate
+        if len(trends) == 2:
+            place_rates = [t['place_rate'] for t in trends]
+            max_rate = max(place_rates)
+            min_rate = min(place_rates)
+
+            for trend in trends:
+                # Normalize to 0-4 scale
+                if max_rate == min_rate:
+                    trend['trend_value'] = 2  # Middle if they're equal
+                else:
+                    # 0-4 scale where higher place_rate = higher value
+                    normalized = (trend['place_rate'] - min_rate) / (max_rate - min_rate)
+                    trend['trend_value'] = round(normalized * 4)
+
+        return trends
+    except Exception as e:
+        print(f"   ⚠️  Error fetching running style trends: {str(e)}", file=sys.stderr)
         raise
 
 
@@ -618,6 +760,10 @@ def main():
         running_style_stats = get_running_style_stats(bq_client)
         print(f"   ✅ {len(running_style_stats)} running styles")
 
+        print("📊 Fetching running style trends...")
+        running_style_trends = get_running_style_trends(bq_client)
+        print(f"   ✅ {len(running_style_trends)} trend groups")
+
         print("📊 Fetching total races...")
         total_races = get_total_races(bq_client)
         print(f"   ✅ Total races: {total_races}")
@@ -632,6 +778,7 @@ def main():
             'pedigree_stats': pedigree_stats,
             'dam_sire_stats': dam_sire_stats,
             'running_style_stats': running_style_stats,
+            'running_style_trends': running_style_trends,
             'characteristics': {
                 'volatility': volatility_stats['volatility'],
                 'trifecta_median_payback': volatility_stats['trifecta_median_payback'],

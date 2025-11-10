@@ -115,8 +115,26 @@ export async function getCourseDataFromGCS(
         win_rate: typeof item.win_rate === 'string' ? parseFloat(item.win_rate) : item.win_rate,
         place_rate: typeof item.place_rate === 'string' ? parseFloat(item.place_rate) : item.place_rate,
         quinella_rate: typeof item.quinella_rate === 'string' ? parseFloat(item.quinella_rate) : item.quinella_rate,
-        win_payback: typeof item.win_payback === 'string' ? parseInt(item.win_payback, 10) : item.win_payback,
-        place_payback: typeof item.place_payback === 'string' ? parseInt(item.place_payback, 10) : item.place_payback,
+        win_payback: typeof item.win_payback === 'string' ? parseFloat(item.win_payback) : item.win_payback,
+        place_payback: typeof item.place_payback === 'string' ? parseFloat(item.place_payback) : item.place_payback,
+      }));
+    }
+
+    // running_style_trends を処理（型変換）
+    if (data.running_style_trends && Array.isArray(data.running_style_trends)) {
+      data.running_style_trends = data.running_style_trends.map((item: any) => ({
+        trend_group: item.trend_group || '',
+        trend_label: item.trend_label || '',
+        races: typeof item.races === 'string' ? parseInt(item.races, 10) : item.races,
+        wins: typeof item.wins === 'string' ? parseInt(item.wins, 10) : item.wins,
+        places_2: typeof item.places_2 === 'string' ? parseInt(item.places_2, 10) : item.places_2,
+        places_3: typeof item.places_3 === 'string' ? parseInt(item.places_3, 10) : item.places_3,
+        win_rate: typeof item.win_rate === 'string' ? parseFloat(item.win_rate) : item.win_rate,
+        place_rate: typeof item.place_rate === 'string' ? parseFloat(item.place_rate) : item.place_rate,
+        quinella_rate: typeof item.quinella_rate === 'string' ? parseFloat(item.quinella_rate) : item.quinella_rate,
+        win_payback: typeof item.win_payback === 'string' ? parseFloat(item.win_payback) : item.win_payback,
+        place_payback: typeof item.place_payback === 'string' ? parseFloat(item.place_payback) : item.place_payback,
+        trend_value: typeof item.trend_value === 'string' ? parseInt(item.trend_value, 10) : item.trend_value,
       }));
     }
 
