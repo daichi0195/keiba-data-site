@@ -104,7 +104,7 @@ def get_popularity_stats(client):
 
 
 def get_jockey_stats(client):
-    """騎手別データを取得（過去3年間）"""
+    """騎手別データを取得（過去3年間、現役のみ）"""
     query = f"""
     SELECT
       ROW_NUMBER() OVER (
@@ -132,6 +132,7 @@ def get_jockey_stats(client):
       AND rm.surface = '{SURFACE}'
       AND rm.distance = {DISTANCE}
       AND rr.jockey_id IS NOT NULL
+      AND j.is_active = true
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
     GROUP BY j.jockey_name
     HAVING COUNT(*) >= 5
@@ -151,7 +152,7 @@ def get_jockey_stats(client):
 
 
 def get_trainer_stats(client):
-    """調教師別データを取得（過去3年間）"""
+    """調教師別データを取得（過去3年間、現役のみ）"""
     query = f"""
     SELECT
       ROW_NUMBER() OVER (
@@ -179,6 +180,7 @@ def get_trainer_stats(client):
       AND rm.surface = '{SURFACE}'
       AND rm.distance = {DISTANCE}
       AND rr.trainer_id IS NOT NULL
+      AND t.is_active = true
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
     GROUP BY t.trainer_name
     HAVING COUNT(*) >= 5
