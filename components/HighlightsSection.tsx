@@ -40,7 +40,11 @@ export default function HighlightsSection({
       return { strong: [], upset: [], weak: [] };
     }
 
-    // place_rate のtop5の閾値を取得
+    // wins のtop5の閾値を取得
+    const sortedByWins = [...items].sort((a, b) => (b.wins ?? 0) - (a.wins ?? 0));
+    const top5Wins = sortedByWins[4]?.wins ?? 0;
+
+    // place_rate のtop5の閾値も取得（upset用）
     const sortedByPlaceRate = [...items].sort((a, b) => b.place_rate - a.place_rate);
     const top5PlaceRate = sortedByPlaceRate[4]?.place_rate ?? 0;
 
@@ -51,12 +55,12 @@ export default function HighlightsSection({
     items.forEach((item) => {
       // 出走回数20回以上の条件
       if (item.races >= 20) {
-        // strong: place_rate が top5 以内 かつ place_payback >= 100
-        if (item.place_rate >= top5PlaceRate && item.place_payback >= 100) {
+        // strong: wins が top5 以内 かつ win_payback >= 100
+        if ((item.wins ?? 0) >= top5Wins && item.win_payback >= 100) {
           strong.push(item);
         }
-        // weak: place_rate <= 10 かつ place_payback < 30
-        else if (item.place_rate <= 10 && item.place_payback < 30) {
+        // weak: place_rate <= 20 かつ place_payback < 30
+        else if (item.place_rate <= 20 && item.place_payback < 30) {
           weak.push(item);
         }
         // upset: place_rate が top5 未満 かつ place_payback >= 100
@@ -231,15 +235,15 @@ export default function HighlightsSection({
             <h3 className="modal-title">条件について</h3>
             <div className="modal-conditions">
               {modalState.subsectionKey && [
-                { key: 'jockey-strong', conditionGroups: [['直近3年間の出走回数20回以上'], ['複勝率TOP5以内'], ['複勝回収率100%以上']] },
+                { key: 'jockey-strong', conditionGroups: [['直近3年間の出走回数20回以上'], ['勝数TOP5以内'], ['単勝回収率100%以上']] },
                 { key: 'jockey-upset', conditionGroups: [['直近3年間の出走回数20回以上'], ['複勝率TOP5未満'], ['複勝回収率100%以上']] },
-                { key: 'jockey-weak', conditionGroups: [['直近3年間の出走回数20回以上'], ['複勝率10%以下'], ['複勝回収率30%未満']] },
-                { key: 'sire-strong', conditionGroups: [['直近3年間の出走回数20回以上'], ['複勝率TOP5以内'], ['複勝回収率100%以上']] },
-                { key: 'sire-weak', conditionGroups: [['直近3年間の出走回数20回以上'], ['複勝率10%以下'], ['複勝回収率30%未満']] },
-                { key: 'dam-sire-strong', conditionGroups: [['直近3年間の出走回数20回以上'], ['複勝率TOP5以内'], ['複勝回収率100%以上']] },
-                { key: 'dam-sire-weak', conditionGroups: [['直近3年間の出走回数20回以上'], ['複勝率10%以下'], ['複勝回収率30%未満']] },
-                { key: 'trainer-strong', conditionGroups: [['直近3年間の出走回数20回以上'], ['複勝率TOP5以内'], ['複勝回収率100%以上']] },
-                { key: 'trainer-weak', conditionGroups: [['直近3年間の出走回数20回以上'], ['複勝率10%以下'], ['複勝回収率30%未満']] },
+                { key: 'jockey-weak', conditionGroups: [['直近3年間の出走回数20回以上'], ['複勝率20%以下'], ['複勝回収率30%未満']] },
+                { key: 'sire-strong', conditionGroups: [['直近3年間の出走回数20回以上'], ['勝数TOP5以内'], ['単勝回収率100%以上']] },
+                { key: 'sire-weak', conditionGroups: [['直近3年間の出走回数20回以上'], ['複勝率20%以下'], ['複勝回収率30%未満']] },
+                { key: 'dam-sire-strong', conditionGroups: [['直近3年間の出走回数20回以上'], ['勝数TOP5以内'], ['単勝回収率100%以上']] },
+                { key: 'dam-sire-weak', conditionGroups: [['直近3年間の出走回数20回以上'], ['複勝率20%以下'], ['複勝回収率30%未満']] },
+                { key: 'trainer-strong', conditionGroups: [['直近3年間の出走回数20回以上'], ['勝数TOP5以内'], ['単勝回収率100%以上']] },
+                { key: 'trainer-weak', conditionGroups: [['直近3年間の出走回数20回以上'], ['複勝率20%以下'], ['複勝回収率30%未満']] },
               ].find(item => item.key === modalState.subsectionKey)?.conditionGroups.map((group, groupIndex) => (
                 <div key={groupIndex} className="condition-group">
                   {group.map((condition, itemIndex) => (
