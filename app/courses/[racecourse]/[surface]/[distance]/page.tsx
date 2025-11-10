@@ -414,8 +414,6 @@ export default async function CoursePage({ params }: Props) {
       }
       data.course_info.characteristics = gcsData.characteristics;
     }
-    // GCSで既に course_info に data_period が設定されているため、ここでは処理不要
-
     console.log('✅ All data loaded from GCS successfully');
 
   } catch (error) {
@@ -424,15 +422,35 @@ export default async function CoursePage({ params }: Props) {
   }
   // ===== ここまで =====
 
-  // ビルド時の日付を最終更新日として設定
+  // ビルド時の動的な日付を設定
   const today = new Date();
+
+  // data_period: 前日〜3年前
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  const threeYearsAgo = new Date(yesterday);
+  threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 3);
+
+  const formatDate = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1);
+    const day = String(date.getDate());
+    return `${year}年${month}月${day}日`;
+  };
+
+  const dataPeriod = `直近3年間分（${formatDate(threeYearsAgo)}〜${formatDate(yesterday)}）`;
+
+  // last_updated: ビルド時の日付
   const year = today.getFullYear();
   const month = String(today.getMonth() + 1);
   const day = String(today.getDate());
   const formattedDate = `${year}年${month}月${day}日`;
+
   if (!data.course_info) {
     data.course_info = {};
   }
+  data.course_info.data_period = dataPeriod;
   data.course_info.last_updated = formattedDate;
 
   const { course_info, gate_stats, running_style_stats, popularity_stats, jockey_stats, pedigree_stats, dam_sire_stats, trainer_stats } = data;
