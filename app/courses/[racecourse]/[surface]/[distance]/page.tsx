@@ -729,16 +729,30 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
                       'close': '追'
                     };
 
+                    // 脚質ごとのカラーマッピング
+                    const styleColors: { [key: string]: { bg: string; text: string; bar: string } } = {
+                      'escape': { bg: '#FFF3E0', text: '#E65100', bar: '#FF9800' },
+                      'lead': { bg: '#FFFDE7', text: '#F57F17', bar: '#FBC02D' },
+                      'pursue': { bg: '#E3F2FD', text: '#1565C0', bar: '#2196F3' },
+                      'close': { bg: '#FCE4EC', text: '#C2185B', bar: '#E91E63' }
+                    };
+
+                    const colors = styleColors[style.style] || { bg: '#f5f5f5', text: '#666', bar: '#999' };
+
                     return (
                       <div key={style.style} className="running-style-chart-item">
-                        <div className="running-style-badge">
+                        <div className="running-style-badge" style={{
+                          backgroundColor: colors.bg,
+                          color: colors.text
+                        }}>
                           {styleIcons[style.style] || style.style_label}
                         </div>
                         <div className="running-style-bar-container">
                           <div
                             className="running-style-bar"
                             style={{
-                              width: `${style.place_rate}%`
+                              width: `${style.place_rate}%`,
+                              backgroundColor: colors.bar
                             }}
                           ></div>
                         </div>
