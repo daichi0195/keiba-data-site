@@ -454,6 +454,30 @@ export default async function CoursePage({ params }: Props) {
         data.course_info.characteristics.gate_position = gatePosition;
       }
     }
+
+    // running_style_trend_position を running_style_trends から計算（逃げ・先行有利〜差し・追込有利）
+    if (data.running_style_trends && Array.isArray(data.running_style_trends) && data.running_style_trends.length === 2) {
+      const earlyLead = data.running_style_trends.find(t => t.trend_group === 'early_lead');
+      const comeback = data.running_style_trends.find(t => t.trend_group === 'comeback');
+
+      if (earlyLead && comeback) {
+        const diff = (earlyLead.place_rate || 0) - (comeback.place_rate || 0);
+        let runningStyleTrendPosition = 3; // デフォルト: 互角
+
+        if (diff >= 5) runningStyleTrendPosition = 1;         // 逃げ・先行有利
+        else if (diff >= 2) runningStyleTrendPosition = 2;    // やや逃げ・先行有利
+        else if (diff <= -5) runningStyleTrendPosition = 5;   // 差し・追込有利
+        else if (diff <= -2) runningStyleTrendPosition = 4;   // やや差し・追込有利
+
+        if (!data.course_info) {
+          data.course_info = {};
+        }
+        if (!data.course_info.characteristics) {
+          data.course_info.characteristics = {};
+        }
+        data.course_info.characteristics.running_style_trend_position = runningStyleTrendPosition;
+      }
+    }
     // Handle both root-level total_races and course_info.total_races
     if (gcsData.total_races) {
       if (!data.course_info) {
@@ -725,36 +749,52 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
             </div>
 
             {/* 脚質傾向（2分化） */}
-            {running_style_trends && running_style_trends.length > 0 && (
-              <div className="running-style-trend-detail">
-                <div className="running-style-detail-title">脚質傾向（2分化）</div>
-                <div className="running-style-trend-chart">
-                  {running_style_trends.map((trend) => {
-                    // 傾向値に基づいてバーの色を変更
-                    const trendColor =
-                      trend.trend_value >= 3 ? '#52af77' :  // 緑：有利
-                      trend.trend_value === 2 ? '#fbb040' :  // 黄：互角
-                      '#d32f2f';  // 赤：不利
+            {running_style_trends && running_style_trends.length > 0 && course_info.characteristics.running_style_trend_position && (
+              <div className="gauge-item">
+                <div className="gauge-header">
+                  <h3 className="gauge-label">脚質傾向（2分化）</h3>
+                </div>
+                <div className="gauge-track">
+                  <div className="gauge-indicator" style={{ left: `${(course_info.characteristics.running_style_trend_position - 1) * 25}%` }}></div>
+                  <div className="gauge-horse-icon" style={{ left: `${(course_info.characteristics.running_style_trend_position - 1) * 25}%` }}>🏇</div>
+                </div>
+                <div className="gauge-labels">
+                  <span>逃げ・先行有利</span>
+                  <span>互角</span>
+                  <span>差し・追込有利</span>
+                </div>
+                <div className="gauge-result">
+                  {course_info.characteristics.running_style_trend_position === 1 && '逃げ・先行有利'}
+                  {course_info.characteristics.running_style_trend_position === 2 && 'やや逃げ・先行有利'}
+                  {course_info.characteristics.running_style_trend_position === 3 && '互角'}
+                  {course_info.characteristics.running_style_trend_position === 4 && 'やや差し・追込有利'}
+                  {course_info.characteristics.running_style_trend_position === 5 && '差し・追込有利'}
+                </div>
 
-                    return (
-                      <div key={trend.trend_group} className="running-style-trend-item">
-                        <div className="trend-label">{trend.trend_label}</div>
-                        <div className="trend-bar-container">
+                {/* 脚質傾向別複勝率グラフ */}
+                <div className="running-style-trend-detail">
+                  <div className="running-style-detail-title">脚質傾向別複勝率</div>
+                  <div className="running-style-trend-chart">
+                    {running_style_trends.map((trend) => (
+                      <div key={trend.trend_group} className="running-style-chart-item">
+                        <div className="running-style-badge" style={{
+                          backgroundColor: trend.trend_group === 'early_lead' ? '#e3f2fd' : '#fff3e0',
+                          color: trend.trend_group === 'early_lead' ? '#1976d2' : '#e65100'
+                        }}>
+                          {trend.trend_group === 'early_lead' ? '逃先' : '差追'}
+                        </div>
+                        <div className="running-style-bar-container">
                           <div
-                            className="trend-bar"
+                            className="running-style-bar"
                             style={{
-                              width: `${(trend.trend_value / 4) * 100}%`,
-                              backgroundColor: trendColor
+                              width: `${trend.place_rate}%`
                             }}
                           ></div>
                         </div>
-                        <div className="trend-stats">
-                          <span className="trend-races">{trend.races}頭</span>
-                          <span className="trend-rate">{trend.place_rate.toFixed(1)}%</span>
-                        </div>
+                        <div className="running-style-rate">{trend.place_rate.toFixed(1)}%</div>
                       </div>
-                    );
-                  })}
+                    ))}
+                  </div>
                 </div>
               </div>
             )}
