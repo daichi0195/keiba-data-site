@@ -202,34 +202,124 @@ def get_trainer_stats(client):
 def get_volatility_stats(client):
     """荒れやすさデータを取得（過去3年間）
 
+    sanrentanはJSON形式で保存されているため、JSON_EXTRACTで値を抽出する
     - 全コースの三連単中央値
     - このコースの三連単中央値
     - ランキング（何位/全コース数）
     - 荒れやすさスコア（1-5）
+    """
 
-    注：sanrentanフィールドの形式に応じた処理が必要
+    # Step 1: このコースの三連単中央値と順位を計算
+    ranking_query = f"""
+    WITH payback_values AS (
+      SELECT
+        rm.venue_name,
+        rm.surface,
+        rm.distance,
+        CAST(JSON_EXTRACT_SCALAR(rm.sanrentan, '$.*') AS FLOAT64) as payback_amount
+      FROM
+        `{DATASET}.race_master` rm
+      WHERE
+        rm.venue_name = '{VENUE}'
+        AND rm.surface = '{SURFACE}'
+        AND rm.distance = {DISTANCE}
+        AND rm.sanrentan IS NOT NULL
+        AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+    ),
+    course_median AS (
+      SELECT
+        APPROX_QUANTILES(payback_amount, 100)[OFFSET(50)] as course_median
+      FROM
+        payback_values
+    ),
+    all_course_stats AS (
+      SELECT
+        venue_name,
+        surface,
+        distance,
+        APPROX_QUANTILES(CAST(JSON_EXTRACT_SCALAR(sanrentan, '$.*') AS FLOAT64), 100)[OFFSET(50)] as course_median
+      FROM
+        `{DATASET}.race_master` rm
+      WHERE
+        rm.sanrentan IS NOT NULL
+        AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+      GROUP BY
+        venue_name,
+        surface,
+        distance
+    ),
+    all_courses_ranked AS (
+      SELECT
+        venue_name,
+        surface,
+        distance,
+        course_median,
+        ROW_NUMBER() OVER (ORDER BY course_median DESC) as rank,
+        COUNT(*) OVER () as total_courses
+      FROM
+        all_course_stats
+    ),
+    global_median AS (
+      SELECT
+        APPROX_QUANTILES(CAST(JSON_EXTRACT_SCALAR(sanrentan, '$.*') AS FLOAT64), 100)[OFFSET(50)] as global_median
+      FROM
+        `{DATASET}.race_master` rm
+      WHERE
+        rm.sanrentan IS NOT NULL
+        AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+    )
+    SELECT
+      cm.course_median as trifecta_median_payback,
+      gm.global_median as trifecta_all_median_payback,
+      acr.rank as trifecta_avg_payback_rank,
+      acr.total_courses as total_courses
+    FROM
+      course_median cm
+      CROSS JOIN global_median gm
+      CROSS JOIN all_courses_ranked acr
+    WHERE
+      acr.venue_name = '{VENUE}'
+      AND acr.surface = '{SURFACE}'
+      AND acr.distance = {DISTANCE}
     """
 
     try:
-        # モックデータで返す（将来的に実装予定）
+        results = client.query(ranking_query).result()
+        rows = list(results)
+        if not rows:
+            return None
+
+        row = rows[0]
+        course_median = float(row['trifecta_median_payback']) if row['trifecta_median_payback'] else 0
+        global_median = float(row['trifecta_all_median_payback']) if row['trifecta_all_median_payback'] else 0
+        rank = row['trifecta_avg_payback_rank']
+        total_courses = row['total_courses']
+
+        # Step 2: 荒れやすさスコア（1-5）を計算
+        # 配当が高いほど荒れやすい
+        # percentileに基づいて5段階評価
+        if rank <= total_courses * 0.2:
+            volatility_score = 5  # 上位20%：最も荒れやすい
+        elif rank <= total_courses * 0.4:
+            volatility_score = 4
+        elif rank <= total_courses * 0.6:
+            volatility_score = 3  # 中央：標準
+        elif rank <= total_courses * 0.8:
+            volatility_score = 2
+        else:
+            volatility_score = 1  # 下位20%：最も堅い
+
         return {
-            'volatility': 3,
-            'trifecta_median_payback': 3850,
-            'trifecta_all_median_payback': 3200,
-            'trifecta_avg_payback_rank': 8,
-            'total_courses': 64
+            'volatility': volatility_score,
+            'trifecta_median_payback': int(course_median),
+            'trifecta_all_median_payback': int(global_median),
+            'trifecta_avg_payback_rank': rank,
+            'total_courses': total_courses
         }
 
     except Exception as e:
         print(f"   ⚠️  Error fetching volatility stats: {str(e)}", file=sys.stderr)
-        # エラーの場合もモックデータを返す
-        return {
-            'volatility': 3,
-            'trifecta_median_payback': 3850,
-            'trifecta_all_median_payback': 3200,
-            'trifecta_avg_payback_rank': 8,
-            'total_courses': 64
-        }
+        raise
 
 
 def get_pedigree_stats(client):
