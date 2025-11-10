@@ -202,7 +202,7 @@ def get_trainer_stats(client):
 def get_volatility_stats(client):
     """荒れやすさデータを取得（過去3年間）
 
-    sanrentanはJSON形式で保存されているため、JSON_EXTRACTで値を抽出する
+    sanrentanはJSON形式の文字列で保存されているため、REGEXPで数値を抽出する
     - 全コースの三連単中央値
     - このコースの三連単中央値
     - ランキング（何位/全コース数）
@@ -216,7 +216,7 @@ def get_volatility_stats(client):
         rm.venue_name,
         rm.surface,
         rm.distance,
-        CAST(JSON_EXTRACT_SCALAR(rm.sanrentan, '$.*') AS FLOAT64) as payback_amount
+        CAST(REGEXP_EXTRACT(rm.sanrentan, r': (\\d+)') AS FLOAT64) as payback_amount
       FROM
         `{DATASET}.race_master` rm
       WHERE
@@ -237,7 +237,7 @@ def get_volatility_stats(client):
         venue_name,
         surface,
         distance,
-        APPROX_QUANTILES(CAST(JSON_EXTRACT_SCALAR(sanrentan, '$.*') AS FLOAT64), 100)[OFFSET(50)] as course_median
+        APPROX_QUANTILES(CAST(REGEXP_EXTRACT(sanrentan, r': (\\d+)') AS FLOAT64), 100)[OFFSET(50)] as course_median
       FROM
         `{DATASET}.race_master` rm
       WHERE
@@ -261,7 +261,7 @@ def get_volatility_stats(client):
     ),
     global_median AS (
       SELECT
-        APPROX_QUANTILES(CAST(JSON_EXTRACT_SCALAR(sanrentan, '$.*') AS FLOAT64), 100)[OFFSET(50)] as global_median
+        APPROX_QUANTILES(CAST(REGEXP_EXTRACT(sanrentan, r': (\\d+)') AS FLOAT64), 100)[OFFSET(50)] as global_median
       FROM
         `{DATASET}.race_master` rm
       WHERE
