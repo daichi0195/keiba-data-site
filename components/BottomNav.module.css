@@ -97,6 +97,13 @@
   }
 }
 
+/* ===== フッター表示時に非表示 ===== */
+.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
 /* ===== スクロールスナップ補正（任意） ===== */
 @media (hover: none) {
   .navButton:active {

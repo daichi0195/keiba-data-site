@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Footer from "@/components/Footer";
-import SectionNav from "@/components/SectionNav";
+import HeaderMenu from "@/components/HeaderMenu";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -19,7 +19,7 @@ export default function RootLayout({
         <header>
           <div className="site-name">🏇 KEIBA DATA LAB</div>
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <SectionNav items={[]} />
+            <HeaderMenu items={[]} />
           </div>
         </header>
         {children}

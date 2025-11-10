@@ -150,9 +150,9 @@ def get_jockey_stats(client):
 def get_trainer_stats(client):
     """調教師別データを取得"""
     query = f"""
-    SELECT 
+    SELECT
       ROW_NUMBER() OVER (
-        ORDER BY 
+        ORDER BY
           SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) DESC,
           ROUND(AVG(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) DESC,
           t.trainer_name ASC
@@ -178,18 +178,41 @@ def get_trainer_stats(client):
       AND rr.trainer_id IS NOT NULL
     GROUP BY t.trainer_name
     HAVING COUNT(*) >= 5
-    ORDER BY 
+    ORDER BY
       wins DESC,
       win_rate DESC,
       name ASC
     LIMIT 50
     """
-    
+
     try:
         results = client.query(query).result()
         return [dict(row) for row in results]
     except Exception as e:
         print(f"   ⚠️  Error fetching trainer stats: {str(e)}", file=sys.stderr)
+        raise
+
+
+def get_total_races(client):
+    """対象コースの総出走数を取得"""
+    query = f"""
+    SELECT
+      COUNT(*) as total_races
+    FROM
+      `{DATASET}.race_master` rm
+      JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
+    WHERE
+      rm.venue_name = '{VENUE}'
+      AND rm.surface = '{SURFACE}'
+      AND rm.distance = {DISTANCE}
+    """
+
+    try:
+        results = client.query(query).result()
+        row = next(results)
+        return row['total_races']
+    except Exception as e:
+        print(f"   ⚠️  Error fetching total races: {str(e)}", file=sys.stderr)
         raise
 
 
@@ -218,8 +241,13 @@ def main():
         trainer_stats = get_trainer_stats(bq_client)
         print(f"   ✅ {len(trainer_stats)} trainers")
 
+        print("📊 Fetching total races...")
+        total_races = get_total_races(bq_client)
+        print(f"   ✅ Total races: {total_races}")
+
         # 統合データ作成
         course_data = {
+            'total_races': total_races,
             'gate_stats': gate_stats,
             'popularity_stats': popularity_stats,
             'jockey_stats': jockey_stats,

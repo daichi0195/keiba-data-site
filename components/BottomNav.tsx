@@ -7,9 +7,33 @@ type Item = { id: string; label: string };
 
 export default function BottomNav({ items }: { items: Item[] }) {
   const [activeId, setActiveId] = useState<string>(items[0]?.id ?? '');
+  const [isFooterVisible, setIsFooterVisible] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const btnRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+
+  // ★ フッター表示検出
+  useEffect(() => {
+    const footer = document.querySelector('footer');
+    if (!footer) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setIsFooterVisible(entry.isIntersecting);
+        });
+      },
+      {
+        threshold: 0,
+      }
+    );
+
+    observer.observe(footer);
+
+    return () => {
+      observer.unobserve(footer);
+    };
+  }, []);
 
   // ★ 交差判定（IntersectionObserver）
   useEffect(() => {
@@ -68,7 +92,7 @@ export default function BottomNav({ items }: { items: Item[] }) {
   };
 
   return (
-    <div className={styles.sectionNav}>
+    <div className={`${styles.sectionNav} ${isFooterVisible ? styles.hidden : ''}`}>
       <div className={styles.navContainer} ref={containerRef}>
         {items.map((item) => (
           <button

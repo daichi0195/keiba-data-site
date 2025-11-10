@@ -118,13 +118,18 @@ export async function getCourseDataFromGCS(
       };
     }
 
-    // course_info の data_period と last_updated を処理
+    // course_info の data_period、last_updated、total_races を処理
     if (data.course_info) {
       if (data.data_period) {
         data.course_info.data_period = data.data_period;
       }
       if (data.last_updated) {
         data.course_info.last_updated = data.last_updated;
+      }
+      if (data.total_races) {
+        data.course_info.total_races = typeof data.total_races === 'string'
+          ? parseInt(data.total_races, 10)
+          : data.total_races;
       }
     }
 
@@ -135,6 +140,7 @@ export async function getCourseDataFromGCS(
     console.log('  - Trainer stats:', data.trainer_stats?.length || 0, 'trainers');
     console.log('  - Characteristics:', data.characteristics ? '✓' : '✗');
     console.log('  - Data period:', data.data_period ? '✓' : '✗');
+    console.log('  - Total races:', data.total_races || data.course_info?.total_races || '✗');
 
     return data;
 

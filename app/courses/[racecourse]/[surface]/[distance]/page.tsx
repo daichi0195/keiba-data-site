@@ -9,7 +9,7 @@ import BarChartAnimation from '@/components/BarChartAnimation';
 import VolatilityExplanation from '@/components/VolatilityExplanation';
 import GatePositionExplanation from '@/components/GatePositionExplanation';
 import RunningStyleExplanation from '@/components/RunningStyleExplanation';
-import SectionNav from '@/components/SectionNav';
+import HeaderMenu from '@/components/HeaderMenu';
 import BottomNav from '@/components/BottomNav';
 import { getCourseDataFromGCS } from '@/lib/getCourseDataFromGCS';
 
@@ -412,6 +412,12 @@ export default async function CoursePage({ params }: Props) {
       }
       data.course_info.characteristics = gcsData.characteristics;
     }
+    if (gcsData.course_info?.total_races) {
+      if (!data.course_info) {
+        data.course_info = {};
+      }
+      data.course_info.total_races = gcsData.course_info.total_races;
+    }
     console.log('✅ All data loaded from GCS successfully');
 
   } catch (error) {
@@ -479,7 +485,7 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
 
   return (
     <>
-      <SectionNav />
+      <HeaderMenu />
       <BottomNav items={navigationItems} />
       <main>
         <div className="course-header">
@@ -489,7 +495,12 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
           <div className="course-meta-section">
             <div className="meta-item">
               <span className="meta-label">データ取得期間</span>
-              <span>{course_info.data_period}</span>
+              <span>
+                直近3年間分
+                <span className="meta-sub-text">
+                  {course_info.data_period.match(/（[^）]+）/)?.[0] || course_info.data_period}
+                </span>
+              </span>
             </div>
             <div className="meta-item">
               <span className="meta-label">対象レース数</span>

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import styles from './SectionNav.module.css';
+import styles from './HeaderMenu.module.css';
 
 interface Course {
   name: string;
@@ -184,7 +184,7 @@ const racecoursesData: Racecourse[] = [
   },
 ];
 
-export default function SectionNav() {
+export default function HeaderMenu() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [expandedRacecourse, setExpandedRacecourse] = useState<Record<string, boolean>>({});
 
