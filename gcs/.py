@@ -197,6 +197,100 @@ def get_trainer_stats(client):
         raise
 
 
+def get_pedigree_stats(client):
+    """種牡馬別データを取得（過去3年間）"""
+    query = f"""
+    SELECT
+      ROW_NUMBER() OVER (
+        ORDER BY
+          SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) DESC,
+          ROUND(AVG(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) DESC,
+          h.father ASC
+      ) as rank,
+      h.father as name,
+      COUNT(*) as races,
+      SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
+      SUM(CASE WHEN rr.finish_position = 2 THEN 1 ELSE 0 END) as places_2,
+      SUM(CASE WHEN rr.finish_position = 3 THEN 1 ELSE 0 END) as places_3,
+      ROUND(AVG(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) as win_rate,
+      ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
+      ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
+      ROUND(COALESCE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), 0) / COUNT(*), 0) as win_payback,
+      ROUND(COALESCE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), 0) / COUNT(*), 0) as place_payback
+    FROM
+      `{DATASET}.race_master` rm
+      JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
+      JOIN `{DATASET}.horse` h ON CAST(rr.horse_id AS STRING) = CAST(h.horse_id AS STRING)
+    WHERE
+      rm.venue_name = '{VENUE}'
+      AND rm.surface = '{SURFACE}'
+      AND rm.distance = {DISTANCE}
+      AND h.father IS NOT NULL
+      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+    GROUP BY h.father
+    HAVING COUNT(*) >= 3
+    ORDER BY
+      wins DESC,
+      win_rate DESC,
+      name ASC
+    LIMIT 50
+    """
+
+    try:
+        results = client.query(query).result()
+        return [dict(row) for row in results]
+    except Exception as e:
+        print(f"   ⚠️  Error fetching pedigree stats: {str(e)}", file=sys.stderr)
+        raise
+
+
+def get_dam_sire_stats(client):
+    """母父別データを取得（過去3年間）"""
+    query = f"""
+    SELECT
+      ROW_NUMBER() OVER (
+        ORDER BY
+          SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) DESC,
+          ROUND(AVG(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) DESC,
+          h.mm ASC
+      ) as rank,
+      h.mm as name,
+      COUNT(*) as races,
+      SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
+      SUM(CASE WHEN rr.finish_position = 2 THEN 1 ELSE 0 END) as places_2,
+      SUM(CASE WHEN rr.finish_position = 3 THEN 1 ELSE 0 END) as places_3,
+      ROUND(AVG(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) as win_rate,
+      ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
+      ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
+      ROUND(COALESCE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), 0) / COUNT(*), 0) as win_payback,
+      ROUND(COALESCE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), 0) / COUNT(*), 0) as place_payback
+    FROM
+      `{DATASET}.race_master` rm
+      JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
+      JOIN `{DATASET}.horse` h ON CAST(rr.horse_id AS STRING) = CAST(h.horse_id AS STRING)
+    WHERE
+      rm.venue_name = '{VENUE}'
+      AND rm.surface = '{SURFACE}'
+      AND rm.distance = {DISTANCE}
+      AND h.mm IS NOT NULL
+      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+    GROUP BY h.mm
+    HAVING COUNT(*) >= 3
+    ORDER BY
+      wins DESC,
+      win_rate DESC,
+      name ASC
+    LIMIT 50
+    """
+
+    try:
+        results = client.query(query).result()
+        return [dict(row) for row in results]
+    except Exception as e:
+        print(f"   ⚠️  Error fetching dam_sire stats: {str(e)}", file=sys.stderr)
+        raise
+
+
 def get_total_races(client):
     """対象コースの総レース数を取得（過去3年間）"""
     query = f"""
@@ -245,6 +339,14 @@ def main():
         trainer_stats = get_trainer_stats(bq_client)
         print(f"   ✅ {len(trainer_stats)} trainers")
 
+        print("📊 Fetching pedigree stats...")
+        pedigree_stats = get_pedigree_stats(bq_client)
+        print(f"   ✅ {len(pedigree_stats)} pedigrees")
+
+        print("📊 Fetching dam_sire stats...")
+        dam_sire_stats = get_dam_sire_stats(bq_client)
+        print(f"   ✅ {len(dam_sire_stats)} dam_sires")
+
         print("📊 Fetching total races...")
         total_races = get_total_races(bq_client)
         print(f"   ✅ Total races: {total_races}")
@@ -256,6 +358,8 @@ def main():
             'popularity_stats': popularity_stats,
             'jockey_stats': jockey_stats,
             'trainer_stats': trainer_stats,
+            'pedigree_stats': pedigree_stats,
+            'dam_sire_stats': dam_sire_stats,
         }
 
         # GCSにアップロード
