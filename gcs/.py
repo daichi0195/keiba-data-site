@@ -35,8 +35,8 @@ def get_gate_stats(client):
       ROUND(AVG(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) as win_rate,
       ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
       ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
-      ROUND(COALESCE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), 0) / COUNT(*) / 100, 1) as win_payback,
-      ROUND(COALESCE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), 0) / COUNT(*) / 100, 1) as place_payback
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
     FROM
       `{DATASET}.race_master` rm
       JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
@@ -77,8 +77,8 @@ def get_popularity_stats(client):
       ROUND(AVG(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) as win_rate,
       ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
       ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
-      ROUND(COALESCE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), 0) / COUNT(*) / 100, 1) as win_payback,
-      ROUND(COALESCE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), 0) / COUNT(*) / 100, 1) as place_payback
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
     FROM
       `{DATASET}.race_master` rm
       JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
@@ -121,8 +121,8 @@ def get_jockey_stats(client):
       ROUND(AVG(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) as win_rate,
       ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
       ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
-      ROUND(COALESCE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), 0) / COUNT(*) / 100, 1) as win_payback,
-      ROUND(COALESCE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), 0) / COUNT(*) / 100, 1) as place_payback
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
     FROM
       `{DATASET}.race_master` rm
       JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
@@ -169,8 +169,8 @@ def get_trainer_stats(client):
       ROUND(AVG(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) as win_rate,
       ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
       ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
-      ROUND(COALESCE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), 0) / COUNT(*) / 100, 1) as win_payback,
-      ROUND(COALESCE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), 0) / COUNT(*) / 100, 1) as place_payback
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
     FROM
       `{DATASET}.race_master` rm
       JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
@@ -358,8 +358,8 @@ def get_pedigree_stats(client):
       ROUND(AVG(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) as win_rate,
       ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
       ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
-      ROUND(COALESCE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), 0) / COUNT(*) / 100, 1) as win_payback,
-      ROUND(COALESCE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), 0) / COUNT(*) / 100, 1) as place_payback
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
     FROM
       `{DATASET}.race_master` rm
       JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
@@ -405,8 +405,8 @@ def get_dam_sire_stats(client):
       ROUND(AVG(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) as win_rate,
       ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
       ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
-      ROUND(COALESCE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), 0) / COUNT(*) / 100, 1) as win_payback,
-      ROUND(COALESCE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), 0) / COUNT(*) / 100, 1) as place_payback
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
     FROM
       `{DATASET}.race_master` rm
       JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
