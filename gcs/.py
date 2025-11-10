@@ -496,14 +496,14 @@ def get_running_style_stats(client):
           -- 先行: 最終コーナーが第1集団（1位～出走馬/3）
           WHEN COALESCE(final_corner, 999) <= CAST(CEIL(entry_count / 3.0) AS INT64)
             THEN 'lead'
-          -- 差し: 最終コーナーが第2集団（出走馬/3+1～2*出走馬/3）かつ上がり（ラスト3F）が3位以内
+          -- 差し: 最終コーナーが第2集団（出走馬/3+1～2*出走馬/3）かつ上がり（ラスト3F）が5位以内
           WHEN COALESCE(final_corner, 999) > CAST(CEIL(entry_count / 3.0) AS INT64)
             AND COALESCE(final_corner, 999) <= CAST(CEIL(2 * entry_count / 3.0) AS INT64)
-            AND last_3f_rank <= 3
+            AND last_3f_rank <= 5
             THEN 'pursue'
-          -- 追込: 最終コーナーが第3集団（2*出走馬/3+1～）かつ上がり（ラスト3F）が3位以内
+          -- 追込: 最終コーナーが第3集団（2*出走馬/3+1～）かつ上がり（ラスト3F）が5位以内
           WHEN COALESCE(final_corner, 999) > CAST(CEIL(2 * entry_count / 3.0) AS INT64)
-            AND last_3f_rank <= 3
+            AND last_3f_rank <= 5
             THEN 'close'
           -- その他: カウント対象外（NULLを返す）
           ELSE NULL
