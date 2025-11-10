@@ -408,6 +408,12 @@ export default async function CoursePage({ params }: Props) {
     if (gcsData.running_style_stats) {
       data.running_style_stats = gcsData.running_style_stats;
     }
+    if (gcsData.characteristics) {
+      if (!data.course_info) {
+        data.course_info = {};
+      }
+      data.course_info.characteristics = gcsData.characteristics;
+    }
 
     console.log('✅ All data loaded from GCS successfully');
 

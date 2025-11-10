@@ -103,11 +103,27 @@ export async function getCourseDataFromGCS(
       data.popularity_stats = popularityObject;
     }
 
+    // characteristics データを処理（数値型に変換）
+    if (data.characteristics) {
+      data.characteristics = {
+        running_style: typeof data.characteristics.running_style === 'string'
+          ? parseInt(data.characteristics.running_style, 10)
+          : data.characteristics.running_style,
+        volatility: typeof data.characteristics.volatility === 'string'
+          ? parseInt(data.characteristics.volatility, 10)
+          : data.characteristics.volatility,
+        gate_position: typeof data.characteristics.gate_position === 'string'
+          ? parseInt(data.characteristics.gate_position, 10)
+          : data.characteristics.gate_position,
+      };
+    }
+
     console.log('✅ Course data loaded from GCS');
     console.log('  - Gate stats:', data.gate_stats?.length || 0, 'gates');
     console.log('  - Popularity stats:', Object.keys(data.popularity_stats || {}).length, 'groups');
     console.log('  - Jockey stats:', data.jockey_stats?.length || 0, 'jockeys');
     console.log('  - Trainer stats:', data.trainer_stats?.length || 0, 'trainers');
+    console.log('  - Characteristics:', data.characteristics ? '✓' : '✗');
 
     return data;
 
