@@ -1084,14 +1084,6 @@ details[open] .evaluation-content {
   margin-top: 1.5rem;
 }
 
-.running-style-detail-title {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--text-dark);
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--border-subtle);
-}
-
 .running-style-trend-chart {
   display: flex;
   flex-direction: column;
