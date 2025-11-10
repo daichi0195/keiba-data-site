@@ -9,6 +9,7 @@ import BarChartAnimation from '@/components/BarChartAnimation';
 import VolatilityExplanation from '@/components/VolatilityExplanation';
 import GatePositionExplanation from '@/components/GatePositionExplanation';
 import RunningStyleExplanation from '@/components/RunningStyleExplanation';
+import RunningStyleDefinition from '@/components/RunningStyleDefinition';
 import HeaderMenu from '@/components/HeaderMenu';
 import BottomNav from '@/components/BottomNav';
 import { getCourseDataFromGCS } from '@/lib/getCourseDataFromGCS';
@@ -747,6 +748,7 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
                     );
                   })}
                 </div>
+                <RunningStyleDefinition />
               </div>
             </div>
           )}
