@@ -482,21 +482,27 @@ def get_running_style_stats(client):
     running_style_classified AS (
       SELECT
         CASE
-          -- 逃げ: 最終コーナー以外のいずれかが1位
-          WHEN corner_count >= 2 AND (
+          -- 逃げ: コーナーのいずれかが1位通過
+          WHEN corner_count >= 1 AND (
             COALESCE(corner_1, 0) = 1 OR
             COALESCE(corner_2, 0) = 1 OR
             COALESCE(corner_3, 0) = 1
           )
             THEN 'escape'
-          -- 先行: 逃げに該当しない且つ最終コーナーが4位以内
-          WHEN COALESCE(final_corner, 999) <= 4
+          -- 先行: 最終コーナーが第1集団（1位～出走馬/3）
+          WHEN COALESCE(final_corner, 999) <= CAST(CEIL(entry_count / 3.0) AS INT64)
             THEN 'lead'
-          -- 差し: 逃げ・先行に該当しない且つ最終コーナーが出走頭数の3分の2以内（出走頭数≧8）
-          WHEN entry_count >= 8 AND COALESCE(final_corner, 999) <= CAST(entry_count * 2 / 3 AS INT64)
+          -- 差し: 最終コーナーが第2集団（出走馬/3+1～2*出走馬/3）かつ上がり5位以内
+          WHEN COALESCE(final_corner, 999) > CAST(CEIL(entry_count / 3.0) AS INT64)
+            AND COALESCE(final_corner, 999) <= CAST(CEIL(2 * entry_count / 3.0) AS INT64)
+            AND finish_position <= 5
             THEN 'pursue'
-          -- 追込: それ以外
-          ELSE 'close'
+          -- 追込: 最終コーナーが第3集団（2*出走馬/3+1～）かつ上がり5位以内
+          WHEN COALESCE(final_corner, 999) > CAST(CEIL(2 * entry_count / 3.0) AS INT64)
+            AND finish_position <= 5
+            THEN 'close'
+          -- その他: カウント対象外（NULLを返す）
+          ELSE NULL
         END as running_style,
         finish_position
       FROM
@@ -514,9 +520,9 @@ def get_running_style_stats(client):
       SUM(CASE WHEN finish_position = 1 THEN 1 ELSE 0 END) as wins,
       SUM(CASE WHEN finish_position = 2 THEN 1 ELSE 0 END) as places_2,
       SUM(CASE WHEN finish_position = 3 THEN 1 ELSE 0 END) as places_3,
-      ROUND(AVG(CASE WHEN finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) as win_rate,
-      ROUND(AVG(CASE WHEN finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
-      ROUND(AVG(CASE WHEN finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN finish_position = 1 THEN 1 ELSE 0 END), COUNT(*)) * 100, 1) as win_rate,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN finish_position <= 2 THEN 1 ELSE 0 END), COUNT(*)) * 100, 1) as quinella_rate,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN finish_position <= 3 THEN 1 ELSE 0 END), COUNT(*)) * 100, 1) as place_rate,
       0 as win_payback,
       0 as place_payback
     FROM
@@ -524,7 +530,7 @@ def get_running_style_stats(client):
     WHERE
       running_style IS NOT NULL
     GROUP BY
-      running_style, style_label
+      running_style
     ORDER BY
       CASE running_style
         WHEN 'escape' THEN 1
