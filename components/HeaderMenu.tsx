@@ -231,12 +231,12 @@ export default function HeaderMenu() {
                     <div className={styles.accordionContent}>
                       {racecourse.courses.map((course) => (
                         <Link
-                          key={`${racecourse.nameEn}-${course.name}`}
-                          href={getCourseUrl(racecourse, course)}
+                          key={`${racecourse.nameEn}-${course.racecourse}-${course.surface}-${course.distance}${course.variant || ''}`}
+                          href={getCourseUrl(course)}
                           className={`${styles.courseLink} ${course.surface === 'turf' ? styles.turf : styles.dirt}`}
                           onClick={() => setIsMenuOpen(false)}
                         >
-                          {course.name}
+                          {getCourseDisplayName(course)}
                         </Link>
                       ))}
                     </div>

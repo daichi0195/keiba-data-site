@@ -3,21 +3,16 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import styles from './Footer.module.css';
+import { getCoursesByRacecourse, getCourseUrl, getCourseDisplayName } from '@/lib/courses';
 
-interface Course {
-  name: string;
-  distance: number;
-  surface: 'turf' | 'dirt';
-  variant?: string; // For inner/outer variations
-}
+const racecoursesData = getCoursesByRacecourse().map(group => ({
+  name: group.racecourse_ja,
+  nameEn: group.racecourse,
+  courses: group.courses
+}));
 
-interface Racecourse {
-  name: string;
-  nameEn: string;
-  courses: Course[];
-}
-
-const racecoursesData: Racecourse[] = [
+// 既存の型定義（後方互換性のため残す）
+const _oldRacecoursesData_UNUSED = [
   {
     name: '札幌競馬場',
     nameEn: 'sapporo',
@@ -218,14 +213,7 @@ export default function Footer() {
     }));
   };
 
-  const getCourseUrl = (racecourse: Racecourse, course: Course): string => {
-    const surfaceEn = course.surface === 'turf' ? 'turf' : 'dirt';
-    // For courses with variants, we don't create a URL (they're informational)
-    if (course.variant) {
-      return '#';
-    }
-    return `/courses/${racecourse.nameEn}/${surfaceEn}/${course.distance}`;
-  };
+  // getCourseUrl と getCourseDisplayName は lib/courses.ts からインポート
 
   return (
     <footer className={styles.footer}>
@@ -255,14 +243,10 @@ export default function Footer() {
                         {racecourse.courses
                           .filter((c) => c.surface === 'turf')
                           .map((course) => (
-                            <li key={`${racecourse.nameEn}-${course.name}`}>
-                              {course.variant ? (
-                                <span className={styles.courseLink}>{course.name}</span>
-                              ) : (
-                                <Link href={getCourseUrl(racecourse, course)} className={styles.courseLink}>
-                                  {course.name}
-                                </Link>
-                              )}
+                            <li key={`${racecourse.nameEn}-${course.racecourse}-${course.surface}-${course.distance}${course.variant || ''}`}>
+                              <Link href={getCourseUrl(course)} className={styles.courseLink}>
+                                {getCourseDisplayName(course)}
+                              </Link>
                             </li>
                           ))}
                       </ul>
@@ -274,14 +258,10 @@ export default function Footer() {
                         {racecourse.courses
                           .filter((c) => c.surface === 'dirt')
                           .map((course) => (
-                            <li key={`${racecourse.nameEn}-${course.name}`}>
-                              {course.variant ? (
-                                <span className={styles.courseLink}>{course.name}</span>
-                              ) : (
-                                <Link href={getCourseUrl(racecourse, course)} className={styles.courseLink}>
-                                  {course.name}
-                                </Link>
-                              )}
+                            <li key={`${racecourse.nameEn}-${course.racecourse}-${course.surface}-${course.distance}${course.variant || ''}`}>
+                              <Link href={getCourseUrl(course)} className={styles.courseLink}>
+                                {getCourseDisplayName(course)}
+                              </Link>
                             </li>
                           ))}
                       </ul>
@@ -353,7 +333,7 @@ export default function Footer() {
             </Link>
           </li>
         </ul>
-        <p className={styles.copyright}>© 2024 KEIBA DATA LAB. All rights reserved.</p>
+        <p className={styles.copyright}>© 2024 競馬データ.com All rights reserved.</p>
       </div>
     </footer>
   );

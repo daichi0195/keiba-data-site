@@ -462,6 +462,12 @@ const racecourseNames: Record<string, string> = {
   tokyo: '東京',
   hanshin: '阪神',
   kyoto: '京都',
+  kokura: '小倉',
+  fukushima: '福島',
+  niigata: '新潟',
+  hakodate: '函館',
+  sapporo: '札幌',
+  chukyo: '中京',
 };
 
 const surfaceNames: Record<string, string> = {

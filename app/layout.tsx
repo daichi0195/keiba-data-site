@@ -4,8 +4,8 @@ import HeaderMenu from "@/components/HeaderMenu";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "KEIBA DATA LAB",
-  description: "競馬データ分析メディア",
+  title: "競馬データ.com",
+  description: "競馬データ分析サイト - 全国の競馬場・コース別の詳細データ",
 };
 
 export default function RootLayout({
@@ -17,7 +17,10 @@ export default function RootLayout({
     <html lang="ja">
       <body suppressHydrationWarning>
         <header>
-          <div className="site-name">🏇 KEIBA DATA LAB</div>
+          <div className="site-name">
+            <img src="/logo.png" alt="競馬データ.com" style={{ height: '32px', marginRight: '8px', verticalAlign: 'middle' }} />
+            競馬データ.com
+          </div>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <HeaderMenu items={[]} />
           </div>
