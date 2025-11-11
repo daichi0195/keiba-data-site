@@ -502,10 +502,18 @@ export default async function CoursePage({ params }: Props) {
 
   // 内回り・外回りの判定
   const distanceStr = resolvedParams.distance;
-  let distanceNum = parseInt(distanceStr.replace('-inner', '').replace('-outer', ''));
+  const distanceNum = parseInt(distanceStr.replace('-inner', '').replace('-outer', ''));
+  const distanceDisplay = distanceStr.replace('-inner', '').replace('-outer', '');
   let trackVariant = '';
-  if (distanceStr.includes('-inner')) trackVariant = '（内回り）';
-  if (distanceStr.includes('-outer')) trackVariant = '（外回り）';
+  let trackVariantLabel = '';
+  if (distanceStr.includes('-inner')) {
+    trackVariant = '（内回り）';
+    trackVariantLabel = '（内回り）';
+  }
+  if (distanceStr.includes('-outer')) {
+    trackVariant = '（外回り）';
+    trackVariantLabel = '（外回り）';
+  }
 
   // デフォルトデータ構造（GCSから取得できない場合のフォールバック）
   let data: any = {
@@ -696,19 +704,6 @@ export default async function CoursePage({ params }: Props) {
 
   const top5Jockeys = jockey_stats.slice(0, 5);
   const top5Pedigrees = pedigree_stats.slice(0, 5);
-
-  // 内回り・外回りの表示
-  const distanceStr = resolvedParams.distance;
-  let distanceDisplay = distanceStr;
-  let trackVariantLabel = '';
-
-  if (distanceStr.includes('-inner')) {
-    distanceDisplay = distanceStr.replace('-inner', '');
-    trackVariantLabel = '（内回り）';
-  } else if (distanceStr.includes('-outer')) {
-    distanceDisplay = distanceStr.replace('-outer', '');
-    trackVariantLabel = '（外回り）';
-  }
 
   // 競馬場名の末尾「競馬場」を省いた短縮名（例：中山競馬場 -> 中山）
   const courseShort =
