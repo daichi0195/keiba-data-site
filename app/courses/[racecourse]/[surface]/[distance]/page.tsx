@@ -17,6 +17,119 @@ import { getCourseDataFromGCS } from '@/lib/getCourseDataFromGCS';
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
 
+// 全85コースの定義（PythonスクリプトのCOURSESと同じ）
+const ALL_COURSES = [
+  // 中山競馬場
+  { racecourse: 'nakayama', surface: 'dirt', distance: '2400' },
+  { racecourse: 'nakayama', surface: 'turf', distance: '1200' },
+  { racecourse: 'nakayama', surface: 'dirt', distance: '1200' },
+  { racecourse: 'nakayama', surface: 'turf', distance: '1600' },
+  { racecourse: 'nakayama', surface: 'dirt', distance: '1800' },
+  { racecourse: 'nakayama', surface: 'turf', distance: '2000' },
+  { racecourse: 'nakayama', surface: 'turf', distance: '1800' },
+  { racecourse: 'nakayama', surface: 'turf', distance: '2500' },
+  { racecourse: 'nakayama', surface: 'turf', distance: '2200' },
+
+  // 東京競馬場
+  { racecourse: 'tokyo', surface: 'dirt', distance: '2100' },
+  { racecourse: 'tokyo', surface: 'dirt', distance: '1300' },
+  { racecourse: 'tokyo', surface: 'turf', distance: '1400' },
+  { racecourse: 'tokyo', surface: 'dirt', distance: '1400' },
+  { racecourse: 'tokyo', surface: 'dirt', distance: '1600' },
+  { racecourse: 'tokyo', surface: 'turf', distance: '1600' },
+  { racecourse: 'tokyo', surface: 'turf', distance: '1800' },
+  { racecourse: 'tokyo', surface: 'turf', distance: '2000' },
+  { racecourse: 'tokyo', surface: 'turf', distance: '2400' },
+
+  // 阪神競馬場
+  { racecourse: 'hanshin', surface: 'turf', distance: '2200' },
+  { racecourse: 'hanshin', surface: 'dirt', distance: '1200' },
+  { racecourse: 'hanshin', surface: 'turf', distance: '1400' },
+  { racecourse: 'hanshin', surface: 'dirt', distance: '1400' },
+  { racecourse: 'hanshin', surface: 'turf', distance: '1600' },
+  { racecourse: 'hanshin', surface: 'dirt', distance: '2000' },
+  { racecourse: 'hanshin', surface: 'turf', distance: '1200' },
+  { racecourse: 'hanshin', surface: 'turf', distance: '1800' },
+  { racecourse: 'hanshin', surface: 'dirt', distance: '1800' },
+  { racecourse: 'hanshin', surface: 'turf', distance: '2000' },
+  { racecourse: 'hanshin', surface: 'turf', distance: '2400' },
+
+  // 京都競馬場
+  { racecourse: 'kyoto', surface: 'turf', distance: '1200' },
+  { racecourse: 'kyoto', surface: 'dirt', distance: '1200' },
+  { racecourse: 'kyoto', surface: 'dirt', distance: '1400' },
+  { racecourse: 'kyoto', surface: 'dirt', distance: '1800' },
+  { racecourse: 'kyoto', surface: 'dirt', distance: '1900' },
+  { racecourse: 'kyoto', surface: 'turf', distance: '2400' },
+  { racecourse: 'kyoto', surface: 'turf', distance: '2200' },
+  { racecourse: 'kyoto', surface: 'turf', distance: '2000' },
+  { racecourse: 'kyoto', surface: 'turf', distance: '1800' },
+  { racecourse: 'kyoto', surface: 'turf', distance: '1400-inner' },
+  { racecourse: 'kyoto', surface: 'turf', distance: '1400-outer' },
+  { racecourse: 'kyoto', surface: 'turf', distance: '1600-inner' },
+  { racecourse: 'kyoto', surface: 'turf', distance: '1600-outer' },
+
+  // 小倉競馬場
+  { racecourse: 'kokura', surface: 'turf', distance: '1200' },
+  { racecourse: 'kokura', surface: 'turf', distance: '2000' },
+  { racecourse: 'kokura', surface: 'dirt', distance: '1700' },
+  { racecourse: 'kokura', surface: 'turf', distance: '1800' },
+  { racecourse: 'kokura', surface: 'turf', distance: '2600' },
+  { racecourse: 'kokura', surface: 'dirt', distance: '1000' },
+
+  // 福島競馬場
+  { racecourse: 'fukushima', surface: 'turf', distance: '1800' },
+  { racecourse: 'fukushima', surface: 'turf', distance: '2000' },
+  { racecourse: 'fukushima', surface: 'dirt', distance: '1700' },
+  { racecourse: 'fukushima', surface: 'turf', distance: '2600' },
+  { racecourse: 'fukushima', surface: 'dirt', distance: '1150' },
+  { racecourse: 'fukushima', surface: 'turf', distance: '1200' },
+
+  // 新潟競馬場
+  { racecourse: 'niigata', surface: 'turf', distance: '1400' },
+  { racecourse: 'niigata', surface: 'turf', distance: '1000' },
+  { racecourse: 'niigata', surface: 'dirt', distance: '1200' },
+  { racecourse: 'niigata', surface: 'dirt', distance: '1800' },
+  { racecourse: 'niigata', surface: 'turf', distance: '1200' },
+  { racecourse: 'niigata', surface: 'turf', distance: '1600' },
+  { racecourse: 'niigata', surface: 'turf', distance: '1800' },
+  { racecourse: 'niigata', surface: 'turf', distance: '2200' },
+  { racecourse: 'niigata', surface: 'turf', distance: '2000-inner' },
+  { racecourse: 'niigata', surface: 'turf', distance: '2000-outer' },
+
+  // 函館競馬場
+  { racecourse: 'hakodate', surface: 'turf', distance: '2000' },
+  { racecourse: 'hakodate', surface: 'turf', distance: '1200' },
+  { racecourse: 'hakodate', surface: 'dirt', distance: '1700' },
+  { racecourse: 'hakodate', surface: 'turf', distance: '1800' },
+  { racecourse: 'hakodate', surface: 'dirt', distance: '1000' },
+
+  // 札幌競馬場
+  { racecourse: 'sapporo', surface: 'turf', distance: '2600' },
+  { racecourse: 'sapporo', surface: 'turf', distance: '1200' },
+  { racecourse: 'sapporo', surface: 'turf', distance: '2000' },
+  { racecourse: 'sapporo', surface: 'dirt', distance: '1700' },
+  { racecourse: 'sapporo', surface: 'turf', distance: '1500' },
+  { racecourse: 'sapporo', surface: 'dirt', distance: '1000' },
+  { racecourse: 'sapporo', surface: 'turf', distance: '1800' },
+
+  // 中京競馬場
+  { racecourse: 'chukyo', surface: 'dirt', distance: '1200' },
+  { racecourse: 'chukyo', surface: 'dirt', distance: '1400' },
+  { racecourse: 'chukyo', surface: 'turf', distance: '1400' },
+  { racecourse: 'chukyo', surface: 'dirt', distance: '1800' },
+  { racecourse: 'chukyo', surface: 'turf', distance: '1200' },
+  { racecourse: 'chukyo', surface: 'turf', distance: '1600' },
+  { racecourse: 'chukyo', surface: 'dirt', distance: '1900' },
+  { racecourse: 'chukyo', surface: 'turf', distance: '2200' },
+  { racecourse: 'chukyo', surface: 'turf', distance: '2000' },
+];
+
+// generateStaticParams: 全85コースを事前生成
+export async function generateStaticParams() {
+  return ALL_COURSES;
+}
+
 // モックデータ
 const mockData = {
   nakayama: {
@@ -360,10 +473,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const resolvedParams = await params;
   const racecourse = racecourseNames[resolvedParams.racecourse] || resolvedParams.racecourse;
   const surface = surfaceNames[resolvedParams.surface] || resolvedParams.surface;
-  
+
+  // 内回り・外回りの表示
+  const distanceStr = resolvedParams.distance;
+  let distanceDisplay = distanceStr;
+  let trackVariant = '';
+
+  if (distanceStr.includes('-inner')) {
+    distanceDisplay = distanceStr.replace('-inner', '');
+    trackVariant = '（内回り）';
+  } else if (distanceStr.includes('-outer')) {
+    distanceDisplay = distanceStr.replace('-outer', '');
+    trackVariant = '（外回り）';
+  }
+
   return {
-    title: `${racecourse}競馬場 ${surface}${resolvedParams.distance}m | コースデータ`,
-    description: `${racecourse}の${surface}${resolvedParams.distance}mのコースデータ。騎手別・血統別の詳細な成績を分析。`,
+    title: `${racecourse}競馬場 ${surface}${distanceDisplay}m${trackVariant} | コースデータ`,
+    description: `${racecourse}の${surface}${distanceDisplay}m${trackVariant}のコースデータ。騎手別・血統別の詳細な成績を分析。`,
   };
 }
 
@@ -379,10 +505,15 @@ export default async function CoursePage({ params }: Props) {
   let data = { ...mockData_data }; // モックデータをコピー
 
   try {
+    // distanceが "-inner" または "-outer" を含む場合は文字列のまま、そうでない場合は数値化
+    const distanceParam = resolvedParams.distance.includes('-inner') || resolvedParams.distance.includes('-outer')
+      ? resolvedParams.distance
+      : parseInt(resolvedParams.distance);
+
     const gcsData = await getCourseDataFromGCS(
       resolvedParams.racecourse,
       resolvedParams.surface,
-      parseInt(resolvedParams.distance)
+      distanceParam
     );
 
     // GCSデータで上書き
@@ -531,17 +662,30 @@ export default async function CoursePage({ params }: Props) {
   data.course_info.last_updated = formattedDate;
 
   const { course_info, gate_stats, running_style_stats, running_style_trends, popularity_stats, jockey_stats, pedigree_stats, dam_sire_stats, trainer_stats } = data;
-  
+
   const top5Jockeys = jockey_stats.slice(0, 5);
   const top5Pedigrees = pedigree_stats.slice(0, 5);
 
-  // 競馬場名の末尾「競馬場」を省いた短縮名（例：中山競馬場 -> 中山）
-const courseShort =
-(racecourseNames[resolvedParams.racecourse] ??
-  String(course_info.racecourse || '').replace(/競馬場$/, ''));
+  // 内回り・外回りの表示
+  const distanceStr = resolvedParams.distance;
+  let distanceDisplay = distanceStr;
+  let trackVariantLabel = '';
 
-// 「中山芝1800m」のようなSEO用接頭辞
-const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`;
+  if (distanceStr.includes('-inner')) {
+    distanceDisplay = distanceStr.replace('-inner', '');
+    trackVariantLabel = '（内回り）';
+  } else if (distanceStr.includes('-outer')) {
+    distanceDisplay = distanceStr.replace('-outer', '');
+    trackVariantLabel = '（外回り）';
+  }
+
+  // 競馬場名の末尾「競馬場」を省いた短縮名（例：中山競馬場 -> 中山）
+  const courseShort =
+    (racecourseNames[resolvedParams.racecourse] ??
+      String(course_info.racecourse || '').replace(/競馬場$/, ''));
+
+  // 「中山芝1800m」のようなSEO用接頭辞
+  const seoPrefix = `${courseShort}${course_info.surface}${distanceDisplay}m${trackVariantLabel}`;
 
   // ナビゲーション用のセクションアイテム
   const navigationItems = [
@@ -562,7 +706,7 @@ const seoPrefix = `${courseShort}${course_info.surface}${course_info.distance}m`
       <BottomNav items={navigationItems} />
       <main>
         <div className="course-header">
-          <h1>{course_info.racecourse} {course_info.surface}{course_info.distance}m</h1>
+          <h1>{course_info.racecourse} {course_info.surface}{distanceDisplay}m{trackVariantLabel}</h1>
 
           {/* === データ情報セクション === */}
           <div className="course-meta-section">

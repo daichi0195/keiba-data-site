@@ -15,11 +15,25 @@ const GATE_COLORS: Record<number, string> = {
 export async function getCourseDataFromGCS(
   racecourse: string,
   surface: string,
-  distance: number
+  distance: string | number
 ) {
+  // 内回り・外回り対応: distanceが "1400-inner" のような形式の場合、JSONファイルパスを調整
+  let filePath: string;
+  const distanceStr = String(distance);
+
+  if (distanceStr.includes('-inner')) {
+    const baseDistance = distanceStr.replace('-inner', '');
+    filePath = `${baseDistance}-inner.json`;
+  } else if (distanceStr.includes('-outer')) {
+    const baseDistance = distanceStr.replace('-outer', '');
+    filePath = `${baseDistance}-outer.json`;
+  } else {
+    filePath = `${distance}.json`;
+  }
+
   // キャッシュバスターを付けてCDNキャッシュを回避
   const timestamp = Math.floor(Date.now() / 3600000); // 1時間単位
-  const url = `${BASE_URL}/course/${racecourse}/${surface}/${distance}.json?v=${timestamp}`;
+  const url = `${BASE_URL}/course/${racecourse}/${surface}/${filePath}?v=${timestamp}`;
 
   console.log('🔍 Fetching course data from GCS:', url);
 
