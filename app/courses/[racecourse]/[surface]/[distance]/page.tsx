@@ -495,14 +495,51 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CoursePage({ params }: Props) {
   const resolvedParams = await params;
-  const mockData_data = (mockData as any)[resolvedParams.racecourse]?.[resolvedParams.surface]?.[resolvedParams.distance];
 
-  if (!mockData_data) {
-    return <div>データが見つかりません</div>;
-  }
+  // 競馬場名と路面名の取得
+  const racecourseJa = racecourseNames[resolvedParams.racecourse] || resolvedParams.racecourse;
+  const surfaceJa = surfaceNames[resolvedParams.surface] || resolvedParams.surface;
+
+  // 内回り・外回りの判定
+  const distanceStr = resolvedParams.distance;
+  let distanceNum = parseInt(distanceStr.replace('-inner', '').replace('-outer', ''));
+  let trackVariant = '';
+  if (distanceStr.includes('-inner')) trackVariant = '（内回り）';
+  if (distanceStr.includes('-outer')) trackVariant = '（外回り）';
+
+  // デフォルトデータ構造（GCSから取得できない場合のフォールバック）
+  let data: any = {
+    course_info: {
+      racecourse: racecourseJa + '競馬場',
+      racecourse_en: resolvedParams.racecourse,
+      surface: surfaceJa,
+      surface_en: resolvedParams.surface,
+      distance: distanceNum,
+      total_races: 0,
+      characteristics: {
+        volatility: 3,
+        gate_position: 3,
+        running_style_trend_position: 3
+      },
+      ranking: {
+        trifecta_avg_payback_rank: 0,
+        trifecta_median_payback: 0,
+        trifecta_all_median_payback: 0,
+        total_courses: 0,
+        trifecta_avg_payback: 0
+      }
+    },
+    gate_stats: [],
+    popularity_stats: {},
+    jockey_stats: [],
+    trainer_stats: [],
+    pedigree_stats: [],
+    dam_sire_stats: [],
+    running_style_stats: [],
+    running_style_trends: []
+  };
 
   // ===== GCSから全データを取得 =====
-  let data = { ...mockData_data }; // モックデータをコピー
 
   try {
     // distanceが "-inner" または "-outer" を含む場合は文字列のまま、そうでない場合は数値化
@@ -516,31 +553,15 @@ export default async function CoursePage({ params }: Props) {
       distanceParam
     );
 
-    // GCSデータで上書き
-    if (gcsData.gate_stats) {
-      data.gate_stats = gcsData.gate_stats;
-    }
-    if (gcsData.popularity_stats) {
-      data.popularity_stats = gcsData.popularity_stats;
-    }
-    if (gcsData.jockey_stats) {
-      data.jockey_stats = gcsData.jockey_stats;
-    }
-    if (gcsData.trainer_stats) {
-      data.trainer_stats = gcsData.trainer_stats;
-    }
-    if (gcsData.pedigree_stats) {
-      data.pedigree_stats = gcsData.pedigree_stats;
-    }
-    if (gcsData.dam_sire_stats) {
-      data.dam_sire_stats = gcsData.dam_sire_stats;
-    }
-    if (gcsData.running_style_stats) {
-      data.running_style_stats = gcsData.running_style_stats;
-    }
-    if (gcsData.running_style_trends) {
-      data.running_style_trends = gcsData.running_style_trends;
-    }
+    // GCSデータで完全上書き
+    data.gate_stats = gcsData.gate_stats || [];
+    data.popularity_stats = gcsData.popularity_stats || {};
+    data.jockey_stats = gcsData.jockey_stats || [];
+    data.trainer_stats = gcsData.trainer_stats || [];
+    data.pedigree_stats = gcsData.pedigree_stats || [];
+    data.dam_sire_stats = gcsData.dam_sire_stats || [];
+    data.running_style_stats = gcsData.running_style_stats || [];
+    data.running_style_trends = gcsData.running_style_trends || [];
     if (gcsData.characteristics) {
       if (!data.course_info) {
         data.course_info = {};
@@ -625,8 +646,18 @@ export default async function CoursePage({ params }: Props) {
     console.log('✅ All data loaded from GCS successfully');
 
   } catch (error) {
-    console.error('⚠️ Failed to load data from GCS, using mock data:', error);
-    // エラー時はモックデータのまま
+    console.error('❌ Failed to load data from GCS:', error);
+    // GCSからデータが取得できない場合はエラーページを表示
+    return (
+      <div style={{ padding: '2rem', textAlign: 'center' }}>
+        <h1>データ取得エラー</h1>
+        <p>このコースのデータを取得できませんでした。</p>
+        <p>コース: {racecourseJa}競馬場 {surfaceJa} {distanceNum}m{trackVariant}</p>
+        <p style={{ marginTop: '1rem', fontSize: '0.9rem', color: '#666' }}>
+          エラー詳細: {error instanceof Error ? error.message : String(error)}
+        </p>
+      </div>
+    );
   }
   // ===== ここまで =====
 

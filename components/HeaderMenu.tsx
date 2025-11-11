@@ -3,21 +3,16 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import styles from './HeaderMenu.module.css';
+import { getCoursesByRacecourse, getCourseUrl, getCourseDisplayName } from '@/lib/courses';
 
-interface Course {
-  name: string;
-  distance: number;
-  surface: 'turf' | 'dirt';
-  variant?: string;
-}
+const racecoursesData = getCoursesByRacecourse().map(group => ({
+  name: group.racecourse_ja,
+  nameEn: group.racecourse,
+  courses: group.courses
+}));
 
-interface Racecourse {
-  name: string;
-  nameEn: string;
-  courses: Course[];
-}
-
-const racecoursesData: Racecourse[] = [
+// 既存の型定義（後方互換性のため残す）
+const _oldRacecoursesData_UNUSED = [
   {
     name: '札幌競馬場',
     nameEn: 'sapporo',
@@ -195,13 +190,7 @@ export default function HeaderMenu() {
     }));
   };
 
-  const getCourseUrl = (racecourse: Racecourse, course: Course): string => {
-    const surfaceEn = course.surface === 'turf' ? 'turf' : 'dirt';
-    if (course.variant) {
-      return '#';
-    }
-    return `/courses/${racecourse.nameEn}/${surfaceEn}/${course.distance}`;
-  };
+  // getCourseUrl はlib/courses.tsからインポートしたものを使用
 
   return (
     <>
