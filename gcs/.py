@@ -13,18 +13,140 @@ PROJECT_ID = 'umadata'
 BUCKET_NAME = 'umadata'
 DATASET = 'umadata.keiba_data'
 
-# コース情報
+# コース定義（85コース：79コース + 内回り・外回り3コース×2）
+COURSES = [
+    # 中山競馬場
+    {'venue': '中山', 'venue_en': 'nakayama', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 2400, 'track_variant': None},
+    {'venue': '中山', 'venue_en': 'nakayama', 'surface': '芝', 'surface_en': 'turf', 'distance': 1200, 'track_variant': None},
+    {'venue': '中山', 'venue_en': 'nakayama', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 1200, 'track_variant': None},
+    {'venue': '中山', 'venue_en': 'nakayama', 'surface': '芝', 'surface_en': 'turf', 'distance': 1600, 'track_variant': None},
+    {'venue': '中山', 'venue_en': 'nakayama', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 1800, 'track_variant': None},
+    {'venue': '中山', 'venue_en': 'nakayama', 'surface': '芝', 'surface_en': 'turf', 'distance': 2000, 'track_variant': None},
+    {'venue': '中山', 'venue_en': 'nakayama', 'surface': '芝', 'surface_en': 'turf', 'distance': 1800, 'track_variant': None},
+    {'venue': '中山', 'venue_en': 'nakayama', 'surface': '芝', 'surface_en': 'turf', 'distance': 2500, 'track_variant': None},
+    {'venue': '中山', 'venue_en': 'nakayama', 'surface': '芝', 'surface_en': 'turf', 'distance': 2200, 'track_variant': None},
+
+    # 東京競馬場
+    {'venue': '東京', 'venue_en': 'tokyo', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 2100, 'track_variant': None},
+    {'venue': '東京', 'venue_en': 'tokyo', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 1300, 'track_variant': None},
+    {'venue': '東京', 'venue_en': 'tokyo', 'surface': '芝', 'surface_en': 'turf', 'distance': 1400, 'track_variant': None},
+    {'venue': '東京', 'venue_en': 'tokyo', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 1400, 'track_variant': None},
+    {'venue': '東京', 'venue_en': 'tokyo', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 1600, 'track_variant': None},
+    {'venue': '東京', 'venue_en': 'tokyo', 'surface': '芝', 'surface_en': 'turf', 'distance': 1600, 'track_variant': None},
+    {'venue': '東京', 'venue_en': 'tokyo', 'surface': '芝', 'surface_en': 'turf', 'distance': 1800, 'track_variant': None},
+    {'venue': '東京', 'venue_en': 'tokyo', 'surface': '芝', 'surface_en': 'turf', 'distance': 2000, 'track_variant': None},
+    {'venue': '東京', 'venue_en': 'tokyo', 'surface': '芝', 'surface_en': 'turf', 'distance': 2400, 'track_variant': None},
+
+    # 阪神競馬場
+    {'venue': '阪神', 'venue_en': 'hanshin', 'surface': '芝', 'surface_en': 'turf', 'distance': 2200, 'track_variant': None},
+    {'venue': '阪神', 'venue_en': 'hanshin', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 1200, 'track_variant': None},
+    {'venue': '阪神', 'venue_en': 'hanshin', 'surface': '芝', 'surface_en': 'turf', 'distance': 1400, 'track_variant': None},
+    {'venue': '阪神', 'venue_en': 'hanshin', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 1400, 'track_variant': None},
+    {'venue': '阪神', 'venue_en': 'hanshin', 'surface': '芝', 'surface_en': 'turf', 'distance': 1600, 'track_variant': None},
+    {'venue': '阪神', 'venue_en': 'hanshin', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 2000, 'track_variant': None},
+    {'venue': '阪神', 'venue_en': 'hanshin', 'surface': '芝', 'surface_en': 'turf', 'distance': 1200, 'track_variant': None},
+    {'venue': '阪神', 'venue_en': 'hanshin', 'surface': '芝', 'surface_en': 'turf', 'distance': 1800, 'track_variant': None},
+    {'venue': '阪神', 'venue_en': 'hanshin', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 1800, 'track_variant': None},
+    {'venue': '阪神', 'venue_en': 'hanshin', 'surface': '芝', 'surface_en': 'turf', 'distance': 2000, 'track_variant': None},
+    {'venue': '阪神', 'venue_en': 'hanshin', 'surface': '芝', 'surface_en': 'turf', 'distance': 2400, 'track_variant': None},
+
+    # 京都競馬場
+    {'venue': '京都', 'venue_en': 'kyoto', 'surface': '芝', 'surface_en': 'turf', 'distance': 1200, 'track_variant': None},
+    {'venue': '京都', 'venue_en': 'kyoto', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 1200, 'track_variant': None},
+    {'venue': '京都', 'venue_en': 'kyoto', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 1400, 'track_variant': None},
+    {'venue': '京都', 'venue_en': 'kyoto', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 1800, 'track_variant': None},
+    {'venue': '京都', 'venue_en': 'kyoto', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 1900, 'track_variant': None},
+    {'venue': '京都', 'venue_en': 'kyoto', 'surface': '芝', 'surface_en': 'turf', 'distance': 2400, 'track_variant': None},
+    {'venue': '京都', 'venue_en': 'kyoto', 'surface': '芝', 'surface_en': 'turf', 'distance': 2200, 'track_variant': None},
+    {'venue': '京都', 'venue_en': 'kyoto', 'surface': '芝', 'surface_en': 'turf', 'distance': 2000, 'track_variant': None},
+    {'venue': '京都', 'venue_en': 'kyoto', 'surface': '芝', 'surface_en': 'turf', 'distance': 1800, 'track_variant': None},
+    # 京都 内回り・外回り
+    {'venue': '京都', 'venue_en': 'kyoto', 'surface': '芝', 'surface_en': 'turf', 'distance': 1400, 'track_variant': None},
+    {'venue': '京都', 'venue_en': 'kyoto', 'surface': '芝', 'surface_en': 'turf', 'distance': 1400, 'track_variant': '外'},
+    {'venue': '京都', 'venue_en': 'kyoto', 'surface': '芝', 'surface_en': 'turf', 'distance': 1600, 'track_variant': None},
+    {'venue': '京都', 'venue_en': 'kyoto', 'surface': '芝', 'surface_en': 'turf', 'distance': 1600, 'track_variant': '外'},
+
+    # 小倉競馬場
+    {'venue': '小倉', 'venue_en': 'kokura', 'surface': '芝', 'surface_en': 'turf', 'distance': 1200, 'track_variant': None},
+    {'venue': '小倉', 'venue_en': 'kokura', 'surface': '芝', 'surface_en': 'turf', 'distance': 2000, 'track_variant': None},
+    {'venue': '小倉', 'venue_en': 'kokura', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 1700, 'track_variant': None},
+    {'venue': '小倉', 'venue_en': 'kokura', 'surface': '芝', 'surface_en': 'turf', 'distance': 1800, 'track_variant': None},
+    {'venue': '小倉', 'venue_en': 'kokura', 'surface': '芝', 'surface_en': 'turf', 'distance': 2600, 'track_variant': None},
+    {'venue': '小倉', 'venue_en': 'kokura', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 1000, 'track_variant': None},
+
+    # 福島競馬場
+    {'venue': '福島', 'venue_en': 'fukushima', 'surface': '芝', 'surface_en': 'turf', 'distance': 1800, 'track_variant': None},
+    {'venue': '福島', 'venue_en': 'fukushima', 'surface': '芝', 'surface_en': 'turf', 'distance': 2000, 'track_variant': None},
+    {'venue': '福島', 'venue_en': 'fukushima', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 1700, 'track_variant': None},
+    {'venue': '福島', 'venue_en': 'fukushima', 'surface': '芝', 'surface_en': 'turf', 'distance': 2600, 'track_variant': None},
+    {'venue': '福島', 'venue_en': 'fukushima', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 1150, 'track_variant': None},
+    {'venue': '福島', 'venue_en': 'fukushima', 'surface': '芝', 'surface_en': 'turf', 'distance': 1200, 'track_variant': None},
+
+    # 新潟競馬場
+    {'venue': '新潟', 'venue_en': 'niigata', 'surface': '芝', 'surface_en': 'turf', 'distance': 1400, 'track_variant': None},
+    {'venue': '新潟', 'venue_en': 'niigata', 'surface': '芝', 'surface_en': 'turf', 'distance': 1000, 'track_variant': None},
+    {'venue': '新潟', 'venue_en': 'niigata', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 1200, 'track_variant': None},
+    {'venue': '新潟', 'venue_en': 'niigata', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 1800, 'track_variant': None},
+    {'venue': '新潟', 'venue_en': 'niigata', 'surface': '芝', 'surface_en': 'turf', 'distance': 1200, 'track_variant': None},
+    {'venue': '新潟', 'venue_en': 'niigata', 'surface': '芝', 'surface_en': 'turf', 'distance': 1600, 'track_variant': None},
+    {'venue': '新潟', 'venue_en': 'niigata', 'surface': '芝', 'surface_en': 'turf', 'distance': 1800, 'track_variant': None},
+    {'venue': '新潟', 'venue_en': 'niigata', 'surface': '芝', 'surface_en': 'turf', 'distance': 2200, 'track_variant': None},
+    # 新潟 内回り・外回り
+    {'venue': '新潟', 'venue_en': 'niigata', 'surface': '芝', 'surface_en': 'turf', 'distance': 2000, 'track_variant': None},
+    {'venue': '新潟', 'venue_en': 'niigata', 'surface': '芝', 'surface_en': 'turf', 'distance': 2000, 'track_variant': '外'},
+
+    # 函館競馬場
+    {'venue': '函館', 'venue_en': 'hakodate', 'surface': '芝', 'surface_en': 'turf', 'distance': 2000, 'track_variant': None},
+    {'venue': '函館', 'venue_en': 'hakodate', 'surface': '芝', 'surface_en': 'turf', 'distance': 1200, 'track_variant': None},
+    {'venue': '函館', 'venue_en': 'hakodate', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 1700, 'track_variant': None},
+    {'venue': '函館', 'venue_en': 'hakodate', 'surface': '芝', 'surface_en': 'turf', 'distance': 1800, 'track_variant': None},
+    {'venue': '函館', 'venue_en': 'hakodate', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 1000, 'track_variant': None},
+
+    # 札幌競馬場
+    {'venue': '札幌', 'venue_en': 'sapporo', 'surface': '芝', 'surface_en': 'turf', 'distance': 2600, 'track_variant': None},
+    {'venue': '札幌', 'venue_en': 'sapporo', 'surface': '芝', 'surface_en': 'turf', 'distance': 1200, 'track_variant': None},
+    {'venue': '札幌', 'venue_en': 'sapporo', 'surface': '芝', 'surface_en': 'turf', 'distance': 2000, 'track_variant': None},
+    {'venue': '札幌', 'venue_en': 'sapporo', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 1700, 'track_variant': None},
+    {'venue': '札幌', 'venue_en': 'sapporo', 'surface': '芝', 'surface_en': 'turf', 'distance': 1500, 'track_variant': None},
+    {'venue': '札幌', 'venue_en': 'sapporo', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 1000, 'track_variant': None},
+    {'venue': '札幌', 'venue_en': 'sapporo', 'surface': '芝', 'surface_en': 'turf', 'distance': 1800, 'track_variant': None},
+
+    # 中京競馬場
+    {'venue': '中京', 'venue_en': 'chukyo', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 1200, 'track_variant': None},
+    {'venue': '中京', 'venue_en': 'chukyo', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 1400, 'track_variant': None},
+    {'venue': '中京', 'venue_en': 'chukyo', 'surface': '芝', 'surface_en': 'turf', 'distance': 1400, 'track_variant': None},
+    {'venue': '中京', 'venue_en': 'chukyo', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 1800, 'track_variant': None},
+    {'venue': '中京', 'venue_en': 'chukyo', 'surface': '芝', 'surface_en': 'turf', 'distance': 1200, 'track_variant': None},
+    {'venue': '中京', 'venue_en': 'chukyo', 'surface': '芝', 'surface_en': 'turf', 'distance': 1600, 'track_variant': None},
+    {'venue': '中京', 'venue_en': 'chukyo', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 1900, 'track_variant': None},
+    {'venue': '中京', 'venue_en': 'chukyo', 'surface': '芝', 'surface_en': 'turf', 'distance': 2200, 'track_variant': None},
+    {'venue': '中京', 'venue_en': 'chukyo', 'surface': '芝', 'surface_en': 'turf', 'distance': 2000, 'track_variant': None},
+]
+
+# 内回り・外回りを区別するコースのリスト（これらのコースのみtrack_variant条件を使用）
+COURSES_WITH_VARIANT = [
+    ('京都', '芝', 1400),
+    ('京都', '芝', 1600),
+    ('新潟', '芝', 2000),
+]
+
+# グローバル変数として現在処理中のコース情報を保持
 VENUE = '中山'
 SURFACE = 'ダート'
 DISTANCE = 1800
-
-# 英語名マッピング
 VENUE_EN = 'nakayama'
 SURFACE_EN = 'dirt'
+TRACK_VARIANT = None  # None=内回り, '外'=外回り
 
 
 def get_gate_stats(client):
     """枠順別データを取得（過去3年間）"""
+    # track_variant条件を動的に生成（内回り・外回りを区別するコースのみ）
+    if (VENUE, SURFACE, DISTANCE) in COURSES_WITH_VARIANT:
+        track_variant_condition = "AND rm.track_variant IS NULL" if TRACK_VARIANT is None else f"AND rm.track_variant = '{TRACK_VARIANT}'"
+    else:
+        track_variant_condition = ""
+
     query = f"""
     SELECT
       rr.bracket_number as gate,
@@ -44,6 +166,7 @@ def get_gate_stats(client):
       rm.venue_name = '{VENUE}'
       AND rm.surface = '{SURFACE}'
       AND rm.distance = {DISTANCE}
+      {track_variant_condition}
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
     GROUP BY rr.bracket_number
     ORDER BY rr.bracket_number
@@ -59,6 +182,12 @@ def get_gate_stats(client):
 
 def get_popularity_stats(client):
     """人気別データを取得（過去3年間）"""
+    # track_variant条件を動的に生成（内回り・外回りを区別するコースのみ）
+    if (VENUE, SURFACE, DISTANCE) in COURSES_WITH_VARIANT:
+        track_variant_condition = "AND rm.track_variant IS NULL" if TRACK_VARIANT is None else f"AND rm.track_variant = '{TRACK_VARIANT}'"
+    else:
+        track_variant_condition = ""
+
     query = f"""
     SELECT
       CASE
@@ -86,6 +215,7 @@ def get_popularity_stats(client):
       rm.venue_name = '{VENUE}'
       AND rm.surface = '{SURFACE}'
       AND rm.distance = {DISTANCE}
+      {track_variant_condition}
       AND rr.popularity IS NOT NULL
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
     GROUP BY popularity_group
@@ -105,6 +235,12 @@ def get_popularity_stats(client):
 
 def get_jockey_stats(client):
     """騎手別データを取得（過去3年間、現役のみ）"""
+    # track_variant条件を動的に生成（内回り・外回りを区別するコースのみ）
+    if (VENUE, SURFACE, DISTANCE) in COURSES_WITH_VARIANT:
+        track_variant_condition = "AND rm.track_variant IS NULL" if TRACK_VARIANT is None else f"AND rm.track_variant = '{TRACK_VARIANT}'"
+    else:
+        track_variant_condition = ""
+
     query = f"""
     SELECT
       ROW_NUMBER() OVER (
@@ -131,6 +267,7 @@ def get_jockey_stats(client):
       rm.venue_name = '{VENUE}'
       AND rm.surface = '{SURFACE}'
       AND rm.distance = {DISTANCE}
+      {track_variant_condition}
       AND rr.jockey_id IS NOT NULL
       AND j.is_active = true
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
@@ -153,6 +290,12 @@ def get_jockey_stats(client):
 
 def get_trainer_stats(client):
     """調教師別データを取得（過去3年間、現役のみ）"""
+    # track_variant条件を動的に生成（内回り・外回りを区別するコースのみ）
+    if (VENUE, SURFACE, DISTANCE) in COURSES_WITH_VARIANT:
+        track_variant_condition = "AND rm.track_variant IS NULL" if TRACK_VARIANT is None else f"AND rm.track_variant = '{TRACK_VARIANT}'"
+    else:
+        track_variant_condition = ""
+
     query = f"""
     SELECT
       ROW_NUMBER() OVER (
@@ -179,6 +322,7 @@ def get_trainer_stats(client):
       rm.venue_name = '{VENUE}'
       AND rm.surface = '{SURFACE}'
       AND rm.distance = {DISTANCE}
+      {track_variant_condition}
       AND rr.trainer_id IS NOT NULL
       AND t.is_active = true
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
@@ -208,6 +352,13 @@ def get_volatility_stats(client):
     - ランキング（何位/全コース数）
     - 荒れやすさスコア（1-5）
     """
+    # track_variant条件を動的に生成（内回り・外回りを区別するコースのみ）
+    if (VENUE, SURFACE, DISTANCE) in COURSES_WITH_VARIANT:
+        track_variant_condition = "AND rm.track_variant IS NULL" if TRACK_VARIANT is None else f"AND rm.track_variant = '{TRACK_VARIANT}'"
+        track_variant_condition_acr = "AND acr.track_variant IS NULL" if TRACK_VARIANT is None else f"AND acr.track_variant = '{TRACK_VARIANT}'"
+    else:
+        track_variant_condition = ""
+        track_variant_condition_acr = ""
 
     # Step 1: このコースの三連単中央値と順位を計算
     ranking_query = f"""
@@ -223,6 +374,7 @@ def get_volatility_stats(client):
         rm.venue_name = '{VENUE}'
         AND rm.surface = '{SURFACE}'
         AND rm.distance = {DISTANCE}
+        {track_variant_condition}
         AND rm.sanrentan IS NOT NULL
         AND rm.surface != '障害'
         AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
@@ -299,6 +451,7 @@ def get_volatility_stats(client):
       acr.venue_name = '{VENUE}'
       AND acr.surface = '{SURFACE}'
       AND acr.distance = {DISTANCE}
+      {track_variant_condition_acr}
     """
 
     try:
@@ -342,6 +495,12 @@ def get_volatility_stats(client):
 
 def get_pedigree_stats(client):
     """種牡馬別データを取得（過去3年間）"""
+    # track_variant条件を動的に生成（内回り・外回りを区別するコースのみ）
+    if (VENUE, SURFACE, DISTANCE) in COURSES_WITH_VARIANT:
+        track_variant_condition = "AND rm.track_variant IS NULL" if TRACK_VARIANT is None else f"AND rm.track_variant = '{TRACK_VARIANT}'"
+    else:
+        track_variant_condition = ""
+
     query = f"""
     SELECT
       ROW_NUMBER() OVER (
@@ -368,6 +527,7 @@ def get_pedigree_stats(client):
       rm.venue_name = '{VENUE}'
       AND rm.surface = '{SURFACE}'
       AND rm.distance = {DISTANCE}
+      {track_variant_condition}
       AND h.father IS NOT NULL
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
     GROUP BY h.father
@@ -389,6 +549,12 @@ def get_pedigree_stats(client):
 
 def get_dam_sire_stats(client):
     """母父別データを取得（過去3年間）"""
+    # track_variant条件を動的に生成（内回り・外回りを区別するコースのみ）
+    if (VENUE, SURFACE, DISTANCE) in COURSES_WITH_VARIANT:
+        track_variant_condition = "AND rm.track_variant IS NULL" if TRACK_VARIANT is None else f"AND rm.track_variant = '{TRACK_VARIANT}'"
+    else:
+        track_variant_condition = ""
+
     query = f"""
     SELECT
       ROW_NUMBER() OVER (
@@ -415,6 +581,7 @@ def get_dam_sire_stats(client):
       rm.venue_name = '{VENUE}'
       AND rm.surface = '{SURFACE}'
       AND rm.distance = {DISTANCE}
+      {track_variant_condition}
       AND h.mf IS NOT NULL
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
     GROUP BY h.mf
@@ -443,6 +610,12 @@ def get_running_style_stats(client):
     - 差し: 逃げ・先行に該当しない馬で、最終コーナーが出走頭数の3分の2以内（出走頭数≧8）
     - 追込: 逃げ・先行・差しに該当しない馬
     """
+    # track_variant条件を動的に生成（内回り・外回りを区別するコースのみ）
+    if (VENUE, SURFACE, DISTANCE) in COURSES_WITH_VARIANT:
+        track_variant_condition = "AND rm.track_variant IS NULL" if TRACK_VARIANT is None else f"AND rm.track_variant = '{TRACK_VARIANT}'"
+    else:
+        track_variant_condition = ""
+
     query = f"""
     WITH corner_data AS (
       SELECT
@@ -461,6 +634,7 @@ def get_running_style_stats(client):
         rm.venue_name = '{VENUE}'
         AND rm.surface = '{SURFACE}'
         AND rm.distance = {DISTANCE}
+        {track_variant_condition}
         AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
         AND rr.corner_positions IS NOT NULL
         AND ARRAY_LENGTH(SPLIT(rr.corner_positions, '-')) > 0
@@ -565,6 +739,12 @@ def get_running_style_stats(client):
 
 def get_running_style_trends(client):
     """脚質傾向データを取得（「逃げ・先行」と「差し・追込」に分類、5段階評価）"""
+    # track_variant条件を動的に生成（内回り・外回りを区別するコースのみ）
+    if (VENUE, SURFACE, DISTANCE) in COURSES_WITH_VARIANT:
+        track_variant_condition = "AND rm.track_variant IS NULL" if TRACK_VARIANT is None else f"AND rm.track_variant = '{TRACK_VARIANT}'"
+    else:
+        track_variant_condition = ""
+
     query = f"""
     WITH corner_data AS (
       SELECT
@@ -584,6 +764,7 @@ def get_running_style_trends(client):
         rm.venue_name = '{VENUE}'
         AND rm.surface = '{SURFACE}'
         AND rm.distance = {DISTANCE}
+        {track_variant_condition}
         AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
         AND rr.corner_positions IS NOT NULL
         AND ARRAY_LENGTH(SPLIT(rr.corner_positions, '-')) > 0
@@ -699,6 +880,12 @@ def get_running_style_trends(client):
 
 def get_total_races(client):
     """対象コースの総レース数を取得（過去3年間）"""
+    # track_variant条件を動的に生成（内回り・外回りを区別するコースのみ）
+    if (VENUE, SURFACE, DISTANCE) in COURSES_WITH_VARIANT:
+        track_variant_condition = "AND rm.track_variant IS NULL" if TRACK_VARIANT is None else f"AND rm.track_variant = '{TRACK_VARIANT}'"
+    else:
+        track_variant_condition = ""
+
     query = f"""
     SELECT
       COUNT(*) as total_races
@@ -708,6 +895,7 @@ def get_total_races(client):
       rm.venue_name = '{VENUE}'
       AND rm.surface = '{SURFACE}'
       AND rm.distance = {DISTANCE}
+      {track_variant_condition}
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
     """
 
@@ -720,54 +908,35 @@ def get_total_races(client):
         raise
 
 
-def main():
-    """メイン処理"""
-    try:
-        print(f"🚀 Starting data export for {VENUE} {SURFACE} {DISTANCE}m")
+def process_course(bq_client, storage_client, venue, venue_en, surface, surface_en, distance, track_variant):
+    """単一コースのデータを処理してGCSにアップロード"""
+    global VENUE, SURFACE, DISTANCE, VENUE_EN, SURFACE_EN, TRACK_VARIANT
 
-        # BigQueryクライアント
-        bq_client = bigquery.Client(project=PROJECT_ID)
+    # グローバル変数を更新
+    VENUE = venue
+    SURFACE = surface
+    DISTANCE = distance
+    VENUE_EN = venue_en
+    SURFACE_EN = surface_en
+    TRACK_VARIANT = track_variant
+
+    # コース名の表示用（内回り・外回りを含む）
+    track_label = "（外回り）" if track_variant == '外' else "（内回り）" if track_variant is None and venue in ['京都', '新潟'] and surface == '芝' and distance in [1400, 1600, 2000] else ""
+
+    try:
+        print(f"  🚀 Processing {venue} {surface} {distance}m{track_label}")
 
         # 各データを取得
-        print("📊 Fetching gate stats...")
         gate_stats = get_gate_stats(bq_client)
-        print(f"   ✅ {len(gate_stats)} gates")
-
-        print("📊 Fetching popularity stats...")
         popularity_stats = get_popularity_stats(bq_client)
-        print(f"   ✅ {len(popularity_stats)} popularity groups")
-
-        print("📊 Fetching jockey stats...")
         jockey_stats = get_jockey_stats(bq_client)
-        print(f"   ✅ {len(jockey_stats)} jockeys")
-
-        print("📊 Fetching trainer stats...")
         trainer_stats = get_trainer_stats(bq_client)
-        print(f"   ✅ {len(trainer_stats)} trainers")
-
-        print("📊 Fetching volatility stats...")
         volatility_stats = get_volatility_stats(bq_client)
-        print(f"   ✅ Volatility score: {volatility_stats['volatility']}, Rank: {volatility_stats['trifecta_avg_payback_rank']}/{volatility_stats['total_courses']}")
-
-        print("📊 Fetching pedigree stats...")
         pedigree_stats = get_pedigree_stats(bq_client)
-        print(f"   ✅ {len(pedigree_stats)} pedigrees")
-
-        print("📊 Fetching dam_sire stats...")
         dam_sire_stats = get_dam_sire_stats(bq_client)
-        print(f"   ✅ {len(dam_sire_stats)} dam_sires")
-
-        print("📊 Fetching running style stats...")
         running_style_stats = get_running_style_stats(bq_client)
-        print(f"   ✅ {len(running_style_stats)} running styles")
-
-        print("📊 Fetching running style trends...")
         running_style_trends = get_running_style_trends(bq_client)
-        print(f"   ✅ {len(running_style_trends)} trend groups")
-
-        print("📊 Fetching total races...")
         total_races = get_total_races(bq_client)
-        print(f"   ✅ Total races: {total_races}")
 
         # 統合データ作成
         course_data = {
@@ -780,31 +949,89 @@ def main():
             'dam_sire_stats': dam_sire_stats,
             'running_style_stats': running_style_stats,
             'running_style_trends': running_style_trends,
-            'characteristics': {
+        }
+
+        # volatility_statsがNoneの場合のデフォルト値を設定
+        if volatility_stats:
+            course_data['characteristics'] = {
                 'volatility': volatility_stats['volatility'],
                 'trifecta_median_payback': volatility_stats['trifecta_median_payback'],
                 'trifecta_all_median_payback': volatility_stats['trifecta_all_median_payback'],
                 'trifecta_avg_payback_rank': volatility_stats['trifecta_avg_payback_rank'],
                 'total_courses': volatility_stats['total_courses']
             }
-        }
+        else:
+            # データ不足の場合はデフォルト値
+            course_data['characteristics'] = {
+                'volatility': 3,
+                'trifecta_median_payback': 0,
+                'trifecta_all_median_payback': 0,
+                'trifecta_avg_payback_rank': 0,
+                'total_courses': 0
+            }
 
         # GCSにアップロード
-        print(f"☁️  Uploading to GCS...")
-        storage_client = storage.Client(project=PROJECT_ID)
         bucket = storage_client.bucket(BUCKET_NAME)
-        blob = bucket.blob(f'course/{VENUE_EN}/{SURFACE_EN}/{DISTANCE}.json')
+        # 内回り・外回りに応じてパスを変更
+        if track_variant == '外':
+            blob_path = f'course/{venue_en}/{surface_en}/{distance}-outer.json'
+        elif track_variant is None and venue in ['京都', '新潟'] and surface == '芝' and distance in [1400, 1600, 2000]:
+            blob_path = f'course/{venue_en}/{surface_en}/{distance}-inner.json'
+        else:
+            blob_path = f'course/{venue_en}/{surface_en}/{distance}.json'
 
+        blob = bucket.blob(blob_path)
         blob.upload_from_string(
             json.dumps(course_data, ensure_ascii=False, indent=2),
             content_type='application/json'
         )
 
-        print(f"✅ Successfully uploaded to gs://{BUCKET_NAME}/course/{VENUE_EN}/{SURFACE_EN}/{DISTANCE}.json")
-        print(f"🌐 Public URL: https://storage.googleapis.com/{BUCKET_NAME}/course/{VENUE_EN}/{SURFACE_EN}/{DISTANCE}.json")
+        print(f"    ✅ {venue} {surface} {distance}m{track_label} uploaded to {blob_path}")
+        return True
 
     except Exception as e:
-        print(f"❌ Error occurred: {str(e)}", file=sys.stderr)
+        print(f"    ❌ Error processing {venue} {surface} {distance}m: {str(e)}", file=sys.stderr)
+        return False
+
+
+def main():
+    """メイン処理 - 全コースをバッチ処理"""
+    try:
+        print("🚀 Starting batch data export for 85 courses")
+
+        # BigQueryとGCS クライアント
+        bq_client = bigquery.Client(project=PROJECT_ID)
+        storage_client = storage.Client(project=PROJECT_ID)
+
+        total_courses = 0
+        successful = 0
+        failed = 0
+
+        # 全コースを処理
+        for course in COURSES:
+            venue = course['venue']
+            venue_en = course['venue_en']
+            surface = course['surface']
+            surface_en = course['surface_en']
+            distance = course['distance']
+            track_variant = course['track_variant']
+
+            total_courses += 1
+
+            if process_course(bq_client, storage_client, venue, venue_en, surface, surface_en, distance, track_variant):
+                successful += 1
+            else:
+                failed += 1
+
+        print(f"\n{'='*60}")
+        print(f"✅ Batch processing complete!")
+        print(f"   Total courses: {total_courses}")
+        print(f"   Successful: {successful}")
+        print(f"   Failed: {failed}")
+        print(f"{'='*60}")
+
+    except Exception as e:
+        print(f"❌ Fatal error: {str(e)}", file=sys.stderr)
         import traceback
         traceback.print_exc()
         sys.exit(1)
