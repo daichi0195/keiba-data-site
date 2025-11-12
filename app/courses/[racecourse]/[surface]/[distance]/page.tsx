@@ -13,121 +13,20 @@ import RunningStyleDefinition from '@/components/RunningStyleDefinition';
 import HeaderMenu from '@/components/HeaderMenu';
 import BottomNav from '@/components/BottomNav';
 import { getCourseDataFromGCS } from '@/lib/getCourseDataFromGCS';
+import { ALL_COURSES, getCourseUrl, getCourseDisplayName } from '@/lib/courses';
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
 
-// 全85コースの定義（PythonスクリプトのCOURSESと同じ）
-const ALL_COURSES = [
-  // 中山競馬場
-  { racecourse: 'nakayama', surface: 'dirt', distance: '2400' },
-  { racecourse: 'nakayama', surface: 'turf', distance: '1200' },
-  { racecourse: 'nakayama', surface: 'dirt', distance: '1200' },
-  { racecourse: 'nakayama', surface: 'turf', distance: '1600' },
-  { racecourse: 'nakayama', surface: 'dirt', distance: '1800' },
-  { racecourse: 'nakayama', surface: 'turf', distance: '2000' },
-  { racecourse: 'nakayama', surface: 'turf', distance: '1800' },
-  { racecourse: 'nakayama', surface: 'turf', distance: '2500' },
-  { racecourse: 'nakayama', surface: 'turf', distance: '2200' },
-
-  // 東京競馬場
-  { racecourse: 'tokyo', surface: 'dirt', distance: '2100' },
-  { racecourse: 'tokyo', surface: 'dirt', distance: '1300' },
-  { racecourse: 'tokyo', surface: 'turf', distance: '1400' },
-  { racecourse: 'tokyo', surface: 'dirt', distance: '1400' },
-  { racecourse: 'tokyo', surface: 'dirt', distance: '1600' },
-  { racecourse: 'tokyo', surface: 'turf', distance: '1600' },
-  { racecourse: 'tokyo', surface: 'turf', distance: '1800' },
-  { racecourse: 'tokyo', surface: 'turf', distance: '2000' },
-  { racecourse: 'tokyo', surface: 'turf', distance: '2400' },
-
-  // 阪神競馬場
-  { racecourse: 'hanshin', surface: 'turf', distance: '2200' },
-  { racecourse: 'hanshin', surface: 'dirt', distance: '1200' },
-  { racecourse: 'hanshin', surface: 'turf', distance: '1400' },
-  { racecourse: 'hanshin', surface: 'dirt', distance: '1400' },
-  { racecourse: 'hanshin', surface: 'turf', distance: '1600' },
-  { racecourse: 'hanshin', surface: 'dirt', distance: '2000' },
-  { racecourse: 'hanshin', surface: 'turf', distance: '1200' },
-  { racecourse: 'hanshin', surface: 'turf', distance: '1800' },
-  { racecourse: 'hanshin', surface: 'dirt', distance: '1800' },
-  { racecourse: 'hanshin', surface: 'turf', distance: '2000' },
-  { racecourse: 'hanshin', surface: 'turf', distance: '2400' },
-
-  // 京都競馬場
-  { racecourse: 'kyoto', surface: 'turf', distance: '1200' },
-  { racecourse: 'kyoto', surface: 'dirt', distance: '1200' },
-  { racecourse: 'kyoto', surface: 'dirt', distance: '1400' },
-  { racecourse: 'kyoto', surface: 'dirt', distance: '1800' },
-  { racecourse: 'kyoto', surface: 'dirt', distance: '1900' },
-  { racecourse: 'kyoto', surface: 'turf', distance: '2400' },
-  { racecourse: 'kyoto', surface: 'turf', distance: '2200' },
-  { racecourse: 'kyoto', surface: 'turf', distance: '2000' },
-  { racecourse: 'kyoto', surface: 'turf', distance: '1800' },
-  { racecourse: 'kyoto', surface: 'turf', distance: '1400-inner' },
-  { racecourse: 'kyoto', surface: 'turf', distance: '1400-outer' },
-  { racecourse: 'kyoto', surface: 'turf', distance: '1600-inner' },
-  { racecourse: 'kyoto', surface: 'turf', distance: '1600-outer' },
-
-  // 小倉競馬場
-  { racecourse: 'kokura', surface: 'turf', distance: '1200' },
-  { racecourse: 'kokura', surface: 'turf', distance: '2000' },
-  { racecourse: 'kokura', surface: 'dirt', distance: '1700' },
-  { racecourse: 'kokura', surface: 'turf', distance: '1800' },
-  { racecourse: 'kokura', surface: 'turf', distance: '2600' },
-  { racecourse: 'kokura', surface: 'dirt', distance: '1000' },
-
-  // 福島競馬場
-  { racecourse: 'fukushima', surface: 'turf', distance: '1800' },
-  { racecourse: 'fukushima', surface: 'turf', distance: '2000' },
-  { racecourse: 'fukushima', surface: 'dirt', distance: '1700' },
-  { racecourse: 'fukushima', surface: 'turf', distance: '2600' },
-  { racecourse: 'fukushima', surface: 'dirt', distance: '1150' },
-  { racecourse: 'fukushima', surface: 'turf', distance: '1200' },
-
-  // 新潟競馬場
-  { racecourse: 'niigata', surface: 'turf', distance: '1400' },
-  { racecourse: 'niigata', surface: 'turf', distance: '1000' },
-  { racecourse: 'niigata', surface: 'dirt', distance: '1200' },
-  { racecourse: 'niigata', surface: 'dirt', distance: '1800' },
-  { racecourse: 'niigata', surface: 'turf', distance: '1200' },
-  { racecourse: 'niigata', surface: 'turf', distance: '1600' },
-  { racecourse: 'niigata', surface: 'turf', distance: '1800' },
-  { racecourse: 'niigata', surface: 'turf', distance: '2200' },
-  { racecourse: 'niigata', surface: 'turf', distance: '2000-inner' },
-  { racecourse: 'niigata', surface: 'turf', distance: '2000-outer' },
-
-  // 函館競馬場
-  { racecourse: 'hakodate', surface: 'turf', distance: '2000' },
-  { racecourse: 'hakodate', surface: 'turf', distance: '1200' },
-  { racecourse: 'hakodate', surface: 'dirt', distance: '1700' },
-  { racecourse: 'hakodate', surface: 'turf', distance: '1800' },
-  { racecourse: 'hakodate', surface: 'dirt', distance: '1000' },
-
-  // 札幌競馬場
-  { racecourse: 'sapporo', surface: 'turf', distance: '2600' },
-  { racecourse: 'sapporo', surface: 'turf', distance: '1200' },
-  { racecourse: 'sapporo', surface: 'turf', distance: '2000' },
-  { racecourse: 'sapporo', surface: 'dirt', distance: '1700' },
-  { racecourse: 'sapporo', surface: 'turf', distance: '1500' },
-  { racecourse: 'sapporo', surface: 'dirt', distance: '1000' },
-  { racecourse: 'sapporo', surface: 'turf', distance: '1800' },
-
-  // 中京競馬場
-  { racecourse: 'chukyo', surface: 'dirt', distance: '1200' },
-  { racecourse: 'chukyo', surface: 'dirt', distance: '1400' },
-  { racecourse: 'chukyo', surface: 'turf', distance: '1400' },
-  { racecourse: 'chukyo', surface: 'dirt', distance: '1800' },
-  { racecourse: 'chukyo', surface: 'turf', distance: '1200' },
-  { racecourse: 'chukyo', surface: 'turf', distance: '1600' },
-  { racecourse: 'chukyo', surface: 'dirt', distance: '1900' },
-  { racecourse: 'chukyo', surface: 'turf', distance: '2200' },
-  { racecourse: 'chukyo', surface: 'turf', distance: '2000' },
-];
-
 // generateStaticParams: 全85コースを事前生成
 export async function generateStaticParams() {
-  return ALL_COURSES;
+  return ALL_COURSES.map(course => ({
+    racecourse: course.racecourse,
+    surface: course.surface,
+    distance: course.variant
+      ? `${course.distance}-${course.variant}`
+      : String(course.distance)
+  }));
 }
 
 // モックデータ
@@ -1060,49 +959,29 @@ export default async function CoursePage({ params }: Props) {
 <section id="other-courses-section" className="section" aria-label="他のコースデータ一覧" style={{ marginBottom: '0 !important' }}>
   <h2 className="section-title" style={{ marginBottom: '1rem' }}>{courseShort}競馬場のコースデータ一覧</h2>
   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '0.75rem' }}>
-    {/* 芝コース例 */}
-    <Link href={`/courses/${resolvedParams.racecourse}/turf/1200`} style={{ textDecoration: 'none' }}>
-      <div style={{ background: '#f0fdf4', border: '1px solid #d1f0e5', color: '#0d5c2f', padding: '0.75rem', borderRadius: '6px', textAlign: 'center', fontSize: '0.8rem', fontWeight: '600', transition: 'all 0.2s ease', cursor: 'pointer' }}>
-        芝 1200m
-      </div>
-    </Link>
-    <Link href={`/courses/${resolvedParams.racecourse}/turf/1600`} style={{ textDecoration: 'none' }}>
-      <div style={{ background: '#f0fdf4', border: '1px solid #d1f0e5', color: '#0d5c2f', padding: '0.75rem', borderRadius: '6px', textAlign: 'center', fontSize: '0.8rem', fontWeight: '600', transition: 'all 0.2s ease', cursor: 'pointer' }}>
-        芝 1600m
-      </div>
-    </Link>
-    <Link href={`/courses/${resolvedParams.racecourse}/turf/1800`} style={{ textDecoration: 'none' }}>
-      <div style={{ background: '#f0fdf4', border: '1px solid #d1f0e5', color: '#0d5c2f', padding: '0.75rem', borderRadius: '6px', textAlign: 'center', fontSize: '0.8rem', fontWeight: '600', transition: 'all 0.2s ease', cursor: 'pointer' }}>
-        芝 1800m
-      </div>
-    </Link>
-    <Link href={`/courses/${resolvedParams.racecourse}/turf/2000`} style={{ textDecoration: 'none' }}>
-      <div style={{ background: '#f0fdf4', border: '1px solid #d1f0e5', color: '#0d5c2f', padding: '0.75rem', borderRadius: '6px', textAlign: 'center', fontSize: '0.8rem', fontWeight: '600', transition: 'all 0.2s ease', cursor: 'pointer' }}>
-        芝 2000m
-      </div>
-    </Link>
-
-    {/* ダートコース例 */}
-    <Link href={`/courses/${resolvedParams.racecourse}/dirt/1000`} style={{ textDecoration: 'none' }}>
-      <div style={{ background: '#fef3e8', border: '1px solid #ffe5cc', color: '#6b4423', padding: '0.75rem', borderRadius: '6px', textAlign: 'center', fontSize: '0.8rem', fontWeight: '600', transition: 'all 0.2s ease', cursor: 'pointer' }}>
-        ダート 1000m
-      </div>
-    </Link>
-    <Link href={`/courses/${resolvedParams.racecourse}/dirt/1200`} style={{ textDecoration: 'none' }}>
-      <div style={{ background: '#fef3e8', border: '1px solid #ffe5cc', color: '#6b4423', padding: '0.75rem', borderRadius: '6px', textAlign: 'center', fontSize: '0.8rem', fontWeight: '600', transition: 'all 0.2s ease', cursor: 'pointer' }}>
-        ダート 1200m
-      </div>
-    </Link>
-    <Link href={`/courses/${resolvedParams.racecourse}/dirt/1400`} style={{ textDecoration: 'none' }}>
-      <div style={{ background: '#fef3e8', border: '1px solid #ffe5cc', color: '#6b4423', padding: '0.75rem', borderRadius: '6px', textAlign: 'center', fontSize: '0.8rem', fontWeight: '600', transition: 'all 0.2s ease', cursor: 'pointer' }}>
-        ダート 1400m
-      </div>
-    </Link>
-    <Link href={`/courses/${resolvedParams.racecourse}/dirt/1800`} style={{ textDecoration: 'none' }}>
-      <div style={{ background: '#fef3e8', border: '1px solid #ffe5cc', color: '#6b4423', padding: '0.75rem', borderRadius: '6px', textAlign: 'center', fontSize: '0.8rem', fontWeight: '600', transition: 'all 0.2s ease', cursor: 'pointer' }}>
-        ダート 1800m
-      </div>
-    </Link>
+    {ALL_COURSES
+      .filter(course => course.racecourse === resolvedParams.racecourse)
+      .map(course => {
+        const isTurf = course.surface === 'turf';
+        return (
+          <Link key={`${course.surface}-${course.distance}-${course.variant || 'default'}`} href={getCourseUrl(course)} style={{ textDecoration: 'none' }}>
+            <div style={{
+              background: isTurf ? '#f0fdf4' : '#fef3e8',
+              border: isTurf ? '1px solid #d1f0e5' : '1px solid #ffe5cc',
+              color: isTurf ? '#0d5c2f' : '#6b4423',
+              padding: '0.75rem',
+              borderRadius: '6px',
+              textAlign: 'center',
+              fontSize: '0.8rem',
+              fontWeight: '600',
+              transition: 'all 0.2s ease',
+              cursor: 'pointer'
+            }}>
+              {getCourseDisplayName(course)}
+            </div>
+          </Link>
+        );
+      })}
   </div>
 </section>
 

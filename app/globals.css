@@ -990,7 +990,7 @@ details[open] .evaluation-content {
   font-size: 0.75rem;
   font-weight: 700;
   color: var(--text-dark);
-  min-width: 32px;
+  min-width: 48px;
   text-align: right;
 }
 
