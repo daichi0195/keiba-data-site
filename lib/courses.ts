@@ -128,17 +128,33 @@ export function getCoursesByRacecourse() {
     grouped.get(key)!.push(course);
   });
 
-  return Array.from(grouped.entries()).map(([racecourse, courses]) => ({
-    racecourse,
-    racecourse_ja: courses[0].racecourse_ja,
-    courses: courses.sort((a, b) => {
-      // Sort by surface (turf first), then distance
-      if (a.surface !== b.surface) {
-        return a.surface === 'turf' ? -1 : 1;
-      }
-      return a.distance - b.distance;
-    })
-  }));
+  // 指定された順序
+  const racecourseOrder = [
+    'sapporo',    // 札幌
+    'hakodate',   // 函館
+    'fukushima',  // 福島
+    'niigata',    // 新潟
+    'tokyo',      // 東京
+    'nakayama',   // 中山
+    'chukyo',     // 中京
+    'kyoto',      // 京都
+    'hanshin',    // 阪神
+    'kokura',     // 小倉
+  ];
+
+  return racecourseOrder
+    .filter(racecourse => grouped.has(racecourse))
+    .map(racecourse => ({
+      racecourse,
+      racecourse_ja: grouped.get(racecourse)![0].racecourse_ja,
+      courses: grouped.get(racecourse)!.sort((a, b) => {
+        // Sort by surface (turf first), then distance
+        if (a.surface !== b.surface) {
+          return a.surface === 'turf' ? -1 : 1;
+        }
+        return a.distance - b.distance;
+      })
+    }));
 }
 
 // コース名の表示（「芝 1400m（内回り）」）
