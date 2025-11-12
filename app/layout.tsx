@@ -8,8 +8,8 @@ export const metadata: Metadata = {
   title: "競馬データ.com",
   description: "競馬データ分析サイト - 全国の競馬場・コース別の詳細データ",
   icons: {
-    icon: '/logo.png',
-    apple: '/logo.png',
+    icon: '/favicon.png',
+    apple: '/favicon.png',
   },
 };
 
