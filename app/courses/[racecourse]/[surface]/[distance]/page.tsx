@@ -788,7 +788,7 @@ export default async function CoursePage({ params }: Props) {
       <BottomNav items={navigationItems} />
       <main>
         <article>
-        <header className="course-header">
+        <div className="course-header">
           <h1>{course_info.racecourse} {course_info.surface}{distanceDisplay}m{trackVariantLabel}</h1>
 
           {/* === データ情報セクション === */}
@@ -811,7 +811,7 @@ export default async function CoursePage({ params }: Props) {
               <dd>{course_info.last_updated}</dd>
             </div>
           </dl>
-        </header>
+        </div>
 
         {/* === コース特性セクション === */}
         <section id="characteristics-section" aria-label="コース特性">
