@@ -787,33 +787,34 @@ export default async function CoursePage({ params }: Props) {
       <HeaderMenu />
       <BottomNav items={navigationItems} />
       <main>
-        <div className="course-header">
+        <article>
+        <header className="course-header">
           <h1>{course_info.racecourse} {course_info.surface}{distanceDisplay}m{trackVariantLabel}</h1>
 
           {/* === データ情報セクション === */}
-          <div className="course-meta-section">
+          <dl className="course-meta-section">
             <div className="meta-item">
-              <span className="meta-label">データ取得期間</span>
-              <span>
+              <dt className="meta-label">データ取得期間</dt>
+              <dd>
                 直近3年間分
                 <span className="meta-sub-text">
                   {course_info.data_period.match(/（[^）]+）/)?.[0] || course_info.data_period}
                 </span>
-              </span>
+              </dd>
             </div>
             <div className="meta-item">
-              <span className="meta-label">対象レース数</span>
-              <span>{course_info.total_races}レース</span>
+              <dt className="meta-label">対象レース数</dt>
+              <dd>{course_info.total_races}レース</dd>
             </div>
             <div className="meta-item">
-              <span className="meta-label">最終更新日</span>
-              <span>{course_info.last_updated}</span>
+              <dt className="meta-label">最終更新日</dt>
+              <dd>{course_info.last_updated}</dd>
             </div>
-          </div>
-        </div>
+          </dl>
+        </header>
 
         {/* === コース特性セクション === */}
-        <section id="characteristics-section">
+        <section id="characteristics-section" aria-label="コース特性">
         <BarChartAnimation>
         <div className="characteristics-box">
           <h2 className="section-title">コース特性</h2>
@@ -983,7 +984,7 @@ export default async function CoursePage({ params }: Props) {
         </section>
 
         {/* === 注目ポイント === */}
-        <section id="highlights-section">
+        <section id="highlights-section" aria-label="注目ポイント">
           <HighlightsSection
             jockey_stats={jockey_stats}
             pedigree_stats={pedigree_stats}
@@ -992,7 +993,7 @@ export default async function CoursePage({ params }: Props) {
           />
         </section>
         {/* === 人気別 === */}
-<section id="popularity-section">
+<section id="popularity-section" aria-label="人気別データ">
   <PopularityTable
     title={`${seoPrefix} 人気別データ`}
     data={popularity_stats}
@@ -1000,7 +1001,7 @@ export default async function CoursePage({ params }: Props) {
 </section>
 
 {/* === 枠順別 === */}
-<section id="gate-section">
+<section id="gate-section" aria-label="枠順別データ">
   <GateTable
     title={`${seoPrefix} 枠順別データ`}
     data={gate_stats}
@@ -1008,7 +1009,7 @@ export default async function CoursePage({ params }: Props) {
 </section>
 
 {/* === 脚質別 === */}
-<section id="running-style-section">
+<section id="running-style-section" aria-label="脚質別データ">
   <RunningStyleTable
     title={`${seoPrefix} 脚質別データ`}
     data={running_style_stats}
@@ -1016,7 +1017,7 @@ export default async function CoursePage({ params }: Props) {
 </section>
 
 {/* === 騎手別 === */}
-<section id="jockey-section">
+<section id="jockey-section" aria-label="騎手別データ">
   <DataTable
     title={`${seoPrefix} 騎手別データ`}
     data={jockey_stats}
@@ -1026,7 +1027,7 @@ export default async function CoursePage({ params }: Props) {
 </section>
 
 {/* === 血統別（種牡馬） === */}
-<section id="bloodline-section">
+<section id="bloodline-section" aria-label="血統別（種牡馬）データ">
   <DataTable
     title={`${seoPrefix} 血統別(種牡馬)データ`}
     data={pedigree_stats}
@@ -1036,7 +1037,7 @@ export default async function CoursePage({ params }: Props) {
 </section>
 
 {/* === 血統別（母父） === */}
-<section id="dam-sire-section">
+<section id="dam-sire-section" aria-label="血統別（母父）データ">
   <DataTable
     title={`${seoPrefix} 血統別(母父)データ`}
     data={dam_sire_stats}
@@ -1046,7 +1047,7 @@ export default async function CoursePage({ params }: Props) {
 </section>
 
 {/* === 調教師別 === */}
-<section id="trainer-section">
+<section id="trainer-section" aria-label="調教師別データ">
   <DataTable
     title={`${seoPrefix} 調教師別データ`}
     data={trainer_stats}
@@ -1056,7 +1057,7 @@ export default async function CoursePage({ params }: Props) {
 </section>
 
 {/* === 他のコースデータ一覧 === */}
-<section id="other-courses-section" className="section" style={{ marginBottom: '0 !important' }}>
+<section id="other-courses-section" className="section" aria-label="他のコースデータ一覧" style={{ marginBottom: '0 !important' }}>
   <h2 className="section-title" style={{ marginBottom: '1rem' }}>{courseShort}競馬場のコースデータ一覧</h2>
   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '0.75rem' }}>
     {/* 芝コース例 */}
@@ -1105,12 +1106,21 @@ export default async function CoursePage({ params }: Props) {
   </div>
 </section>
 
+        </article>
       </main>
 
       {/* === パンくず（フルワイド） === */}
-      <div className="breadcrumb-footer">
-        <Link href="/">ホーム</Link> &gt; <Link href="/courses">コース</Link> &gt; <Link href={`/courses/${resolvedParams.racecourse}`}>{course_info.racecourse}</Link> &gt; {course_info.surface} &gt; {course_info.distance}m
-      </div>
+      <nav aria-label="パンくずリスト" className="breadcrumb-footer">
+        <ol style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+          <li><Link href="/">ホーム</Link></li>
+          <li aria-hidden="true">&gt;</li>
+          <li><Link href="/courses">コース</Link></li>
+          <li aria-hidden="true">&gt;</li>
+          <li><Link href={`/courses/${resolvedParams.racecourse}`}>{course_info.racecourse}</Link></li>
+          <li aria-hidden="true">&gt;</li>
+          <li aria-current="page">{course_info.surface} {course_info.distance}m</li>
+        </ol>
+      </nav>
     </>
   );
 }
