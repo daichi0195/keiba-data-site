@@ -792,25 +792,25 @@ export default async function CoursePage({ params }: Props) {
           <h1>{course_info.racecourse} {course_info.surface}{distanceDisplay}m{trackVariantLabel}</h1>
 
           {/* === データ情報セクション === */}
-          <dl className="course-meta-section">
+          <div className="course-meta-section">
             <div className="meta-item">
-              <dt className="meta-label">データ取得期間</dt>
-              <dd>
+              <span className="meta-label">データ取得期間</span>
+              <span>
                 直近3年間分
                 <span className="meta-sub-text">
                   {course_info.data_period.match(/（[^）]+）/)?.[0] || course_info.data_period}
                 </span>
-              </dd>
+              </span>
             </div>
             <div className="meta-item">
-              <dt className="meta-label">対象レース数</dt>
-              <dd>{course_info.total_races}レース</dd>
+              <span className="meta-label">対象レース数</span>
+              <span>{course_info.total_races}レース</span>
             </div>
             <div className="meta-item">
-              <dt className="meta-label">最終更新日</dt>
-              <dd>{course_info.last_updated}</dd>
+              <span className="meta-label">最終更新日</span>
+              <span>{course_info.last_updated}</span>
             </div>
-          </dl>
+          </div>
         </div>
 
         {/* === コース特性セクション === */}
