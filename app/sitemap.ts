@@ -3,7 +3,7 @@ import { ALL_COURSES } from '@/lib/courses';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   // ベースURL
-  const baseUrl = 'https://www.keiba-data.com';
+  const baseUrl = 'https://www.keibadata.com';
 
   // ホームページ
   const homeEntry: MetadataRoute.Sitemap = [
