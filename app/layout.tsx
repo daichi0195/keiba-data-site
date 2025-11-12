@@ -42,9 +42,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         {/* End Google Tag Manager (noscript) */}
 
         <header>
-          <div className="site-name">
-            <img src="/logo.png" alt="競馬データ.com" style={{ height: '32px', marginRight: '8px', verticalAlign: 'middle' }} />
-            競馬データ.com
+          <div className="site-name" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <img src="/logo.png" alt="競馬データ.com" style={{ height: '40px', width: '40px', display: 'block' }} />
+            <span style={{ display: 'flex', alignItems: 'center', fontSize: '20px', fontWeight: '600' }}>競馬データ.com</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <HeaderMenu items={[]} />
