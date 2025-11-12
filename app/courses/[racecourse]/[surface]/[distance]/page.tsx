@@ -493,9 +493,29 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     trackVariant = '（外回り）';
   }
 
+  const title = `${racecourse}競馬場 ${surface}${distanceDisplay}m${trackVariant} | コースデータ`;
+  const description = `${racecourse}競馬場の${surface}${distanceDisplay}m${trackVariant}コースの詳細データ。人気別成績、枠番別成績、脚質傾向、騎手・種牡馬・母父・調教師の成績など、豊富な統計データで予想をサポート。`;
+  const url = `https://www.keibadata.com/courses/${resolvedParams.racecourse}/${resolvedParams.surface}/${resolvedParams.distance}`;
+
   return {
-    title: `${racecourse}競馬場 ${surface}${distanceDisplay}m${trackVariant} | コースデータ`,
-    description: `${racecourse}の${surface}${distanceDisplay}m${trackVariant}のコースデータ。騎手別・血統別の詳細な成績を分析。`,
+    title,
+    description,
+    alternates: {
+      canonical: url,
+    },
+    openGraph: {
+      title,
+      description,
+      url,
+      siteName: '競馬データ.com',
+      locale: 'ja_JP',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary',
+      title,
+      description,
+    },
   };
 }
 
@@ -732,8 +752,38 @@ export default async function CoursePage({ params }: Props) {
     { id: 'trainer-section', label: '調教師別' },
   ];
 
+  // 構造化データ - BreadcrumbList
+  const baseUrl = 'https://www.keibadata.com';
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'ホーム',
+        item: baseUrl,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: `${racecourseJa}競馬場`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: `${surfaceJa}${distanceDisplay}m${trackVariantLabel}`,
+      },
+    ],
+  };
+
   return (
     <>
+      {/* 構造化データの埋め込み */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <HeaderMenu />
       <BottomNav items={navigationItems} />
       <main>
