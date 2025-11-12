@@ -1,0 +1,10 @@
+# Robots.txt for 競馬データ.com
+User-agent: *
+Allow: /
+Allow: /courses/
+Allow: /sitemap.xml
+
+Disallow: /.next/
+Disallow: /api/
+
+Sitemap: https://www.keiba-data.com/sitemap.xml
