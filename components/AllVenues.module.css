@@ -40,7 +40,7 @@
 }
 
 .accordionTrigger:hover {
-  background: #f5f7fa;
+  background: #ffffff;
 }
 
 .accordionIcon {
@@ -71,8 +71,9 @@
 
 .courseList {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 8px;
+  grid-auto-flow: dense;
   list-style: none;
   padding: 0;
   margin: 0;
@@ -138,7 +139,7 @@
 /* レスポンシブ */
 @media (max-width: 768px) {
   .courseList {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .courseLink {

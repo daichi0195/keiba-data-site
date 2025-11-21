@@ -53,8 +53,9 @@
 
 .distanceLinks {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 8px;
+  grid-auto-flow: dense;
 }
 
 .distanceLink {
@@ -115,7 +116,7 @@
 /* レスポンシブ */
 @media (max-width: 768px) {
   .distanceLinks {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .distanceLink {

@@ -68,7 +68,7 @@ const mockVenues: Venue[] = [
 export default function FeaturedVenues() {
   return (
     <section className={styles.section}>
-      <h2 className={styles.sectionTitle}>今週末開催の競馬場データ</h2>
+      <h2 className={styles.sectionTitle}>今週開催の競馬場データ</h2>
 
       <div className={styles.venueGrid}>
         {mockVenues.map((venue) => (
