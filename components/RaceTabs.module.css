@@ -1,0 +1,92 @@
+.tabsContainer {
+  background-color: #ffffff;
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: #ffffff;
+  position: sticky;
+  top: 56px; /* ヘッダーの高さ分（調整後） */
+  z-index: 10;
+  padding-top: 0;
+}
+
+.tab {
+  flex: 1;
+  padding: 14px 16px;
+  background: none;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  color: #999;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s ease;
+  border-bottom: 3px solid transparent;
+  letter-spacing: 0.1em;
+}
+
+.tab:hover {
+  color: #1db854;
+}
+
+.tab.active {
+  color: #1db854;
+  border-bottom-color: #1db854;
+}
+
+.tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: #52af77;
+}
+
+.tabContent {
+  background-color: #f5f7fa;
+}
+
+.contentArea {
+  width: 100%;
+}
+
+.comingSoonBanner {
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8ebed 100%);
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 60px 24px;
+  text-align: center;
+  margin: 20px 0;
+  width: 100%;
+  max-width: 500px;
+}
+
+.comingSoonTitle {
+  font-size: 32px;
+  font-weight: 700;
+  color: #2d3748;
+  letter-spacing: 0.15em;
+  margin-bottom: 16px;
+}
+
+.comingSoonText {
+  font-size: 16px;
+  color: #666;
+  margin: 0;
+}
+
+/* レスポンシブ */
+@media (max-width: 768px) {
+  .tab {
+    font-size: 14px;
+    padding: 12px 12px;
+  }
+
+  .tabs {
+    top: 56px;
+  }
+}

@@ -1,0 +1,125 @@
+.section {
+  width: 100%;
+  padding: 16px;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 12px;
+}
+
+.venueGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.venueCard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.venueName {
+  font-size: 15px;
+  font-weight: 700;
+  color: #2d3748;
+}
+
+.courseList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.surfaceGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.surfaceLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+}
+
+.distanceLinks {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.distanceLink {
+  display: inline-block;
+  padding: 6px 12px;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: 1px solid;
+  text-align: center;
+}
+
+.variantGroup {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  grid-column: span 2;
+}
+
+.variantGroup .distanceLink {
+  flex: 1;
+}
+
+/* 芝コースのスタイル */
+.surfaceGroup:first-child .surfaceLabel {
+  color: #0d5c2f;
+}
+
+.surfaceGroup:first-child .distanceLink {
+  background: #f0fdf4;
+  border-color: #d1f0e5;
+  color: #0d5c2f;
+}
+
+.surfaceGroup:first-child .distanceLink:hover {
+  background: #e8f9f0;
+  border-color: #1db854;
+}
+
+/* ダートコースのスタイル */
+.surfaceGroup:last-child .surfaceLabel {
+  color: #6b4423;
+}
+
+.surfaceGroup:last-child .distanceLink {
+  background: #fef3e8;
+  border-color: #ffe5cc;
+  color: #6b4423;
+}
+
+.surfaceGroup:last-child .distanceLink:hover {
+  background: #ffe5cc;
+  border-color: #a67c52;
+}
+
+/* レスポンシブ */
+@media (max-width: 768px) {
+  .distanceLinks {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .distanceLink {
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+}

@@ -1,0 +1,99 @@
+.section {
+  width: 100%;
+  padding: 16px;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 12px;
+}
+
+.raceGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.raceCard {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 12px 16px;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.raceCard:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.gradeTag {
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+
+.gradeTag[data-grade="G1"] {
+  background: #3251BC;
+  color: #fff;
+  box-shadow: 0 2px 4px rgba(50, 81, 188, 0.3);
+}
+
+.gradeTag[data-grade="G2"] {
+  background: #C53130;
+  color: #fff;
+  box-shadow: 0 2px 4px rgba(197, 49, 48, 0.3);
+}
+
+.gradeTag[data-grade="G3"] {
+  background: #58AF4A;
+  color: #fff;
+  box-shadow: 0 2px 4px rgba(88, 175, 74, 0.3);
+}
+
+.raceName {
+  font-size: 15px;
+  font-weight: 700;
+  color: #2d3748;
+  flex: 1;
+}
+
+.detailLink {
+  display: inline-block;
+  padding: 6px 14px;
+  background-color: #1db854;
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  text-align: center;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.detailLink:hover {
+  background-color: #1a9f47;
+  transform: scale(1.02);
+}
+
+/* レスポンシブ */
+@media (max-width: 768px) {
+  .raceGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .sectionTitle {
+    font-size: 16px;
+  }
+}
