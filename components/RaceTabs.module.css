@@ -45,11 +45,12 @@
 
 .tabContent {
   background-color: #f5f7fa;
+  padding: 16px 0;
 }
 
 .contentArea {
   width: 100%;
-  margin: 16px 0;
+  padding: 0 16px;
 }
 
 .comingSoonBanner {
