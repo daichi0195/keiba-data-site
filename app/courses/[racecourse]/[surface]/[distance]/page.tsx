@@ -667,11 +667,13 @@ export default async function CoursePage({ params }: Props) {
         '@type': 'ListItem',
         position: 2,
         name: `${racecourseJa}競馬場`,
+        item: `${baseUrl}/courses/${resolvedParams.racecourse}`,
       },
       {
         '@type': 'ListItem',
         position: 3,
         name: `${surfaceJa}${distanceDisplay}m${trackVariantLabel}`,
+        item: `${baseUrl}/courses/${resolvedParams.racecourse}/${resolvedParams.surface}/${resolvedParams.distance}`,
       },
     ],
   };
