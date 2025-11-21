@@ -1,14 +1,11 @@
 .tabsContainer {
-  background-color: #ffffff;
+  background-color: #f5f7fa;
 }
 
 .tabs {
   display: flex;
   border-bottom: 1px solid #e0e0e0;
   background-color: #ffffff;
-  position: sticky;
-  top: 56px; /* ヘッダーの高さ分（調整後） */
-  z-index: 10;
   padding-top: 0;
 }
 
@@ -52,6 +49,7 @@
 
 .contentArea {
   width: 100%;
+  margin: 16px 0;
 }
 
 .comingSoonBanner {
@@ -84,9 +82,5 @@
   .tab {
     font-size: 14px;
     padding: 12px 12px;
-  }
-
-  .tabs {
-    top: 56px;
   }
 }

@@ -1,13 +1,13 @@
 .section {
   width: 100%;
-  padding: 16px;
+  padding: 12px;
 }
 
 .sectionTitle {
   font-size: 16px;
   font-weight: 700;
   color: #2d3748;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .raceGrid {

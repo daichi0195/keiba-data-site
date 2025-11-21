@@ -1,13 +1,13 @@
 .section {
   width: 100%;
-  padding: 16px;
+  padding: 12px;
 }
 
 .sectionTitle {
   font-size: 16px;
   font-weight: 700;
   color: #2d3748;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .accordionList {
@@ -50,17 +50,17 @@
 }
 
 .accordionContent {
-  padding: 16px;
+  padding: 12px;
   border-top: 1px solid #e0e0e0;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 }
 
 .surfaceGroup {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .surfaceLabel {
@@ -72,7 +72,7 @@
 .courseList {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
+  gap: 8px;
   list-style: none;
   padding: 0;
   margin: 0;
