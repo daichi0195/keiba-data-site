@@ -77,7 +77,6 @@ export default function FeaturedVenues() {
 
             <div className={styles.courseList}>
               <div className={styles.surfaceGroup}>
-                <span className={styles.surfaceLabel}>芝</span>
                 <div className={styles.distanceLinks}>
                   {(() => {
                     const items = [];
@@ -116,7 +115,7 @@ export default function FeaturedVenues() {
                             href={`/courses/${venue.id}/turf/${current.distance}`}
                             className={styles.distanceLink}
                           >
-                            {current.label || `${current.distance}m`}
+                            {current.label || `芝${current.distance}m`}
                           </Link>
                         );
                         i += 1;
@@ -128,7 +127,6 @@ export default function FeaturedVenues() {
               </div>
 
               <div className={styles.surfaceGroup}>
-                <span className={styles.surfaceLabel}>ダート</span>
                 <div className={styles.distanceLinks}>
                   {venue.courses.dirt.map((course, index) => (
                     <Link
@@ -136,7 +134,7 @@ export default function FeaturedVenues() {
                       href={`/courses/${venue.id}/dirt/${course.distance}`}
                       className={styles.distanceLink}
                     >
-                      {course.label || `${course.distance}m`}
+                      {course.label || `ダート${course.distance}m`}
                     </Link>
                   ))}
                 </div>
