@@ -1,5 +1,5 @@
 .tabsContainer {
-  background-color: #f5f7fa;
+  background-color: #ffffff;
 }
 
 .tabs {
@@ -44,8 +44,8 @@
 }
 
 .tabContent {
-  background-color: #f5f7fa;
-  padding: 16px 0;
+  background-color: #ffffff;
+  padding: 12px 0 16px 0;
 }
 
 .contentArea {

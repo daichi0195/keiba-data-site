@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
   return (
-    <div style={{ backgroundColor: '#f5f7fa' }}>
+    <div style={{ backgroundColor: '#ffffff' }}>
       <RaceTabs />
     </div>
   );
