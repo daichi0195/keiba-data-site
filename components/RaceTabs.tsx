@@ -5,6 +5,7 @@ import styles from './RaceTabs.module.css';
 import FeaturedRaces from './FeaturedRaces';
 import FeaturedVenues from './FeaturedVenues';
 import AllVenues from './AllVenues';
+import JockeyLeading from './JockeyLeading';
 
 interface RaceTabsProps {
   onTabChange?: (tab: 'central' | 'local') => void;
@@ -43,6 +44,7 @@ export default function RaceTabs({ onTabChange }: RaceTabsProps) {
             <FeaturedRaces />
             <FeaturedVenues />
             <AllVenues />
+            <JockeyLeading />
           </div>
         )}
         {activeTab === 'local' && (
