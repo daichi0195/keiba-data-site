@@ -34,6 +34,18 @@
   gap: 16px;
 }
 
+.raceCard[data-grade="G1"] {
+  background: rgba(50, 81, 188, 0.08);
+}
+
+.raceCard[data-grade="G2"] {
+  background: rgba(197, 49, 48, 0.08);
+}
+
+.raceCard[data-grade="G3"] {
+  background: rgba(88, 175, 74, 0.08);
+}
+
 .raceCard:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transform: translateY(-2px);

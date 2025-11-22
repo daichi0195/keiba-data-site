@@ -51,7 +51,7 @@ export default function FeaturedRaces() {
 
       <div className={styles.raceGrid}>
         {mockRaces.map((race) => (
-          <div key={race.id} className={styles.raceCard}>
+          <div key={race.id} className={styles.raceCard} data-grade={race.grade}>
             <div className={styles.gradeTag} data-grade={race.grade}>
               {race.grade}
             </div>
