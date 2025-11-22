@@ -1,6 +1,6 @@
 .section {
   width: calc(100% + 32px);
-  padding: 20px 0;
+  padding: 12px 0;
   margin-left: -16px;
   margin-right: -16px;
   padding-left: 16px;
@@ -13,23 +13,23 @@
   font-size: 17px;
   font-weight: 700;
   color: #2d3748;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .venueGrid {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
 .venueCard {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   background: #ffffff;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  padding: 12px 16px;
+  padding: 10px 12px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
@@ -42,13 +42,13 @@
 .courseList {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .surfaceGroup {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
 .surfaceLabel {
@@ -60,7 +60,7 @@
 .distanceLinks {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+  gap: 6px;
   grid-auto-flow: dense;
 }
 

@@ -1,6 +1,6 @@
 .section {
   width: calc(100% + 32px);
-  padding: 20px 0;
+  padding: 12px 0;
   margin-left: -16px;
   margin-right: -16px;
   padding-left: 16px;
@@ -13,13 +13,13 @@
   font-size: 17px;
   font-weight: 700;
   color: #2d3748;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .raceGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 12px;
+  gap: 8px;
 }
 
 .raceCard {
