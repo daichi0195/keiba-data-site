@@ -33,7 +33,7 @@
 }
 
 .section.visible::after {
-  animation: fadeInFromTop 0.8s ease-out forwards;
+  animation: fadeInFromTop 0.6s ease-out forwards;
 }
 
 @keyframes fadeInFromTop {
