@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import styles from './AllVenues.module.css';
 import { getCoursesByRacecourse, getCourseUrl, getCourseDisplayName } from '@/lib/courses';
@@ -17,6 +17,29 @@ interface ExpandedState {
 
 export default function AllVenues() {
   const [expandedRacecourse, setExpandedRacecourse] = useState<ExpandedState>({});
+  const [isVisible, setIsVisible] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
+  }, []);
 
   const toggleRacecourse = (racecourseNameEn: string) => {
     setExpandedRacecourse((prev) => ({
@@ -26,7 +49,7 @@ export default function AllVenues() {
   };
 
   return (
-    <section className={styles.section}>
+    <section ref={sectionRef} className={`${styles.section} ${isVisible ? styles.visible : ''}`}>
       <h2 className={styles.sectionTitle}>競馬場別データ</h2>
 
       <div className={styles.accordionList}>
