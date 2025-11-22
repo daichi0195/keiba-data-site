@@ -6,11 +6,10 @@
   padding-left: 16px;
   padding-right: 16px;
   margin-bottom: 0;
-  background-color: #ffffff;
 }
 
 .sectionTitle {
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 700;
   color: #2d3748;
   margin-bottom: 8px;
@@ -34,7 +33,7 @@
 }
 
 .venueName {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   color: #2d3748;
 }
