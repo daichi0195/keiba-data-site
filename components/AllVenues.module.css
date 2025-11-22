@@ -120,13 +120,13 @@
 }
 
 .surfaceGroup:first-child .courseLink {
-  background: #f0fdf4;
-  border-color: #d1f0e5;
-  color: #0d5c2f;
+  background: #e2f7eb;
+  border-color: #bbe7d3;
+  color: #0c532a;
 }
 
 .surfaceGroup:first-child .courseLink:hover {
-  background: #e8f9f0;
+  background: #d4f1e1;
   border-color: #1db854;
 }
 
@@ -136,13 +136,13 @@
 }
 
 .surfaceGroup:last-child .courseLink {
-  background: #fef3e8;
-  border-color: #ffe5cc;
-  color: #6b4423;
+  background: #fde9d7;
+  border-color: #ffd7ae;
+  color: #633d1e;
 }
 
 .surfaceGroup:last-child .courseLink:hover {
-  background: #ffe5cc;
+  background: #fcdfc5;
   border-color: #a67c52;
 }
 
