@@ -46,7 +46,6 @@ export default function AllVenues() {
               <div className={styles.accordionContent}>
                 {/* Turf courses */}
                 <div className={styles.surfaceGroup}>
-                  <h4 className={styles.surfaceLabel}>芝</h4>
                   <ul className={styles.courseList}>
                     {(() => {
                       const turfCourses = racecourse.courses.filter((c) => c.surface === 'turf');
@@ -68,13 +67,13 @@ export default function AllVenues() {
                                 href={getCourseUrl(current)}
                                 className={styles.courseLink}
                               >
-                                {`${current.distance}m(内)`}
+                                {`芝${current.distance}m(内)`}
                               </Link>
                               <Link
                                 href={getCourseUrl(next)}
                                 className={styles.courseLink}
                               >
-                                {`${next.distance}m(外)`}
+                                {`芝${next.distance}m(外)`}
                               </Link>
                             </li>
                           );
@@ -83,7 +82,7 @@ export default function AllVenues() {
                           items.push(
                             <li key={`${racecourse.nameEn}-${current.racecourse}-${current.surface}-${current.distance}${current.variant || ''}`}>
                               <Link href={getCourseUrl(current)} className={styles.courseLink}>
-                                {`${current.distance}m`}
+                                {`芝${current.distance}m`}
                               </Link>
                             </li>
                           );
@@ -97,14 +96,13 @@ export default function AllVenues() {
 
                 {/* Dirt courses */}
                 <div className={styles.surfaceGroup}>
-                  <h4 className={styles.surfaceLabel}>ダート</h4>
                   <ul className={styles.courseList}>
                     {racecourse.courses
                       .filter((c) => c.surface === 'dirt')
                       .map((course) => (
                         <li key={`${racecourse.nameEn}-${course.racecourse}-${course.surface}-${course.distance}${course.variant || ''}`}>
                           <Link href={getCourseUrl(course)} className={styles.courseLink}>
-                            {`${course.distance}m`}
+                            {`ダート${course.distance}m`}
                           </Link>
                         </li>
                       ))}
