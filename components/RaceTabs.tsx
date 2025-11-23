@@ -42,7 +42,7 @@ export default function RaceTabs({ onTabChange }: RaceTabsProps) {
         {activeTab === 'central' && (
           <div className={styles.contentArea}>
             <section className="section">
-              <h2 className="section-title">ピックアップ</h2>
+              <h2 className="section-title">ピックアップデータ</h2>
 
               <div className={styles.subsection}>
                 <h3 className={styles.subsectionTitle}>今週開催の注目レース</h3>
