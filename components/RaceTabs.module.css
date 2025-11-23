@@ -51,6 +51,21 @@
   padding: 0 16px;
 }
 
+.subsection {
+  margin-bottom: 20px;
+}
+
+.subsection:last-child {
+  margin-bottom: 0;
+}
+
+.subsectionTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 10px;
+}
+
 .comingSoonBanner {
   background: linear-gradient(135deg, #f5f7fa 0%, #e8ebed 100%);
   border: 2px solid #e0e0e0;

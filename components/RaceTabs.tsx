@@ -41,8 +41,20 @@ export default function RaceTabs({ onTabChange }: RaceTabsProps) {
       <div className={styles.tabContent}>
         {activeTab === 'central' && (
           <div className={styles.contentArea}>
-            <FeaturedRaces />
-            <FeaturedVenues />
+            <section className="section">
+              <h2 className="section-title">ピックアップ</h2>
+
+              <div className={styles.subsection}>
+                <h3 className={styles.subsectionTitle}>今週開催の注目レース</h3>
+                <FeaturedRaces />
+              </div>
+
+              <div className={styles.subsection}>
+                <h3 className={styles.subsectionTitle}>今週開催の競馬場データ</h3>
+                <FeaturedVenues />
+              </div>
+            </section>
+
             <AllVenues />
             <JockeyLeading />
           </div>
