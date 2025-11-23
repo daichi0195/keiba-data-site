@@ -52,24 +52,37 @@ export default function JockeyLeading() {
 
   const maxWins = Math.max(...mockJockeyData.map((j) => j.wins));
 
+  // 順位に応じた背景色を返す関数
+  const getRankBadgeColor = (rank: number) => {
+    if (rank === 1) return '#FCF080';
+    if (rank === 2) return '#CCDFFF';
+    if (rank === 3) return '#F0C8A0';
+    return '#F0F0F0';
+  };
+
   return (
     <section ref={sectionRef} className="section">
       <h2 className="section-title">騎手別データ</h2>
 
-      <div className={styles.chartContainer}>
-        <h3 className={styles.chartTitle}>騎手リーディング</h3>
-        <div className={styles.chart}>
+      <div className="gate-place-rate-detail">
+        <div className="gate-detail-title">騎手リーディング</div>
+        <div className="gate-chart">
           {mockJockeyData.map((jockey) => (
-            <div key={jockey.rank} className={styles.chartItem}>
-              <div className={styles.rankBadge}>{jockey.rank}</div>
+            <div key={jockey.rank} className="gate-chart-item">
+              <div
+                className="gate-number-badge"
+                style={{ backgroundColor: getRankBadgeColor(jockey.rank), color: '#333333' }}
+              >
+                {jockey.rank}
+              </div>
               <div className={styles.name}>{jockey.name}</div>
-              <div className={styles.barContainer}>
+              <div className="gate-bar-container" style={{ background: 'transparent' }}>
                 <div
-                  className={`${styles.bar} ${isVisible ? styles.visible : ''}`}
+                  className={`gate-bar ${isVisible ? 'visible' : ''}`}
                   style={{ width: `${(jockey.wins / maxWins) * 100}%` }}
                 />
               </div>
-              <div className={styles.value}>{jockey.wins}勝</div>
+              <div className="gate-rate">{jockey.wins}勝</div>
             </div>
           ))}
         </div>
