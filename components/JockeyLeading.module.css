@@ -24,6 +24,13 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
+.chartTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 8px;
+}
+
 .chart {
   display: flex;
   flex-direction: column;
@@ -46,10 +53,25 @@
   border-radius: 4px;
   font-size: 0.75rem;
   font-weight: 700;
-  color: #fff;
+  color: #333333;
   flex-shrink: 0;
-  background: #666;
   border: 1px solid #ddd;
+}
+
+.chartItem:nth-child(1) .rankBadge {
+  background: #FCF080;
+}
+
+.chartItem:nth-child(2) .rankBadge {
+  background: #CCDFFF;
+}
+
+.chartItem:nth-child(3) .rankBadge {
+  background: #F0C8A0;
+}
+
+.chartItem:nth-child(n+4) .rankBadge {
+  background: #F0F0F0;
 }
 
 .name {

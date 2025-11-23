@@ -54,9 +54,10 @@ export default function JockeyLeading() {
 
   return (
     <section ref={sectionRef} className={styles.section}>
-      <h2 className={styles.sectionTitle}>騎手リーディング</h2>
+      <h2 className={styles.sectionTitle}>騎手別データ</h2>
 
       <div className={styles.chartContainer}>
+        <h3 className={styles.chartTitle}>騎手リーディング</h3>
         <div className={styles.chart}>
           {mockJockeyData.map((jockey) => (
             <div key={jockey.rank} className={styles.chartItem}>
