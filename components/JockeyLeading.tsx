@@ -76,7 +76,7 @@ export default function JockeyLeading() {
                 {jockey.rank}
               </div>
               <div className={styles.name}>{jockey.name}</div>
-              <div className="gate-bar-container" style={{ background: 'transparent' }}>
+              <div className="gate-bar-container" style={{ background: 'transparent', boxShadow: 'none' }}>
                 <div
                   className={`gate-bar ${isVisible ? 'visible' : ''}`}
                   style={{ width: `${(jockey.wins / maxWins) * 100}%` }}
