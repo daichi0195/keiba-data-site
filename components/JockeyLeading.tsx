@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import styles from './JockeyLeading.module.css';
+import AllJockeys from './AllJockeys';
 
 interface JockeyData {
   rank: number;
@@ -86,8 +87,11 @@ export default function JockeyLeading() {
               <div className="gate-rate">{jockey.wins}勝</div>
             </div>
           ))}
+
         </div>
       </div>
+
+      <AllJockeys />
     </section>
   );
 }

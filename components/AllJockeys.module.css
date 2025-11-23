@@ -1,0 +1,105 @@
+.subsectionTitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #475569;
+  margin: 24px 0 12px 0;
+  padding: 0;
+}
+
+.accordionList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.accordionItem {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 10px 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.accordionTrigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  background: none;
+  border: none;
+  font-size: 14px;
+  font-weight: 700;
+  color: #2d3748;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-align: left;
+}
+
+.accordionTrigger:hover {
+  background: #ffffff;
+}
+
+.accordionIcon {
+  font-size: 10px;
+  color: #666;
+  transition: transform 0.2s ease;
+}
+
+.accordionContent {
+  padding: 0;
+  padding-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.jockeyList {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.jockeyLink {
+  display: block;
+  width: 100%;
+  padding: 6px 12px;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: 1px solid #e0e0e0;
+  text-align: center;
+  box-sizing: border-box;
+  background: #f8fafc;
+  color: #2d3748;
+}
+
+.jockeyLink:hover {
+  background: #e8f9f0;
+  border-color: #1db854;
+  color: #0c532a;
+}
+
+/* レスポンシブ */
+@media (max-width: 768px) {
+  .jockeyList {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .jockeyLink {
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+
+  .subsectionTitle {
+    font-size: 1rem;
+  }
+}
