@@ -104,7 +104,7 @@
 .surfaceGroup:first-child .courseLink {
   background: #e2f7eb;
   border-color: #bbe7d3;
-  color: #0c532a;
+  color: #0f172a;
 }
 
 .surfaceGroup:first-child .courseLink:hover {
@@ -120,7 +120,7 @@
 .surfaceGroup:last-child .courseLink {
   background: #fde9d7;
   border-color: #ffd7ae;
-  color: #633d1e;
+  color: #0f172a;
 }
 
 .surfaceGroup:last-child .courseLink:hover {
