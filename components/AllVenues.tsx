@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import styles from './AllVenues.module.css';
 import { getCoursesByRacecourse, getCourseUrl, getCourseDisplayName } from '@/lib/courses';
@@ -17,6 +17,7 @@ interface ExpandedState {
 
 export default function AllVenues() {
   const [expandedRacecourse, setExpandedRacecourse] = useState<ExpandedState>({});
+  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const toggleRacecourse = (racecourseNameEn: string) => {
     setExpandedRacecourse((prev) => ({
@@ -25,13 +26,42 @@ export default function AllVenues() {
     }));
   };
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+    );
+
+    itemRefs.current.forEach((item) => {
+      if (item) observer.observe(item);
+    });
+
+    return () => {
+      itemRefs.current.forEach((item) => {
+        if (item) observer.unobserve(item);
+      });
+    };
+  }, []);
+
   return (
     <section className="section">
       <h2 className="section-title">競馬場別データ</h2>
 
       <div className={styles.accordionList}>
-        {racecoursesData.map((racecourse) => (
-          <div key={racecourse.nameEn} className={styles.accordionItem}>
+        {racecoursesData.map((racecourse, index) => (
+          <div
+            key={racecourse.nameEn}
+            ref={(el) => {
+              itemRefs.current[index] = el;
+            }}
+            className={`${styles.accordionItem} fade-in-card fade-in-stagger-${(index % 10) + 1}`}
+          >
             <button
               className={styles.accordionTrigger}
               onClick={() => toggleRacecourse(racecourse.nameEn)}

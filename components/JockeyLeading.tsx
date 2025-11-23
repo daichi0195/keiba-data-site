@@ -34,9 +34,10 @@ export default function JockeyLeading() {
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
+          entry.target.classList.add('is-visible');
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
     );
 
     if (sectionRef.current) {
@@ -61,7 +62,7 @@ export default function JockeyLeading() {
   };
 
   return (
-    <section ref={sectionRef} className="section">
+    <section ref={sectionRef} className="section fade-in-card">
       <h2 className="section-title">騎手別データ</h2>
 
       <div className="gate-place-rate-detail">

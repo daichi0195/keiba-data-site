@@ -2122,3 +2122,68 @@ h2.section-title::before { content: none !important; }
     letter-spacing: -0.02em !important;
   }
 }
+
+/* ===== フェードインアニメーション ===== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* フェードインカード基本スタイル */
+.fade-in-card {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* 表示状態 */
+.fade-in-card.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* スタガーディレイ（連続表示用） */
+.fade-in-stagger-1 { transition-delay: 0.05s; }
+.fade-in-stagger-2 { transition-delay: 0.1s; }
+.fade-in-stagger-3 { transition-delay: 0.15s; }
+.fade-in-stagger-4 { transition-delay: 0.2s; }
+.fade-in-stagger-5 { transition-delay: 0.25s; }
+.fade-in-stagger-6 { transition-delay: 0.3s; }
+.fade-in-stagger-7 { transition-delay: 0.35s; }
+.fade-in-stagger-8 { transition-delay: 0.4s; }
+.fade-in-stagger-9 { transition-delay: 0.45s; }
+.fade-in-stagger-10 { transition-delay: 0.5s; }
+
+/* アクセシビリティ: アニメーションを無効化するユーザー設定に対応 */
+@media (prefers-reduced-motion: reduce) {
+  .fade-in-card {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .fade-in-card.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  .fade-in-stagger-1,
+  .fade-in-stagger-2,
+  .fade-in-stagger-3,
+  .fade-in-stagger-4,
+  .fade-in-stagger-5,
+  .fade-in-stagger-6,
+  .fade-in-stagger-7,
+  .fade-in-stagger-8,
+  .fade-in-stagger-9,
+  .fade-in-stagger-10 {
+    transition-delay: 0s;
+  }
+}

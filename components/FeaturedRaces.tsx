@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import styles from './FeaturedRaces.module.css';
 
@@ -45,10 +46,42 @@ const mockRaces: Race[] = [
 ];
 
 export default function FeaturedRaces() {
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+    );
+
+    cardRefs.current.forEach((card) => {
+      if (card) observer.observe(card);
+    });
+
+    return () => {
+      cardRefs.current.forEach((card) => {
+        if (card) observer.unobserve(card);
+      });
+    };
+  }, []);
+
   return (
     <div className={styles.raceGrid}>
-      {mockRaces.map((race) => (
-        <div key={race.id} className={styles.raceCard} data-grade={race.grade}>
+      {mockRaces.map((race, index) => (
+        <div
+          key={race.id}
+          ref={(el) => {
+            cardRefs.current[index] = el;
+          }}
+          className={`${styles.raceCard} fade-in-card fade-in-stagger-${index + 1}`}
+          data-grade={race.grade}
+        >
           <div className={styles.gradeTag} data-grade={race.grade}>
             {race.grade}
           </div>

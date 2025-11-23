@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import styles from './FeaturedVenues.module.css';
 
@@ -66,10 +67,41 @@ const mockVenues: Venue[] = [
 ];
 
 export default function FeaturedVenues() {
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+    );
+
+    cardRefs.current.forEach((card) => {
+      if (card) observer.observe(card);
+    });
+
+    return () => {
+      cardRefs.current.forEach((card) => {
+        if (card) observer.unobserve(card);
+      });
+    };
+  }, []);
+
   return (
     <div className={styles.venueGrid}>
-        {mockVenues.map((venue) => (
-          <div key={venue.id} className={styles.venueCard}>
+        {mockVenues.map((venue, index) => (
+          <div
+            key={venue.id}
+            ref={(el) => {
+              cardRefs.current[index] = el;
+            }}
+            className={`${styles.venueCard} fade-in-card fade-in-stagger-${index + 1}`}
+          >
             <h3 className={styles.venueName}>{venue.name}</h3>
 
             <div className={styles.courseList}>
