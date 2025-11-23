@@ -1,9 +1,4 @@
 .chartContainer {
-  background: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 12px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 
 .chartTitle {
@@ -66,6 +61,7 @@
 .barContainer {
   flex: 1;
   height: 18px;
+  background: #e2e8f0;
   border-radius: 4px;
   overflow: hidden;
 }
