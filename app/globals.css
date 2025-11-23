@@ -1311,7 +1311,8 @@ details[open] .evaluation-content {
 
 .section-title {
   font-size: 1.3rem;
-  margin-bottom: 2.5rem;
+  margin-top: 12px;
+  margin-bottom: 8px;
   color: var(--text-dark);
   display: flex;
   align-items: center;
