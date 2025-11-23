@@ -34,9 +34,9 @@
 }
 
 .gradeTag {
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 11px;
+  padding: 6px 14px;
+  border-radius: 5px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.05em;
   flex-shrink: 0;
