@@ -6,6 +6,8 @@ import FeaturedRaces from './FeaturedRaces';
 import FeaturedVenues from './FeaturedVenues';
 import AllVenues from './AllVenues';
 import JockeyLeading from './JockeyLeading';
+import SireLeading from './SireLeading';
+import TrainerLeading from './TrainerLeading';
 
 interface RaceTabsProps {
   onTabChange?: (tab: 'central' | 'local') => void;
@@ -57,6 +59,8 @@ export default function RaceTabs({ onTabChange }: RaceTabsProps) {
 
             <AllVenues />
             <JockeyLeading />
+            <SireLeading />
+            <TrainerLeading />
           </div>
         )}
         {activeTab === 'local' && (
