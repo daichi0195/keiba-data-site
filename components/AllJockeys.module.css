@@ -61,6 +61,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
+  grid-auto-flow: dense;
   list-style: none;
   padding: 0;
   margin: 0;
@@ -75,23 +76,39 @@
   font-size: 13px;
   font-weight: 500;
   transition: all 0.2s ease;
-  border: 1px solid #e0e0e0;
+  border: 1px solid;
   text-align: center;
   box-sizing: border-box;
-  background: #f8fafc;
-  color: #2d3748;
 }
 
-.jockeyLink:hover {
-  background: #e8f9f0;
-  border-color: #1db854;
-  color: #0c532a;
+/* 男性騎手のスタイル（青系） */
+.jockeyLink[data-gender="male"] {
+  background: #e3f2fd;
+  border-color: #90caf9;
+  color: #0d47a1;
+}
+
+.jockeyLink[data-gender="male"]:hover {
+  background: #bbdefb;
+  border-color: #2196f3;
+}
+
+/* 女性騎手のスタイル（ピンク系） */
+.jockeyLink[data-gender="female"] {
+  background: #fce4ec;
+  border-color: #f8bbd0;
+  color: #880e4f;
+}
+
+.jockeyLink[data-gender="female"]:hover {
+  background: #f8bbd0;
+  border-color: #e91e63;
 }
 
 /* レスポンシブ */
 @media (max-width: 768px) {
   .jockeyList {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .jockeyLink {
