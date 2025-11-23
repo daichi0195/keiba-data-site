@@ -58,18 +58,16 @@
 }
 
 .sireList {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
-  grid-auto-flow: dense;
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
 .sireLink {
-  display: block;
-  width: 100%;
+  display: inline-block;
   padding: 6px 12px;
   text-decoration: none;
   border-radius: 4px;
@@ -79,22 +77,19 @@
   border: 1px solid;
   text-align: center;
   box-sizing: border-box;
-  background: #e2f7eb;
-  border-color: #bbe7d3;
-  color: #0c532a;
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  color: #475569;
+  white-space: nowrap;
 }
 
 .sireLink:hover {
-  background: #d4f1e1;
-  border-color: #1db854;
+  background: #f1f5f9;
+  border-color: #cbd5e1;
 }
 
 /* レスポンシブ */
 @media (max-width: 768px) {
-  .sireList {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
   .sireLink {
     font-size: 12px;
     padding: 6px 8px;

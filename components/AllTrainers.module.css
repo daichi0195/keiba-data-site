@@ -79,14 +79,14 @@
   border: 1px solid;
   text-align: center;
   box-sizing: border-box;
-  background: #fde9d7;
-  border-color: #ffd7ae;
-  color: #633d1e;
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  color: #475569;
 }
 
 .trainerLink:hover {
-  background: #fcdfc5;
-  border-color: #a67c52;
+  background: #f1f5f9;
+  border-color: #cbd5e1;
 }
 
 /* レスポンシブ */
