@@ -85,14 +85,14 @@
 .jockeyLink[data-gender="male"],
 .jockeyLink[data-gender="female"] {
   background: #f8fafc;
-  border-color: #e2e8f0;
-  color: #475569;
+  border-color: #cbd5e1;
+  color: #334155;
 }
 
 .jockeyLink[data-gender="male"]:hover,
 .jockeyLink[data-gender="female"]:hover {
   background: #f1f5f9;
-  border-color: #cbd5e1;
+  border-color: #94a3b8;
 }
 
 /* レスポンシブ */

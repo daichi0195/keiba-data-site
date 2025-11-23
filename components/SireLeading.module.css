@@ -1,0 +1,113 @@
+.chartContainer {
+  background: #F8FAFC;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.chartTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 8px;
+}
+
+.chart {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.chartItem {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.rankBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #333333;
+  flex-shrink: 0;
+  border: 1px solid #ddd;
+}
+
+.chartItem:nth-child(1) .rankBadge {
+  background: #FCF080;
+}
+
+.chartItem:nth-child(2) .rankBadge {
+  background: #CCDFFF;
+}
+
+.chartItem:nth-child(3) .rankBadge {
+  background: #F0C8A0;
+}
+
+.chartItem:nth-child(n+4) .rankBadge {
+  background: #F0F0F0;
+}
+
+.name {
+  width: 90px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #2d3748;
+  flex-shrink: 0;
+}
+
+.barContainer {
+  flex: 1;
+  height: 18px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.bar {
+  height: 100%;
+  border-radius: 4px;
+  background: #1db854;
+  transition: width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  opacity: 0.85;
+}
+
+.bar:not(.visible) {
+  width: 0 !important;
+}
+
+.bar.visible {
+  animation: expandWidth 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes expandWidth {
+  from {
+    width: 0 !important;
+  }
+}
+
+.value {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #2d3748;
+  min-width: 48px;
+  text-align: right;
+}
+
+/* レスポンシブ */
+@media (max-width: 768px) {
+  .name {
+    width: 80px;
+    font-size: 0.8rem;
+  }
+
+  .value {
+    min-width: 45px;
+  }
+}

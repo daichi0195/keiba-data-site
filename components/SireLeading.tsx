@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import styles from './JockeyLeading.module.css';
+import styles from './SireLeading.module.css';
 import AllSires from './AllSires';
 
 interface SireData {
