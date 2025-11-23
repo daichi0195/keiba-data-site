@@ -81,28 +81,28 @@
   box-sizing: border-box;
 }
 
-/* 男性騎手のスタイル（青系） */
+/* 男性騎手のスタイル（淡い青系） */
 .jockeyLink[data-gender="male"] {
-  background: #e3f2fd;
-  border-color: #90caf9;
-  color: #0d47a1;
+  background: #f0f7ff;
+  border-color: #d0e7ff;
+  color: #2c5282;
 }
 
 .jockeyLink[data-gender="male"]:hover {
-  background: #bbdefb;
-  border-color: #2196f3;
+  background: #e0f0ff;
+  border-color: #90caf9;
 }
 
-/* 女性騎手のスタイル（ピンク系） */
+/* 女性騎手のスタイル（淡いピンク系） */
 .jockeyLink[data-gender="female"] {
-  background: #fce4ec;
-  border-color: #f8bbd0;
-  color: #880e4f;
+  background: #fff5f7;
+  border-color: #ffe0e8;
+  color: #a02560;
 }
 
 .jockeyLink[data-gender="female"]:hover {
-  background: #f8bbd0;
-  border-color: #e91e63;
+  background: #ffe8f0;
+  border-color: #ffb3c6;
 }
 
 /* レスポンシブ */
