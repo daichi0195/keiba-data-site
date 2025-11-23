@@ -2,6 +2,9 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  background: #F8FAFC;
+  padding: 12px;
+  border-radius: 8px;
 }
 
 .venueCard {
