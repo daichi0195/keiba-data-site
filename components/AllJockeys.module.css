@@ -70,29 +70,29 @@
 .jockeyLink {
   display: block;
   width: 100%;
-  padding: 6px 12px;
+  padding: 0.625rem;
   text-decoration: none;
-  border-radius: 4px;
-  font-size: 13px;
-  font-weight: 500;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
   transition: all 0.2s ease;
   border: 1px solid;
   text-align: center;
   box-sizing: border-box;
 }
 
-/* 騎手のスタイル（グレー系統一） */
+/* 騎手のスタイル（注目ポイントセクションと同じデザイン） */
 .jockeyLink[data-gender="male"],
 .jockeyLink[data-gender="female"] {
-  background: #f8fafc;
-  border-color: #cbd5e1;
-  color: #334155;
+  background: #fff;
+  border-color: #1db854;
+  color: #2d3748;
 }
 
 .jockeyLink[data-gender="male"]:hover,
 .jockeyLink[data-gender="female"]:hover {
-  background: #f1f5f9;
-  border-color: #94a3b8;
+  box-shadow: 0 2px 8px rgba(29, 184, 84, 0.15);
+  border-color: #1a9f47;
 }
 
 /* レスポンシブ */
@@ -102,8 +102,8 @@
   }
 
   .jockeyLink {
-    font-size: 12px;
-    padding: 6px 8px;
+    font-size: 0.8rem;
+    padding: 0.5rem;
   }
 
   .subsectionTitle {
