@@ -46,8 +46,8 @@ const mockRaces: Race[] = [
 
 export default function FeaturedRaces() {
   return (
-    <section className={styles.section}>
-      <h2 className={styles.sectionTitle}>今週開催の注目レース</h2>
+    <section className="section">
+      <h2 className="section-title">今週開催の注目レース</h2>
 
       <div className={styles.raceGrid}>
         {mockRaces.map((race) => (

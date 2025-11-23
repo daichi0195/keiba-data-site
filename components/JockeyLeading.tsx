@@ -53,8 +53,8 @@ export default function JockeyLeading() {
   const maxWins = Math.max(...mockJockeyData.map((j) => j.wins));
 
   return (
-    <section ref={sectionRef} className={styles.section}>
-      <h2 className={styles.sectionTitle}>騎手別データ</h2>
+    <section ref={sectionRef} className="section">
+      <h2 className="section-title">騎手別データ</h2>
 
       <div className={styles.chartContainer}>
         <h3 className={styles.chartTitle}>騎手リーディング</h3>

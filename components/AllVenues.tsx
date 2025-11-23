@@ -26,8 +26,8 @@ export default function AllVenues() {
   };
 
   return (
-    <section className={styles.section}>
-      <h2 className={styles.sectionTitle}>競馬場別データ</h2>
+    <section className="section">
+      <h2 className="section-title">競馬場別データ</h2>
 
       <div className={styles.accordionList}>
         {racecoursesData.map((racecourse) => (
