@@ -34,9 +34,9 @@
 }
 
 .gradeTag {
-  padding: 6px 14px;
-  border-radius: 5px;
-  font-size: 13px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.05em;
   flex-shrink: 0;
@@ -69,12 +69,12 @@
 
 .detailLink {
   display: inline-block;
-  padding: 6px 14px;
+  padding: 4px 10px;
   background-color: #1db854;
   color: #ffffff;
   text-decoration: none;
-  border-radius: 5px;
-  font-size: 13px;
+  border-radius: 4px;
+  font-size: 11px;
   font-weight: 600;
   transition: all 0.2s ease;
   text-align: center;
