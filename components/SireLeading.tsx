@@ -78,7 +78,16 @@ export default function SireLeading() {
               >
                 {sire.rank}
               </div>
-              <div className={styles.name}>{sire.name}</div>
+              <div className={styles.name}>
+                {sire.name.length > 6 ? (
+                  <>
+                    {sire.name.slice(0, 6)}
+                    <span className={styles.ellipsis}>...</span>
+                  </>
+                ) : (
+                  sire.name
+                )}
+              </div>
               <div className="gate-bar-container" style={{ background: 'transparent', boxShadow: 'none' }}>
                 <div
                   className={`gate-bar ${isVisible ? 'visible' : ''}`}
