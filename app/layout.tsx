@@ -9,9 +9,15 @@ export const metadata: Metadata = {
   description: "競馬データ分析サイト - 全国の競馬場・コース別の詳細データ",
   icons: {
     icon: [
+      { url: '/favicon.ico', sizes: '32x32', type: 'image/x-icon' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon-48x48.png', sizes: '48x48', type: 'image/png' },
+      { url: '/favicon-192x192.png', sizes: '192x192', type: 'image/png' },
       { url: '/icon.png', sizes: '500x500', type: 'image/png' },
     ],
     apple: '/icon.png',
+    shortcut: '/favicon.ico',
   },
 };
 
