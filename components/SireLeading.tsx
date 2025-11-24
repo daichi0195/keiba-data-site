@@ -62,10 +62,6 @@ export default function SireLeading() {
     return '#F0F0F0';
   };
 
-  // 名前を6文字で省略する関数
-  const truncateName = (name: string) => {
-    return name.length > 6 ? name.slice(0, 6) + '...' : name;
-  };
 
   return (
     <section ref={sectionRef} className="section fade-in-card">
@@ -82,7 +78,7 @@ export default function SireLeading() {
               >
                 {sire.rank}
               </div>
-              <div className={styles.name}>{truncateName(sire.name)}</div>
+              <div className={styles.name}>{sire.name}</div>
               <div className="gate-bar-container" style={{ background: 'transparent', boxShadow: 'none' }}>
                 <div
                   className={`gate-bar ${isVisible ? 'visible' : ''}`}

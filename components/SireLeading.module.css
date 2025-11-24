@@ -55,11 +55,14 @@
 }
 
 .name {
-  width: 90px;
+  width: 140px;
   font-size: 0.85rem;
   font-weight: 600;
   color: #2d3748;
   flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .barContainer {
@@ -103,7 +106,7 @@
 /* レスポンシブ */
 @media (max-width: 768px) {
   .name {
-    width: 80px;
+    width: 120px;
     font-size: 0.8rem;
   }
 
