@@ -4,324 +4,92 @@
   background: linear-gradient(180deg, #3d3d3d 0%, #2a2a2a 100%);
   border-top: 1px solid #1a1a1a;
   margin-top: 0;
-  padding: 0;
-  position: relative;
-}
-
-
-.footerInner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 3rem 1rem 2rem 1rem;
+  padding: 3rem 1rem;
 }
 
 .footerContent {
   max-width: 1200px;
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: 2rem;
-  margin-bottom: 2rem;
+  text-align: center;
 }
 
-/* Column Styling */
-.footerColumn {
-  padding: 0 1rem;
-}
-
-.columnTitle {
-  font-size: 1.1rem;
+.siteName h2 {
+  font-size: 1.5rem;
   font-weight: 700;
   color: #ffffff;
-  margin-bottom: 1rem;
+  margin: 0 0 0.5rem 0;
   letter-spacing: 0.05em;
-  border-bottom: 2px solid #606060;
-  padding-bottom: 0.75rem;
 }
 
-/* Accordion Styling */
-.accordionList {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.accordionItem {
-  border: 1px solid #505050;
-  border-radius: 6px;
-  overflow: hidden;
-  transition: all 0.2s ease;
-}
-
-.accordionItem:hover {
-  border-color: #707070;
-  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.05);
-}
-
-.accordionTrigger {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  background: #474747;
-  border: none;
-  cursor: pointer;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #ffffff;
-  text-align: left;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  transition: all 0.2s ease;
-}
-
-.accordionTrigger:hover {
-  background: #525252;
-  color: #ffffff;
-}
-
-.accordionIcon {
-  display: inline-block;
-  width: 1rem;
-  text-align: center;
-  transition: transform 0.2s ease;
-  color: #ffffff;
-  font-size: 0.75rem;
-  opacity: 0.7;
-}
-
-.accordionContent {
-  background: #ffffff;
-  padding: 1.5rem;
-  border-top: 1px solid #e0e0e0;
-  animation: slideDown 0.3s ease;
-  color: #333;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.surfaceGroup {
-  margin-bottom: 1.5rem;
-  padding: 0;
-  background: transparent;
-  border-radius: 0;
-  border-left: none;
-  box-shadow: none;
-}
-
-.surfaceGroup:last-child {
-  margin-bottom: 0;
-}
-
-.surfaceTitle {
+.tagline {
   font-size: 0.9rem;
-  font-weight: 700;
-  color: #333;
-  margin-bottom: 0.75rem;
+  color: #94a3b8;
+  margin: 0;
   letter-spacing: 0.05em;
-  display: block;
-  text-transform: none;
 }
 
-.turfTitle {
-  color: #0d5c2f;
-}
-
-.dirtTitle {
-  color: #6b4423;
-}
-
-.courseList {
+.footerLinks {
   list-style: none;
   padding: 0;
   margin: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  gap: 0.75rem;
-}
-
-.courseList li {
-  margin: 0;
-}
-
-.courseLink {
-  font-size: 0.8rem;
-  color: #ffffff;
-  text-decoration: none;
-  padding: 0.75rem;
   display: flex;
-  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
   justify-content: center;
-  text-align: center;
-  border-radius: 6px;
-  transition: all 0.2s ease;
-  border: 1px solid #505050;
-  background: #474747;
-  position: relative;
-  font-weight: 500;
 }
 
-.courseLink:hover {
-  background: #555;
-  color: #ffffff;
-  border-color: #606060;
-  box-shadow: 0 2px 6px rgba(255, 255, 255, 0.1);
-  transform: translateY(-2px);
-}
-
-/* 芝コースのカード色分け */
-.turfCourseList .courseLink {
-  background: #f0fdf4;
-  border-color: #d1f0e5;
-  color: #0d5c2f;
-  font-weight: 600;
-}
-
-.turfCourseList .courseLink:hover {
-  background: #e8f9f0;
-  border-color: #1db854;
-  color: #1db854;
-  box-shadow: 0 2px 6px rgba(29, 184, 84, 0.2);
-}
-
-/* ダートコースのカード色分け */
-.dirtCourseList .courseLink {
-  background: #fef3e8;
-  border-color: #ffe5cc;
-  color: #6b4423;
-  font-weight: 600;
-}
-
-.dirtCourseList .courseLink:hover {
-  background: #ffe5cc;
-  border-color: #a67c52;
-  color: #a67c52;
-  box-shadow: 0 2px 6px rgba(166, 124, 82, 0.2);
-}
-
-/* Link List Styling */
-.linkList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.linkList li {
+.footerLinks li {
   margin: 0;
 }
 
 .footerLink {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   color: #ffffff;
   text-decoration: none;
   transition: all 0.2s ease;
-  display: inline-block;
+  opacity: 0.8;
 }
 
 .footerLink:hover {
   color: #ffffff;
-  opacity: 0.8;
-  transform: translateX(4px);
-}
-
-/* Footer Bottom */
-.footerBottom {
-  max-width: 1200px;
-  margin: 0 auto;
-  border-top: 1px solid #505050;
-  padding-top: 1.5rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  text-align: center;
-}
-
-.footerBottomLinks {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 1rem 0;
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  flex-wrap: wrap;
-}
-
-.footerBottomLinks li {
-  margin: 0;
-}
-
-.footerBottomLink {
-  font-size: 0.85rem;
-  color: #ffffff;
-  text-decoration: none;
-  transition: opacity 0.2s ease;
-}
-
-.footerBottomLink:hover {
-  color: #ffffff;
-  opacity: 0.8;
+  opacity: 1;
 }
 
 .copyright {
   font-size: 0.8rem;
   color: #ffffff;
   margin: 0;
-  opacity: 0.7;
+  opacity: 0.6;
 }
 
-/* Responsive Design */
-@media (max-width: 1024px) {
-  .footerContent {
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-  }
-}
-
+/* モバイル対応 */
 @media (max-width: 768px) {
   .footer {
-    padding: 0 1rem 80px 1rem;
-  }
-
-  .footerInner {
-    padding: 2rem 0;
+    padding: 2rem 1rem 100px 1rem;
   }
 
   .footerContent {
-    grid-template-columns: 1fr;
     gap: 1.5rem;
-    max-width: 100%;
-    margin: 0;
-    padding: 0;
   }
 
-  .columnTitle {
-    font-size: 1rem;
+  .siteName h2 {
+    font-size: 1.25rem;
   }
 
-  .accordionTrigger {
-    padding: 0.65rem 0.75rem;
-    font-size: 0.9rem;
+  .tagline {
+    font-size: 0.85rem;
   }
 
-  .footerBottomLinks {
+  .footerLinks {
     gap: 1rem;
+    flex-direction: column;
   }
 
-  .footerBottom {
-    max-width: 100%;
-    margin: 0 auto;
-    border-top: 1px solid #d0d0d0;
-    padding-top: 1.5rem;
-    text-align: center;
+  .footerLink {
+    font-size: 0.85rem;
   }
 }
