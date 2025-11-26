@@ -492,8 +492,10 @@ const _oldRacecoursesData_UNUSED = [
   },
 ];
 
+type MenuType = 'course' | 'jockey' | 'sire' | 'trainer' | null;
+
 export default function HeaderMenu() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [openMenu, setOpenMenu] = useState<MenuType>(null);
   const [expandedRacecourse, setExpandedRacecourse] = useState<Record<string, boolean>>({});
 
   const toggleRacecourse = (racecourseNameEn: string) => {
@@ -503,31 +505,78 @@ export default function HeaderMenu() {
     }));
   };
 
+  const closeMenu = () => setOpenMenu(null);
+
   // getCourseUrl はlib/courses.tsからインポートしたものを使用
 
   return (
     <>
-      {/* ===== モバイル：ハンバーガーメニュー ===== */}
-      <button
-        className={`${styles.hamburger} ${isMenuOpen ? styles.open : ''}`}
-        onClick={() => setIsMenuOpen(!isMenuOpen)}
-        type="button"
-        aria-label="メニューを開く"
-      >
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
+      {/* ===== モバイル：下部固定メニューボタン（4つ） ===== */}
+      <div className={styles.fixedMenuBar}>
+        <button
+          className={styles.menuButton}
+          onClick={() => setOpenMenu('course')}
+          type="button"
+          aria-label="コース別データを開く"
+        >
+          <span className={styles.menuIcon}>🏇</span>
+          <span className={styles.menuText}>コース</span>
+        </button>
+        <button
+          className={styles.menuButton}
+          onClick={() => setOpenMenu('jockey')}
+          type="button"
+          aria-label="騎手別データを開く"
+        >
+          <span className={styles.menuIcon}>👤</span>
+          <span className={styles.menuText}>騎手</span>
+        </button>
+        <button
+          className={styles.menuButton}
+          onClick={() => setOpenMenu('sire')}
+          type="button"
+          aria-label="血統別データを開く"
+        >
+          <span className={styles.menuIcon}>🧬</span>
+          <span className={styles.menuText}>血統</span>
+        </button>
+        <button
+          className={styles.menuButton}
+          onClick={() => setOpenMenu('trainer')}
+          type="button"
+          aria-label="調教師別データを開く"
+        >
+          <span className={styles.menuIcon}>👨‍🏫</span>
+          <span className={styles.menuText}>調教師</span>
+        </button>
+      </div>
 
-      {isMenuOpen && (
+      {openMenu && (
         <>
           <div
             className={styles.menuOverlay}
-            onClick={() => setIsMenuOpen(false)}
+            onClick={closeMenu}
           />
-          <div className={styles.mobileMenu}>
+          <div className={styles.fullscreenModal}>
+            <div className={styles.modalHeader}>
+              <h2 className={styles.modalTitle}>
+                {openMenu === 'course' && 'コース別データ'}
+                {openMenu === 'jockey' && '騎手別データ'}
+                {openMenu === 'sire' && '血統（種牡馬）別データ'}
+                {openMenu === 'trainer' && '調教師別データ'}
+              </h2>
+              <button
+                className={styles.closeButton}
+                onClick={closeMenu}
+                type="button"
+                aria-label="メニューを閉じる"
+              >
+                ✕
+              </button>
+            </div>
             <div className={styles.mobileMenuContent}>
-              <div className={styles.menuSectionTitle}>コース別データ</div>
+              {openMenu === 'course' && (
+                <>
               {racecoursesData.map((racecourse) => (
                 <div key={racecourse.nameEn} className={styles.accordionItem}>
                   <button
@@ -550,7 +599,7 @@ export default function HeaderMenu() {
                               key={`${racecourse.nameEn}-${course.racecourse}-${course.surface}-${course.distance}${course.variant || ''}`}
                               href={getCourseUrl(course)}
                               className={`${styles.courseLink} ${styles.turf}`}
-                              onClick={() => setIsMenuOpen(false)}
+                              onClick={closeMenu}
                             >
                               {getCourseDisplayName(course)}
                             </Link>
@@ -564,7 +613,7 @@ export default function HeaderMenu() {
                               key={`${racecourse.nameEn}-${course.racecourse}-${course.surface}-${course.distance}${course.variant || ''}`}
                               href={getCourseUrl(course)}
                               className={`${styles.courseLink} ${styles.dirt}`}
-                              onClick={() => setIsMenuOpen(false)}
+                              onClick={closeMenu}
                             >
                               {getCourseDisplayName(course)}
                             </Link>
@@ -574,8 +623,11 @@ export default function HeaderMenu() {
                   )}
                 </div>
               ))}
+              </>
+              )}
 
-              <div className={styles.menuSectionTitle}>騎手別データ</div>
+              {openMenu === 'jockey' && (
+                <>
               {jockeysData.map((group) => (
                 <div key={group.kana} className={styles.accordionItem}>
                   <button
@@ -596,7 +648,7 @@ export default function HeaderMenu() {
                             key={jockey.nameEn}
                             href={`/jockeys/${jockey.nameEn}`}
                             className={styles.dataCard}
-                            onClick={() => setIsMenuOpen(false)}
+                            onClick={closeMenu}
                           >
                             {jockey.name}
                           </Link>
@@ -606,8 +658,11 @@ export default function HeaderMenu() {
                   )}
                 </div>
               ))}
+              </>
+              )}
 
-              <div className={styles.menuSectionTitle}>血統（種牡馬）別データ</div>
+              {openMenu === 'sire' && (
+                <>
               {siresData.map((group) => (
                 <div key={group.kana} className={styles.accordionItem}>
                   <button
@@ -628,7 +683,7 @@ export default function HeaderMenu() {
                             key={sire.nameEn}
                             href={`/sires/${sire.nameEn}`}
                             className={styles.dataCard}
-                            onClick={() => setIsMenuOpen(false)}
+                            onClick={closeMenu}
                           >
                             {sire.name}
                           </Link>
@@ -638,8 +693,11 @@ export default function HeaderMenu() {
                   )}
                 </div>
               ))}
+              </>
+              )}
 
-              <div className={styles.menuSectionTitle}>調教師別データ</div>
+              {openMenu === 'trainer' && (
+                <>
               {trainersData.map((group) => (
                 <div key={group.kana} className={styles.accordionItem}>
                   <button
@@ -660,7 +718,7 @@ export default function HeaderMenu() {
                             key={trainer.nameEn}
                             href={`/trainers/${trainer.nameEn}`}
                             className={styles.dataCard}
-                            onClick={() => setIsMenuOpen(false)}
+                            onClick={closeMenu}
                           >
                             {trainer.name}
                           </Link>
@@ -670,6 +728,8 @@ export default function HeaderMenu() {
                   )}
                 </div>
               ))}
+              </>
+              )}
             </div>
           </div>
         </>
