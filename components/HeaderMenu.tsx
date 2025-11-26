@@ -619,6 +619,22 @@ export default function HeaderMenu() {
                             </Link>
                           ))}
                       </div>
+                      {racecourse.courses.some((course) => course.surface === 'steeplechase') && (
+                        <div className={styles.surfaceGroup}>
+                          {racecourse.courses
+                            .filter((course) => course.surface === 'steeplechase')
+                            .map((course) => (
+                              <Link
+                                key={`${racecourse.nameEn}-${course.racecourse}-${course.surface}-${course.distance}${course.variant || ''}`}
+                                href={getCourseUrl(course)}
+                                className={`${styles.courseLink} ${styles.steeplechase}`}
+                                onClick={closeMenu}
+                              >
+                                {getCourseDisplayName(course)}
+                              </Link>
+                            ))}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
