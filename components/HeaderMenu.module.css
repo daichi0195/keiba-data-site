@@ -187,45 +187,54 @@
 
 .accordionContent {
   background: #ffffff;
-  padding: 0 0 1rem 0;
+  padding: 0.5rem 0.75rem 0.75rem 0.75rem;
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 8px;
+}
+
+.surfaceGroup {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
 }
 
 .courseLink {
-  font-size: 0.85rem;
-  color: #475569;
+  font-size: 11px;
   text-decoration: none;
-  padding: 0.35rem 1.5rem 0.35rem 3.5rem;
+  padding: 4px 6px;
   display: block;
-  border-radius: 0;
+  border-radius: 4px;
   transition: all 0.2s ease;
-  background: transparent;
-  border: none;
+  border: 1px solid;
   font-weight: 500;
-  text-align: left;
-  border-bottom: 1px solid #f0fdf4;
+  text-align: center;
+  box-sizing: border-box;
+  white-space: nowrap;
 }
 
 /* 芝コース */
 .courseLink.turf {
-  color: #0d5c2f;
+  background: #e2f7eb;
+  border-color: #bbe7d3;
+  color: #0c532a;
 }
 
 .courseLink.turf:hover {
-  background: #f0fdf4;
-  color: #1db854;
+  background: #d4f1e1;
+  border-color: #1db854;
 }
 
 /* ダートコース */
 .courseLink.dirt {
-  color: #6b4423;
+  background: #fde9d7;
+  border-color: #ffd7ae;
+  color: #633d1e;
 }
 
 .courseLink.dirt:hover {
-  background: #fef3e8;
-  color: #a67c52;
+  background: #fcdfc5;
+  border-color: #a67c52;
 }
 
 .mobileMenuItem {

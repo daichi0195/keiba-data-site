@@ -66,6 +66,45 @@
   margin-bottom: 10px;
 }
 
+.comingSoonSection {
+  position: relative;
+  margin-bottom: 32px;
+}
+
+.greyedContent {
+  opacity: 0.3;
+  pointer-events: none;
+  filter: grayscale(100%);
+}
+
+.comingSoonOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  pointer-events: none;
+  margin-top: 36px;
+}
+
+.comingSoonLabel {
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 20px 40px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #999;
+  letter-spacing: 0.15em;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(4px);
+  text-align: center;
+}
+
 .comingSoonBanner {
   background: linear-gradient(135deg, #f5f7fa 0%, #e8ebed 100%);
   border: 2px solid #e0e0e0;
@@ -96,5 +135,10 @@
   .tab {
     font-size: 14px;
     padding: 12px 12px;
+  }
+
+  .comingSoonLabel {
+    font-size: 20px;
+    padding: 16px 32px;
   }
 }

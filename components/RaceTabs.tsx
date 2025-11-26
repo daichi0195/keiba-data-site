@@ -46,9 +46,14 @@ export default function RaceTabs({ onTabChange }: RaceTabsProps) {
             <section className="section">
               <h2 className="section-title">ピックアップデータ</h2>
 
-              <div className={styles.subsection}>
+              <div className={`${styles.subsection} ${styles.comingSoonSection}`}>
                 <h3 className={styles.subsectionTitle}>今週開催の注目レース</h3>
-                <FeaturedRaces />
+                <div className={styles.comingSoonOverlay}>
+                  <div className={styles.comingSoonLabel}>COMING SOON</div>
+                </div>
+                <div className={styles.greyedContent}>
+                  <FeaturedRaces />
+                </div>
               </div>
 
               <div className={styles.subsection}>

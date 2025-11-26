@@ -229,16 +229,34 @@ export default function HeaderMenu() {
 
                   {expandedRacecourse[racecourse.nameEn] && (
                     <div className={styles.accordionContent}>
-                      {racecourse.courses.map((course) => (
-                        <Link
-                          key={`${racecourse.nameEn}-${course.racecourse}-${course.surface}-${course.distance}${course.variant || ''}`}
-                          href={getCourseUrl(course)}
-                          className={`${styles.courseLink} ${course.surface === 'turf' ? styles.turf : styles.dirt}`}
-                          onClick={() => setIsMenuOpen(false)}
-                        >
-                          {getCourseDisplayName(course)}
-                        </Link>
-                      ))}
+                      <div className={styles.surfaceGroup}>
+                        {racecourse.courses
+                          .filter((course) => course.surface === 'turf')
+                          .map((course) => (
+                            <Link
+                              key={`${racecourse.nameEn}-${course.racecourse}-${course.surface}-${course.distance}${course.variant || ''}`}
+                              href={getCourseUrl(course)}
+                              className={`${styles.courseLink} ${styles.turf}`}
+                              onClick={() => setIsMenuOpen(false)}
+                            >
+                              {getCourseDisplayName(course)}
+                            </Link>
+                          ))}
+                      </div>
+                      <div className={styles.surfaceGroup}>
+                        {racecourse.courses
+                          .filter((course) => course.surface === 'dirt')
+                          .map((course) => (
+                            <Link
+                              key={`${racecourse.nameEn}-${course.racecourse}-${course.surface}-${course.distance}${course.variant || ''}`}
+                              href={getCourseUrl(course)}
+                              className={`${styles.courseLink} ${styles.dirt}`}
+                              onClick={() => setIsMenuOpen(false)}
+                            >
+                              {getCourseDisplayName(course)}
+                            </Link>
+                          ))}
+                      </div>
                     </div>
                   )}
                 </div>
