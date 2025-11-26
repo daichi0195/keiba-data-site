@@ -157,13 +157,13 @@ export function getCoursesByRacecourse() {
     }));
 }
 
-// コース名の表示（「芝 1400m（内回り）」）
+// コース名の表示（「芝1400m(内)」）
 export function getCourseDisplayName(course: typeof ALL_COURSES[number]): string {
-  let name = `${course.surface_ja} ${course.distance}m`;
+  let name = `${course.surface_ja}${course.distance}m`;
   if (course.variant === 'inner') {
-    name += '（内回り）';
+    name += '(内)';
   } else if (course.variant === 'outer') {
-    name += '（外回り）';
+    name += '(外)';
   }
   return name;
 }

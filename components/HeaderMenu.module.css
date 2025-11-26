@@ -299,6 +299,33 @@
   margin-bottom: 4rem;
 }
 
+.dataCardGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.dataCard {
+  display: inline-block;
+  padding: 4px 8px;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  border: 1px solid #1db854;
+  text-align: center;
+  box-sizing: border-box;
+  background: #fff;
+  color: #2d3748;
+  white-space: nowrap;
+}
+
+.dataCard:hover {
+  box-shadow: 0 2px 8px rgba(29, 184, 84, 0.15);
+  border-color: #1a9f47;
+}
+
 /* ===== モバイル（SP） ===== */
 @media (max-width: 768px) {
   .hamburger {
