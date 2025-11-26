@@ -50,6 +50,7 @@
 .menuIcon {
   font-size: 20px;
   line-height: 1;
+  color: #64748b;
 }
 
 .menuText {
@@ -81,28 +82,35 @@
   }
 }
 
-/* 全画面モーダル */
+/* モーダル */
 .fullscreenModal {
   display: none;
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 500px;
+  height: auto;
+  max-height: 70vh;
   background: #ffffff;
   z-index: 201;
   overflow: hidden;
   flex-direction: column;
-  animation: slideUp 0.3s ease;
+  animation: scaleIn 0.3s ease;
   box-sizing: border-box;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
-@keyframes slideUp {
+@keyframes scaleIn {
   from {
-    transform: translateY(100%);
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
   }
   to {
-    transform: translateY(0);
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
   }
 }
 
@@ -240,13 +248,13 @@
 .surfaceGroup {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
+  gap: 8px;
 }
 
 .courseLink {
-  font-size: 11px;
+  font-size: 13px;
   text-decoration: none;
-  padding: 4px 6px;
+  padding: 6px 12px;
   display: block;
   border-radius: 4px;
   transition: all 0.2s ease;
@@ -346,16 +354,16 @@
 .dataCardGrid {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 
 .dataCard {
   display: inline-block;
-  padding: 4px 8px;
+  padding: 0.625rem;
   text-decoration: none;
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 600;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
   transition: all 0.2s ease;
   border: 1px solid #1db854;
   text-align: center;
@@ -382,5 +390,15 @@
 
   .fullscreenModal {
     display: flex;
+  }
+
+  .dataCard {
+    font-size: 0.8rem;
+    padding: 0.5rem;
+  }
+
+  .courseLink {
+    font-size: 12px;
+    padding: 6px 8px;
   }
 }

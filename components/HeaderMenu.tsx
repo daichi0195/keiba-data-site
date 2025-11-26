@@ -519,8 +519,8 @@ export default function HeaderMenu() {
           type="button"
           aria-label="コース別データを開く"
         >
-          <span className={styles.menuIcon}>🏇</span>
-          <span className={styles.menuText}>コース</span>
+          <span className={styles.menuIcon}><i className="fa-solid fa-flag"></i></span>
+          <span className={styles.menuText}>コースデータ</span>
         </button>
         <button
           className={styles.menuButton}
@@ -528,8 +528,8 @@ export default function HeaderMenu() {
           type="button"
           aria-label="騎手別データを開く"
         >
-          <span className={styles.menuIcon}>👤</span>
-          <span className={styles.menuText}>騎手</span>
+          <span className={styles.menuIcon}><i className="fa-solid fa-helmet-safety"></i></span>
+          <span className={styles.menuText}>騎手データ</span>
         </button>
         <button
           className={styles.menuButton}
@@ -537,8 +537,8 @@ export default function HeaderMenu() {
           type="button"
           aria-label="血統別データを開く"
         >
-          <span className={styles.menuIcon}>🧬</span>
-          <span className={styles.menuText}>血統</span>
+          <span className={styles.menuIcon}><i className="fa-solid fa-horse"></i></span>
+          <span className={styles.menuText}>血統データ</span>
         </button>
         <button
           className={styles.menuButton}
@@ -546,8 +546,8 @@ export default function HeaderMenu() {
           type="button"
           aria-label="調教師別データを開く"
         >
-          <span className={styles.menuIcon}>👨‍🏫</span>
-          <span className={styles.menuText}>調教師</span>
+          <span className={styles.menuIcon}><i className="fa-solid fa-user"></i></span>
+          <span className={styles.menuText}>調教師データ</span>
         </button>
       </div>
 
