@@ -289,7 +289,7 @@
 
 @media (max-width: 768px) {
   .footer {
-    padding: 0 1rem;
+    padding: 0 1rem 80px 1rem;
   }
 
   .footerInner {
