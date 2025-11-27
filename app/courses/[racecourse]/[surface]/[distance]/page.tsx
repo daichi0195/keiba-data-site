@@ -18,7 +18,7 @@ import { ALL_COURSES, getCourseUrl, getCourseDisplayName } from '@/lib/courses';
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
 
-// generateStaticParams: 全85コースを事前生成
+// generateStaticParams: 全137コース（芝・ダート・障害含む、内外回り含む）を事前生成
 export async function generateStaticParams() {
   return ALL_COURSES.map(course => ({
     racecourse: course.racecourse,
