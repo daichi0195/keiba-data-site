@@ -293,14 +293,14 @@
 
 /* 障害コース */
 .courseLink.steeplechase {
-  background: #e8e4f3;
-  border-color: #c7bfe6;
-  color: #4a3a6b;
+  background: #e8e8e8;
+  border-color: #c0c0c0;
+  color: #4a4a4a;
 }
 
 .courseLink.steeplechase:hover {
-  background: #ddd6ee;
-  border-color: #9e8cc9;
+  background: #d0d0d0;
+  border-color: #9a9a9a;
 }
 
 .mobileMenuItem {

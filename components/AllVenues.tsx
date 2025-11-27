@@ -138,6 +138,23 @@ export default function AllVenues() {
                       ))}
                   </ul>
                 </div>
+
+                {/* Steeplechase courses */}
+                {racecourse.courses.some((c) => c.surface === 'steeplechase') && (
+                  <div className={styles.surfaceGroup}>
+                    <ul className={styles.courseList}>
+                      {racecourse.courses
+                        .filter((c) => c.surface === 'steeplechase')
+                        .map((course) => (
+                          <li key={`${racecourse.nameEn}-${course.racecourse}-${course.surface}-${course.distance}${course.variant || ''}`}>
+                            <Link href={getCourseUrl(course)} className={styles.courseLink}>
+                              {`障害${course.distance}m`}
+                            </Link>
+                          </li>
+                        ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             )}
           </div>
