@@ -758,17 +758,29 @@ export default async function CoursePage({ params }: Props) {
             <div className="gauge-ranking">
               <div className="ranking-item">
                 <span className="ranking-label">三連単平均配当ランキング</span>
-                <span className="ranking-value">{course_info.characteristics.trifecta_avg_payback_rank}位/{course_info.characteristics.total_courses}コース</span>
+                <span className="ranking-value">
+                  {course_info.characteristics.trifecta_avg_payback_rank > 0 && course_info.characteristics.total_courses > 0
+                    ? `${course_info.characteristics.trifecta_avg_payback_rank}位/${course_info.characteristics.total_courses}コース`
+                    : 'データなし'}
+                </span>
               </div>
               <div className="ranking-detail">
                 <div className="ranking-detail-title">三連単配当</div>
                 <div className="detail-row">
                   <span className="detail-label">このコースの中央値</span>
-                  <span className="detail-value">¥{course_info.characteristics.trifecta_median_payback.toLocaleString()}</span>
+                  <span className="detail-value">
+                    {course_info.characteristics.trifecta_median_payback > 0
+                      ? `¥${course_info.characteristics.trifecta_median_payback.toLocaleString()}`
+                      : 'データなし'}
+                  </span>
                 </div>
                 <div className="detail-row">
                   <span className="detail-label">全コースの中央値</span>
-                  <span className="detail-value">¥{course_info.characteristics.trifecta_all_median_payback.toLocaleString()}</span>
+                  <span className="detail-value">
+                    {course_info.characteristics.trifecta_all_median_payback > 0
+                      ? `¥${course_info.characteristics.trifecta_all_median_payback.toLocaleString()}`
+                      : 'データなし'}
+                  </span>
                 </div>
               </div>
             </div>
