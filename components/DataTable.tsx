@@ -126,12 +126,12 @@ export default function DataTable({ title, data, initialShow = 10, nameLabel = '
                 <tr key={row.rank} className={index % 2 === 0 ? 'mobile-row-even' : 'mobile-row-odd'}>
                   {/* 固定列: 順位 */}
                   <td className="mobile-sticky-col mobile-col-rank mobile-sticky-body">
-                    {row.rank <= 3 ? (
-                      <span className={`mobile-rank-badge mobile-rank-${row.rank}`}>
-                        {row.rank}
+                    {index + 1 <= 3 ? (
+                      <span className={`mobile-rank-badge mobile-rank-${index + 1}`}>
+                        {index + 1}
                       </span>
                     ) : (
-                      <span className="mobile-rank-normal">{row.rank}</span>
+                      <span className="mobile-rank-normal">{index + 1}</span>
                     )}
                   </td>
                   
