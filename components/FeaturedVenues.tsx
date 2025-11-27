@@ -16,6 +16,7 @@ interface Venue {
   courses: {
     turf: Course[];
     dirt: Course[];
+    steeplechase?: Course[];
   };
 }
 
@@ -37,6 +38,11 @@ const mockVenues: Venue[] = [
         { distance: 1400 },
         { distance: 1600 },
         { distance: 2100 },
+      ],
+      steeplechase: [
+        { distance: 3000 },
+        { distance: 3100 },
+        { distance: 3110 },
       ],
     },
   },
@@ -61,6 +67,11 @@ const mockVenues: Venue[] = [
         { distance: 1400 },
         { distance: 1800 },
         { distance: 1900 },
+      ],
+      steeplechase: [
+        { distance: 2910 },
+        { distance: 3170 },
+        { distance: 3930 },
       ],
     },
   },
@@ -168,6 +179,23 @@ export default function FeaturedVenues() {
                   ))}
                 </div>
               </div>
+
+              {/* Steeplechase courses */}
+              {venue.courses.steeplechase && venue.courses.steeplechase.length > 0 && (
+                <div className={styles.surfaceGroup}>
+                  <div className={styles.distanceLinks}>
+                    {venue.courses.steeplechase.map((course, index) => (
+                      <Link
+                        key={`${course.distance}-${course.variant || index}`}
+                        href={`/courses/${venue.id}/steeplechase/${course.distance}`}
+                        className={`${styles.distanceLink} ${styles.steeplechaseLink}`}
+                      >
+                        {course.label || `障害${course.distance}m`}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         ))}

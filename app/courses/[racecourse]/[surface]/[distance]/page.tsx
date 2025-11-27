@@ -372,6 +372,7 @@ const racecourseNames: Record<string, string> = {
 const surfaceNames: Record<string, string> = {
   turf: '芝',
   dirt: 'ダート',
+  steeplechase: '障害',
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -692,6 +693,23 @@ export default async function CoursePage({ params }: Props) {
         <div className="course-header">
           <h1>{course_info.racecourse} {course_info.surface}{distanceDisplay}m{trackVariantLabel}</h1>
 
+          {/* レース数が少ない場合の警告 */}
+          {course_info.total_races <= 10 && (
+            <div style={{
+              marginTop: '1rem',
+              padding: '1rem 1.5rem',
+              background: '#fff3cd',
+              border: '2px solid #ffc107',
+              borderRadius: '8px',
+              color: '#856404',
+              fontSize: '0.95rem',
+              fontWeight: '600',
+              textAlign: 'center'
+            }}>
+              ⚠️ このコースはレース数が少なくなっています（{course_info.total_races}レース）
+            </div>
+          )}
+
           {/* === データ情報セクション === */}
           <div className="course-meta-section">
             <div className="meta-item">
@@ -965,12 +983,14 @@ export default async function CoursePage({ params }: Props) {
       .filter(course => course.racecourse === resolvedParams.racecourse)
       .map(course => {
         const isTurf = course.surface === 'turf';
+        const isDirt = course.surface === 'dirt';
+        const isSteeplechase = course.surface === 'steeplechase';
         return (
           <Link key={`${course.surface}-${course.distance}-${course.variant || 'default'}`} href={getCourseUrl(course)} style={{ textDecoration: 'none' }}>
             <div style={{
-              background: isTurf ? '#f0fdf4' : '#fef3e8',
-              border: isTurf ? '1px solid #d1f0e5' : '1px solid #ffe5cc',
-              color: isTurf ? '#0d5c2f' : '#6b4423',
+              background: isTurf ? '#f0fdf4' : isDirt ? '#fef3e8' : '#f8f8f8',
+              border: isTurf ? '1px solid #d1f0e5' : isDirt ? '1px solid #ffe5cc' : '1px solid #d0d0d0',
+              color: isTurf ? '#0d5c2f' : isDirt ? '#6b4423' : '#4a4a4a',
               padding: '0.75rem',
               borderRadius: '6px',
               textAlign: 'center',
