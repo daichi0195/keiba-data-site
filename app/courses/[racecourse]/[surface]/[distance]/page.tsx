@@ -933,10 +933,11 @@ export default async function CoursePage({ params }: Props) {
 {/* === 騎手別 === */}
 <section id="jockey-section" aria-label="騎手別データ">
   <DataTable
-    title={`${seoPrefix} 騎手別データ（引退騎手を除く）`}
+    title={`${seoPrefix} 騎手別データ`}
     data={jockey_stats}
     initialShow={10}
     nameLabel="騎手"
+    note="引退騎手を除く、最大50件まで表示"
   />
 </section>
 
@@ -947,6 +948,7 @@ export default async function CoursePage({ params }: Props) {
     data={pedigree_stats}
     initialShow={10}
     nameLabel="種牡馬"
+    note="最大50件まで表示"
   />
 </section>
 
@@ -957,16 +959,18 @@ export default async function CoursePage({ params }: Props) {
     data={dam_sire_stats}
     initialShow={10}
     nameLabel="母父"
+    note="最大50件まで表示"
   />
 </section>
 
 {/* === 調教師別 === */}
 <section id="trainer-section" aria-label="調教師別データ">
   <DataTable
-    title={`${seoPrefix} 調教師別データ（引退調教師を除く）`}
+    title={`${seoPrefix} 調教師別データ`}
     data={trainer_stats}
     initialShow={10}
     nameLabel="調教師"
+    note="引退調教師を除く、最大50件まで表示"
   />
 </section>
 

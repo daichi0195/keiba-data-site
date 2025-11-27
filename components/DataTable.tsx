@@ -21,9 +21,10 @@ type Props = {
   data: DataRow[];
   initialShow?: number;
   nameLabel?: string;
+  note?: string;
 };
 
-export default function DataTable({ title, data, initialShow = 10, nameLabel = '名前' }: Props) {
+export default function DataTable({ title, data, initialShow = 10, nameLabel = '名前', note }: Props) {
   const [showAll, setShowAll] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -88,7 +89,12 @@ export default function DataTable({ title, data, initialShow = 10, nameLabel = '
   return (
     <div className="section">
       <h2 className="section-title">{title}</h2>
-      
+      {note && (
+        <p style={{ fontSize: '0.85rem', color: '#666', marginTop: '0.5rem', marginBottom: '0.75rem' }}>
+          ※ {note}
+        </p>
+      )}
+
       {/* テーブルコンテナ */}
       <div className="mobile-table-container">
         {/* 横スクロール可能エリア */}
