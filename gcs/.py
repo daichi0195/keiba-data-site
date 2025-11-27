@@ -459,8 +459,6 @@ def get_volatility_stats(client):
         surface,
         distance,
         track_variant
-      HAVING
-        COUNT(*) > 20
     ),
     all_courses_ranked AS (
       SELECT
@@ -489,7 +487,6 @@ def get_volatility_stats(client):
             sanrentan IS NOT NULL
             AND race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
           GROUP BY venue_name, surface, distance, track_variant
-          HAVING COUNT(*) > 20
         )
     )
     SELECT
