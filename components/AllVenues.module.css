@@ -96,36 +96,20 @@
   flex: 1;
 }
 
-/* 芝コースのスタイル */
-.surfaceGroup:first-child .surfaceLabel {
-  color: #0d5c2f;
+/* 統一された配色（すべてのコース） */
+.surfaceLabel {
+  color: #4a4a4a;
 }
 
-.surfaceGroup:first-child .courseLink {
-  background: #e2f7eb;
-  border-color: #bbe7d3;
-  color: #0c532a;
+.courseLink {
+  background: #f5f5f5;
+  border-color: #d0d0d0;
+  color: #333333;
 }
 
-.surfaceGroup:first-child .courseLink:hover {
-  background: #d4f1e1;
-  border-color: #1db854;
-}
-
-/* ダートコースのスタイル */
-.surfaceGroup:last-child .surfaceLabel {
-  color: #6b4423;
-}
-
-.surfaceGroup:last-child .courseLink {
-  background: #fde9d7;
-  border-color: #ffd7ae;
-  color: #633d1e;
-}
-
-.surfaceGroup:last-child .courseLink:hover {
-  background: #fcdfc5;
-  border-color: #a67c52;
+.courseLink:hover {
+  background: #e8e8e8;
+  border-color: #a0a0a0;
 }
 
 /* レスポンシブ */
