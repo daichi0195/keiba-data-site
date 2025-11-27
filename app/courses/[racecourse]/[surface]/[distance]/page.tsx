@@ -704,7 +704,7 @@ export default async function CoursePage({ params }: Props) {
             marginBottom: '1rem'
           }}>
             <i className="fa-solid fa-triangle-exclamation" style={{ marginRight: '0.5rem' }}></i>
-            このコースはレース数が少なくなっています
+            対象レース数が少ないコースです
           </div>
         )}
 
