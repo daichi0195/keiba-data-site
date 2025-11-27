@@ -886,11 +886,11 @@ export default async function CoursePage({ params }: Props) {
                           <div
                             className="running-style-bar"
                             style={{
-                              width: `${style.place_rate}%`
+                              width: `${style.place_rate ?? 0}%`
                             }}
                           ></div>
                         </div>
-                        <div className="running-style-rate">{style.place_rate.toFixed(1)}%</div>
+                        <div className="running-style-rate">{(style.place_rate ?? 0).toFixed(1)}%</div>
                       </div>
                     );
                   })}
