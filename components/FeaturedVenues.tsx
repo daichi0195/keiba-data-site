@@ -124,13 +124,13 @@ export default function FeaturedVenues() {
                           <div key={`${current.distance}-pair`} className={styles.variantGroup}>
                             <Link
                               href={`/courses/${venue.id}/turf/${current.distance}`}
-                              className={styles.distanceLink}
+                              className={`${styles.distanceLink} ${styles.turfLink}`}
                             >
                               {current.label}
                             </Link>
                             <Link
                               href={`/courses/${venue.id}/turf/${next.distance}`}
-                              className={styles.distanceLink}
+                              className={`${styles.distanceLink} ${styles.turfLink}`}
                             >
                               {next.label}
                             </Link>
@@ -142,7 +142,7 @@ export default function FeaturedVenues() {
                           <Link
                             key={`${current.distance}-${current.variant || i}`}
                             href={`/courses/${venue.id}/turf/${current.distance}`}
-                            className={styles.distanceLink}
+                            className={`${styles.distanceLink} ${styles.turfLink}`}
                           >
                             {current.label || `芝${current.distance}m`}
                           </Link>
@@ -161,7 +161,7 @@ export default function FeaturedVenues() {
                     <Link
                       key={`${course.distance}-${course.variant || index}`}
                       href={`/courses/${venue.id}/dirt/${course.distance}`}
-                      className={styles.distanceLink}
+                      className={`${styles.distanceLink} ${styles.dirtLink}`}
                     >
                       {course.label || `ダート${course.distance}m`}
                     </Link>
