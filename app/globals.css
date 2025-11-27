@@ -1489,6 +1489,7 @@ details[open] .evaluation-content {
   border-left: none !important;
   border-right: none !important;
   z-index: 21 !important;
+  padding: 12px 0 !important;
 }
 
 .mobile-col-name {
@@ -1664,16 +1665,21 @@ details[open] .evaluation-content {
 /* 順位 - 全て同じデザイン */
 .mobile-rank-badge,
 .mobile-rank-normal {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   font-weight: 600;
   font-size: 13px;
   color: #000;
+  height: 20px;
+  line-height: 1;
 }
 
 /* 1位のハイライト */
 .mobile-rank-1 {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   font-weight: 600;
   font-size: 13px;
   color: #333;
@@ -1688,6 +1694,7 @@ details[open] .evaluation-content {
 .mobile-rank-2 {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   font-weight: 600;
   font-size: 13px;
   color: #333;
@@ -1702,6 +1709,7 @@ details[open] .evaluation-content {
 .mobile-rank-3 {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   font-weight: 600;
   font-size: 13px;
   color: #333;
@@ -1835,6 +1843,8 @@ details[open] .evaluation-content {
     max-width: 30px !important;
     background: white !important;
     z-index: 21 !important;
+    text-align: center !important;
+    padding: 12px 0 !important;
   }
 
   .mobile-col-name {

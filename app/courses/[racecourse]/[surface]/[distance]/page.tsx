@@ -989,13 +989,15 @@ export default async function CoursePage({ params }: Props) {
                 background: '#e2f7eb',
                 border: '1px solid #bbe7d3',
                 color: '#0c532a',
-                padding: '0.75rem',
-                borderRadius: '6px',
+                padding: '6px 12px',
+                borderRadius: '4px',
                 textAlign: 'center',
-                fontSize: '0.8rem',
-                fontWeight: '600',
+                fontSize: '13px',
+                fontWeight: '500',
                 transition: 'all 0.2s ease',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                boxSizing: 'border-box'
               }}>
                 {getCourseDisplayName(course)}
               </div>
@@ -1015,13 +1017,15 @@ export default async function CoursePage({ params }: Props) {
                 background: '#fde9d7',
                 border: '1px solid #ffd7ae',
                 color: '#633d1e',
-                padding: '0.75rem',
-                borderRadius: '6px',
+                padding: '6px 12px',
+                borderRadius: '4px',
                 textAlign: 'center',
-                fontSize: '0.8rem',
-                fontWeight: '600',
+                fontSize: '13px',
+                fontWeight: '500',
                 transition: 'all 0.2s ease',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                boxSizing: 'border-box'
               }}>
                 {getCourseDisplayName(course)}
               </div>
@@ -1041,13 +1045,15 @@ export default async function CoursePage({ params }: Props) {
                 background: '#f2f2f2',
                 border: '1px solid #c0c0c0',
                 color: '#4a4a4a',
-                padding: '0.75rem',
-                borderRadius: '6px',
+                padding: '6px 12px',
+                borderRadius: '4px',
                 textAlign: 'center',
-                fontSize: '0.8rem',
-                fontWeight: '600',
+                fontSize: '13px',
+                fontWeight: '500',
                 transition: 'all 0.2s ease',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                boxSizing: 'border-box'
               }}>
                 {getCourseDisplayName(course)}
               </div>
