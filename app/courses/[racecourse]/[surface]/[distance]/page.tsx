@@ -45,11 +45,8 @@ const mockData = {
           characteristics: {
             running_style: 4,
             volatility: 2,
-            gate_position: 4
-          },
-          ranking: {
+            gate_position: 4,
             trifecta_avg_payback_rank: 8,
-            trifecta_avg_payback: 4520,
             trifecta_median_payback: 3850,
             trifecta_all_median_payback: 3200,
             total_courses: 64
@@ -453,14 +450,11 @@ export default async function CoursePage({ params }: Props) {
       characteristics: {
         volatility: 3,
         gate_position: 3,
-        running_style_trend_position: 3
-      },
-      ranking: {
+        running_style_trend_position: 3,
         trifecta_avg_payback_rank: 0,
         trifecta_median_payback: 0,
         trifecta_all_median_payback: 0,
-        total_courses: 0,
-        trifecta_avg_payback: 0
+        total_courses: 0
       }
     },
     gate_stats: [],
@@ -764,17 +758,17 @@ export default async function CoursePage({ params }: Props) {
             <div className="gauge-ranking">
               <div className="ranking-item">
                 <span className="ranking-label">三連単平均配当ランキング</span>
-                <span className="ranking-value">{course_info.ranking.trifecta_avg_payback_rank}位/{course_info.ranking.total_courses}コース</span>
+                <span className="ranking-value">{course_info.characteristics.trifecta_avg_payback_rank}位/{course_info.characteristics.total_courses}コース</span>
               </div>
               <div className="ranking-detail">
                 <div className="ranking-detail-title">三連単配当</div>
                 <div className="detail-row">
                   <span className="detail-label">このコースの中央値</span>
-                  <span className="detail-value">¥{course_info.ranking.trifecta_median_payback.toLocaleString()}</span>
+                  <span className="detail-value">¥{course_info.characteristics.trifecta_median_payback.toLocaleString()}</span>
                 </div>
                 <div className="detail-row">
                   <span className="detail-label">全コースの中央値</span>
-                  <span className="detail-value">¥{course_info.ranking.trifecta_all_median_payback.toLocaleString()}</span>
+                  <span className="detail-value">¥{course_info.characteristics.trifecta_all_median_payback.toLocaleString()}</span>
                 </div>
               </div>
             </div>
