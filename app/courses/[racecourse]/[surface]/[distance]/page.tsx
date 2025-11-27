@@ -933,7 +933,7 @@ export default async function CoursePage({ params }: Props) {
 {/* === 騎手別 === */}
 <section id="jockey-section" aria-label="騎手別データ">
   <DataTable
-    title={`${seoPrefix} 騎手別データ`}
+    title={`${seoPrefix} 騎手別データ（引退騎手を除く）`}
     data={jockey_stats}
     initialShow={10}
     nameLabel="騎手"
@@ -963,7 +963,7 @@ export default async function CoursePage({ params }: Props) {
 {/* === 調教師別 === */}
 <section id="trainer-section" aria-label="調教師別データ">
   <DataTable
-    title={`${seoPrefix} 調教師別データ`}
+    title={`${seoPrefix} 調教師別データ（引退調教師を除く）`}
     data={trainer_stats}
     initialShow={10}
     nameLabel="調教師"

@@ -332,7 +332,8 @@ def get_jockey_stats(client):
     GROUP BY j.jockey_name
     ORDER BY
       wins DESC,
-      win_rate DESC,
+      places_2 DESC,
+      places_3 DESC,
       name ASC
     LIMIT 50
     """
@@ -386,7 +387,8 @@ def get_trainer_stats(client):
     GROUP BY t.trainer_name
     ORDER BY
       wins DESC,
-      win_rate DESC,
+      places_2 DESC,
+      places_3 DESC,
       name ASC
     LIMIT 50
     """
@@ -585,7 +587,8 @@ def get_pedigree_stats(client):
     GROUP BY h.father
     ORDER BY
       wins DESC,
-      win_rate DESC,
+      places_2 DESC,
+      places_3 DESC,
       name ASC
     LIMIT 50
     """
@@ -638,7 +641,8 @@ def get_dam_sire_stats(client):
     GROUP BY h.mf
     ORDER BY
       wins DESC,
-      win_rate DESC,
+      places_2 DESC,
+      places_3 DESC,
       name ASC
     LIMIT 50
     """
@@ -1047,7 +1051,7 @@ def process_course(bq_client, storage_client, venue, venue_en, surface, surface_
 def main():
     """メイン処理 - 全コースをバッチ処理"""
     try:
-        print("🚀 Starting batch data export for 85 courses")
+        print(f"🚀 Starting batch data export for {len(COURSES)} courses")
 
         # BigQueryとGCS クライアント
         bq_client = bigquery.Client(project=PROJECT_ID)
