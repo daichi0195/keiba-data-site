@@ -97,35 +97,51 @@
 }
 
 /* 芝コースのスタイル */
-.surfaceGroup:first-child .surfaceLabel {
+.turfGroup .surfaceLabel {
   color: #0d5c2f;
 }
 
-.surfaceGroup:first-child .courseLink {
+.turfLink {
   background: #e2f7eb;
   border-color: #bbe7d3;
   color: #0c532a;
 }
 
-.surfaceGroup:first-child .courseLink:hover {
+.turfLink:hover {
   background: #d4f1e1;
   border-color: #1db854;
 }
 
 /* ダートコースのスタイル */
-.surfaceGroup:last-child .surfaceLabel {
+.dirtGroup .surfaceLabel {
   color: #6b4423;
 }
 
-.surfaceGroup:last-child .courseLink {
+.dirtLink {
   background: #fde9d7;
   border-color: #ffd7ae;
   color: #633d1e;
 }
 
-.surfaceGroup:last-child .courseLink:hover {
+.dirtLink:hover {
   background: #fcdfc5;
   border-color: #a67c52;
+}
+
+/* 障害コースのスタイル */
+.steeplechaseGroup .surfaceLabel {
+  color: #4a4a4a;
+}
+
+.steeplechaseLink {
+  background: #e8e8e8;
+  border-color: #c0c0c0;
+  color: #4a4a4a;
+}
+
+.steeplechaseLink:hover {
+  background: #d0d0d0;
+  border-color: #9a9a9a;
 }
 
 /* レスポンシブ */

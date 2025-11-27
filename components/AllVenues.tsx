@@ -75,7 +75,7 @@ export default function AllVenues() {
             {expandedRacecourse[racecourse.nameEn] && (
               <div className={styles.accordionContent}>
                 {/* Turf courses */}
-                <div className={styles.surfaceGroup}>
+                <div className={`${styles.surfaceGroup} ${styles.turfGroup}`}>
                   <ul className={styles.courseList}>
                     {(() => {
                       const turfCourses = racecourse.courses.filter((c) => c.surface === 'turf');
@@ -95,13 +95,13 @@ export default function AllVenues() {
                             <li key={`${current.distance}-pair`} className={styles.variantGroup}>
                               <Link
                                 href={getCourseUrl(current)}
-                                className={styles.courseLink}
+                                className={`${styles.courseLink} ${styles.turfLink}`}
                               >
                                 {`芝${current.distance}m(内)`}
                               </Link>
                               <Link
                                 href={getCourseUrl(next)}
-                                className={styles.courseLink}
+                                className={`${styles.courseLink} ${styles.turfLink}`}
                               >
                                 {`芝${next.distance}m(外)`}
                               </Link>
@@ -111,7 +111,7 @@ export default function AllVenues() {
                         } else {
                           items.push(
                             <li key={`${racecourse.nameEn}-${current.racecourse}-${current.surface}-${current.distance}${current.variant || ''}`}>
-                              <Link href={getCourseUrl(current)} className={styles.courseLink}>
+                              <Link href={getCourseUrl(current)} className={`${styles.courseLink} ${styles.turfLink}`}>
                                 {`芝${current.distance}m`}
                               </Link>
                             </li>
@@ -125,13 +125,13 @@ export default function AllVenues() {
                 </div>
 
                 {/* Dirt courses */}
-                <div className={styles.surfaceGroup}>
+                <div className={`${styles.surfaceGroup} ${styles.dirtGroup}`}>
                   <ul className={styles.courseList}>
                     {racecourse.courses
                       .filter((c) => c.surface === 'dirt')
                       .map((course) => (
                         <li key={`${racecourse.nameEn}-${course.racecourse}-${course.surface}-${course.distance}${course.variant || ''}`}>
-                          <Link href={getCourseUrl(course)} className={styles.courseLink}>
+                          <Link href={getCourseUrl(course)} className={`${styles.courseLink} ${styles.dirtLink}`}>
                             {`ダート${course.distance}m`}
                           </Link>
                         </li>
@@ -141,13 +141,13 @@ export default function AllVenues() {
 
                 {/* Steeplechase courses */}
                 {racecourse.courses.some((c) => c.surface === 'steeplechase') && (
-                  <div className={styles.surfaceGroup}>
+                  <div className={`${styles.surfaceGroup} ${styles.steeplechaseGroup}`}>
                     <ul className={styles.courseList}>
                       {racecourse.courses
                         .filter((c) => c.surface === 'steeplechase')
                         .map((course) => (
                           <li key={`${racecourse.nameEn}-${course.racecourse}-${course.surface}-${course.distance}${course.variant || ''}`}>
-                            <Link href={getCourseUrl(course)} className={styles.courseLink}>
+                            <Link href={getCourseUrl(course)} className={`${styles.courseLink} ${styles.steeplechaseLink}`}>
                               {`障害${course.distance}m`}
                             </Link>
                           </li>
