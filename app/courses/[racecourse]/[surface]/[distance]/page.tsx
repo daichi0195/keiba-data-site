@@ -937,7 +937,7 @@ export default async function CoursePage({ params }: Props) {
     data={jockey_stats}
     initialShow={10}
     nameLabel="騎手"
-    note="引退騎手を除く、最大50件まで表示"
+    note="最大50件まで表示/引退騎手を除く"
   />
 </section>
 
@@ -970,7 +970,7 @@ export default async function CoursePage({ params }: Props) {
     data={trainer_stats}
     initialShow={10}
     nameLabel="調教師"
-    note="引退調教師を除く、最大50件まで表示"
+    note="最大50件まで表示/引退調教師を除く"
   />
 </section>
 
