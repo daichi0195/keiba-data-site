@@ -979,32 +979,84 @@ export default async function CoursePage({ params }: Props) {
 {/* === 他のコースデータ一覧 === */}
 <section id="other-courses-section" className="section" aria-label="他のコースデータ一覧" style={{ marginBottom: '0 !important' }}>
   <h2 className="section-title" style={{ marginBottom: '1rem' }}>{courseShort}競馬場のコースデータ一覧</h2>
-  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '0.75rem' }}>
-    {ALL_COURSES
-      .filter(course => course.racecourse === resolvedParams.racecourse)
-      .map(course => {
-        const isTurf = course.surface === 'turf';
-        const isDirt = course.surface === 'dirt';
-        const isSteeplechase = course.surface === 'steeplechase';
-        return (
-          <Link key={`${course.surface}-${course.distance}-${course.variant || 'default'}`} href={getCourseUrl(course)} style={{ textDecoration: 'none' }}>
-            <div style={{
-              background: isTurf ? '#f0fdf4' : isDirt ? '#fef3e8' : '#f8f8f8',
-              border: isTurf ? '1px solid #d1f0e5' : isDirt ? '1px solid #ffe5cc' : '1px solid #d0d0d0',
-              color: isTurf ? '#0d5c2f' : isDirt ? '#6b4423' : '#4a4a4a',
-              padding: '0.75rem',
-              borderRadius: '6px',
-              textAlign: 'center',
-              fontSize: '0.8rem',
-              fontWeight: '600',
-              transition: 'all 0.2s ease',
-              cursor: 'pointer'
-            }}>
-              {getCourseDisplayName(course)}
-            </div>
-          </Link>
-        );
-      })}
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+    {/* 芝コース */}
+    {ALL_COURSES.filter(course => course.racecourse === resolvedParams.racecourse && course.surface === 'turf').length > 0 && (
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
+        {ALL_COURSES
+          .filter(course => course.racecourse === resolvedParams.racecourse && course.surface === 'turf')
+          .map(course => (
+            <Link key={`${course.surface}-${course.distance}-${course.variant || 'default'}`} href={getCourseUrl(course)} style={{ textDecoration: 'none' }}>
+              <div style={{
+                background: '#e2f7eb',
+                border: '1px solid #bbe7d3',
+                color: '#0c532a',
+                padding: '0.75rem',
+                borderRadius: '6px',
+                textAlign: 'center',
+                fontSize: '0.8rem',
+                fontWeight: '600',
+                transition: 'all 0.2s ease',
+                cursor: 'pointer'
+              }}>
+                {getCourseDisplayName(course)}
+              </div>
+            </Link>
+          ))}
+      </div>
+    )}
+
+    {/* ダートコース */}
+    {ALL_COURSES.filter(course => course.racecourse === resolvedParams.racecourse && course.surface === 'dirt').length > 0 && (
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
+        {ALL_COURSES
+          .filter(course => course.racecourse === resolvedParams.racecourse && course.surface === 'dirt')
+          .map(course => (
+            <Link key={`${course.surface}-${course.distance}-${course.variant || 'default'}`} href={getCourseUrl(course)} style={{ textDecoration: 'none' }}>
+              <div style={{
+                background: '#fde9d7',
+                border: '1px solid #ffd7ae',
+                color: '#633d1e',
+                padding: '0.75rem',
+                borderRadius: '6px',
+                textAlign: 'center',
+                fontSize: '0.8rem',
+                fontWeight: '600',
+                transition: 'all 0.2s ease',
+                cursor: 'pointer'
+              }}>
+                {getCourseDisplayName(course)}
+              </div>
+            </Link>
+          ))}
+      </div>
+    )}
+
+    {/* 障害コース */}
+    {ALL_COURSES.filter(course => course.racecourse === resolvedParams.racecourse && course.surface === 'steeplechase').length > 0 && (
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
+        {ALL_COURSES
+          .filter(course => course.racecourse === resolvedParams.racecourse && course.surface === 'steeplechase')
+          .map(course => (
+            <Link key={`${course.surface}-${course.distance}-${course.variant || 'default'}`} href={getCourseUrl(course)} style={{ textDecoration: 'none' }}>
+              <div style={{
+                background: '#f2f2f2',
+                border: '1px solid #c0c0c0',
+                color: '#4a4a4a',
+                padding: '0.75rem',
+                borderRadius: '6px',
+                textAlign: 'center',
+                fontSize: '0.8rem',
+                fontWeight: '600',
+                transition: 'all 0.2s ease',
+                cursor: 'pointer'
+              }}>
+                {getCourseDisplayName(course)}
+              </div>
+            </Link>
+          ))}
+      </div>
+    )}
   </div>
 </section>
 

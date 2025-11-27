@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import Link from "next/link";
 import Footer from "@/components/Footer";
 import HeaderMenu from "@/components/HeaderMenu";
 import "./globals.css";
@@ -55,10 +56,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         {/* End Google Tag Manager (noscript) */}
 
         <header>
-          <div className="site-name" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <img src="/logo.png" alt="競馬データ.com" style={{ height: '40px', width: '40px', display: 'block' }} />
-            <span style={{ display: 'flex', alignItems: 'center', fontSize: '20px', fontWeight: '600' }}>競馬データ.com</span>
-          </div>
+          <Link href="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+            <div className="site-name" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+              <img src="/logo.png" alt="競馬データ.com" style={{ height: '40px', width: '40px', display: 'block' }} />
+              <span style={{ display: 'flex', alignItems: 'center', fontSize: '20px', fontWeight: '600' }}>競馬データ.com</span>
+            </div>
+          </Link>
         </header>
         <HeaderMenu items={[]} />
         {children}
