@@ -330,7 +330,6 @@ def get_jockey_stats(client):
       AND j.is_active = true
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
     GROUP BY j.jockey_name
-    HAVING COUNT(*) >= 5
     ORDER BY
       wins DESC,
       win_rate DESC,
@@ -385,7 +384,6 @@ def get_trainer_stats(client):
       AND t.is_active = true
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
     GROUP BY t.trainer_name
-    HAVING COUNT(*) >= 5
     ORDER BY
       wins DESC,
       win_rate DESC,
@@ -434,7 +432,6 @@ def get_volatility_stats(client):
         AND rm.distance = {DISTANCE}
         {track_variant_condition}
         AND rm.sanrentan IS NOT NULL
-        AND rm.surface != '障害'
         AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
     ),
     course_median AS (
@@ -454,7 +451,6 @@ def get_volatility_stats(client):
         `{DATASET}.race_master` rm
       WHERE
         rm.sanrentan IS NOT NULL
-        AND rm.surface != '障害'
         AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
       GROUP BY
         venue_name,
@@ -483,14 +479,12 @@ def get_volatility_stats(client):
         `{DATASET}.race_master` rm
       WHERE
         rm.sanrentan IS NOT NULL
-        AND rm.surface != '障害'
         AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
         AND STRUCT(rm.venue_name, rm.surface, rm.distance, rm.track_variant) IN (
           SELECT AS STRUCT venue_name, surface, distance, track_variant
           FROM `{DATASET}.race_master`
           WHERE
             sanrentan IS NOT NULL
-            AND surface != '障害'
             AND race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
           GROUP BY venue_name, surface, distance, track_variant
           HAVING COUNT(*) > 20
@@ -589,7 +583,6 @@ def get_pedigree_stats(client):
       AND h.father IS NOT NULL
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
     GROUP BY h.father
-    HAVING COUNT(*) >= 3
     ORDER BY
       wins DESC,
       win_rate DESC,
@@ -643,7 +636,6 @@ def get_dam_sire_stats(client):
       AND h.mf IS NOT NULL
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
     GROUP BY h.mf
-    HAVING COUNT(*) >= 3
     ORDER BY
       wins DESC,
       win_rate DESC,

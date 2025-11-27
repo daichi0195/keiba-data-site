@@ -690,25 +690,26 @@ export default async function CoursePage({ params }: Props) {
       <BottomNav items={navigationItems} />
       <main>
         <article>
+        {/* レース数が少ない場合の警告 */}
+        {course_info.total_races <= 10 && (
+          <div style={{
+            padding: '1rem 1.5rem',
+            background: '#fff3cd',
+            border: '2px solid #ffc107',
+            borderRadius: '8px',
+            color: '#856404',
+            fontSize: '0.95rem',
+            fontWeight: '600',
+            textAlign: 'center',
+            marginBottom: '1rem'
+          }}>
+            <i className="fa-solid fa-triangle-exclamation" style={{ marginRight: '0.5rem' }}></i>
+            このコースはレース数が少なくなっています
+          </div>
+        )}
+
         <div className="course-header">
           <h1>{course_info.racecourse} {course_info.surface}{distanceDisplay}m{trackVariantLabel}</h1>
-
-          {/* レース数が少ない場合の警告 */}
-          {course_info.total_races <= 10 && (
-            <div style={{
-              marginTop: '1rem',
-              padding: '1rem 1.5rem',
-              background: '#fff3cd',
-              border: '2px solid #ffc107',
-              borderRadius: '8px',
-              color: '#856404',
-              fontSize: '0.95rem',
-              fontWeight: '600',
-              textAlign: 'center'
-            }}>
-              ⚠️ このコースはレース数が少なくなっています（{course_info.total_races}レース）
-            </div>
-          )}
 
           {/* === データ情報セクション === */}
           <div className="course-meta-section">
