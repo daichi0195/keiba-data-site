@@ -41,11 +41,11 @@ export default function RunningStyleTable({ title, data }: Props) {
   }, []);
   
   // 各カラムの最大値を取得
-  const maxWinRate = Math.max(...data.map(d => d.win_rate));
-  const maxPlaceRate = Math.max(...data.map(d => d.place_rate));
-  const maxQuinellaRate = Math.max(...data.map(d => d.quinella_rate));
-  const maxWinPayback = Math.max(...data.map(d => d.win_payback));
-  const maxPlacePayback = Math.max(...data.map(d => d.place_payback));
+  const maxWinRate = Math.max(...data.map(d => d.win_rate ?? 0));
+  const maxPlaceRate = Math.max(...data.map(d => d.place_rate ?? 0));
+  const maxQuinellaRate = Math.max(...data.map(d => d.quinella_rate ?? 0));
+  const maxWinPayback = Math.max(...data.map(d => d.win_payback ?? 0));
+  const maxPlacePayback = Math.max(...data.map(d => d.place_payback ?? 0));
   
   const isHighlight = (value: number, maxValue: number) => value === maxValue;
 
@@ -80,28 +80,28 @@ export default function RunningStyleTable({ title, data }: Props) {
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
-                    <span className={isHighlight(row.win_rate, maxWinRate) ? styles.highlight : ''}>
-                      {(row.win_rate).toFixed(1)}%
+                    <span className={isHighlight(row.win_rate ?? 0, maxWinRate) ? styles.highlight : ''}>
+                      {(row.win_rate ?? 0).toFixed(1)}%
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
-                    <span className={isHighlight(row.quinella_rate, maxQuinellaRate) ? styles.highlight : ''}>
-                      {(row.quinella_rate).toFixed(1)}%
+                    <span className={isHighlight(row.quinella_rate ?? 0, maxQuinellaRate) ? styles.highlight : ''}>
+                      {(row.quinella_rate ?? 0).toFixed(1)}%
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
-                    <span className={isHighlight(row.place_rate, maxPlaceRate) ? styles.highlight : ''}>
-                      {(row.place_rate).toFixed(1)}%
+                    <span className={isHighlight(row.place_rate ?? 0, maxPlaceRate) ? styles.highlight : ''}>
+                      {(row.place_rate ?? 0).toFixed(1)}%
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
-                    <span className={isHighlight(row.win_payback, maxWinPayback) ? styles.highlight : ''}>
-                      {(row.win_payback).toFixed(1)}%
+                    <span className={isHighlight(row.win_payback ?? 0, maxWinPayback) ? styles.highlight : ''}>
+                      {(row.win_payback ?? 0).toFixed(1)}%
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
-                    <span className={isHighlight(row.place_payback, maxPlacePayback) ? styles.highlight : ''}>
-                      {(row.place_payback).toFixed(1)}%
+                    <span className={isHighlight(row.place_payback ?? 0, maxPlacePayback) ? styles.highlight : ''}>
+                      {(row.place_payback ?? 0).toFixed(1)}%
                     </span>
                   </td>
                 </tr>

@@ -72,15 +72,15 @@ export default function DataTable({ title, data, initialShow = 10, nameLabel = '
   }, [showAll]);
   
   // 各カラムの最大値を取得（全カラム対応）
-  const maxRaces = Math.max(...data.map(d => d.races));
-  const maxWins = Math.max(...data.map(d => d.wins));
-  const maxPlaces2 = Math.max(...data.map(d => d.places_2));
-  const maxPlaces3 = Math.max(...data.map(d => d.places_3));
-  const maxWinRate = Math.max(...data.map(d => d.win_rate));
-  const maxPlaceRate = Math.max(...data.map(d => d.place_rate));
-  const maxQuinellaRate = Math.max(...data.map(d => d.quinella_rate));
-  const maxWinPayback = Math.max(...data.map(d => d.win_payback));
-  const maxPlacePayback = Math.max(...data.map(d => d.place_payback));
+  const maxRaces = Math.max(...data.map(d => d.races ?? 0));
+  const maxWins = Math.max(...data.map(d => d.wins ?? 0));
+  const maxPlaces2 = Math.max(...data.map(d => d.places_2 ?? 0));
+  const maxPlaces3 = Math.max(...data.map(d => d.places_3 ?? 0));
+  const maxWinRate = Math.max(...data.map(d => d.win_rate ?? 0));
+  const maxPlaceRate = Math.max(...data.map(d => d.place_rate ?? 0));
+  const maxQuinellaRate = Math.max(...data.map(d => d.quinella_rate ?? 0));
+  const maxWinPayback = Math.max(...data.map(d => d.win_payback ?? 0));
+  const maxPlacePayback = Math.max(...data.map(d => d.place_payback ?? 0));
   
   // セルがハイライト対象かチェック
   const isHighlight = (value: number, maxValue: number) => value === maxValue;
@@ -156,28 +156,28 @@ export default function DataTable({ title, data, initialShow = 10, nameLabel = '
                     </span>
                   </td>
                   <td className="mobile-scroll-col mobile-col-rate">
-                    <span className={isHighlight(row.win_rate, maxWinRate) ? 'mobile-highlight' : ''}>
-                      {(row.win_rate).toFixed(1)}%
+                    <span className={isHighlight(row.win_rate ?? 0, maxWinRate) ? 'mobile-highlight' : ''}>
+                      {(row.win_rate ?? 0).toFixed(1)}%
                     </span>
                   </td>
                   <td className="mobile-scroll-col mobile-col-rate">
-                    <span className={isHighlight(row.quinella_rate, maxQuinellaRate) ? 'mobile-highlight' : ''}>
-                      {(row.quinella_rate).toFixed(1)}%
+                    <span className={isHighlight(row.quinella_rate ?? 0, maxQuinellaRate) ? 'mobile-highlight' : ''}>
+                      {(row.quinella_rate ?? 0).toFixed(1)}%
                     </span>
                   </td>
                   <td className="mobile-scroll-col mobile-col-rate">
-                    <span className={isHighlight(row.place_rate, maxPlaceRate) ? 'mobile-highlight' : ''}>
-                      {(row.place_rate).toFixed(1)}%
+                    <span className={isHighlight(row.place_rate ?? 0, maxPlaceRate) ? 'mobile-highlight' : ''}>
+                      {(row.place_rate ?? 0).toFixed(1)}%
                     </span>
                   </td>
                   <td className="mobile-scroll-col mobile-col-payback">
-                    <span className={isHighlight(row.win_payback, maxWinPayback) ? 'mobile-highlight' : ''}>
-                      {(row.win_payback).toFixed(1)}%
+                    <span className={isHighlight(row.win_payback ?? 0, maxWinPayback) ? 'mobile-highlight' : ''}>
+                      {(row.win_payback ?? 0).toFixed(1)}%
                     </span>
                   </td>
                   <td className="mobile-scroll-col mobile-col-payback">
-                    <span className={isHighlight(row.place_payback, maxPlacePayback) ? 'mobile-highlight' : ''}>
-                      {(row.place_payback).toFixed(1)}%
+                    <span className={isHighlight(row.place_payback ?? 0, maxPlacePayback) ? 'mobile-highlight' : ''}>
+                      {(row.place_payback ?? 0).toFixed(1)}%
                     </span>
                   </td>
                 </tr>
