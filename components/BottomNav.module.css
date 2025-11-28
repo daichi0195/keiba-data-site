@@ -3,10 +3,10 @@
 /* ナビ全体の固定位置 */
 .sectionNav {
   position: fixed;
-  bottom: 1rem;
+  bottom: calc(60px + 1rem);
   left: 0;
   right: 0;
-  z-index: 10000;
+  z-index: 100;
   padding: 0 1rem;
   pointer-events: none;
 }
