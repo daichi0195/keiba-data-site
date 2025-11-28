@@ -965,7 +965,8 @@ def process_course(bq_client, storage_client, venue, venue_en, surface, surface_
     DISTANCE = distance
     VENUE_EN = venue_en
     SURFACE_EN = surface_en
-    TRACK_VARIANT = track_variant
+    # TRACK_VARIANTをBigQuery用の値に変換
+    TRACK_VARIANT = TRACK_VARIANT_MAPPING.get(track_variant, track_variant)
 
     # コース名の表示用（内回り・外回りを含む）
     track_label = "（外回り）" if track_variant == '外' else "（内回り）" if track_variant is None and venue in ['京都', '新潟'] and surface == '芝' and distance in [1400, 1600, 2000] else ""
