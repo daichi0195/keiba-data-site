@@ -13,10 +13,9 @@ PROJECT_ID = 'umadata'
 BUCKET_NAME = 'umadata'
 DATASET = 'umadata.keiba_data'
 
-# コース定義（137コース：芝・ダート・障害含む、内外回り含む）
+# コース定義（133コース：芝・ダート・障害含む、内外回り含む）
 COURSES = [
     # 札幌競馬場
-    {'venue': '札幌', 'venue_en': 'sapporo', 'surface': '芝', 'surface_en': 'turf', 'distance': 1000, 'track_variant': None},
     {'venue': '札幌', 'venue_en': 'sapporo', 'surface': '芝', 'surface_en': 'turf', 'distance': 1200, 'track_variant': None},
     {'venue': '札幌', 'venue_en': 'sapporo', 'surface': '芝', 'surface_en': 'turf', 'distance': 1500, 'track_variant': None},
     {'venue': '札幌', 'venue_en': 'sapporo', 'surface': '芝', 'surface_en': 'turf', 'distance': 1800, 'track_variant': None},
@@ -46,7 +45,6 @@ COURSES = [
     {'venue': '福島', 'venue_en': 'fukushima', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 2400, 'track_variant': None},
     {'venue': '福島', 'venue_en': 'fukushima', 'surface': '障害', 'surface_en': 'steeplechase', 'distance': 2750, 'track_variant': None},
     {'venue': '福島', 'venue_en': 'fukushima', 'surface': '障害', 'surface_en': 'steeplechase', 'distance': 2770, 'track_variant': None},
-    {'venue': '福島', 'venue_en': 'fukushima', 'surface': '障害', 'surface_en': 'steeplechase', 'distance': 3350, 'track_variant': None},
     {'venue': '福島', 'venue_en': 'fukushima', 'surface': '障害', 'surface_en': 'steeplechase', 'distance': 3380, 'track_variant': None},
 
     # 新潟競馬場
@@ -119,7 +117,6 @@ COURSES = [
     {'venue': '中京', 'venue_en': 'chukyo', 'surface': '障害', 'surface_en': 'steeplechase', 'distance': 3000, 'track_variant': None},
     {'venue': '中京', 'venue_en': 'chukyo', 'surface': '障害', 'surface_en': 'steeplechase', 'distance': 3300, 'track_variant': None},
     {'venue': '中京', 'venue_en': 'chukyo', 'surface': '障害', 'surface_en': 'steeplechase', 'distance': 3330, 'track_variant': None},
-    {'venue': '中京', 'venue_en': 'chukyo', 'surface': '障害', 'surface_en': 'steeplechase', 'distance': 3900, 'track_variant': None},
 
     # 京都競馬場
     {'venue': '京都', 'venue_en': 'kyoto', 'surface': '芝', 'surface_en': 'turf', 'distance': 1200, 'track_variant': None},
@@ -151,7 +148,6 @@ COURSES = [
     {'venue': '阪神', 'venue_en': 'hanshin', 'surface': '芝', 'surface_en': 'turf', 'distance': 2400, 'track_variant': None},
     {'venue': '阪神', 'venue_en': 'hanshin', 'surface': '芝', 'surface_en': 'turf', 'distance': 2600, 'track_variant': None},
     {'venue': '阪神', 'venue_en': 'hanshin', 'surface': '芝', 'surface_en': 'turf', 'distance': 3000, 'track_variant': None},
-    {'venue': '阪神', 'venue_en': 'hanshin', 'surface': '芝', 'surface_en': 'turf', 'distance': 3200, 'track_variant': None},
     {'venue': '阪神', 'venue_en': 'hanshin', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 1200, 'track_variant': None},
     {'venue': '阪神', 'venue_en': 'hanshin', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 1400, 'track_variant': None},
     {'venue': '阪神', 'venue_en': 'hanshin', 'surface': 'ダート', 'surface_en': 'dirt', 'distance': 1800, 'track_variant': None},

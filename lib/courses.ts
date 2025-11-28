@@ -1,7 +1,6 @@
 // 全コースの定義（芝・ダート・障害含む）
 export const ALL_COURSES = [
   // 札幌競馬場
-  { racecourse: 'sapporo', racecourse_ja: '札幌競馬場', surface: 'turf', surface_ja: '芝', distance: 1000 },
   { racecourse: 'sapporo', racecourse_ja: '札幌競馬場', surface: 'turf', surface_ja: '芝', distance: 1200 },
   { racecourse: 'sapporo', racecourse_ja: '札幌競馬場', surface: 'turf', surface_ja: '芝', distance: 1500 },
   { racecourse: 'sapporo', racecourse_ja: '札幌競馬場', surface: 'turf', surface_ja: '芝', distance: 1800 },
@@ -31,7 +30,6 @@ export const ALL_COURSES = [
   { racecourse: 'fukushima', racecourse_ja: '福島競馬場', surface: 'dirt', surface_ja: 'ダート', distance: 2400 },
   { racecourse: 'fukushima', racecourse_ja: '福島競馬場', surface: 'steeplechase', surface_ja: '障害', distance: 2750 },
   { racecourse: 'fukushima', racecourse_ja: '福島競馬場', surface: 'steeplechase', surface_ja: '障害', distance: 2770 },
-  { racecourse: 'fukushima', racecourse_ja: '福島競馬場', surface: 'steeplechase', surface_ja: '障害', distance: 3350 },
   { racecourse: 'fukushima', racecourse_ja: '福島競馬場', surface: 'steeplechase', surface_ja: '障害', distance: 3380 },
 
   // 新潟競馬場
@@ -104,7 +102,6 @@ export const ALL_COURSES = [
   { racecourse: 'chukyo', racecourse_ja: '中京競馬場', surface: 'steeplechase', surface_ja: '障害', distance: 3000 },
   { racecourse: 'chukyo', racecourse_ja: '中京競馬場', surface: 'steeplechase', surface_ja: '障害', distance: 3300 },
   { racecourse: 'chukyo', racecourse_ja: '中京競馬場', surface: 'steeplechase', surface_ja: '障害', distance: 3330 },
-  { racecourse: 'chukyo', racecourse_ja: '中京競馬場', surface: 'steeplechase', surface_ja: '障害', distance: 3900 },
 
   // 京都競馬場
   { racecourse: 'kyoto', racecourse_ja: '京都競馬場', surface: 'turf', surface_ja: '芝', distance: 1200 },
@@ -136,7 +133,6 @@ export const ALL_COURSES = [
   { racecourse: 'hanshin', racecourse_ja: '阪神競馬場', surface: 'turf', surface_ja: '芝', distance: 2400 },
   { racecourse: 'hanshin', racecourse_ja: '阪神競馬場', surface: 'turf', surface_ja: '芝', distance: 2600 },
   { racecourse: 'hanshin', racecourse_ja: '阪神競馬場', surface: 'turf', surface_ja: '芝', distance: 3000 },
-  { racecourse: 'hanshin', racecourse_ja: '阪神競馬場', surface: 'turf', surface_ja: '芝', distance: 3200 },
   { racecourse: 'hanshin', racecourse_ja: '阪神競馬場', surface: 'dirt', surface_ja: 'ダート', distance: 1200 },
   { racecourse: 'hanshin', racecourse_ja: '阪神競馬場', surface: 'dirt', surface_ja: 'ダート', distance: 1400 },
   { racecourse: 'hanshin', racecourse_ja: '阪神競馬場', surface: 'dirt', surface_ja: 'ダート', distance: 1800 },
