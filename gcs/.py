@@ -1026,7 +1026,10 @@ def process_course(bq_client, storage_client, venue, venue_en, surface, surface_
         # 内回り・外回りに応じてパスを変更
         if track_variant == '外':
             blob_path = f'course/{venue_en}/{surface_en}/{distance}-outer.json'
-        elif track_variant is None and venue in ['京都', '新潟'] and surface == '芝' and distance in [1400, 1600, 2000]:
+        elif track_variant is None and (
+            (venue == '京都' and surface == '芝' and distance in [1400, 1600]) or
+            (venue == '新潟' and surface == '芝' and distance == 2000)
+        ):
             blob_path = f'course/{venue_en}/{surface_en}/{distance}-inner.json'
         else:
             blob_path = f'course/{venue_en}/{surface_en}/{distance}.json'
