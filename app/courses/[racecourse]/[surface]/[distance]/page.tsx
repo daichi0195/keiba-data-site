@@ -995,6 +995,11 @@ export default async function CoursePage({ params }: Props) {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
         {ALL_COURSES
           .filter(course => course.racecourse === resolvedParams.racecourse && course.surface === 'turf')
+          .sort((a, b) => {
+            if (a.distance !== b.distance) return a.distance - b.distance;
+            const variantOrder = { undefined: 0, inner: 1, outer: 2 };
+            return (variantOrder[a.variant as keyof typeof variantOrder] || 0) - (variantOrder[b.variant as keyof typeof variantOrder] || 0);
+          })
           .map(course => (
             <Link key={`${course.surface}-${course.distance}-${course.variant || 'default'}`} href={getCourseUrl(course)} style={{ textDecoration: 'none' }}>
               <div style={{
@@ -1023,6 +1028,11 @@ export default async function CoursePage({ params }: Props) {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
         {ALL_COURSES
           .filter(course => course.racecourse === resolvedParams.racecourse && course.surface === 'dirt')
+          .sort((a, b) => {
+            if (a.distance !== b.distance) return a.distance - b.distance;
+            const variantOrder = { undefined: 0, inner: 1, outer: 2 };
+            return (variantOrder[a.variant as keyof typeof variantOrder] || 0) - (variantOrder[b.variant as keyof typeof variantOrder] || 0);
+          })
           .map(course => (
             <Link key={`${course.surface}-${course.distance}-${course.variant || 'default'}`} href={getCourseUrl(course)} style={{ textDecoration: 'none' }}>
               <div style={{
@@ -1051,6 +1061,11 @@ export default async function CoursePage({ params }: Props) {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
         {ALL_COURSES
           .filter(course => course.racecourse === resolvedParams.racecourse && course.surface === 'steeplechase')
+          .sort((a, b) => {
+            if (a.distance !== b.distance) return a.distance - b.distance;
+            const variantOrder = { undefined: 0, inner: 1, outer: 2 };
+            return (variantOrder[a.variant as keyof typeof variantOrder] || 0) - (variantOrder[b.variant as keyof typeof variantOrder] || 0);
+          })
           .map(course => (
             <Link key={`${course.surface}-${course.distance}-${course.variant || 'default'}`} href={getCourseUrl(course)} style={{ textDecoration: 'none' }}>
               <div style={{

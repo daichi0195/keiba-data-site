@@ -196,12 +196,17 @@ export function getCoursesByRacecourse() {
       racecourse,
       racecourse_ja: grouped.get(racecourse)![0].racecourse_ja,
       courses: grouped.get(racecourse)!.sort((a, b) => {
-        // Sort by surface (turf first, then dirt, then steeplechase), then distance
+        // Sort by surface (turf first, then dirt, then steeplechase), then distance, then variant
         const surfaceOrder = { turf: 1, dirt: 2, steeplechase: 3 };
         if (a.surface !== b.surface) {
           return surfaceOrder[a.surface as keyof typeof surfaceOrder] - surfaceOrder[b.surface as keyof typeof surfaceOrder];
         }
-        return a.distance - b.distance;
+        if (a.distance !== b.distance) {
+          return a.distance - b.distance;
+        }
+        // variantがない場合は0、innerは1、outerは2として扱う
+        const variantOrder = { undefined: 0, inner: 1, outer: 2 };
+        return (variantOrder[a.variant as keyof typeof variantOrder] || 0) - (variantOrder[b.variant as keyof typeof variantOrder] || 0);
       })
     }));
 }
