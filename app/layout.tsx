@@ -6,8 +6,8 @@ import HeaderMenu from "@/components/HeaderMenu";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "競馬データ.com",
-  description: "競馬データ分析サイト - 全国の競馬場・コース別の詳細データ",
+  title: "競馬データ.com - どこよりも使いやすい競馬データサイト",
+  description: "競馬に関するあらゆるデータを網羅した、どこよりも使いやすい競馬データ分析サイト。コース別成績、騎手・調教師・血統データなど充実した情報で予想をサポートします。",
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: '32x32', type: 'image/x-icon' },
