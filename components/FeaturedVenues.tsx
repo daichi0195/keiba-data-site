@@ -52,12 +52,12 @@ const mockVenues: Venue[] = [
     courses: {
       turf: [
         { distance: 1200 },
-        { distance: 1400 },
+        { distance: 1400, variant: 'inner', label: '1400m(内)' },
+        { distance: 1400, variant: 'outer', label: '1400m(外)' },
         { distance: 1600, variant: 'inner', label: '1600m(内)' },
         { distance: 1600, variant: 'outer', label: '1600m(外)' },
         { distance: 1800 },
-        { distance: 2000, variant: 'inner', label: '2000m(内)' },
-        { distance: 2000, variant: 'outer', label: '2000m(外)' },
+        { distance: 2000 },
         { distance: 2200 },
         { distance: 2400 },
         { distance: 3000 },
@@ -134,13 +134,13 @@ export default function FeaturedVenues() {
                         items.push(
                           <div key={`${current.distance}-pair`} className={styles.variantGroup}>
                             <Link
-                              href={`/courses/${venue.id}/turf/${current.distance}`}
+                              href={`/courses/${venue.id}/turf/${current.distance}-inner`}
                               className={`${styles.distanceLink} ${styles.turfLink}`}
                             >
                               {current.label}
                             </Link>
                             <Link
-                              href={`/courses/${venue.id}/turf/${next.distance}`}
+                              href={`/courses/${venue.id}/turf/${next.distance}-outer`}
                               className={`${styles.distanceLink} ${styles.turfLink}`}
                             >
                               {next.label}
