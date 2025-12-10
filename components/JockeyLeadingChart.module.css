@@ -1,0 +1,61 @@
+.container {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 凡例 */
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 0;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.legendBar {
+  width: 20px;
+  height: 10px;
+  background: #1db854;
+  opacity: 0.85;
+}
+
+.legendLine {
+  width: 20px;
+  height: 3px;
+  background: #f59e0b;
+}
+
+.chartWrapper {
+  width: 100%;
+  height: 400px;
+  position: relative;
+  margin-top: 1rem;
+}
+
+.canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .chartWrapper {
+    height: 300px;
+  }
+}
