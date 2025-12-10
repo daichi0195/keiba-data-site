@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 
 type DataRow = {
-  rank: number;
+  rank?: number;
   name: string;
   races: number;
   wins: number;
@@ -22,9 +22,11 @@ type Props = {
   initialShow?: number;
   nameLabel?: string;
   note?: string;
+  disableHighlight?: boolean;
+  showRank?: boolean;
 };
 
-export default function DataTable({ title, data, initialShow = 10, nameLabel = '名前', note }: Props) {
+export default function DataTable({ title, data, initialShow = 10, nameLabel = '名前', note, disableHighlight = false, showRank = true }: Props) {
   const [showAll, setShowAll] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -84,11 +86,11 @@ export default function DataTable({ title, data, initialShow = 10, nameLabel = '
   const maxPlacePayback = Math.max(...data.map(d => d.place_payback ?? 0));
   
   // セルがハイライト対象かチェック
-  const isHighlight = (value: number, maxValue: number) => value === maxValue;
+  const isHighlight = (value: number, maxValue: number) => !disableHighlight && value === maxValue;
 
-  return (
-    <div className="section">
-      <h2 className="section-title">{title}</h2>
+  const tableContent = (
+    <>
+      {title && <h2 className="section-title">{title}</h2>}
       {note && (
         <p style={{ fontSize: '0.85rem', color: '#666', marginTop: '0.5rem', marginBottom: '0.75rem' }}>
           ※ {note}
@@ -99,13 +101,13 @@ export default function DataTable({ title, data, initialShow = 10, nameLabel = '
       <div className="mobile-table-container">
         {/* 横スクロール可能エリア */}
         <div className="mobile-table-scroll" ref={scrollRef}>
-          <table className="mobile-data-table">
+          <table className={`mobile-data-table ${!showRank ? 'no-rank-column' : ''}`}>
             <thead>
               <tr>
                 {/* 固定列: 順位（ヘッダーテキストなし） */}
-                <th className="mobile-sticky-col mobile-col-rank"></th>
+                {showRank && <th className="mobile-sticky-col mobile-col-rank"></th>}
                 {/* 固定列: 名前 */}
-                <th className={`mobile-sticky-col mobile-col-name mobile-col-name-header ${isScrolled ? 'mobile-col-name-narrow' : ''}`}>
+                <th className={`mobile-sticky-col mobile-col-name mobile-col-name-header ${showRank && isScrolled ? 'mobile-col-name-narrow' : ''} ${!showRank ? 'mobile-col-name-first' : ''}`}>
                   {nameLabel}
                 </th>
                 
@@ -123,21 +125,23 @@ export default function DataTable({ title, data, initialShow = 10, nameLabel = '
             </thead>
             <tbody>
               {displayData.map((row, index) => (
-                <tr key={row.rank} className={index % 2 === 0 ? 'mobile-row-even' : 'mobile-row-odd'}>
+                <tr key={row.rank ?? row.name ?? index} className={index % 2 === 0 ? 'mobile-row-even' : 'mobile-row-odd'}>
                   {/* 固定列: 順位 */}
-                  <td className="mobile-sticky-col mobile-col-rank mobile-sticky-body">
-                    {index + 1 <= 3 ? (
-                      <span className={`mobile-rank-badge mobile-rank-${index + 1}`}>
-                        {index + 1}
-                      </span>
-                    ) : (
-                      <span className="mobile-rank-normal">{index + 1}</span>
-                    )}
-                  </td>
-                  
+                  {showRank && (
+                    <td className="mobile-sticky-col mobile-col-rank mobile-sticky-body">
+                      {index + 1 <= 3 ? (
+                        <span className={`mobile-rank-badge mobile-rank-${index + 1}`}>
+                          {index + 1}
+                        </span>
+                      ) : (
+                        <span className="mobile-rank-normal">{index + 1}</span>
+                      )}
+                    </td>
+                  )}
+
                   {/* 固定列: 名前 */}
-                  <td className={`mobile-sticky-col mobile-col-name mobile-sticky-body mobile-name-cell ${isScrolled ? 'mobile-col-name-narrow' : ''}`}>
-                    {truncateName(row.name, isScrolled)}
+                  <td className={`mobile-sticky-col mobile-col-name mobile-sticky-body mobile-name-cell ${showRank && isScrolled ? 'mobile-col-name-narrow' : ''} ${!showRank ? 'mobile-col-name-first' : ''}`}>
+                    {showRank ? truncateName(row.name, isScrolled) : row.name}
                   </td>
                   
                   {/* スクロール列 - 数値のみハイライト */}
@@ -204,6 +208,9 @@ export default function DataTable({ title, data, initialShow = 10, nameLabel = '
           </button>
         </div>
       )}
-    </div>
+    </>
   );
+
+  // タイトルがある場合はsectionで囲む、ない場合は直接返す
+  return title ? <div className="section">{tableContent}</div> : tableContent;
 }

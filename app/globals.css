@@ -1589,6 +1589,29 @@ details[open] .evaluation-content {
   z-index: 11 !important;
 }
 
+/* 順位カラムがない場合の名前列（先頭） - 統合 */
+.mobile-sticky-col.mobile-col-name.mobile-col-name-first,
+.mobile-data-table thead .mobile-sticky-col.mobile-col-name.mobile-col-name-first,
+.mobile-data-table tbody .mobile-sticky-col.mobile-col-name.mobile-col-name-first,
+.mobile-data-table tbody .mobile-sticky-body.mobile-col-name.mobile-col-name-first {
+  left: 0 !important;
+  width: 80px !important;
+  min-width: 80px !important;
+  max-width: 80px !important;
+  text-align: center !important;
+  border-right: 1px solid #000 !important;
+}
+
+/* コース別表専用：コース名列の幅を100pxに設定 */
+.racecourse-course-table .mobile-sticky-col.mobile-col-name.mobile-col-name-first,
+.racecourse-course-table thead .mobile-sticky-col.mobile-col-name.mobile-col-name-first,
+.racecourse-course-table tbody .mobile-sticky-col.mobile-col-name.mobile-col-name-first,
+.racecourse-course-table tbody .mobile-sticky-body.mobile-col-name.mobile-col-name-first {
+  width: 100px !important;
+  min-width: 100px !important;
+  max-width: 100px !important;
+}
+
 /* Body部分の固定列 */
 .mobile-sticky-body {
   z-index: 11 !important;
@@ -1730,12 +1753,18 @@ details[open] .evaluation-content {
 .mobile-col-wins {
   font-weight: 400;
   color: #333;
+  width: 40px !important;
+  min-width: 40px !important;
+  max-width: 40px !important;
 }
 
 /* レート・回収率 */
 .mobile-col-rate {
   font-weight: 400;
   color: #333;
+  width: 80px !important;
+  min-width: 80px !important;
+  max-width: 80px !important;
 }
 
 .mobile-col-payback {
@@ -1914,6 +1943,65 @@ details[open] .evaluation-content {
     z-index: 11 !important;
   }
 
+  /* 順位カラムがない場合の名前列（モバイル） - 統合 */
+  .mobile-sticky-col.mobile-col-name.mobile-col-name-first,
+  .mobile-data-table thead .mobile-sticky-col.mobile-col-name.mobile-col-name-first,
+  .mobile-data-table tbody .mobile-sticky-col.mobile-col-name.mobile-col-name-first,
+  .mobile-data-table tbody .mobile-sticky-body.mobile-col-name.mobile-col-name-first {
+    position: sticky !important;
+    left: 0 !important;
+    width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
+    text-align: center !important;
+    border-right: none !important;
+  }
+
+  /* コース別表専用：コース名列の幅を100pxに設定（モバイル） */
+  .racecourse-course-table .mobile-sticky-col.mobile-col-name.mobile-col-name-first,
+  .racecourse-course-table thead .mobile-sticky-col.mobile-col-name.mobile-col-name-first,
+  .racecourse-course-table tbody .mobile-sticky-col.mobile-col-name.mobile-col-name-first,
+  .racecourse-course-table tbody .mobile-sticky-body.mobile-col-name.mobile-col-name-first {
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
+  }
+
+  /* 年度カラムの右側に固定枠線を追加（ヘッダー） */
+  .mobile-data-table thead .mobile-sticky-col.mobile-col-name.mobile-col-name-first::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 1px;
+    height: 100%;
+    background: #000;
+    z-index: 22;
+  }
+
+  /* 年度カラムの右側に固定枠線を追加（ボディ） */
+  .mobile-data-table tbody .mobile-sticky-col.mobile-col-name.mobile-col-name-first::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 1px;
+    height: 100%;
+    background: #000;
+    z-index: 12;
+  }
+
+  .mobile-data-table tbody .mobile-sticky-body.mobile-col-name.mobile-col-name-first::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 1px;
+    height: 100%;
+    background: #000;
+    z-index: 12;
+  }
+
   .mobile-name-cell {
     font-size: 13px;
   }
@@ -2008,6 +2096,80 @@ details[open] .evaluation-content {
     max-width: 90px !important;
   }
 
+  .mobile-data-table th.mobile-col-wins,
+  .mobile-data-table td.mobile-col-wins {
+    width: 40px !important;
+    min-width: 40px !important;
+    max-width: 40px !important;
+  }
+
+  /* 順位カラムなしの場合のnth-child調整 */
+  .mobile-data-table.no-rank-column th.mobile-scroll-col:nth-child(2),
+  .mobile-data-table.no-rank-column td.mobile-scroll-col:nth-child(2) {
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+  }
+
+  .mobile-data-table.no-rank-column th.mobile-scroll-col:nth-child(3),
+  .mobile-data-table.no-rank-column td.mobile-scroll-col:nth-child(3) {
+    width: 40px !important;
+    min-width: 40px !important;
+    max-width: 40px !important;
+    padding: 8px 2px !important;
+  }
+
+  .mobile-data-table.no-rank-column th.mobile-scroll-col:nth-child(4),
+  .mobile-data-table.no-rank-column td.mobile-scroll-col:nth-child(4) {
+    width: 40px !important;
+    min-width: 40px !important;
+    max-width: 40px !important;
+    padding: 8px 2px !important;
+  }
+
+  .mobile-data-table.no-rank-column th.mobile-scroll-col:nth-child(5),
+  .mobile-data-table.no-rank-column td.mobile-scroll-col:nth-child(5) {
+    width: 40px !important;
+    min-width: 40px !important;
+    max-width: 40px !important;
+    padding: 8px 2px !important;
+  }
+
+  .mobile-data-table.no-rank-column th.mobile-scroll-col:nth-child(6),
+  .mobile-data-table.no-rank-column td.mobile-scroll-col:nth-child(6) {
+    width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
+  }
+
+  .mobile-data-table.no-rank-column th.mobile-scroll-col:nth-child(7),
+  .mobile-data-table.no-rank-column td.mobile-scroll-col:nth-child(7) {
+    width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
+  }
+
+  .mobile-data-table.no-rank-column th.mobile-scroll-col:nth-child(8),
+  .mobile-data-table.no-rank-column td.mobile-scroll-col:nth-child(8) {
+    width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
+  }
+
+  .mobile-data-table.no-rank-column th.mobile-scroll-col:nth-child(9),
+  .mobile-data-table.no-rank-column td.mobile-scroll-col:nth-child(9) {
+    width: 90px !important;
+    min-width: 90px !important;
+    max-width: 90px !important;
+  }
+
+  .mobile-data-table.no-rank-column th.mobile-scroll-col:nth-child(10),
+  .mobile-data-table.no-rank-column td.mobile-scroll-col:nth-child(10) {
+    width: 90px !important;
+    min-width: 90px !important;
+    max-width: 90px !important;
+  }
+
   .mobile-rank-badge,
   .mobile-rank-normal {
     font-size: 13px;
@@ -2054,11 +2216,28 @@ h2.section-title {
 /* 念のため、どこかで定義されている ::before を全無効化 */
 h2.section-title::before { content: none !important; }
 
+/* サブセクションタイトル（h3） */
+h3.subsection-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 1.5rem 0 1rem;
+}
+
+h3.subsection-title:first-of-type {
+  margin-top: 1rem;
+}
+
 /* SPで少し小さく＋さらにタイト */
 @media (max-width: 768px) {
   h2.section-title {
     font-size: 1.2rem;
     margin: 6px 0 16px;
+  }
+
+  h3.subsection-title {
+    font-size: 1rem;
+    margin: 1.25rem 0 0.875rem;
   }
 
   .course-header {

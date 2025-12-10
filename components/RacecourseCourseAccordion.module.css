@@ -1,0 +1,107 @@
+.accordionContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.accordionItem {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.accordionHeader {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  background: #f8fafc;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2d3748;
+  transition: background-color 0.2s;
+}
+
+.accordionHeader:hover {
+  background: #f1f5f9;
+}
+
+.accordionHeader[aria-expanded="true"] {
+  background: #e2e8f0;
+}
+
+.accordionIcon {
+  color: #52af77;
+  font-size: 0.875rem;
+  min-width: 1rem;
+  transition: transform 0.2s;
+}
+
+.racecourseName {
+  flex: 1;
+  text-align: left;
+}
+
+.courseCount {
+  font-size: 0.875rem;
+  font-weight: normal;
+  color: #64748b;
+}
+
+.accordionContent {
+  padding: 1rem;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 2000px;
+  }
+}
+
+/* コースリンク */
+.courseLink {
+  color: #2563eb;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.courseLink:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+/* テーブル調整 */
+.courseTable .mobile-col-name-first {
+  min-width: 180px !important;
+  max-width: none !important;
+}
+
+/* モバイル対応 */
+@media (max-width: 768px) {
+  .accordionHeader {
+    padding: 0.875rem 1rem;
+    font-size: 0.95rem;
+  }
+
+  .accordionContent {
+    padding: 0.75rem;
+  }
+
+  .courseCount {
+    font-size: 0.8rem;
+  }
+
+  .courseTable .mobile-col-name-first {
+    min-width: 150px !important;
+  }
+}
