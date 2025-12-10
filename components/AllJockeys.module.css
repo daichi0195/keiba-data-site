@@ -80,10 +80,10 @@
   white-space: nowrap;
 }
 
-/* 騎手のスタイル（注目ポイントセクションと同じデザイン） */
+/* 騎手のスタイル（コース別ページのhighlight-card-strongと同じデザイン） */
 .jockeyLink[data-gender="male"],
 .jockeyLink[data-gender="female"] {
-  background: #fff;
+  background: #f0fdf4;
   border-color: #1db854;
   color: #2d3748;
 }
