@@ -42,6 +42,10 @@ export default function TrackConditionTable({ title, data }: Props) {
   }, []);
 
   // 各カラムの最大値を取得
+  const maxRaces = Math.max(...data.map(d => d.races ?? 0));
+  const maxWins = Math.max(...data.map(d => d.wins ?? 0));
+  const maxPlaces2 = Math.max(...data.map(d => d.places_2 ?? 0));
+  const maxPlaces3 = Math.max(...data.map(d => d.places_3 ?? 0));
   const maxWinRate = Math.max(...data.map(d => d.win_rate ?? 0));
   const maxPlaceRate = Math.max(...data.map(d => d.place_rate ?? 0));
   const maxQuinellaRate = Math.max(...data.map(d => d.quinella_rate ?? 0));
@@ -72,6 +76,10 @@ export default function TrackConditionTable({ title, data }: Props) {
                 <th className={styles.conditionCol}>
                   馬場状態
                 </th>
+                <th className={styles.scrollCol}>出走数</th>
+                <th className={styles.scrollCol}>1着</th>
+                <th className={styles.scrollCol}>2着</th>
+                <th className={styles.scrollCol}>3着</th>
                 <th className={styles.scrollCol}>勝率</th>
                 <th className={styles.scrollCol}>連対率</th>
                 <th className={styles.scrollCol}>複勝率</th>
@@ -88,6 +96,26 @@ export default function TrackConditionTable({ title, data }: Props) {
                   <td className={styles.conditionCol}>
                     <span className={getConditionBadgeClass(row.surface)}>
                       {row.surface}・{row.condition_label}
+                    </span>
+                  </td>
+                  <td className={styles.scrollCol}>
+                    <span className={isHighlight(row.races ?? 0, maxRaces) ? styles.highlight : ''}>
+                      {row.races}
+                    </span>
+                  </td>
+                  <td className={styles.scrollCol}>
+                    <span className={isHighlight(row.wins ?? 0, maxWins) ? styles.highlight : ''}>
+                      {row.wins}
+                    </span>
+                  </td>
+                  <td className={styles.scrollCol}>
+                    <span className={isHighlight(row.places_2 ?? 0, maxPlaces2) ? styles.highlight : ''}>
+                      {row.places_2}
+                    </span>
+                  </td>
+                  <td className={styles.scrollCol}>
+                    <span className={isHighlight(row.places_3 ?? 0, maxPlaces3) ? styles.highlight : ''}>
+                      {row.places_3}
                     </span>
                   </td>
                   <td className={styles.scrollCol}>

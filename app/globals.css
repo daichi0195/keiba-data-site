@@ -2014,31 +2014,31 @@ details[open] .evaluation-content {
     max-width: 60px !important;
   }
 
-  /* 第4列：1着 - 40px */
+  /* 第4列：1着 - 50px */
   .mobile-data-table th.mobile-scroll-col:nth-child(4),
   .mobile-data-table td.mobile-scroll-col:nth-child(4) {
-    width: 40px !important;
-    min-width: 40px !important;
-    max-width: 40px !important;
-    padding: 8px 2px !important;
+    width: 50px !important;
+    min-width: 50px !important;
+    max-width: 50px !important;
+    padding: 8px 4px !important;
   }
 
-  /* 第5列：2着 - 40px */
+  /* 第5列：2着 - 50px */
   .mobile-data-table th.mobile-scroll-col:nth-child(5),
   .mobile-data-table td.mobile-scroll-col:nth-child(5) {
-    width: 40px !important;
-    min-width: 40px !important;
-    max-width: 40px !important;
-    padding: 8px 2px !important;
+    width: 50px !important;
+    min-width: 50px !important;
+    max-width: 50px !important;
+    padding: 8px 4px !important;
   }
 
-  /* 第6列：3着 - 40px */
+  /* 第6列：3着 - 50px */
   .mobile-data-table th.mobile-scroll-col:nth-child(6),
   .mobile-data-table td.mobile-scroll-col:nth-child(6) {
-    width: 40px !important;
-    min-width: 40px !important;
-    max-width: 40px !important;
-    padding: 8px 2px !important;
+    width: 50px !important;
+    min-width: 50px !important;
+    max-width: 50px !important;
+    padding: 8px 4px !important;
   }
 
   /* 第7列：勝率 - 80px */
@@ -2065,20 +2065,20 @@ details[open] .evaluation-content {
     max-width: 80px !important;
   }
 
-  /* 第10列：単勝回収率 - 90px */
+  /* 第10列：単勝回収率 - 100px */
   .mobile-data-table th.mobile-scroll-col:nth-child(10),
   .mobile-data-table td.mobile-scroll-col:nth-child(10) {
-    width: 90px !important;
-    min-width: 90px !important;
-    max-width: 90px !important;
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
   }
 
-  /* 第11列：複勝回収率 - 90px */
+  /* 第11列：複勝回収率 - 100px */
   .mobile-data-table th.mobile-scroll-col:nth-child(11),
   .mobile-data-table td.mobile-scroll-col:nth-child(11) {
-    width: 90px !important;
-    min-width: 90px !important;
-    max-width: 90px !important;
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
   }
 
   /* クラスベースのセレクタで率・回収率の幅を直接指定 */
@@ -2113,26 +2113,26 @@ details[open] .evaluation-content {
 
   .mobile-data-table.no-rank-column th.mobile-scroll-col:nth-child(3),
   .mobile-data-table.no-rank-column td.mobile-scroll-col:nth-child(3) {
-    width: 40px !important;
-    min-width: 40px !important;
-    max-width: 40px !important;
-    padding: 8px 2px !important;
+    width: 50px !important;
+    min-width: 50px !important;
+    max-width: 50px !important;
+    padding: 8px 4px !important;
   }
 
   .mobile-data-table.no-rank-column th.mobile-scroll-col:nth-child(4),
   .mobile-data-table.no-rank-column td.mobile-scroll-col:nth-child(4) {
-    width: 40px !important;
-    min-width: 40px !important;
-    max-width: 40px !important;
-    padding: 8px 2px !important;
+    width: 50px !important;
+    min-width: 50px !important;
+    max-width: 50px !important;
+    padding: 8px 4px !important;
   }
 
   .mobile-data-table.no-rank-column th.mobile-scroll-col:nth-child(5),
   .mobile-data-table.no-rank-column td.mobile-scroll-col:nth-child(5) {
-    width: 40px !important;
-    min-width: 40px !important;
-    max-width: 40px !important;
-    padding: 8px 2px !important;
+    width: 50px !important;
+    min-width: 50px !important;
+    max-width: 50px !important;
+    padding: 8px 4px !important;
   }
 
   .mobile-data-table.no-rank-column th.mobile-scroll-col:nth-child(6),
@@ -2158,16 +2158,16 @@ details[open] .evaluation-content {
 
   .mobile-data-table.no-rank-column th.mobile-scroll-col:nth-child(9),
   .mobile-data-table.no-rank-column td.mobile-scroll-col:nth-child(9) {
-    width: 90px !important;
-    min-width: 90px !important;
-    max-width: 90px !important;
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
   }
 
   .mobile-data-table.no-rank-column th.mobile-scroll-col:nth-child(10),
   .mobile-data-table.no-rank-column td.mobile-scroll-col:nth-child(10) {
-    width: 90px !important;
-    min-width: 90px !important;
-    max-width: 90px !important;
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
   }
 
   .mobile-rank-badge,

@@ -41,6 +41,10 @@ export default function ClassTable({ title, data }: Props) {
   }, []);
 
   // 各カラムの最大値を取得
+  const maxRaces = Math.max(...data.map(d => d.races ?? 0));
+  const maxWins = Math.max(...data.map(d => d.wins ?? 0));
+  const maxPlaces2 = Math.max(...data.map(d => d.places_2 ?? 0));
+  const maxPlaces3 = Math.max(...data.map(d => d.places_3 ?? 0));
   const maxWinRate = Math.max(...data.map(d => d.win_rate ?? 0));
   const maxPlaceRate = Math.max(...data.map(d => d.place_rate ?? 0));
   const maxQuinellaRate = Math.max(...data.map(d => d.quinella_rate ?? 0));
@@ -49,54 +53,15 @@ export default function ClassTable({ title, data }: Props) {
 
   const isHighlight = (value: number, maxValue: number) => value === maxValue;
 
-  // グレードバッジのスタイルを取得
-  const getGradeBadgeStyle = (className: string) => {
+  // グレードバッジのクラス名を取得
+  const getGradeBadgeClass = (className: string) => {
     switch (className) {
       case 'G1':
-        return {
-          backgroundColor: '#464EB7',
-          color: '#fff',
-          display: 'inline-block',
-          width: '28px',
-          height: '28px',
-          lineHeight: '28px',
-          textAlign: 'center' as const,
-          borderRadius: '4px',
-          fontWeight: '700',
-          fontSize: '13px',
-          border: '1px solid #ddd',
-          verticalAlign: 'middle'
-        };
+        return styles.gradeBadgeG1;
       case 'G2':
-        return {
-          backgroundColor: '#E53032',
-          color: '#fff',
-          display: 'inline-block',
-          width: '28px',
-          height: '28px',
-          lineHeight: '28px',
-          textAlign: 'center' as const,
-          borderRadius: '4px',
-          fontWeight: '700',
-          fontSize: '13px',
-          border: '1px solid #ddd',
-          verticalAlign: 'middle'
-        };
+        return styles.gradeBadgeG2;
       case 'G3':
-        return {
-          backgroundColor: '#5AAA49',
-          color: '#fff',
-          display: 'inline-block',
-          width: '28px',
-          height: '28px',
-          lineHeight: '28px',
-          textAlign: 'center' as const,
-          borderRadius: '4px',
-          fontWeight: '700',
-          fontSize: '13px',
-          border: '1px solid #ddd',
-          verticalAlign: 'middle'
-        };
+        return styles.gradeBadgeG3;
       default:
         return null;
     }
@@ -114,6 +79,10 @@ export default function ClassTable({ title, data }: Props) {
                 <th className={styles.classCol}>
                   クラス
                 </th>
+                <th className={styles.scrollCol}>出走数</th>
+                <th className={styles.scrollCol}>1着</th>
+                <th className={styles.scrollCol}>2着</th>
+                <th className={styles.scrollCol}>3着</th>
                 <th className={styles.scrollCol}>勝率</th>
                 <th className={styles.scrollCol}>連対率</th>
                 <th className={styles.scrollCol}>複勝率</th>
@@ -123,7 +92,7 @@ export default function ClassTable({ title, data }: Props) {
             </thead>
             <tbody>
               {data.map((row, index) => {
-                const badgeStyle = getGradeBadgeStyle(row.class_name);
+                const badgeClass = getGradeBadgeClass(row.class_name);
                 const displayName = row.class_name.replace('クラス', '');
 
                 return (
@@ -132,11 +101,31 @@ export default function ClassTable({ title, data }: Props) {
                     className={index % 2 === 0 ? styles.rowEven : styles.rowOdd}
                   >
                     <td className={styles.classCol}>
-                      {badgeStyle ? (
-                        <span style={badgeStyle}>{row.class_name}</span>
+                      {badgeClass ? (
+                        <span className={badgeClass}>{row.class_name}</span>
                       ) : (
                         <span className={styles.classBadge}>{displayName}</span>
                       )}
+                    </td>
+                    <td className={styles.scrollCol}>
+                      <span className={isHighlight(row.races ?? 0, maxRaces) ? styles.highlight : ''}>
+                        {row.races}
+                      </span>
+                    </td>
+                    <td className={styles.scrollCol}>
+                      <span className={isHighlight(row.wins ?? 0, maxWins) ? styles.highlight : ''}>
+                        {row.wins}
+                      </span>
+                    </td>
+                    <td className={styles.scrollCol}>
+                      <span className={isHighlight(row.places_2 ?? 0, maxPlaces2) ? styles.highlight : ''}>
+                        {row.places_2}
+                      </span>
+                    </td>
+                    <td className={styles.scrollCol}>
+                      <span className={isHighlight(row.places_3 ?? 0, maxPlaces3) ? styles.highlight : ''}>
+                        {row.places_3}
+                      </span>
                     </td>
                     <td className={styles.scrollCol}>
                       <span className={isHighlight(row.win_rate ?? 0, maxWinRate) ? styles.highlight : ''}>
