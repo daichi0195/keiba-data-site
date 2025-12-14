@@ -702,7 +702,7 @@ export default async function CoursePage({ params }: Props) {
           </div>
         )}
 
-        <div className="course-header">
+        <div className="page-header">
           <h1>{course_info.racecourse} {course_info.surface}{distanceDisplay}m{trackVariantLabel}</h1>
 
           {/* === データ情報セクション === */}

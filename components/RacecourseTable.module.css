@@ -1,0 +1,231 @@
+/* 競馬場別テーブル専用スタイル */
+
+.tableContainer {
+    background: white;
+    overflow: hidden;
+    margin: 1rem 0;
+    border-top: 2px solid #000;
+    border-bottom: 1px solid #ddd;
+    border-left: 3px solid #fff;
+  }
+
+  .tableScroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    min-width: 600px;
+  }
+
+  /* ヘッダー */
+  .table thead {
+    background: white;
+    border-bottom: 2px solid #000;
+  }
+
+  .table th {
+    padding: 12px 8px;
+    font-weight: 600;
+    font-size: 13px;
+    color: #000;
+    text-align: center;
+    white-space: nowrap;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #000;
+  }
+
+  .table th:first-child {
+    border-left: none;
+  }
+
+  .table th:last-child {
+    border-right: none;
+  }
+
+  /* 競馬場列（1列目）固定 */
+  .racecourseCol {
+    position: sticky;
+    left: 0;
+    width: 80px;
+    min-width: 80px;
+    text-align: center !important;
+    border-left: none !important;
+    border-right: none !important;
+    background: white !important;
+    z-index: 21 !important;
+    position: relative;
+  }
+
+  /* ヘッダーの競馬場列 */
+  .table thead .racecourseCol {
+    position: sticky;
+    left: 0;
+    background: white !important;
+    z-index: 21 !important;
+  }
+
+  /* ボディの競馬場列 */
+  .table tbody .racecourseCol {
+    position: sticky;
+    left: 0;
+    background: white !important;
+    z-index: 11 !important;
+  }
+
+  /* スクロール時も枠線を維持 */
+  .racecourseCol::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 1px;
+    height: 100%;
+    background: #000;
+  }
+
+  .table thead .racecourseCol::after {
+    z-index: 22;
+  }
+
+  .table tbody .racecourseCol::after {
+    z-index: 12;
+  }
+
+  /* スクロール列 */
+  .scrollCol {
+    padding: 10px 8px;
+    text-align: center;
+    width: 90px;
+    min-width: 90px;
+    border-right: 1px solid #ddd;
+  }
+
+  .scrollCol:last-child {
+    border-right: none;
+  }
+
+  /* 行のスタイル */
+  .table tbody tr {
+    transition: background-color 0.15s ease;
+  }
+
+  .table tbody td {
+    border-top: 1px solid #e5e5e5;
+    padding: 8px 8px;
+    vertical-align: middle;
+  }
+
+  .table tbody tr:first-child td {
+    border-top: none;
+  }
+
+  .rowEven {
+    background: white;
+  }
+
+  .rowOdd {
+    background: white;
+  }
+
+  .table tbody tr:hover {
+    background: #f5f5f5 !important;
+  }
+
+  .table tbody tr:hover .racecourseCol {
+    background: #f5f5f5 !important;
+  }
+
+  /* 競馬場バッジ */
+  .racecourseBadge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 13px;
+    color: #333;
+    background: #f0f0f0;
+  }
+
+  /* ハイライト */
+  .highlight {
+    background: #CAFEE3 !important;
+    font-weight: 600 !important;
+    color: #1a1a1a !important;
+    padding: 2px 4px !important;
+    border-radius: 3px !important;
+    display: inline-block !important;
+  }
+
+  /* レスポンシブ */
+  @media (max-width: 768px) {
+    .table {
+      font-size: 13px;
+      width: 510px !important;
+      min-width: 510px !important;
+      max-width: 510px !important;
+      table-layout: fixed !important;
+    }
+
+    .table th,
+    .table td {
+      padding: 8px 6px;
+      box-sizing: border-box !important;
+    }
+
+    /* 第1列：競馬場 - 80px */
+    .table th:nth-child(1),
+    .table td:nth-child(1) {
+      width: 80px !important;
+      min-width: 80px !important;
+      max-width: 80px !important;
+    }
+
+    /* 第2列：勝率 - 80px */
+    .table th:nth-child(2),
+    .table td:nth-child(2) {
+      width: 80px !important;
+      min-width: 80px !important;
+      max-width: 80px !important;
+    }
+
+    /* 第3列：連対率 - 80px */
+    .table th:nth-child(3),
+    .table td:nth-child(3) {
+      width: 80px !important;
+      min-width: 80px !important;
+      max-width: 80px !important;
+    }
+
+    /* 第4列：複勝率 - 80px */
+    .table th:nth-child(4),
+    .table td:nth-child(4) {
+      width: 80px !important;
+      min-width: 80px !important;
+      max-width: 80px !important;
+    }
+
+    /* 第5列：単勝回収率 - 90px */
+    .table th:nth-child(5),
+    .table td:nth-child(5) {
+      width: 90px !important;
+      min-width: 90px !important;
+      max-width: 90px !important;
+    }
+
+    /* 第6列：複勝回収率 - 90px */
+    .table th:nth-child(6),
+    .table td:nth-child(6) {
+      width: 90px !important;
+      min-width: 90px !important;
+      max-width: 90px !important;
+    }
+
+    .racecourseBadge {
+      font-size: 12px;
+      padding: 3px 8px;
+    }
+  }

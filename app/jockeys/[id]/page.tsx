@@ -4,9 +4,15 @@ import DataTable from '@/components/DataTable';
 import HeaderMenu from '@/components/HeaderMenu';
 import BottomNav from '@/components/BottomNav';
 import JockeyLeadingChart from '@/components/JockeyLeadingChart';
+import YearlyTable from '@/components/YearlyTable';
+import ClassTable from '@/components/ClassTable';
 import PopularityTable from '@/components/PopularityTable';
 import RunningStyleTable from '@/components/RunningStyleTable';
 import GateTable from '@/components/GateTable';
+import DistanceTable from '@/components/DistanceTable';
+import SurfaceTable from '@/components/SurfaceTable';
+import TrackConditionTable from '@/components/TrackConditionTable';
+import RacecourseTable from '@/components/RacecourseTable';
 import RacecourseCourseTable from '@/components/RacecourseCourseTable';
 
 // ISR: 週1回（604800秒）再生成
@@ -495,18 +501,27 @@ export default async function JockeyPage({
   }));
 
   // 馬場状態別データをテーブル形式に変換（順位なし）
-  const trackConditionStatsData = jockey.track_condition_stats.map((stat) => ({
-    name: `${stat.surface} - ${stat.condition_label}`,
-    races: stat.races,
-    wins: stat.wins,
-    places_2: stat.places_2,
-    places_3: stat.places_3,
-    win_rate: stat.win_rate,
-    quinella_rate: stat.quinella_rate,
-    place_rate: stat.place_rate,
-    win_payback: stat.win_payback,
-    place_payback: stat.place_payback,
-  }));
+  const trackConditionStatsData = jockey.track_condition_stats.map((stat) => {
+    // 馬場状態ラベルを短縮
+    let shortLabel = stat.condition_label;
+    if (shortLabel === '稍重') shortLabel = '稍';
+    if (shortLabel === '不良') shortLabel = '不';
+
+    return {
+      name: `${stat.surface}・${shortLabel}`,
+      surface: stat.surface,
+      condition_label: shortLabel,
+      races: stat.races,
+      wins: stat.wins,
+      places_2: stat.places_2,
+      places_3: stat.places_3,
+      win_rate: stat.win_rate,
+      quinella_rate: stat.quinella_rate,
+      place_rate: stat.place_rate,
+      win_payback: stat.win_payback,
+      place_payback: stat.place_payback,
+    };
+  });
 
   // クラス別データをテーブル形式に変換（順位なし）
   const classStatsData = jockey.class_stats.map((stat) => ({
@@ -566,6 +581,43 @@ export default async function JockeyPage({
     };
   }).filter(group => group.courses.length > 0); // コースがある競馬場のみ
 
+  // 競馬場別サマリーデータを集計
+  const racecourseSummaryData = racecourseOrder.map(racecourse => {
+    const racecourseCourses = jockey.course_stats.filter(c => c.racecourse_en === racecourse.en);
+
+    if (racecourseCourses.length === 0) return null;
+
+    const totalRaces = racecourseCourses.reduce((sum, c) => sum + c.races, 0);
+    const totalWins = racecourseCourses.reduce((sum, c) => sum + c.wins, 0);
+    const totalPlaces2 = racecourseCourses.reduce((sum, c) => sum + c.places_2, 0);
+    const totalPlaces3 = racecourseCourses.reduce((sum, c) => sum + c.places_3, 0);
+
+    const winRate = totalRaces > 0 ? (totalWins / totalRaces) * 100 : 0;
+    const quinellaRate = totalRaces > 0 ? ((totalWins + totalPlaces2) / totalRaces) * 100 : 0;
+    const placeRate = totalRaces > 0 ? ((totalWins + totalPlaces2 + totalPlaces3) / totalRaces) * 100 : 0;
+
+    // 回収率は各コースの回収率を出走数で加重平均
+    const winPayback = totalRaces > 0
+      ? racecourseCourses.reduce((sum, c) => sum + (c.win_payback * c.races), 0) / totalRaces
+      : 0;
+    const placePayback = totalRaces > 0
+      ? racecourseCourses.reduce((sum, c) => sum + (c.place_payback * c.races), 0) / totalRaces
+      : 0;
+
+    return {
+      name: racecourse.ja.replace('競馬場', ''),
+      races: totalRaces,
+      wins: totalWins,
+      places_2: totalPlaces2,
+      places_3: totalPlaces3,
+      win_rate: winRate,
+      quinella_rate: quinellaRate,
+      place_rate: placeRate,
+      win_payback: winPayback,
+      place_payback: placePayback,
+    };
+  }).filter(item => item !== null);
+
   // ナビゲーションアイテム
   const navigationItems = [
     { id: 'leading', label: 'リーディング' },
@@ -577,6 +629,7 @@ export default async function JockeyPage({
     { id: 'distance-stats', label: '距離別' },
     { id: 'surface-stats', label: '芝・ダート別' },
     { id: 'track-condition-stats', label: '馬場状態別' },
+    { id: 'racecourse-stats', label: '競馬場別' },
     { id: 'course-stats', label: 'コース別' },
     { id: 'trainer-stats', label: '調教師別' },
   ];
@@ -655,23 +708,17 @@ export default async function JockeyPage({
 
           {/* 年度別データセクション */}
           <section id="yearly-stats" aria-label="年度別データ">
-            <DataTable
+            <YearlyTable
               title={`${jockey.name} 年度別データ`}
-              data={yearlyStatsData}
-              nameLabel="年度"
-              disableHighlight={true}
-              showRank={false}
+              data={jockey.yearly_stats}
             />
           </section>
 
           {/* クラス別データセクション */}
           <section id="class-stats" aria-label="クラス別データ">
-            <DataTable
+            <ClassTable
               title={`${jockey.name} クラス別データ`}
-              data={classStatsData}
-              nameLabel="クラス"
-              showRank={false}
-              showGradeBadge={true}
+              data={jockey.class_stats}
             />
           </section>
 
@@ -701,31 +748,33 @@ export default async function JockeyPage({
 
           {/* 距離別データセクション */}
           <section id="distance-stats" aria-label="距離別データ">
-            <DataTable
+            <DistanceTable
               title={`${jockey.name} 距離別データ`}
-              data={distanceStatsData}
-              nameLabel="距離"
-              showRank={false}
+              data={jockey.distance_stats}
             />
           </section>
 
           {/* 芝・ダート別データセクション */}
           <section id="surface-stats" aria-label="芝・ダート別データ">
-            <DataTable
+            <SurfaceTable
               title={`${jockey.name} 芝・ダート別データ`}
               data={surfaceStatsData}
-              nameLabel="芝質"
-              showRank={false}
             />
           </section>
 
           {/* 馬場状態別データセクション */}
           <section id="track-condition-stats" aria-label="馬場状態別データ">
-            <DataTable
+            <TrackConditionTable
               title={`${jockey.name} 馬場状態別データ`}
               data={trackConditionStatsData}
-              nameLabel="馬場状態"
-              showRank={false}
+            />
+          </section>
+
+          {/* 競馬場別成績セクション */}
+          <section id="racecourse-stats" aria-label="競馬場別成績">
+            <RacecourseTable
+              title={`${jockey.name} 競馬場別成績`}
+              data={racecourseSummaryData}
             />
           </section>
 
