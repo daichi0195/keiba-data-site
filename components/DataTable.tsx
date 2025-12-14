@@ -24,9 +24,10 @@ type Props = {
   note?: string;
   disableHighlight?: boolean;
   showRank?: boolean;
+  showGradeBadge?: boolean; // G1/G2/G3のバッジ表示
 };
 
-export default function DataTable({ title, data, initialShow = 10, nameLabel = '名前', note, disableHighlight = false, showRank = true }: Props) {
+export default function DataTable({ title, data, initialShow = 10, nameLabel = '名前', note, disableHighlight = false, showRank = true, showGradeBadge = false }: Props) {
   const [showAll, setShowAll] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -88,6 +89,61 @@ export default function DataTable({ title, data, initialShow = 10, nameLabel = '
   // セルがハイライト対象かチェック
   const isHighlight = (value: number, maxValue: number) => !disableHighlight && value === maxValue;
 
+  // グレードバッジのスタイルを取得（枠順バッジと同じスタイル）
+  const getGradeBadgeStyle = (name: string) => {
+    if (!showGradeBadge) return null;
+
+    switch (name) {
+      case 'G1':
+        return {
+          backgroundColor: '#464EB7',
+          color: '#fff',
+          display: 'inline-block',
+          width: '28px',
+          height: '28px',
+          lineHeight: '28px',
+          textAlign: 'center' as const,
+          borderRadius: '4px',
+          fontWeight: '700',
+          fontSize: '13px',
+          border: '1px solid #ddd',
+          verticalAlign: 'middle'
+        };
+      case 'G2':
+        return {
+          backgroundColor: '#E53032',
+          color: '#fff',
+          display: 'inline-block',
+          width: '28px',
+          height: '28px',
+          lineHeight: '28px',
+          textAlign: 'center' as const,
+          borderRadius: '4px',
+          fontWeight: '700',
+          fontSize: '13px',
+          border: '1px solid #ddd',
+          verticalAlign: 'middle'
+        };
+      case 'G3':
+        return {
+          backgroundColor: '#5AAA49',
+          color: '#fff',
+          display: 'inline-block',
+          width: '28px',
+          height: '28px',
+          lineHeight: '28px',
+          textAlign: 'center' as const,
+          borderRadius: '4px',
+          fontWeight: '700',
+          fontSize: '13px',
+          border: '1px solid #ddd',
+          verticalAlign: 'middle'
+        };
+      default:
+        return null;
+    }
+  };
+
   const tableContent = (
     <>
       {title && <h2 className="section-title">{title}</h2>}
@@ -141,7 +197,15 @@ export default function DataTable({ title, data, initialShow = 10, nameLabel = '
 
                   {/* 固定列: 名前 */}
                   <td className={`mobile-sticky-col mobile-col-name mobile-sticky-body mobile-name-cell ${showRank && isScrolled ? 'mobile-col-name-narrow' : ''} ${!showRank ? 'mobile-col-name-first' : ''}`}>
-                    {showRank ? truncateName(row.name, isScrolled) : row.name}
+                    {(() => {
+                      const badgeStyle = getGradeBadgeStyle(row.name);
+                      const displayName = showRank ? truncateName(row.name, isScrolled) : row.name;
+
+                      if (badgeStyle) {
+                        return <span style={badgeStyle}>{displayName}</span>;
+                      }
+                      return displayName;
+                    })()}
                   </td>
                   
                   {/* スクロール列 - 数値のみハイライト */}

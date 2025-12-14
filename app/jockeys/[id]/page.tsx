@@ -124,6 +124,46 @@ interface JockeyData {
     win_payback: number;
     place_payback: number;
   }>;
+  trainer_stats: Array<{
+    rank: number;
+    name: string;
+    races: number;
+    wins: number;
+    places_2: number;
+    places_3: number;
+    win_rate: number;
+    place_rate: number;
+    quinella_rate: number;
+    win_payback: number;
+    place_payback: number;
+  }>;
+  track_condition_stats: Array<{
+    surface: string;
+    condition: string;
+    condition_label: string;
+    races: number;
+    wins: number;
+    places_2: number;
+    places_3: number;
+    win_rate: number;
+    place_rate: number;
+    quinella_rate: number;
+    win_payback: number;
+    place_payback: number;
+  }>;
+  class_stats: Array<{
+    rank: number;
+    class_name: string;
+    races: number;
+    wins: number;
+    places_2: number;
+    places_3: number;
+    win_rate: number;
+    place_rate: number;
+    quinella_rate: number;
+    win_payback: number;
+    place_payback: number;
+  }>;
 }
 
 // 武豊のモックデータ
@@ -164,8 +204,8 @@ const mockJockeyData: Record<string, JockeyData> = {
       { category: '長距離', races: 267, wins: 51, places_2: 44, places_3: 36, win_rate: 19.1, place_rate: 49.1, quinella_rate: 35.8, win_payback: 106, place_payback: 102 },
     ],
     surface_stats: [
-      { surface: '芝', races: 785, wins: 157, places_2: 131, places_3: 105, win_rate: 20.0, place_rate: 50.1, quinella_rate: 36.7, win_payback: 102, place_payback: 98 },
-      { surface: 'ダート', races: 470, wins: 82, places_2: 72, places_3: 62, win_rate: 17.4, place_rate: 46.0, quinella_rate: 32.6, win_payback: 108, place_payback: 104 },
+      { surface: '芝', races: 1563, wins: 295, places_2: 247, places_3: 203, win_rate: 18.9, place_rate: 47.7, quinella_rate: 34.7, win_payback: 102, place_payback: 98 },
+      { surface: 'ダート', races: 926, wins: 158, places_2: 135, places_3: 109, win_rate: 17.1, place_rate: 43.4, quinella_rate: 31.6, win_payback: 98, place_payback: 95 },
     ],
     popularity_stats: {
       fav1:      { races: 285, wins: 98, places_2: 72, places_3: 45, win_rate: 34.4, quinella_rate: 59.6, place_rate: 75.4, win_payback: 85,  place_payback: 91 },
@@ -193,114 +233,164 @@ const mockJockeyData: Record<string, JockeyData> = {
       { gate: 8, color: '#DC6179', races: 142, wins: 23, places_2: 25, places_3: 23, win_rate: 16.2, place_rate: 50.0, quinella_rate: 33.8, win_payback: 82, place_payback: 80 },
     ],
     course_stats: [
-      {
-        rank: 1,
-        name: '中山競馬場 ダート 1800m',
-        racecourse: '中山競馬場',
-        racecourse_en: 'nakayama',
-        surface: 'ダート',
-        surface_en: 'dirt',
-        distance: 1800,
-        races: 75,
-        wins: 23,
-        places_2: 18,
-        places_3: 12,
-        win_rate: 30.7,
-        place_rate: 70.7,
-        quinella_rate: 54.7,
-        win_payback: 115,
-        place_payback: 108,
-      },
-      {
-        rank: 2,
-        name: '東京競馬場 芝 2400m',
-        racecourse: '東京競馬場',
-        racecourse_en: 'tokyo',
-        surface: '芝',
-        surface_en: 'turf',
-        distance: 2400,
-        races: 89,
-        wins: 21,
-        places_2: 18,
-        places_3: 14,
-        win_rate: 23.6,
-        place_rate: 59.6,
-        quinella_rate: 43.8,
-        win_payback: 108,
-        place_payback: 104,
-      },
-      {
-        rank: 3,
-        name: '阪神競馬場 芝 1600m',
-        racecourse: '阪神競馬場',
-        racecourse_en: 'hanshin',
-        surface: '芝',
-        surface_en: 'turf',
-        distance: 1600,
-        races: 121,
-        wins: 27,
-        places_2: 22,
-        places_3: 18,
-        win_rate: 22.3,
-        place_rate: 55.4,
-        quinella_rate: 40.5,
-        win_payback: 105,
-        place_payback: 101,
-      },
-      {
-        rank: 4,
-        name: '京都競馬場 芝 2000m',
-        racecourse: '京都競馬場',
-        racecourse_en: 'kyoto',
-        surface: '芝',
-        surface_en: 'turf',
-        distance: 2000,
-        races: 98,
-        wins: 22,
-        places_2: 19,
-        places_3: 15,
-        win_rate: 22.4,
-        place_rate: 57.1,
-        quinella_rate: 41.8,
-        win_payback: 106,
-        place_payback: 102,
-      },
-      {
-        rank: 5,
-        name: '中山競馬場 芝 2000m',
-        racecourse: '中山競馬場',
-        racecourse_en: 'nakayama',
-        surface: '芝',
-        surface_en: 'turf',
-        distance: 2000,
-        races: 92,
-        wins: 20,
-        places_2: 16,
-        places_3: 13,
-        win_rate: 21.7,
-        place_rate: 53.3,
-        quinella_rate: 39.1,
-        win_payback: 102,
-        place_payback: 98,
-      },
-      {
-        rank: 6,
-        name: '阪神競馬場 ダート 1400m',
-        racecourse: '阪神競馬場',
-        racecourse_en: 'hanshin',
-        surface: 'ダート',
-        surface_en: 'dirt',
-        distance: 1400,
-        races: 68,
-        wins: 18,
-        places_2: 14,
-        places_3: 11,
-        win_rate: 26.5,
-        place_rate: 63.2,
-        quinella_rate: 47.1,
-        win_payback: 110,
-        place_payback: 105,
-      },
+      // 札幌競馬場
+      { rank: 1, name: '札幌競馬場 芝 1200m', racecourse: '札幌競馬場', racecourse_en: 'sapporo', surface: '芝', surface_en: 'turf', distance: 1200, races: 28, wins: 5, places_2: 4, places_3: 3, win_rate: 17.9, place_rate: 42.9, quinella_rate: 32.1, win_payback: 95, place_payback: 92 },
+      { rank: 2, name: '札幌競馬場 芝 1500m', racecourse: '札幌競馬場', racecourse_en: 'sapporo', surface: '芝', surface_en: 'turf', distance: 1500, races: 22, wins: 4, places_2: 3, places_3: 2, win_rate: 18.2, place_rate: 40.9, quinella_rate: 31.8, win_payback: 98, place_payback: 94 },
+      { rank: 3, name: '札幌競馬場 芝 1800m', racecourse: '札幌競馬場', racecourse_en: 'sapporo', surface: '芝', surface_en: 'turf', distance: 1800, races: 26, wins: 5, places_2: 4, places_3: 4, win_rate: 19.2, place_rate: 50.0, quinella_rate: 34.6, win_payback: 102, place_payback: 97 },
+      { rank: 4, name: '札幌競馬場 芝 2000m', racecourse: '札幌競馬場', racecourse_en: 'sapporo', surface: '芝', surface_en: 'turf', distance: 2000, races: 18, wins: 3, places_2: 3, places_3: 2, win_rate: 16.7, place_rate: 44.4, quinella_rate: 33.3, win_payback: 96, place_payback: 93 },
+      { rank: 5, name: '札幌競馬場 芝 2600m', racecourse: '札幌競馬場', racecourse_en: 'sapporo', surface: '芝', surface_en: 'turf', distance: 2600, races: 12, wins: 2, places_2: 2, places_3: 1, win_rate: 16.7, place_rate: 41.7, quinella_rate: 33.3, win_payback: 94, place_payback: 91 },
+      { rank: 6, name: '札幌競馬場 ダ 1000m', racecourse: '札幌競馬場', racecourse_en: 'sapporo', surface: 'ダート', surface_en: 'dirt', distance: 1000, races: 15, wins: 2, places_2: 2, places_3: 2, win_rate: 13.3, place_rate: 40.0, quinella_rate: 26.7, win_payback: 88, place_payback: 86 },
+      { rank: 7, name: '札幌競馬場 ダ 1700m', racecourse: '札幌競馬場', racecourse_en: 'sapporo', surface: 'ダート', surface_en: 'dirt', distance: 1700, races: 19, wins: 3, places_2: 3, places_3: 2, win_rate: 15.8, place_rate: 42.1, quinella_rate: 31.6, win_payback: 92, place_payback: 89 },
+      { rank: 8, name: '札幌競馬場 ダ 2400m', racecourse: '札幌競馬場', racecourse_en: 'sapporo', surface: 'ダート', surface_en: 'dirt', distance: 2400, races: 8, wins: 1, places_2: 1, places_3: 1, win_rate: 12.5, place_rate: 37.5, quinella_rate: 25.0, win_payback: 85, place_payback: 83 },
+
+      // 函館競馬場
+      { rank: 9, name: '函館競馬場 芝 1200m', racecourse: '函館競馬場', racecourse_en: 'hakodate', surface: '芝', surface_en: 'turf', distance: 1200, races: 32, wins: 6, places_2: 5, places_3: 4, win_rate: 18.8, place_rate: 46.9, quinella_rate: 34.4, win_payback: 99, place_payback: 95 },
+      { rank: 10, name: '函館競馬場 芝 1800m', racecourse: '函館競馬場', racecourse_en: 'hakodate', surface: '芝', surface_en: 'turf', distance: 1800, races: 24, wins: 5, places_2: 4, places_3: 3, win_rate: 20.8, place_rate: 50.0, quinella_rate: 37.5, win_payback: 104, place_payback: 99 },
+      { rank: 11, name: '函館競馬場 芝 2000m', racecourse: '函館競馬場', racecourse_en: 'hakodate', surface: '芝', surface_en: 'turf', distance: 2000, races: 20, wins: 4, places_2: 3, places_3: 3, win_rate: 20.0, place_rate: 50.0, quinella_rate: 35.0, win_payback: 101, place_payback: 97 },
+      { rank: 12, name: '函館競馬場 芝 2600m', racecourse: '函館競馬場', racecourse_en: 'hakodate', surface: '芝', surface_en: 'turf', distance: 2600, races: 10, wins: 2, places_2: 1, places_3: 1, win_rate: 20.0, place_rate: 40.0, quinella_rate: 30.0, win_payback: 98, place_payback: 94 },
+      { rank: 13, name: '函館競馬場 ダ 1000m', racecourse: '函館競馬場', racecourse_en: 'hakodate', surface: 'ダート', surface_en: 'dirt', distance: 1000, races: 18, wins: 3, places_2: 2, places_3: 2, win_rate: 16.7, place_rate: 38.9, quinella_rate: 27.8, win_payback: 91, place_payback: 88 },
+      { rank: 14, name: '函館競馬場 ダ 1700m', racecourse: '函館競馬場', racecourse_en: 'hakodate', surface: 'ダート', surface_en: 'dirt', distance: 1700, races: 16, wins: 3, places_2: 2, places_3: 2, win_rate: 18.8, place_rate: 43.8, quinella_rate: 31.3, win_payback: 95, place_payback: 92 },
+      { rank: 15, name: '函館競馬場 ダ 2400m', racecourse: '函館競馬場', racecourse_en: 'hakodate', surface: 'ダート', surface_en: 'dirt', distance: 2400, races: 6, wins: 1, places_2: 1, places_3: 0, win_rate: 16.7, place_rate: 33.3, quinella_rate: 33.3, win_payback: 88, place_payback: 86 },
+
+      // 福島競馬場
+      { rank: 16, name: '福島競馬場 芝 1200m', racecourse: '福島競馬場', racecourse_en: 'fukushima', surface: '芝', surface_en: 'turf', distance: 1200, races: 35, wins: 7, places_2: 6, places_3: 5, win_rate: 20.0, place_rate: 51.4, quinella_rate: 37.1, win_payback: 103, place_payback: 98 },
+      { rank: 17, name: '福島競馬場 芝 1800m', racecourse: '福島競馬場', racecourse_en: 'fukushima', surface: '芝', surface_en: 'turf', distance: 1800, races: 28, wins: 6, places_2: 5, places_3: 4, win_rate: 21.4, place_rate: 53.6, quinella_rate: 39.3, win_payback: 106, place_payback: 101 },
+      { rank: 18, name: '福島競馬場 芝 2000m', racecourse: '福島競馬場', racecourse_en: 'fukushima', surface: '芝', surface_en: 'turf', distance: 2000, races: 22, wins: 4, places_2: 4, places_3: 3, win_rate: 18.2, place_rate: 50.0, quinella_rate: 36.4, win_payback: 99, place_payback: 95 },
+      { rank: 19, name: '福島競馬場 芝 2600m', racecourse: '福島競馬場', racecourse_en: 'fukushima', surface: '芝', surface_en: 'turf', distance: 2600, races: 14, wins: 3, places_2: 2, places_3: 2, win_rate: 21.4, place_rate: 50.0, quinella_rate: 35.7, win_payback: 102, place_payback: 97 },
+      { rank: 20, name: '福島競馬場 ダ 1150m', racecourse: '福島競馬場', racecourse_en: 'fukushima', surface: 'ダート', surface_en: 'dirt', distance: 1150, races: 20, wins: 3, places_2: 3, places_3: 3, win_rate: 15.0, place_rate: 45.0, quinella_rate: 30.0, win_payback: 90, place_payback: 87 },
+      { rank: 21, name: '福島競馬場 ダ 1700m', racecourse: '福島競馬場', racecourse_en: 'fukushima', surface: 'ダート', surface_en: 'dirt', distance: 1700, races: 24, wins: 4, places_2: 4, places_3: 3, win_rate: 16.7, place_rate: 45.8, quinella_rate: 33.3, win_payback: 93, place_payback: 90 },
+      { rank: 22, name: '福島競馬場 ダ 2400m', racecourse: '福島競馬場', racecourse_en: 'fukushima', surface: 'ダート', surface_en: 'dirt', distance: 2400, races: 8, wins: 1, places_2: 1, places_3: 1, win_rate: 12.5, place_rate: 37.5, quinella_rate: 25.0, win_payback: 86, place_payback: 84 },
+
+      // 新潟競馬場
+      { rank: 23, name: '新潟競馬場 芝 1000m', racecourse: '新潟競馬場', racecourse_en: 'niigata', surface: '芝', surface_en: 'turf', distance: 1000, races: 30, wins: 6, places_2: 5, places_3: 4, win_rate: 20.0, place_rate: 50.0, quinella_rate: 36.7, win_payback: 101, place_payback: 97 },
+      { rank: 24, name: '新潟競馬場 芝 1200m', racecourse: '新潟競馬場', racecourse_en: 'niigata', surface: '芝', surface_en: 'turf', distance: 1200, races: 38, wins: 8, places_2: 7, places_3: 6, win_rate: 21.1, place_rate: 55.3, quinella_rate: 39.5, win_payback: 105, place_payback: 100 },
+      { rank: 25, name: '新潟競馬場 芝 1400m', racecourse: '新潟競馬場', racecourse_en: 'niigata', surface: '芝', surface_en: 'turf', distance: 1400, races: 32, wins: 7, places_2: 6, places_3: 5, win_rate: 21.9, place_rate: 56.3, quinella_rate: 40.6, win_payback: 107, place_payback: 102 },
+      { rank: 26, name: '新潟競馬場 芝 1600m', racecourse: '新潟競馬場', racecourse_en: 'niigata', surface: '芝', surface_en: 'turf', distance: 1600, races: 42, wins: 9, places_2: 8, places_3: 7, win_rate: 21.4, place_rate: 57.1, quinella_rate: 40.5, win_payback: 106, place_payback: 101 },
+      { rank: 27, name: '新潟競馬場 芝 1800m', racecourse: '新潟競馬場', racecourse_en: 'niigata', surface: '芝', surface_en: 'turf', distance: 1800, races: 36, wins: 7, places_2: 7, places_3: 6, win_rate: 19.4, place_rate: 55.6, quinella_rate: 38.9, win_payback: 103, place_payback: 98 },
+      { rank: 28, name: '新潟競馬場 芝 2000m', racecourse: '新潟競馬場', racecourse_en: 'niigata', surface: '芝', surface_en: 'turf', distance: 2000, races: 28, wins: 6, places_2: 5, places_3: 4, win_rate: 21.4, place_rate: 53.6, quinella_rate: 39.3, win_payback: 104, place_payback: 99 },
+      { rank: 29, name: '新潟競馬場 芝 2200m', racecourse: '新潟競馬場', racecourse_en: 'niigata', surface: '芝', surface_en: 'turf', distance: 2200, races: 20, wins: 4, places_2: 4, places_3: 3, win_rate: 20.0, place_rate: 55.0, quinella_rate: 40.0, win_payback: 102, place_payback: 98 },
+      { rank: 30, name: '新潟競馬場 芝 2400m', racecourse: '新潟競馬場', racecourse_en: 'niigata', surface: '芝', surface_en: 'turf', distance: 2400, races: 16, wins: 3, places_2: 3, places_3: 2, win_rate: 18.8, place_rate: 50.0, quinella_rate: 37.5, win_payback: 100, place_payback: 96 },
+      { rank: 31, name: '新潟競馬場 ダ 1200m', racecourse: '新潟競馬場', racecourse_en: 'niigata', surface: 'ダート', surface_en: 'dirt', distance: 1200, races: 26, wins: 4, places_2: 4, places_3: 4, win_rate: 15.4, place_rate: 46.2, quinella_rate: 30.8, win_payback: 92, place_payback: 89 },
+      { rank: 32, name: '新潟競馬場 ダ 1800m', racecourse: '新潟競馬場', racecourse_en: 'niigata', surface: 'ダート', surface_en: 'dirt', distance: 1800, races: 30, wins: 5, places_2: 5, places_3: 4, win_rate: 16.7, place_rate: 46.7, quinella_rate: 33.3, win_payback: 94, place_payback: 91 },
+
+      // 東京競馬場
+      { rank: 33, name: '東京競馬場 芝 1400m', racecourse: '東京競馬場', racecourse_en: 'tokyo', surface: '芝', surface_en: 'turf', distance: 1400, races: 78, wins: 16, places_2: 14, places_3: 12, win_rate: 20.5, place_rate: 53.8, quinella_rate: 38.5, win_payback: 104, place_payback: 99 },
+      { rank: 34, name: '東京競馬場 芝 1600m', racecourse: '東京競馬場', racecourse_en: 'tokyo', surface: '芝', surface_en: 'turf', distance: 1600, races: 95, wins: 19, places_2: 17, places_3: 15, win_rate: 20.0, place_rate: 53.7, quinella_rate: 37.9, win_payback: 103, place_payback: 98 },
+      { rank: 35, name: '東京競馬場 芝 1800m', racecourse: '東京競馬場', racecourse_en: 'tokyo', surface: '芝', surface_en: 'turf', distance: 1800, races: 82, wins: 17, places_2: 15, places_3: 13, win_rate: 20.7, place_rate: 54.9, quinella_rate: 39.0, win_payback: 105, place_payback: 100 },
+      { rank: 36, name: '東京競馬場 芝 2000m', racecourse: '東京競馬場', racecourse_en: 'tokyo', surface: '芝', surface_en: 'turf', distance: 2000, races: 88, wins: 18, places_2: 16, places_3: 14, win_rate: 20.5, place_rate: 54.5, quinella_rate: 38.6, win_payback: 104, place_payback: 99 },
+      { rank: 37, name: '東京競馬場 芝 2400m', racecourse: '東京競馬場', racecourse_en: 'tokyo', surface: '芝', surface_en: 'turf', distance: 2400, races: 89, wins: 21, places_2: 18, places_3: 14, win_rate: 23.6, place_rate: 59.6, quinella_rate: 43.8, win_payback: 108, place_payback: 104 },
+      { rank: 38, name: '東京競馬場 芝 3400m', racecourse: '東京競馬場', racecourse_en: 'tokyo', surface: '芝', surface_en: 'turf', distance: 3400, races: 12, wins: 3, places_2: 2, places_3: 2, win_rate: 25.0, place_rate: 58.3, quinella_rate: 41.7, win_payback: 110, place_payback: 105 },
+      { rank: 39, name: '東京競馬場 ダ 1300m', racecourse: '東京競馬場', racecourse_en: 'tokyo', surface: 'ダート', surface_en: 'dirt', distance: 1300, races: 52, wins: 9, places_2: 8, places_3: 7, win_rate: 17.3, place_rate: 46.2, quinella_rate: 32.7, win_payback: 96, place_payback: 93 },
+      { rank: 40, name: '東京競馬場 ダ 1400m', racecourse: '東京競馬場', racecourse_en: 'tokyo', surface: 'ダート', surface_en: 'dirt', distance: 1400, races: 58, wins: 10, places_2: 9, places_3: 8, win_rate: 17.2, place_rate: 46.6, quinella_rate: 32.8, win_payback: 97, place_payback: 94 },
+      { rank: 41, name: '東京競馬場 ダ 1600m', racecourse: '東京競馬場', racecourse_en: 'tokyo', surface: 'ダート', surface_en: 'dirt', distance: 1600, races: 64, wins: 11, places_2: 10, places_3: 9, win_rate: 17.2, place_rate: 46.9, quinella_rate: 32.8, win_payback: 98, place_payback: 95 },
+      { rank: 42, name: '東京競馬場 ダ 2100m', racecourse: '東京競馬場', racecourse_en: 'tokyo', surface: 'ダート', surface_en: 'dirt', distance: 2100, races: 48, wins: 8, places_2: 7, places_3: 6, win_rate: 16.7, place_rate: 43.8, quinella_rate: 31.3, win_payback: 95, place_payback: 92 },
+      { rank: 43, name: '東京競馬場 ダ 2400m', racecourse: '東京競馬場', racecourse_en: 'tokyo', surface: 'ダート', surface_en: 'dirt', distance: 2400, races: 20, wins: 3, places_2: 3, places_3: 3, win_rate: 15.0, place_rate: 45.0, quinella_rate: 30.0, win_payback: 93, place_payback: 90 },
+
+      // 中山競馬場
+      { rank: 44, name: '中山競馬場 芝 1200m', racecourse: '中山競馬場', racecourse_en: 'nakayama', surface: '芝', surface_en: 'turf', distance: 1200, races: 68, wins: 14, places_2: 12, places_3: 10, win_rate: 20.6, place_rate: 52.9, quinella_rate: 38.2, win_payback: 103, place_payback: 98 },
+      { rank: 45, name: '中山競馬場 芝 1600m', racecourse: '中山競馬場', racecourse_en: 'nakayama', surface: '芝', surface_en: 'turf', distance: 1600, races: 76, wins: 15, places_2: 13, places_3: 11, win_rate: 19.7, place_rate: 51.3, quinella_rate: 36.8, win_payback: 101, place_payback: 97 },
+      { rank: 46, name: '中山競馬場 芝 1800m', racecourse: '中山競馬場', racecourse_en: 'nakayama', surface: '芝', surface_en: 'turf', distance: 1800, races: 72, wins: 15, places_2: 13, places_3: 11, win_rate: 20.8, place_rate: 54.2, quinella_rate: 38.9, win_payback: 104, place_payback: 99 },
+      { rank: 47, name: '中山競馬場 芝 2000m', racecourse: '中山競馬場', racecourse_en: 'nakayama', surface: '芝', surface_en: 'turf', distance: 2000, races: 92, wins: 20, places_2: 16, places_3: 13, win_rate: 21.7, place_rate: 53.3, quinella_rate: 39.1, win_payback: 102, place_payback: 98 },
+      { rank: 48, name: '中山競馬場 芝 2200m', racecourse: '中山競馬場', racecourse_en: 'nakayama', surface: '芝', surface_en: 'turf', distance: 2200, races: 38, wins: 8, places_2: 7, places_3: 6, win_rate: 21.1, place_rate: 55.3, quinella_rate: 39.5, win_payback: 105, place_payback: 100 },
+      { rank: 49, name: '中山競馬場 芝 2500m', racecourse: '中山競馬場', racecourse_en: 'nakayama', surface: '芝', surface_en: 'turf', distance: 2500, races: 24, wins: 5, places_2: 4, places_3: 4, win_rate: 20.8, place_rate: 54.2, quinella_rate: 37.5, win_payback: 103, place_payback: 98 },
+      { rank: 50, name: '中山競馬場 芝 3600m', racecourse: '中山競馬場', racecourse_en: 'nakayama', surface: '芝', surface_en: 'turf', distance: 3600, races: 8, wins: 2, places_2: 1, places_3: 1, win_rate: 25.0, place_rate: 50.0, quinella_rate: 37.5, win_payback: 108, place_payback: 102 },
+      { rank: 51, name: '中山競馬場 ダ 1200m', racecourse: '中山競馬場', racecourse_en: 'nakayama', surface: 'ダート', surface_en: 'dirt', distance: 1200, races: 62, wins: 11, places_2: 10, places_3: 9, win_rate: 17.7, place_rate: 48.4, quinella_rate: 33.9, win_payback: 99, place_payback: 96 },
+      { rank: 52, name: '中山競馬場 ダ 1800m', racecourse: '中山競馬場', racecourse_en: 'nakayama', surface: 'ダート', surface_en: 'dirt', distance: 1800, races: 75, wins: 23, places_2: 18, places_3: 12, win_rate: 30.7, place_rate: 70.7, quinella_rate: 54.7, win_payback: 115, place_payback: 108 },
+      { rank: 53, name: '中山競馬場 ダ 2400m', racecourse: '中山競馬場', racecourse_en: 'nakayama', surface: 'ダート', surface_en: 'dirt', distance: 2400, races: 16, wins: 3, places_2: 2, places_3: 2, win_rate: 18.8, place_rate: 43.8, quinella_rate: 31.3, win_payback: 97, place_payback: 94 },
+
+      // 中京競馬場
+      { rank: 54, name: '中京競馬場 芝 1200m', racecourse: '中京競馬場', racecourse_en: 'chukyo', surface: '芝', surface_en: 'turf', distance: 1200, races: 52, wins: 11, places_2: 9, places_3: 8, win_rate: 21.2, place_rate: 53.8, quinella_rate: 38.5, win_payback: 105, place_payback: 100 },
+      { rank: 55, name: '中京競馬場 芝 1400m', racecourse: '中京競馬場', racecourse_en: 'chukyo', surface: '芝', surface_en: 'turf', distance: 1400, races: 48, wins: 10, places_2: 9, places_3: 7, win_rate: 20.8, place_rate: 54.2, quinella_rate: 39.6, win_payback: 104, place_payback: 99 },
+      { rank: 56, name: '中京競馬場 芝 1600m', racecourse: '中京競馬場', racecourse_en: 'chukyo', surface: '芝', surface_en: 'turf', distance: 1600, races: 56, wins: 12, places_2: 10, places_3: 9, win_rate: 21.4, place_rate: 55.4, quinella_rate: 39.3, win_payback: 106, place_payback: 101 },
+      { rank: 57, name: '中京競馬場 芝 2000m', racecourse: '中京競馬場', racecourse_en: 'chukyo', surface: '芝', surface_en: 'turf', distance: 2000, races: 50, wins: 11, places_2: 9, places_3: 8, win_rate: 22.0, place_rate: 56.0, quinella_rate: 40.0, win_payback: 107, place_payback: 102 },
+      { rank: 58, name: '中京競馬場 芝 2200m', racecourse: '中京競馬場', racecourse_en: 'chukyo', surface: '芝', surface_en: 'turf', distance: 2200, races: 28, wins: 6, places_2: 5, places_3: 4, win_rate: 21.4, place_rate: 53.6, quinella_rate: 39.3, win_payback: 105, place_payback: 100 },
+      { rank: 59, name: '中京競馬場 ダ 1200m', racecourse: '中京競馬場', racecourse_en: 'chukyo', surface: 'ダート', surface_en: 'dirt', distance: 1200, races: 44, wins: 8, places_2: 7, places_3: 6, win_rate: 18.2, place_rate: 47.7, quinella_rate: 34.1, win_payback: 100, place_payback: 96 },
+      { rank: 60, name: '中京競馬場 ダ 1400m', racecourse: '中京競馬場', racecourse_en: 'chukyo', surface: 'ダート', surface_en: 'dirt', distance: 1400, races: 48, wins: 9, places_2: 8, places_3: 7, win_rate: 18.8, place_rate: 50.0, quinella_rate: 35.4, win_payback: 101, place_payback: 97 },
+      { rank: 61, name: '中京競馬場 ダ 1800m', racecourse: '中京競馬場', racecourse_en: 'chukyo', surface: 'ダート', surface_en: 'dirt', distance: 1800, races: 40, wins: 7, places_2: 6, places_3: 6, win_rate: 17.5, place_rate: 47.5, quinella_rate: 32.5, win_payback: 98, place_payback: 95 },
+      { rank: 62, name: '中京競馬場 ダ 1900m', racecourse: '中京競馬場', racecourse_en: 'chukyo', surface: 'ダート', surface_en: 'dirt', distance: 1900, races: 32, wins: 6, places_2: 5, places_3: 5, win_rate: 18.8, place_rate: 50.0, quinella_rate: 34.4, win_payback: 102, place_payback: 98 },
+
+      // 京都競馬場
+      { rank: 63, name: '京都競馬場 芝 1200m', racecourse: '京都競馬場', racecourse_en: 'kyoto', surface: '芝', surface_en: 'turf', distance: 1200, races: 72, wins: 16, places_2: 14, places_3: 12, win_rate: 22.2, place_rate: 58.3, quinella_rate: 41.7, win_payback: 108, place_payback: 103 },
+      { rank: 64, name: '京都競馬場 芝 1400m', racecourse: '京都競馬場', racecourse_en: 'kyoto', surface: '芝', surface_en: 'turf', distance: 1400, races: 68, wins: 15, places_2: 13, places_3: 11, win_rate: 22.1, place_rate: 57.4, quinella_rate: 41.2, win_payback: 107, place_payback: 102 },
+      { rank: 65, name: '京都競馬場 芝 1600m', racecourse: '京都競馬場', racecourse_en: 'kyoto', surface: '芝', surface_en: 'turf', distance: 1600, races: 85, wins: 19, places_2: 16, places_3: 14, win_rate: 22.4, place_rate: 57.6, quinella_rate: 41.2, win_payback: 108, place_payback: 103 },
+      { rank: 66, name: '京都競馬場 芝 1800m', racecourse: '京都競馬場', racecourse_en: 'kyoto', surface: '芝', surface_en: 'turf', distance: 1800, races: 76, wins: 17, places_2: 15, places_3: 13, win_rate: 22.4, place_rate: 59.2, quinella_rate: 42.1, win_payback: 109, place_payback: 104 },
+      { rank: 67, name: '京都競馬場 芝 2000m', racecourse: '京都競馬場', racecourse_en: 'kyoto', surface: '芝', surface_en: 'turf', distance: 2000, races: 98, wins: 22, places_2: 19, places_3: 15, win_rate: 22.4, place_rate: 57.1, quinella_rate: 41.8, win_payback: 106, place_payback: 102 },
+      { rank: 68, name: '京都競馬場 芝 2200m', racecourse: '京都競馬場', racecourse_en: 'kyoto', surface: '芝', surface_en: 'turf', distance: 2200, races: 52, wins: 12, places_2: 10, places_3: 9, win_rate: 23.1, place_rate: 59.6, quinella_rate: 42.3, win_payback: 110, place_payback: 105 },
+      { rank: 69, name: '京都競馬場 芝 2400m', racecourse: '京都競馬場', racecourse_en: 'kyoto', surface: '芝', surface_en: 'turf', distance: 2400, races: 44, wins: 10, places_2: 9, places_3: 7, win_rate: 22.7, place_rate: 59.1, quinella_rate: 43.2, win_payback: 109, place_payback: 104 },
+      { rank: 70, name: '京都競馬場 芝 3000m', racecourse: '京都競馬場', racecourse_en: 'kyoto', surface: '芝', surface_en: 'turf', distance: 3000, races: 18, wins: 4, places_2: 4, places_3: 3, win_rate: 22.2, place_rate: 61.1, quinella_rate: 44.4, win_payback: 111, place_payback: 106 },
+      { rank: 71, name: '京都競馬場 芝 3200m', racecourse: '京都競馬場', racecourse_en: 'kyoto', surface: '芝', surface_en: 'turf', distance: 3200, races: 12, wins: 3, places_2: 2, places_3: 2, win_rate: 25.0, place_rate: 58.3, quinella_rate: 41.7, win_payback: 112, place_payback: 107 },
+      { rank: 72, name: '京都競馬場 ダ 1200m', racecourse: '京都競馬場', racecourse_en: 'kyoto', surface: 'ダート', surface_en: 'dirt', distance: 1200, races: 58, wins: 10, places_2: 9, places_3: 8, win_rate: 17.2, place_rate: 46.6, quinella_rate: 32.8, win_payback: 98, place_payback: 95 },
+      { rank: 73, name: '京都競馬場 ダ 1400m', racecourse: '京都競馬場', racecourse_en: 'kyoto', surface: 'ダート', surface_en: 'dirt', distance: 1400, races: 64, wins: 11, places_2: 10, places_3: 9, win_rate: 17.2, place_rate: 46.9, quinella_rate: 32.8, win_payback: 99, place_payback: 96 },
+      { rank: 74, name: '京都競馬場 ダ 1800m', racecourse: '京都競馬場', racecourse_en: 'kyoto', surface: 'ダート', surface_en: 'dirt', distance: 1800, races: 70, wins: 12, places_2: 11, places_3: 10, win_rate: 17.1, place_rate: 47.1, quinella_rate: 32.9, win_payback: 100, place_payback: 97 },
+      { rank: 75, name: '京都競馬場 ダ 1900m', racecourse: '京都競馬場', racecourse_en: 'kyoto', surface: 'ダート', surface_en: 'dirt', distance: 1900, races: 42, wins: 7, places_2: 6, places_3: 6, win_rate: 16.7, place_rate: 45.2, quinella_rate: 31.0, win_payback: 97, place_payback: 94 },
+
+      // 阪神競馬場
+      { rank: 76, name: '阪神競馬場 芝 1200m', racecourse: '阪神競馬場', racecourse_en: 'hanshin', surface: '芝', surface_en: 'turf', distance: 1200, races: 78, wins: 17, places_2: 15, places_3: 13, win_rate: 21.8, place_rate: 57.7, quinella_rate: 41.0, win_payback: 106, place_payback: 101 },
+      { rank: 77, name: '阪神競馬場 芝 1400m', racecourse: '阪神競馬場', racecourse_en: 'hanshin', surface: '芝', surface_en: 'turf', distance: 1400, races: 72, wins: 16, places_2: 14, places_3: 12, win_rate: 22.2, place_rate: 58.3, quinella_rate: 41.7, win_payback: 107, place_payback: 102 },
+      { rank: 78, name: '阪神競馬場 芝 1600m', racecourse: '阪神競馬場', racecourse_en: 'hanshin', surface: '芝', surface_en: 'turf', distance: 1600, races: 121, wins: 27, places_2: 22, places_3: 18, win_rate: 22.3, place_rate: 55.4, quinella_rate: 40.5, win_payback: 105, place_payback: 101 },
+      { rank: 79, name: '阪神競馬場 芝 1800m', racecourse: '阪神競馬場', racecourse_en: 'hanshin', surface: '芝', surface_en: 'turf', distance: 1800, races: 86, wins: 19, places_2: 17, places_3: 14, win_rate: 22.1, place_rate: 58.1, quinella_rate: 41.9, win_payback: 108, place_payback: 103 },
+      { rank: 80, name: '阪神競馬場 芝 2000m', racecourse: '阪神競馬場', racecourse_en: 'hanshin', surface: '芝', surface_en: 'turf', distance: 2000, races: 94, wins: 21, places_2: 18, places_3: 15, win_rate: 22.3, place_rate: 57.4, quinella_rate: 41.5, win_payback: 107, place_payback: 102 },
+      { rank: 81, name: '阪神競馬場 芝 2200m', racecourse: '阪神競馬場', racecourse_en: 'hanshin', surface: '芝', surface_en: 'turf', distance: 2200, races: 48, wins: 11, places_2: 9, places_3: 8, win_rate: 22.9, place_rate: 58.3, quinella_rate: 41.7, win_payback: 109, place_payback: 104 },
+      { rank: 82, name: '阪神競馬場 芝 2400m', racecourse: '阪神競馬場', racecourse_en: 'hanshin', surface: '芝', surface_en: 'turf', distance: 2400, races: 38, wins: 9, places_2: 7, places_3: 6, win_rate: 23.7, place_rate: 57.9, quinella_rate: 42.1, win_payback: 110, place_payback: 105 },
+      { rank: 83, name: '阪神競馬場 芝 3000m', racecourse: '阪神競馬場', racecourse_en: 'hanshin', surface: '芝', surface_en: 'turf', distance: 3000, races: 16, wins: 4, places_2: 3, places_3: 3, win_rate: 25.0, place_rate: 62.5, quinella_rate: 43.8, win_payback: 112, place_payback: 107 },
+      { rank: 84, name: '阪神競馬場 ダ 1200m', racecourse: '阪神競馬場', racecourse_en: 'hanshin', surface: 'ダート', surface_en: 'dirt', distance: 1200, races: 66, wins: 12, places_2: 11, places_3: 10, win_rate: 18.2, place_rate: 50.0, quinella_rate: 34.8, win_payback: 102, place_payback: 98 },
+      { rank: 85, name: '阪神競馬場 ダ 1400m', racecourse: '阪神競馬場', racecourse_en: 'hanshin', surface: 'ダート', surface_en: 'dirt', distance: 1400, races: 68, wins: 18, places_2: 14, places_3: 11, win_rate: 26.5, place_rate: 63.2, quinella_rate: 47.1, win_payback: 110, place_payback: 105 },
+      { rank: 86, name: '阪神競馬場 ダ 1800m', racecourse: '阪神競馬場', racecourse_en: 'hanshin', surface: 'ダート', surface_en: 'dirt', distance: 1800, races: 72, wins: 13, places_2: 12, places_3: 11, win_rate: 18.1, place_rate: 50.0, quinella_rate: 34.7, win_payback: 103, place_payback: 99 },
+      { rank: 87, name: '阪神競馬場 ダ 2000m', racecourse: '阪神競馬場', racecourse_en: 'hanshin', surface: 'ダート', surface_en: 'dirt', distance: 2000, races: 28, wins: 5, places_2: 4, places_3: 4, win_rate: 17.9, place_rate: 46.4, quinella_rate: 32.1, win_payback: 100, place_payback: 97 },
+
+      // 小倉競馬場
+      { rank: 88, name: '小倉競馬場 芝 1200m', racecourse: '小倉競馬場', racecourse_en: 'kokura', surface: '芝', surface_en: 'turf', distance: 1200, races: 56, wins: 12, places_2: 10, places_3: 9, win_rate: 21.4, place_rate: 55.4, quinella_rate: 39.3, win_payback: 105, place_payback: 100 },
+      { rank: 89, name: '小倉競馬場 芝 1800m', racecourse: '小倉競馬場', racecourse_en: 'kokura', surface: '芝', surface_en: 'turf', distance: 1800, races: 48, wins: 10, places_2: 9, places_3: 8, win_rate: 20.8, place_rate: 56.3, quinella_rate: 39.6, win_payback: 104, place_payback: 99 },
+      { rank: 90, name: '小倉競馬場 芝 2000m', racecourse: '小倉競馬場', racecourse_en: 'kokura', surface: '芝', surface_en: 'turf', distance: 2000, races: 42, wins: 9, places_2: 8, places_3: 7, win_rate: 21.4, place_rate: 57.1, quinella_rate: 40.5, win_payback: 106, place_payback: 101 },
+      { rank: 91, name: '小倉競馬場 芝 2600m', racecourse: '小倉競馬場', racecourse_en: 'kokura', surface: '芝', surface_en: 'turf', distance: 2600, races: 16, wins: 3, places_2: 3, places_3: 2, win_rate: 18.8, place_rate: 50.0, quinella_rate: 37.5, win_payback: 101, place_payback: 97 },
+      { rank: 92, name: '小倉競馬場 ダ 1000m', racecourse: '小倉競馬場', racecourse_en: 'kokura', surface: 'ダート', surface_en: 'dirt', distance: 1000, races: 24, wins: 4, places_2: 4, places_3: 3, win_rate: 16.7, place_rate: 45.8, quinella_rate: 33.3, win_payback: 94, place_payback: 91 },
+      { rank: 93, name: '小倉競馬場 ダ 1700m', racecourse: '小倉競馬場', racecourse_en: 'kokura', surface: 'ダート', surface_en: 'dirt', distance: 1700, races: 38, wins: 7, places_2: 6, places_3: 6, win_rate: 18.4, place_rate: 50.0, quinella_rate: 34.2, win_payback: 99, place_payback: 96 },
+      { rank: 94, name: '小倉競馬場 ダ 2400m', racecourse: '小倉競馬場', racecourse_en: 'kokura', surface: 'ダート', surface_en: 'dirt', distance: 2400, races: 10, wins: 2, places_2: 1, places_3: 1, win_rate: 20.0, place_rate: 40.0, quinella_rate: 30.0, win_payback: 102, place_payback: 98 },
+    ],
+    trainer_stats: [
+      { rank: 1, name: '池江泰寿', races: 156, wins: 38, places_2: 28, places_3: 22, win_rate: 24.4, place_rate: 56.4, quinella_rate: 42.3, win_payback: 108, place_payback: 102 },
+      { rank: 2, name: '友道康夫', races: 145, wins: 35, places_2: 26, places_3: 21, win_rate: 24.1, place_rate: 56.6, quinella_rate: 42.1, win_payback: 106, place_payback: 101 },
+      { rank: 3, name: '藤原英昭', races: 138, wins: 32, places_2: 25, places_3: 20, win_rate: 23.2, place_rate: 55.8, quinella_rate: 41.3, win_payback: 105, place_payback: 100 },
+      { rank: 4, name: '国枝栄', races: 132, wins: 30, places_2: 24, places_3: 19, win_rate: 22.7, place_rate: 55.3, quinella_rate: 40.9, win_payback: 104, place_payback: 99 },
+      { rank: 5, name: '堀宣行', races: 128, wins: 29, places_2: 23, places_3: 18, win_rate: 22.7, place_rate: 54.7, quinella_rate: 40.6, win_payback: 103, place_payback: 98 },
+      { rank: 6, name: '中内田充正', races: 124, wins: 28, places_2: 22, places_3: 17, win_rate: 22.6, place_rate: 54.0, quinella_rate: 40.3, win_payback: 102, place_payback: 97 },
+      { rank: 7, name: '矢作芳人', races: 118, wins: 26, places_2: 21, places_3: 16, win_rate: 22.0, place_rate: 53.4, quinella_rate: 39.8, win_payback: 101, place_payback: 96 },
+      { rank: 8, name: '安田隆行', races: 115, wins: 25, places_2: 20, places_3: 16, win_rate: 21.7, place_rate: 53.0, quinella_rate: 39.1, win_payback: 100, place_payback: 95 },
+      { rank: 9, name: '木村哲也', races: 110, wins: 24, places_2: 19, places_3: 15, win_rate: 21.8, place_rate: 52.7, quinella_rate: 39.1, win_payback: 99, place_payback: 94 },
+      { rank: 10, name: '高野友和', races: 106, wins: 23, places_2: 18, places_3: 15, win_rate: 21.7, place_rate: 52.8, quinella_rate: 38.7, win_payback: 98, place_payback: 93 },
+      { rank: 11, name: '斎藤誠', races: 102, wins: 22, places_2: 17, places_3: 14, win_rate: 21.6, place_rate: 52.0, quinella_rate: 38.2, win_payback: 97, place_payback: 92 },
+      { rank: 12, name: '手塚貴久', races: 98, wins: 21, places_2: 16, places_3: 13, win_rate: 21.4, place_rate: 51.0, quinella_rate: 37.8, win_payback: 96, place_payback: 91 },
+      { rank: 13, name: '西村真幸', races: 95, wins: 20, places_2: 16, places_3: 13, win_rate: 21.1, place_rate: 51.6, quinella_rate: 37.9, win_payback: 95, place_payback: 90 },
+      { rank: 14, name: '田中博康', races: 92, wins: 19, places_2: 15, places_3: 12, win_rate: 20.7, place_rate: 50.0, quinella_rate: 37.0, win_payback: 94, place_payback: 89 },
+      { rank: 15, name: '鹿戸雄一', races: 88, wins: 18, places_2: 15, places_3: 12, win_rate: 20.5, place_rate: 51.1, quinella_rate: 37.5, win_payback: 93, place_payback: 88 },
+      { rank: 16, name: '中竹和也', races: 85, wins: 17, places_2: 14, places_3: 11, win_rate: 20.0, place_rate: 49.4, quinella_rate: 36.5, win_payback: 92, place_payback: 87 },
+      { rank: 17, name: '奥村豊', races: 82, wins: 17, places_2: 13, places_3: 11, win_rate: 20.7, place_rate: 50.0, quinella_rate: 36.6, win_payback: 91, place_payback: 86 },
+      { rank: 18, name: '松永幹夫', races: 78, wins: 16, places_2: 13, places_3: 10, win_rate: 20.5, place_rate: 50.0, quinella_rate: 37.2, win_payback: 90, place_payback: 85 },
+      { rank: 19, name: '加藤征弘', races: 75, wins: 15, places_2: 12, places_3: 10, win_rate: 20.0, place_rate: 49.3, quinella_rate: 36.0, win_payback: 89, place_payback: 84 },
+      { rank: 20, name: '松田国英', races: 72, wins: 14, places_2: 12, places_3: 9, win_rate: 19.4, place_rate: 48.6, quinella_rate: 36.1, win_payback: 88, place_payback: 83 },
+    ],
+    track_condition_stats: [
+      // 芝
+      { surface: '芝', condition: 'firm', condition_label: '良', races: 1158, wins: 228, places_2: 192, places_3: 158, win_rate: 19.7, place_rate: 49.9, quinella_rate: 36.3, win_payback: 104, place_payback: 99 },
+      { surface: '芝', condition: 'good', condition_label: '稍重', races: 245, wins: 45, places_2: 36, places_3: 29, win_rate: 18.4, place_rate: 44.9, quinella_rate: 33.1, win_payback: 100, place_payback: 96 },
+      { surface: '芝', condition: 'yielding', condition_label: '重', races: 108, wins: 16, places_2: 13, places_3: 11, win_rate: 14.8, place_rate: 37.0, quinella_rate: 26.9, win_payback: 94, place_payback: 90 },
+      { surface: '芝', condition: 'soft', condition_label: '不良', races: 52, wins: 6, places_2: 6, places_3: 5, win_rate: 11.5, place_rate: 32.7, quinella_rate: 23.1, win_payback: 87, place_payback: 84 },
+      // ダート
+      { surface: 'ダ', condition: 'firm', condition_label: '良', races: 698, wins: 124, places_2: 106, places_3: 87, win_rate: 17.8, place_rate: 45.4, quinella_rate: 33.0, win_payback: 99, place_payback: 96 },
+      { surface: 'ダ', condition: 'good', condition_label: '稍重', races: 137, wins: 23, places_2: 19, places_3: 15, win_rate: 16.8, place_rate: 41.6, quinella_rate: 30.7, win_payback: 95, place_payback: 92 },
+      { surface: 'ダ', condition: 'yielding', condition_label: '重', races: 60, wins: 8, places_2: 7, places_3: 5, win_rate: 13.3, place_rate: 33.3, quinella_rate: 25.0, win_payback: 89, place_payback: 86 },
+      { surface: 'ダ', condition: 'soft', condition_label: '不良', races: 31, wins: 3, places_2: 3, places_3: 2, win_rate: 9.7, place_rate: 25.8, quinella_rate: 19.4, win_payback: 82, place_payback: 79 },
+    ],
+    class_stats: [
+      { rank: 1, class_name: 'G1', races: 245, wins: 58, places_2: 48, places_3: 38, win_rate: 23.7, place_rate: 58.8, quinella_rate: 43.3, win_payback: 112, place_payback: 106 },
+      { rank: 2, class_name: 'G2', races: 198, wins: 42, places_2: 36, places_3: 30, win_rate: 21.2, place_rate: 54.5, quinella_rate: 39.4, win_payback: 108, place_payback: 103 },
+      { rank: 3, class_name: 'G3', races: 186, wins: 38, places_2: 32, places_3: 26, win_rate: 20.4, place_rate: 51.6, quinella_rate: 37.6, win_payback: 105, place_payback: 100 },
+      { rank: 4, class_name: 'オープン', races: 356, wins: 68, places_2: 58, places_3: 48, win_rate: 19.1, place_rate: 48.9, quinella_rate: 35.4, win_payback: 102, place_payback: 98 },
+      { rank: 5, class_name: '3勝クラス', races: 428, wins: 78, places_2: 65, places_3: 54, win_rate: 18.2, place_rate: 46.0, quinella_rate: 33.4, win_payback: 100, place_payback: 96 },
+      { rank: 6, class_name: '2勝クラス', races: 512, wins: 88, places_2: 72, places_3: 60, win_rate: 17.2, place_rate: 43.0, quinella_rate: 31.3, win_payback: 97, place_payback: 93 },
+      { rank: 7, class_name: '1勝クラス', races: 382, wins: 58, places_2: 48, places_3: 38, win_rate: 15.2, place_rate: 37.7, quinella_rate: 27.7, win_payback: 94, place_payback: 90 },
+      { rank: 8, class_name: '未勝利', races: 182, wins: 23, places_2: 23, places_3: 18, win_rate: 12.6, place_rate: 35.2, quinella_rate: 25.3, win_payback: 88, place_payback: 85 },
+      { rank: 9, class_name: '新馬', races: 124, wins: 18, places_2: 16, places_3: 13, win_rate: 14.5, place_rate: 37.9, quinella_rate: 27.4, win_payback: 91, place_payback: 88 },
     ],
   },
 };
@@ -404,13 +494,44 @@ export default async function JockeyPage({
     place_payback: stat.place_payback,
   }));
 
-  // DataTableコンポーネント用にデータ整形（linkプロパティを追加）
-  const courseTableData = jockey.course_stats.map((stat) => ({
-    ...stat,
-    link: `/courses/${stat.racecourse_en}/${stat.surface_en}/${
-      stat.variant ? `${stat.distance}-${stat.variant}` : stat.distance
-    }`,
+  // 馬場状態別データをテーブル形式に変換（順位なし）
+  const trackConditionStatsData = jockey.track_condition_stats.map((stat) => ({
+    name: `${stat.surface} - ${stat.condition_label}`,
+    races: stat.races,
+    wins: stat.wins,
+    places_2: stat.places_2,
+    places_3: stat.places_3,
+    win_rate: stat.win_rate,
+    quinella_rate: stat.quinella_rate,
+    place_rate: stat.place_rate,
+    win_payback: stat.win_payback,
+    place_payback: stat.place_payback,
   }));
+
+  // クラス別データをテーブル形式に変換（順位なし）
+  const classStatsData = jockey.class_stats.map((stat) => ({
+    name: stat.class_name,
+    races: stat.races,
+    wins: stat.wins,
+    places_2: stat.places_2,
+    places_3: stat.places_3,
+    win_rate: stat.win_rate,
+    quinella_rate: stat.quinella_rate,
+    place_rate: stat.place_rate,
+    win_payback: stat.win_payback,
+    place_payback: stat.place_payback,
+  }));
+
+  // DataTableコンポーネント用にデータ整形（linkプロパティを追加）
+  // 障害コースを除外
+  const courseTableData = jockey.course_stats
+    .filter((stat) => stat.surface_en !== 'obstacle')
+    .map((stat) => ({
+      ...stat,
+      link: `/courses/${stat.racecourse_en}/${stat.surface_en}/${
+        stat.variant ? `${stat.distance}-${stat.variant}` : stat.distance
+      }`,
+    }));
 
   // 競馬場別にグループ化（HeaderMenuの順序に合わせる）
   const racecourseOrder = [
@@ -449,12 +570,15 @@ export default async function JockeyPage({
   const navigationItems = [
     { id: 'leading', label: 'リーディング' },
     { id: 'yearly-stats', label: '年度別' },
+    { id: 'class-stats', label: 'クラス別' },
     { id: 'popularity-stats', label: '人気別' },
     { id: 'running-style-stats', label: '脚質別' },
     { id: 'gate-stats', label: '枠順別' },
     { id: 'distance-stats', label: '距離別' },
     { id: 'surface-stats', label: '芝・ダート別' },
+    { id: 'track-condition-stats', label: '馬場状態別' },
     { id: 'course-stats', label: 'コース別' },
+    { id: 'trainer-stats', label: '調教師別' },
   ];
 
   // 構造化データ - BreadcrumbList
@@ -496,8 +620,8 @@ export default async function JockeyPage({
       <main>
         <article>
           {/* 騎手ヘッダー */}
-          <div className="course-header">
-            <h1>{jockey.name}</h1>
+          <div className="page-header">
+            <h1>{jockey.name} 騎手データ</h1>
 
             {/* データ情報セクション */}
             <div className="course-meta-section">
@@ -537,6 +661,17 @@ export default async function JockeyPage({
               nameLabel="年度"
               disableHighlight={true}
               showRank={false}
+            />
+          </section>
+
+          {/* クラス別データセクション */}
+          <section id="class-stats" aria-label="クラス別データ">
+            <DataTable
+              title={`${jockey.name} クラス別データ`}
+              data={classStatsData}
+              nameLabel="クラス"
+              showRank={false}
+              showGradeBadge={true}
             />
           </section>
 
@@ -584,11 +719,31 @@ export default async function JockeyPage({
             />
           </section>
 
+          {/* 馬場状態別データセクション */}
+          <section id="track-condition-stats" aria-label="馬場状態別データ">
+            <DataTable
+              title={`${jockey.name} 馬場状態別データ`}
+              data={trackConditionStatsData}
+              nameLabel="馬場状態"
+              showRank={false}
+            />
+          </section>
+
           {/* コース別成績 */}
           <section id="course-stats" aria-label="コース別成績">
             <RacecourseCourseTable
               title={`${jockey.name} コース別成績`}
               data={coursesByRacecourse}
+            />
+          </section>
+
+          {/* 調教師別データセクション */}
+          <section id="trainer-stats" aria-label="調教師別データ">
+            <DataTable
+              title={`${jockey.name} 調教師別データ`}
+              data={jockey.trainer_stats}
+              initialShow={10}
+              nameLabel="調教師"
             />
           </section>
         </article>

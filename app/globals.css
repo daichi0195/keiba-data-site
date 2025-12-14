@@ -119,8 +119,8 @@ main {
   padding-bottom: 2rem; /* 下部ナビゲーション分の余白 */
 }
 
-/* コースヘッダー */
-.course-header {
+/* ページヘッダー（コース、騎手など共通） */
+.page-header {
   background: linear-gradient(135deg, #0d5c2f 0%, #1db854 50%, #2ed963 100%);
   border-radius: 16px;
   padding: 2rem 2rem;
@@ -134,7 +134,7 @@ main {
   align-items: stretch;
 }
 
-.course-header::before {
+.page-header::before {
   content: '';
   position: absolute;
   top: 0;
@@ -159,7 +159,7 @@ main {
   pointer-events: none;
 }
 
-.course-header::after {
+.page-header::after {
   content: '';
   position: absolute;
   top: -50%;
@@ -171,7 +171,7 @@ main {
   z-index: 1;
 }
 
-.course-header h1 {
+.page-header h1 {
   color: #fff;
   font-size: 2rem;
   margin: 0 0 1.5rem 0;
@@ -1298,7 +1298,7 @@ details[open] .evaluation-content {
   background: #fff;
   border-radius: 14px;
   padding: 1.25rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   border: 1px solid var(--border-color);
   transition: all 0.3s ease;
@@ -1602,14 +1602,14 @@ details[open] .evaluation-content {
   border-right: 1px solid #000 !important;
 }
 
-/* コース別表専用：コース名列の幅を100pxに設定 */
+/* コース別表専用：コース名列の幅を80pxに設定 */
 .racecourse-course-table .mobile-sticky-col.mobile-col-name.mobile-col-name-first,
 .racecourse-course-table thead .mobile-sticky-col.mobile-col-name.mobile-col-name-first,
 .racecourse-course-table tbody .mobile-sticky-col.mobile-col-name.mobile-col-name-first,
 .racecourse-course-table tbody .mobile-sticky-body.mobile-col-name.mobile-col-name-first {
-  width: 100px !important;
-  min-width: 100px !important;
-  max-width: 100px !important;
+  width: 80px !important;
+  min-width: 80px !important;
+  max-width: 80px !important;
 }
 
 /* Body部分の固定列 */
@@ -1648,12 +1648,12 @@ details[open] .evaluation-content {
 /* 行のスタイル */
 .mobile-data-table tbody tr {
   transition: background-color 0.2s ease;
-  height: 44px;
+  height: 45px;
 }
 
 .mobile-data-table tbody td {
   border-top: 1px solid #f0f0f0;
-  padding: 12px 8px;
+  padding: 8px 8px;
   font-size: 13px;
   color: #000;
   vertical-align: middle;
@@ -1816,7 +1816,7 @@ details[open] .evaluation-content {
     margin-bottom: 0;
   }
   
-  .course-header {
+  .page-header {
     padding: 2rem;
     margin-bottom: 1rem;
   }
@@ -1836,7 +1836,7 @@ details[open] .evaluation-content {
   
   .section {
     padding: 2rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
   }
   
   .section-title {
@@ -1957,14 +1957,14 @@ details[open] .evaluation-content {
     border-right: none !important;
   }
 
-  /* コース別表専用：コース名列の幅を100pxに設定（モバイル） */
+  /* コース別表専用：コース名列の幅を80pxに設定（モバイル） */
   .racecourse-course-table .mobile-sticky-col.mobile-col-name.mobile-col-name-first,
   .racecourse-course-table thead .mobile-sticky-col.mobile-col-name.mobile-col-name-first,
   .racecourse-course-table tbody .mobile-sticky-col.mobile-col-name.mobile-col-name-first,
   .racecourse-course-table tbody .mobile-sticky-body.mobile-col-name.mobile-col-name-first {
-    width: 100px !important;
-    min-width: 100px !important;
-    max-width: 100px !important;
+    width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
   }
 
   /* 年度カラムの右側に固定枠線を追加（ヘッダー） */
@@ -2240,12 +2240,12 @@ h3.subsection-title:first-of-type {
     margin: 1.25rem 0 0.875rem;
   }
 
-  .course-header {
+  .page-header {
     padding: 1.5rem 1.5rem;
     margin: 0 0 1rem 0;
   }
 
-  .course-header h1 {
+  .page-header h1 {
     font-size: 1.3rem;
     margin: 0 0 1rem 0;
   }
