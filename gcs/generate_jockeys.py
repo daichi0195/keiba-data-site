@@ -709,8 +709,8 @@ def get_track_condition_stats(client):
       END,
       CASE rm.track_condition
         WHEN '良' THEN 1
-        WHEN '重' THEN 2
-        WHEN '稍重' THEN 3
+        WHEN '稍重' THEN 2
+        WHEN '重' THEN 3
         WHEN '不良' THEN 4
         ELSE 5
       END
@@ -1156,19 +1156,22 @@ def main():
             print(f"🚀 Starting jockey data export (FULL MODE)")
             print(f"   Fetching all active jockeys from BigQuery...")
 
-            # 過去3年間に50レース以上出走している騎手を取得
+            # 現役中央騎手で過去3年間に30レース以上出走している騎手を取得
             query = f"""
             SELECT DISTINCT
-              rr.jockey_id as id,
-              rr.jockey_name as name,
+              j.jockey_id as id,
+              j.jockey_name as name,
               COUNT(*) as recent_races
-            FROM `{DATASET}.race_result` rr
+            FROM `{DATASET}.jockey` j
+            JOIN `{DATASET}.race_result` rr ON j.jockey_id = rr.jockey_id
             JOIN `{DATASET}.race_master` rm ON rr.race_id = rm.race_id
             WHERE rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
-              AND rr.jockey_id IS NOT NULL
-              AND rr.jockey_name IS NOT NULL
-            GROUP BY rr.jockey_id, rr.jockey_name
-            HAVING recent_races >= 50
+              AND j.is_active = true
+              AND j.region <> '地方'
+              AND j.jockey_id IS NOT NULL
+              AND j.jockey_name IS NOT NULL
+            GROUP BY j.jockey_id, j.jockey_name
+            HAVING recent_races >= 30
             ORDER BY recent_races DESC
             """
 
