@@ -26,6 +26,31 @@ export default function ClassTable({ title, data }: Props) {
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // 全クラスを定義（表示順）
+  const allClasses = ['G1', 'G2', 'G3', 'オープン', '3勝', '2勝', '1勝', '未勝利', '新馬'];
+
+  // データを全クラスに揃える（データがないクラスは0で埋める）
+  const completeData = allClasses.map((className, index) => {
+    const existingData = data.find(d => d.class_name === className);
+    if (existingData) {
+      return existingData;
+    }
+    // データがない場合は0で埋める
+    return {
+      rank: index + 1,
+      class_name: className,
+      races: 0,
+      wins: 0,
+      places_2: 0,
+      places_3: 0,
+      win_rate: 0,
+      place_rate: 0,
+      quinella_rate: 0,
+      win_payback: 0,
+      place_payback: 0,
+    };
+  });
+
   useEffect(() => {
     const handleScroll = (e: Event) => {
       const target = e.target as HTMLDivElement;
@@ -41,15 +66,15 @@ export default function ClassTable({ title, data }: Props) {
   }, []);
 
   // 各カラムの最大値を取得
-  const maxRaces = Math.max(...data.map(d => d.races ?? 0));
-  const maxWins = Math.max(...data.map(d => d.wins ?? 0));
-  const maxPlaces2 = Math.max(...data.map(d => d.places_2 ?? 0));
-  const maxPlaces3 = Math.max(...data.map(d => d.places_3 ?? 0));
-  const maxWinRate = Math.max(...data.map(d => d.win_rate ?? 0));
-  const maxPlaceRate = Math.max(...data.map(d => d.place_rate ?? 0));
-  const maxQuinellaRate = Math.max(...data.map(d => d.quinella_rate ?? 0));
-  const maxWinPayback = Math.max(...data.map(d => d.win_payback ?? 0));
-  const maxPlacePayback = Math.max(...data.map(d => d.place_payback ?? 0));
+  const maxRaces = Math.max(...completeData.map(d => d.races ?? 0));
+  const maxWins = Math.max(...completeData.map(d => d.wins ?? 0));
+  const maxPlaces2 = Math.max(...completeData.map(d => d.places_2 ?? 0));
+  const maxPlaces3 = Math.max(...completeData.map(d => d.places_3 ?? 0));
+  const maxWinRate = Math.max(...completeData.map(d => d.win_rate ?? 0));
+  const maxPlaceRate = Math.max(...completeData.map(d => d.place_rate ?? 0));
+  const maxQuinellaRate = Math.max(...completeData.map(d => d.quinella_rate ?? 0));
+  const maxWinPayback = Math.max(...completeData.map(d => d.win_payback ?? 0));
+  const maxPlacePayback = Math.max(...completeData.map(d => d.place_payback ?? 0));
 
   const isHighlight = (value: number, maxValue: number) => value === maxValue;
 
@@ -91,7 +116,7 @@ export default function ClassTable({ title, data }: Props) {
               </tr>
             </thead>
             <tbody>
-              {data.map((row, index) => {
+              {completeData.map((row, index) => {
                 const badgeClass = getGradeBadgeClass(row.class_name);
                 const displayName = row.class_name.replace('クラス', '');
 

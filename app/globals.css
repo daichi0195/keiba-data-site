@@ -1710,14 +1710,14 @@ details[open] .evaluation-content {
   border-right: 1px solid #000 !important;
 }
 
-/* コース別表専用：コース名列の幅を80pxに設定 */
+/* コース別表専用：コース名列の幅を100pxに設定 */
 .racecourse-course-table .mobile-sticky-col.mobile-col-name.mobile-col-name-first,
 .racecourse-course-table thead .mobile-sticky-col.mobile-col-name.mobile-col-name-first,
 .racecourse-course-table tbody .mobile-sticky-col.mobile-col-name.mobile-col-name-first,
 .racecourse-course-table tbody .mobile-sticky-body.mobile-col-name.mobile-col-name-first {
-  width: 80px !important;
-  min-width: 80px !important;
-  max-width: 80px !important;
+  width: 100px !important;
+  min-width: 100px !important;
+  max-width: 100px !important;
 }
 
 /* Body部分の固定列 */
@@ -2065,14 +2065,14 @@ details[open] .evaluation-content {
     border-right: none !important;
   }
 
-  /* コース別表専用：コース名列の幅を80pxに設定（モバイル） */
+  /* コース別表専用：コース名列の幅を100pxに設定（モバイル） */
   .racecourse-course-table .mobile-sticky-col.mobile-col-name.mobile-col-name-first,
   .racecourse-course-table thead .mobile-sticky-col.mobile-col-name.mobile-col-name-first,
   .racecourse-course-table tbody .mobile-sticky-col.mobile-col-name.mobile-col-name-first,
   .racecourse-course-table tbody .mobile-sticky-body.mobile-col-name.mobile-col-name-first {
-    width: 80px !important;
-    min-width: 80px !important;
-    max-width: 80px !important;
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
   }
 
   /* 年度カラムの右側に固定枠線を追加（ヘッダー） */
@@ -2490,4 +2490,9 @@ h3.subsection-title:first-of-type {
   font-size: 0.75rem;
   color: #64748b;
   line-height: 1.5;
+}
+
+/* 注目ポイントセクションの注釈に下マージンを追加 */
+.highlights-box .note-text {
+  margin-bottom: 12px;
 }

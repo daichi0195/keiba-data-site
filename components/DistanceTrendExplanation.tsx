@@ -44,6 +44,17 @@ export default function DistanceTrendExplanation() {
                   <li>中距離・長距離の複勝率が短距離・マイルより5%以上高い：長距離が得意</li>
                 </ul>
               </div>
+              <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #e2e8f0', fontSize: '0.85rem', color: '#475569', lineHeight: '1.5' }}>
+                <p style={{ margin: '0 0 0.75rem 0' }}><strong>距離の定義</strong></p>
+                <div style={{ margin: '0 0 0.75rem 0', fontSize: '0.85rem' }}>
+                  <p style={{ margin: '0 0 0.5rem 0' }}><strong>短距離</strong>：1000m～1300m</p>
+                  <p style={{ margin: '0 0 0.5rem 0' }}><strong>マイル</strong>：1301m～1899m</p>
+                  <p style={{ margin: '0 0 0.5rem 0' }}><strong>中距離</strong>：1900m～2100m</p>
+                  <p style={{ margin: '0 0 0.5rem 0' }}><strong>長距離</strong>：2101m～</p>
+                </div>
+                <p className="note-text">※IFHA（国際競馬統括機関連盟）の基準を採用</p>
+                <p className="note-text" style={{ marginTop: '0.25rem' }}>※長距離レースが少ないため中長距離は長距離に分類</p>
+              </div>
             </div>
           </div>
         </div>

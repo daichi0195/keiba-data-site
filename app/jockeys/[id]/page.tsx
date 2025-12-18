@@ -1027,6 +1027,7 @@ export default async function JockeyPage({
               data={jockey.trainer_stats}
               initialShow={10}
               nameLabel="調教師"
+              note="※現役調教師のみ"
             />
           </section>
 

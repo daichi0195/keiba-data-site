@@ -38,8 +38,8 @@ export default function JockeyTrainerHighlights({
       return { top: [], bottom: [] };
     }
 
-    // 出走回数20回以上のアイテムのみ対象
-    const filteredItems = items.filter(item => item.races >= 20);
+    // 出走回数10回以上のアイテムのみ対象
+    const filteredItems = items.filter(item => item.races >= 10);
 
     if (filteredItems.length === 0) {
       return { top: [], bottom: [] };
@@ -124,6 +124,8 @@ export default function JockeyTrainerHighlights({
             </div>
           )}
         </div>
+
+        <p className="note-text">※出走回数10回以上のコースを対象に、複勝率で評価しています</p>
       </div>
     </section>
   );

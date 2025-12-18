@@ -218,7 +218,12 @@ def get_surface_stats(client):
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
       AND rm.surface IN ('芝', 'ダート')
     GROUP BY rm.surface
-    ORDER BY rm.surface
+    ORDER BY
+      CASE rm.surface
+        WHEN '芝' THEN 1
+        WHEN 'ダート' THEN 2
+        ELSE 3
+      END
     """
 
     try:
@@ -475,11 +480,16 @@ def get_course_stats(client):
     )
     SELECT
       ROW_NUMBER() OVER (ORDER BY wins DESC, win_rate DESC) as rank,
-      CONCAT(venue_name, '競馬場 ', surface, ' ', CAST(distance AS STRING), 'm',
+      CONCAT(venue_name, '競馬場 ',
+        CASE surface
+          WHEN 'ダート' THEN 'ダ'
+          ELSE surface
+        END,
+        ' ', CAST(distance AS STRING), 'm',
         CASE
-          WHEN track_variant = '外' THEN '（外回り）'
-          WHEN (venue_name = '京都' AND surface = '芝' AND distance IN (1400, 1600) AND track_variant IS NULL) THEN '（内回り）'
-          WHEN (venue_name = '新潟' AND surface = '芝' AND distance = 2000 AND track_variant IS NULL) THEN '（内回り）'
+          WHEN track_variant = '外' THEN '外'
+          WHEN (venue_name = '京都' AND surface = '芝' AND distance IN (1400, 1600) AND track_variant IS NULL) THEN '内'
+          WHEN (venue_name = '新潟' AND surface = '芝' AND distance = 2000 AND track_variant IS NULL) THEN '内'
           ELSE ''
         END
       ) as name,
@@ -515,7 +525,6 @@ def get_course_stats(client):
       place_payback
     FROM course_data
     ORDER BY wins DESC, win_rate DESC
-    LIMIT 50
     """
 
     try:
@@ -531,7 +540,7 @@ def get_trainer_stats(client):
     query = f"""
     WITH trainer_data AS (
       SELECT
-        rr.trainer_name as name,
+        t.trainer_name as name,
         COUNT(*) as races,
         SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
         SUM(CASE WHEN rr.finish_position = 2 THEN 1 ELSE 0 END) as places_2,
@@ -549,7 +558,7 @@ def get_trainer_stats(client):
         rr.jockey_id = {JOCKEY_ID}
         AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
         AND t.is_active = true
-      GROUP BY rr.trainer_name
+      GROUP BY t.trainer_name
     )
     SELECT
       ROW_NUMBER() OVER (ORDER BY wins DESC, win_rate DESC) as rank,
@@ -581,7 +590,18 @@ def get_class_stats(client):
     query = f"""
     WITH class_data AS (
       SELECT
-        rm.race_class as class_name,
+        CASE
+          WHEN rm.grade = 'G1' THEN 'G1'
+          WHEN rm.grade = 'G2' THEN 'G2'
+          WHEN rm.grade = 'G3' THEN 'G3'
+          WHEN rm.race_class = 'オープン' AND rm.grade IS NULL THEN 'オープン'
+          WHEN rm.race_class = '３勝クラス' THEN '3勝'
+          WHEN rm.race_class = '２勝クラス' THEN '2勝'
+          WHEN rm.race_class = '１勝クラス' THEN '1勝'
+          WHEN rm.race_class = '未勝利' THEN '未勝利'
+          WHEN rm.race_class = '新馬' THEN '新馬'
+          ELSE rm.race_class
+        END as class_name,
         COUNT(*) as races,
         SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
         SUM(CASE WHEN rr.finish_position = 2 THEN 1 ELSE 0 END) as places_2,
@@ -598,10 +618,23 @@ def get_class_stats(client):
         rr.jockey_id = {JOCKEY_ID}
         AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
         AND rm.race_class IS NOT NULL
-      GROUP BY rm.race_class
+      GROUP BY class_name
     )
     SELECT
-      ROW_NUMBER() OVER (ORDER BY wins DESC, win_rate DESC) as rank,
+      ROW_NUMBER() OVER (ORDER BY
+        CASE class_name
+          WHEN 'G1' THEN 1
+          WHEN 'G2' THEN 2
+          WHEN 'G3' THEN 3
+          WHEN 'オープン' THEN 4
+          WHEN '3勝' THEN 5
+          WHEN '2勝' THEN 6
+          WHEN '1勝' THEN 7
+          WHEN '未勝利' THEN 8
+          WHEN '新馬' THEN 9
+          ELSE 10
+        END
+      ) as rank,
       class_name,
       races,
       wins,
@@ -613,7 +646,19 @@ def get_class_stats(client):
       win_payback,
       place_payback
     FROM class_data
-    ORDER BY wins DESC, win_rate DESC
+    ORDER BY
+      CASE class_name
+        WHEN 'G1' THEN 1
+        WHEN 'G2' THEN 2
+        WHEN 'G3' THEN 3
+        WHEN 'オープン' THEN 4
+        WHEN '3勝' THEN 5
+        WHEN '2勝' THEN 6
+        WHEN '1勝' THEN 7
+        WHEN '未勝利' THEN 8
+        WHEN '新馬' THEN 9
+        ELSE 10
+      END
     """
 
     try:
@@ -628,7 +673,10 @@ def get_track_condition_stats(client):
     """馬場状態別成績を取得（過去3年間）"""
     query = f"""
     SELECT
-      rm.surface,
+      CASE rm.surface
+        WHEN 'ダート' THEN 'ダ'
+        ELSE rm.surface
+      END as surface,
       rm.track_condition as condition,
       rm.track_condition as condition_label,
       COUNT(*) as races,
@@ -647,8 +695,14 @@ def get_track_condition_stats(client):
       rr.jockey_id = {JOCKEY_ID}
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
       AND rm.track_condition IS NOT NULL
+      AND rm.surface IN ('芝', 'ダート')
     GROUP BY rm.surface, rm.track_condition
-    ORDER BY rm.surface,
+    ORDER BY
+      CASE rm.surface
+        WHEN '芝' THEN 1
+        WHEN 'ダート' THEN 2
+        ELSE 3
+      END,
       CASE rm.track_condition
         WHEN '良' THEN 1
         WHEN '稍重' THEN 2
@@ -671,9 +725,9 @@ def get_gender_stats(client):
     query = f"""
     SELECT
       CASE rr.sex
-        WHEN 1 THEN '牡'
-        WHEN 2 THEN '牝'
-        WHEN 3 THEN 'セ'
+        WHEN 1 THEN '牡馬'
+        WHEN 2 THEN '牝馬'
+        WHEN 3 THEN 'セン馬'
         ELSE '不明'
       END as name,
       COUNT(*) as races,
@@ -693,7 +747,13 @@ def get_gender_stats(client):
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
       AND rr.sex IS NOT NULL
     GROUP BY rr.sex
-    ORDER BY rr.sex
+    ORDER BY
+      CASE rr.sex
+        WHEN 1 THEN 1
+        WHEN 2 THEN 2
+        WHEN 3 THEN 3
+        ELSE 4
+      END
     """
 
     try:

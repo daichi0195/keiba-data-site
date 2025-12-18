@@ -156,11 +156,6 @@ export default function DataTable({ title, data, initialShow = 10, nameLabel = '
   const tableContent = (
     <>
       {title && <h2 className="section-title">{title}</h2>}
-      {note && (
-        <p style={{ fontSize: '0.85rem', color: '#666', marginTop: '0.5rem', marginBottom: '0.75rem' }}>
-          ※ {note}
-        </p>
-      )}
 
       {/* テーブルコンテナ */}
       <div className="mobile-table-container">
@@ -287,6 +282,12 @@ export default function DataTable({ title, data, initialShow = 10, nameLabel = '
         </div>
       </div>
       
+      {note && (
+        <p className="note-text" style={{ marginTop: '0.75rem' }}>
+          {note}
+        </p>
+      )}
+
       {data.length > initialShow && (
         <div className="show-more-container">
           <button

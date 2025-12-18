@@ -140,12 +140,12 @@ export default function RunningStyleTable({ title, data }: Props) {
       </div>
 
       <div className={styles.note}>
-        <p className={styles.noteTitle}>脚質の定義</p>
-        <p className={styles.noteItem}>逃げ：コーナーのいずれかが1位通過</p>
-        <p className={styles.noteItem}>先行：最終コーナーで第1集団</p>
-        <p className={styles.noteItem}>差し：最終コーナーで第2集団かつ上がりが5位以内</p>
-        <p className={styles.noteItem}>追込：最終コーナーで第3集団かつ上がりが5位以内</p>
-        <p className="note-text">※出走頭数を3で割ったものを第1集団～第3集団とする<br />※上記に該当しない場合は集計から除外する</p>
+        <p className="note-text" style={{ fontWeight: '600', margin: '0 0 0.25rem 0' }}>脚質の定義</p>
+        <p className="note-text" style={{ margin: '0.25rem 0' }}>逃げ：コーナーのいずれかが1位通過</p>
+        <p className="note-text" style={{ margin: '0.25rem 0' }}>先行：最終コーナーで第1集団</p>
+        <p className="note-text" style={{ margin: '0.25rem 0' }}>差し：最終コーナーで第2集団かつ上がりが5位以内</p>
+        <p className="note-text" style={{ margin: '0.25rem 0' }}>追込：最終コーナーで第3集団かつ上がりが5位以内</p>
+        <p className="note-text" style={{ margin: '0.5rem 0 0 0' }}>※出走頭数を3で割ったものを第1集団～第3集団とする<br />※上記に該当しない場合は集計から除外する</p>
       </div>
     </div>
   );
