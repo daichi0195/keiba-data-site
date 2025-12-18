@@ -6,6 +6,12 @@ import DataTable from '@/components/DataTable';
 interface StatItem {
   rank?: number;
   name: string;
+  racecourse?: string;
+  racecourse_en?: string;
+  surface?: string;
+  surface_en?: string;
+  distance?: number;
+  variant?: string;
   races: number;
   wins?: number;
   places_2?: number;
@@ -15,6 +21,7 @@ interface StatItem {
   quinella_rate?: number;
   win_payback: number;
   place_payback: number;
+  link?: string;
 }
 
 interface JockeyTrainerHighlightsProps {
@@ -44,7 +51,12 @@ export default function JockeyTrainerHighlights({
     // 得意なコース: 複勝率TOP5（rankを付与、コース名を整形）
     const top = sortedByPlaceRate.slice(0, 5).map((item, index) => ({
       ...item,
-      name: item.name.replace(/競馬場/g, '').replace(/\s+/g, ''),
+      name: item.name
+        .replace(/競馬場/g, '')
+        .replace(/\s+/g, '')
+        .replace(/ダート/g, 'ダ')
+        .replace(/（外回り）/g, '外')
+        .replace(/（内回り）/g, '内'),
       rank: index + 1,
       wins: item.wins ?? 0,
       places_2: item.places_2 ?? 0,
@@ -55,7 +67,12 @@ export default function JockeyTrainerHighlights({
     // 苦手なコース: 複勝率BOTTOM5（rankを付与、コース名を整形）
     const bottom = sortedByPlaceRate.slice(-5).reverse().map((item, index) => ({
       ...item,
-      name: item.name.replace(/競馬場/g, '').replace(/\s+/g, ''),
+      name: item.name
+        .replace(/競馬場/g, '')
+        .replace(/\s+/g, '')
+        .replace(/ダート/g, 'ダ')
+        .replace(/（外回り）/g, '外')
+        .replace(/（内回り）/g, '内'),
       rank: index + 1,
       wins: item.wins ?? 0,
       places_2: item.places_2 ?? 0,
@@ -88,8 +105,6 @@ export default function JockeyTrainerHighlights({
                 initialShow={5}
                 nameLabel="コース"
                 showRank={false}
-                showCourseBadge={true}
-                courseBadgeType="good"
                 disableHighlight={true}
               />
             </div>
@@ -104,8 +119,6 @@ export default function JockeyTrainerHighlights({
                 initialShow={5}
                 nameLabel="コース"
                 showRank={false}
-                showCourseBadge={true}
-                courseBadgeType="bad"
                 disableHighlight={true}
               />
             </div>

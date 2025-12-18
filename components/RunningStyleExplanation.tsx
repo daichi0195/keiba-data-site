@@ -39,7 +39,7 @@ export default function RunningStyleExplanation() {
                 <ul style={{ margin: '0.5rem 0 0 1.5rem', paddingLeft: 0, fontSize: '0.85rem' }}>
                   <li>逃げ・先行の複勝率が差し・追込より5%以上高い：逃げ・先行が得意</li>
                   <li>逃げ・先行の複勝率が差し・追込より2%以上高い：やや逃げ・先行が得意</li>
-                  <li>複勝率の差がほぼない：互角</li>
+                  <li>複勝率の差がほぼない：差分なし</li>
                   <li>差し・追込の複勝率が逃げ・先行より2%以上高い：やや差し・追込が得意</li>
                   <li>差し・追込の複勝率が逃げ・先行より5%以上高い：差し・追込が得意</li>
                 </ul>
@@ -52,8 +52,8 @@ export default function RunningStyleExplanation() {
                   <p style={{ margin: '0 0 0.5rem 0' }}><strong>差し</strong>：最終コーナーで第2集団かつ上がりが5位以内</p>
                   <p style={{ margin: '0 0 0.5rem 0' }}><strong>追込</strong>：最終コーナーで第3集団かつ上がりが5位以内</p>
                 </div>
-                <p style={{ margin: '0.75rem 0 0 0', fontSize: '0.75rem', color: '#64748b' }}>※出走頭数を3で割ったものを第1集団～第3集団とする</p>
-                <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.75rem', color: '#64748b' }}>※上記に該当しない場合は集計から除外する</p>
+                <p className="note-text">※出走頭数を3で割ったものを第1集団～第3集団とする</p>
+                <p className="note-text" style={{ marginTop: '0.25rem' }}>※上記に該当しない場合は集計から除外する</p>
               </div>
             </div>
           </div>

@@ -62,7 +62,7 @@ export default function JockeyLeadingChart({ title, data, children }: JockeyLead
     ctx.scale(dpr, dpr);
 
     // グラフの設定
-    const padding = { top: 40, right: 0, bottom: 50, left: 0 };
+    const padding = { top: 15, right: 35, bottom: 30, left: 0 };
     const chartWidth = rect.width - padding.left - padding.right;
     const chartHeight = rect.height - padding.top - padding.bottom;
 
@@ -82,18 +82,26 @@ export default function JockeyLeadingChart({ title, data, children }: JockeyLead
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, rect.width, rect.height);
 
-    // グリッド線を描画
+    // グリッド線を描画（3〜4本程度）
+    const gridLines = 4;
     ctx.strokeStyle = '#e2e8f0';
     ctx.lineWidth = 1;
-    for (let i = 0; i <= 5; i++) {
-      const y = padding.top + (chartHeight / 5) * i;
+
+    for (let i = 0; i <= gridLines; i++) {
+      const y = padding.top + (chartHeight / gridLines) * i;
       ctx.beginPath();
       ctx.moveTo(padding.left, y);
       ctx.lineTo(padding.left + chartWidth, y);
       ctx.stroke();
-    }
 
-    // 右軸のラベル（削除）
+      // 右軸のラベル（勝利数）
+      const winsValue = Math.round(maxWinsRounded * (1 - i / gridLines));
+      ctx.fillStyle = '#999';
+      ctx.font = '11px sans-serif';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(winsValue.toString(), rect.width - 5, y);
+    }
 
     // X軸のラベル（年度）
     const barWidth = chartWidth / data.length;
@@ -119,14 +127,6 @@ export default function JockeyLeadingChart({ title, data, children }: JockeyLead
       ctx.globalAlpha = 0.85;
       ctx.fillRect(x, y, width, animatedBarHeight);
       ctx.globalAlpha = 1.0;
-
-      // 棒グラフの上に勝利数を表示（アニメーション完了後）- 緑系の配色
-      if (barProgress === 1) {
-        ctx.fillStyle = '#1db854';
-        ctx.font = 'bold 13px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(item.wins.toString() + '勝', x + width / 2, y - 5);
-      }
     });
 
     // 折れ線グラフ（リーディング順位）- 左から右にアニメーション

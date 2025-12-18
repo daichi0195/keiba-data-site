@@ -353,6 +353,19 @@ main {
   width: 120px !important;
 }
 
+/* コース名のフォントスタイルを数値と同じにする（リンクがない場合） */
+.highlights-content .mobile-data-table tbody .mobile-sticky-col.mobile-col-name.mobile-col-name-first,
+.highlights-content .mobile-data-table tbody .mobile-sticky-body.mobile-col-name.mobile-col-name-first {
+  font-size: 13px !important;
+}
+
+/* コース名のリンクスタイル（青色・下線） */
+.highlights-content .mobile-data-table tbody .mobile-sticky-col.mobile-col-name.mobile-col-name-first a,
+.highlights-content .mobile-data-table tbody .mobile-sticky-body.mobile-col-name.mobile-col-name-first a {
+  color: #2563eb !important;
+  text-decoration: underline !important;
+}
+
 /* コースバッジスタイル - 人気別と同じデザイン */
 .course-badge-good,
 .course-badge-bad {
@@ -1045,9 +1058,10 @@ details[open] .evaluation-content {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 60px;
-  width: 60px;
+  min-width: 48px;
+  width: 48px;
   height: 28px;
+  padding: 0 0.25rem;
   border-radius: 4px;
   font-size: 0.7rem;
   font-weight: 700;
@@ -2468,4 +2482,12 @@ h3.subsection-title:first-of-type {
   .fade-in-stagger-10 {
     transition-delay: 0s;
   }
+}
+
+/* ===== 注釈スタイル ===== */
+.note-text {
+  margin: 0.75rem 0 0 0;
+  font-size: 0.75rem;
+  color: #64748b;
+  line-height: 1.5;
 }

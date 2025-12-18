@@ -145,7 +145,7 @@ export default function RunningStyleTable({ title, data }: Props) {
         <p className={styles.noteItem}>先行：最終コーナーで第1集団</p>
         <p className={styles.noteItem}>差し：最終コーナーで第2集団かつ上がりが5位以内</p>
         <p className={styles.noteItem}>追込：最終コーナーで第3集団かつ上がりが5位以内</p>
-        <p className={styles.noteFooter}>※出走頭数を3で割ったものを第1集団～第3集団とする<br />※上記に該当しない場合は集計から除外する</p>
+        <p className="note-text">※出走頭数を3で割ったものを第1集団～第3集団とする<br />※上記に該当しない場合は集計から除外する</p>
       </div>
     </div>
   );

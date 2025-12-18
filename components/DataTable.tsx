@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import Link from 'next/link';
 
 type DataRow = {
   rank?: number;
@@ -14,6 +15,7 @@ type DataRow = {
   quinella_rate: number;
   win_payback: number;
   place_payback: number;
+  link?: string;
 };
 
 type Props = {
@@ -217,6 +219,15 @@ export default function DataTable({ title, data, initialShow = 10, nameLabel = '
                       if (showCourseBadge) {
                         const badgeClass = courseBadgeType === 'good' ? 'course-badge-good' : 'course-badge-bad';
                         return <span className={badgeClass}>{displayName}</span>;
+                      }
+
+                      // リンク付き表示
+                      if (row.link) {
+                        return (
+                          <Link href={row.link} style={{ color: '#2563eb', textDecoration: 'underline' }}>
+                            {displayName}
+                          </Link>
+                        );
                       }
 
                       return displayName;
