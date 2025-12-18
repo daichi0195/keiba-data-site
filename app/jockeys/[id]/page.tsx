@@ -20,7 +20,7 @@ import VolatilityExplanation from '@/components/VolatilityExplanation';
 import GatePositionExplanation from '@/components/GatePositionExplanation';
 import RunningStyleExplanation from '@/components/RunningStyleExplanation';
 import DistanceTrendExplanation from '@/components/DistanceTrendExplanation';
-import HighlightsSection from '@/components/HighlightsSection';
+import JockeyTrainerHighlights from '@/components/JockeyTrainerHighlights';
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
@@ -1086,11 +1086,9 @@ export default async function JockeyPage({
           </section>
 
           {/* 注目ポイントセクション */}
-          <section id="highlights-section" aria-label="注目ポイント">
-            <HighlightsSection
-              jockey_stats={jockey.course_stats}
-            />
-          </section>
+          <JockeyTrainerHighlights
+            course_stats={jockey.course_stats}
+          />
 
           {/* クラス別データセクション */}
           <section id="class-stats" aria-label="クラス別データ">

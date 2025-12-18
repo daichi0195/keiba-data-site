@@ -25,9 +25,11 @@ type Props = {
   disableHighlight?: boolean;
   showRank?: boolean;
   showGradeBadge?: boolean; // G1/G2/G3のバッジ表示
+  showCourseBadge?: boolean; // コース名をバッジ表示
+  courseBadgeType?: 'good' | 'bad'; // バッジの種類
 };
 
-export default function DataTable({ title, data, initialShow = 10, nameLabel = '名前', note, disableHighlight = false, showRank = true, showGradeBadge = false }: Props) {
+export default function DataTable({ title, data, initialShow = 10, nameLabel = '名前', note, disableHighlight = false, showRank = true, showGradeBadge = false, showCourseBadge = false, courseBadgeType = 'good' }: Props) {
   const [showAll, setShowAll] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -35,7 +37,12 @@ export default function DataTable({ title, data, initialShow = 10, nameLabel = '
   const prevShowAllRef = useRef(false);
   
   const displayData = showAll ? data : data.slice(0, initialShow);
-  
+
+  // 数値を3桁カンマ区切りでフォーマット
+  const formatNumber = (num: number) => {
+    return num.toLocaleString('ja-JP');
+  };
+
   // 名前を制限する関数
   const truncateName = (name: string, isNarrow: boolean) => {
     if (isNarrow) {
@@ -198,12 +205,20 @@ export default function DataTable({ title, data, initialShow = 10, nameLabel = '
                   {/* 固定列: 名前 */}
                   <td className={`mobile-sticky-col mobile-col-name mobile-sticky-body mobile-name-cell ${showRank && isScrolled ? 'mobile-col-name-narrow' : ''} ${!showRank ? 'mobile-col-name-first' : ''}`}>
                     {(() => {
-                      const badgeStyle = getGradeBadgeStyle(row.name);
+                      const gradeBadgeStyle = getGradeBadgeStyle(row.name);
                       const displayName = showRank ? truncateName(row.name, isScrolled) : row.name;
 
-                      if (badgeStyle) {
-                        return <span style={badgeStyle}>{displayName}</span>;
+                      // グレードバッジ表示
+                      if (gradeBadgeStyle) {
+                        return <span style={gradeBadgeStyle}>{displayName}</span>;
                       }
+
+                      // コースバッジ表示
+                      if (showCourseBadge) {
+                        const badgeClass = courseBadgeType === 'good' ? 'course-badge-good' : 'course-badge-bad';
+                        return <span className={badgeClass}>{displayName}</span>;
+                      }
+
                       return displayName;
                     })()}
                   </td>
@@ -211,7 +226,7 @@ export default function DataTable({ title, data, initialShow = 10, nameLabel = '
                   {/* スクロール列 - 数値のみハイライト */}
                   <td className="mobile-scroll-col">
                     <span className={isHighlight(row.races, maxRaces) ? 'mobile-highlight' : ''}>
-                      {row.races}
+                      {formatNumber(row.races)}
                     </span>
                   </td>
                   <td className="mobile-scroll-col mobile-col-wins">

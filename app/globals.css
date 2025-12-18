@@ -310,6 +310,72 @@ main {
   box-shadow: 0 4px 20px rgba(29, 184, 84, 0.1);
 }
 
+/* 騎手/調教師ページ専用のハイライトスタイル */
+.highlights-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.highlight-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.highlight-table .table-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.6;
+}
+
+.highlight-table > div {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* 騎手/調教師ページの注目ポイント表の1列目幅調整 */
+.highlights-content .mobile-data-table tbody tr td:first-child,
+.highlights-content .mobile-data-table thead tr th:first-child {
+  min-width: 120px !important;
+  max-width: 120px !important;
+  width: 120px !important;
+}
+
+/* モバイルビューでも同じ幅を適用 */
+.highlights-content .mobile-data-table tbody .mobile-sticky-col.mobile-col-name.mobile-col-name-first,
+.highlights-content .mobile-data-table tbody .mobile-sticky-body.mobile-col-name.mobile-col-name-first,
+.highlights-content .mobile-data-table thead .mobile-sticky-col.mobile-col-name.mobile-col-name-first {
+  min-width: 120px !important;
+  max-width: 120px !important;
+  width: 120px !important;
+}
+
+/* コースバッジスタイル - 人気別と同じデザイン */
+.course-badge-good,
+.course-badge-bad {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 12px;
+  border: 1px solid;
+}
+
+.course-badge-good {
+  color: #2d3748;
+  background: #f0fdf4;
+  border-color: #1db854;
+}
+
+.course-badge-bad {
+  color: #2d3748;
+  background: #fffbf0;
+  border-color: #f59e0b;
+}
+
 .highlight-item {
   margin-bottom: 2rem;
 }
@@ -544,48 +610,42 @@ main {
 }
 
 .highlight-cards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.75rem;
-}
-
-@media (max-width: 768px) {
-  .highlight-cards {
-    gap: 0.5rem;
-  }
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .highlight-card {
-  background: #fff;
-  border: 1px solid var(--border-subtle);
-  border-radius: 8px;
+  display: inline-block;
   padding: 0.625rem;
+  text-decoration: none;
+  border-radius: 8px;
   transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border: 1px solid;
   text-align: center;
+  box-sizing: border-box;
+  white-space: nowrap;
 }
 
 @media (max-width: 768px) {
   .highlight-card {
-    padding: 0.5rem 0.25rem;
+    padding: 0.5rem;
   }
 }
 
 .highlight-card-strong {
   background: #f0fdf4;
-  border: 1px solid var(--primary-green);
+  border-color: #1db854;
 }
 
 .highlight-card-strong:hover {
   box-shadow: 0 2px 8px rgba(29, 184, 84, 0.15);
-  border-color: var(--primary-green-dark);
+  border-color: #1a9f47;
 }
 
 .highlight-card-weak {
   background: #fffbf0;
-  border: 1px solid #f59e0b;
+  border-color: #f59e0b;
 }
 
 .highlight-card-weak:hover {
@@ -596,14 +656,14 @@ main {
 .highlight-card .card-name {
   font-size: 0.85rem;
   font-weight: 700;
-  color: var(--text-dark);
+  color: #2d3748;
   line-height: 1.2;
   margin: 0;
 }
 
 @media (max-width: 768px) {
   .highlight-card .card-name {
-    font-size: 0.7rem;
+    font-size: 0.8rem;
   }
 }
 
