@@ -137,6 +137,15 @@ export default function DistanceTable({ title, data }: Props) {
           </table>
         </div>
       </div>
+
+      <div className={styles.note}>
+        <p className={styles.noteTitle}>距離の定義は、IFHA（国際競馬統括機関連盟）の基準を採用しています。</p>
+        <p className={styles.noteItem}>短距離：1000m～1300m</p>
+        <p className={styles.noteItem}>マイル：1301m～1899m</p>
+        <p className={styles.noteItem}>中距離：1900m～2100m</p>
+        <p className={styles.noteItem}>中長距離：2101m～2700m</p>
+        <p className={styles.noteItem}>長距離：2701m～</p>
+      </div>
     </div>
   );
 }

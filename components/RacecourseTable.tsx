@@ -14,6 +14,8 @@ type RacecourseRow = {
   quinella_rate: number;
   win_payback: number;
   place_payback: number;
+  is_central?: boolean; // 中央競馬場かどうか
+  is_local?: boolean;   // ローカル競馬場かどうか
 };
 
 type Props = {
@@ -39,16 +41,19 @@ export default function RacecourseTable({ title, data }: Props) {
     }
   }, []);
 
-  // 各カラムの最大値を取得
-  const maxRaces = Math.max(...data.map(d => d.races ?? 0));
-  const maxWins = Math.max(...data.map(d => d.wins ?? 0));
-  const maxPlaces2 = Math.max(...data.map(d => d.places_2 ?? 0));
-  const maxPlaces3 = Math.max(...data.map(d => d.places_3 ?? 0));
-  const maxWinRate = Math.max(...data.map(d => d.win_rate ?? 0));
-  const maxPlaceRate = Math.max(...data.map(d => d.place_rate ?? 0));
-  const maxQuinellaRate = Math.max(...data.map(d => d.quinella_rate ?? 0));
-  const maxWinPayback = Math.max(...data.map(d => d.win_payback ?? 0));
-  const maxPlacePayback = Math.max(...data.map(d => d.place_payback ?? 0));
+  // 中央・ローカル行を除外したデータで最大値を計算
+  const racecourseData = data.filter(d => d.name !== '中央' && d.name !== 'ローカル');
+
+  // 各カラムの最大値を取得（競馬場のみ）
+  const maxRaces = Math.max(...racecourseData.map(d => d.races ?? 0));
+  const maxWins = Math.max(...racecourseData.map(d => d.wins ?? 0));
+  const maxPlaces2 = Math.max(...racecourseData.map(d => d.places_2 ?? 0));
+  const maxPlaces3 = Math.max(...racecourseData.map(d => d.places_3 ?? 0));
+  const maxWinRate = Math.max(...racecourseData.map(d => d.win_rate ?? 0));
+  const maxPlaceRate = Math.max(...racecourseData.map(d => d.place_rate ?? 0));
+  const maxQuinellaRate = Math.max(...racecourseData.map(d => d.quinella_rate ?? 0));
+  const maxWinPayback = Math.max(...racecourseData.map(d => d.win_payback ?? 0));
+  const maxPlacePayback = Math.max(...racecourseData.map(d => d.place_payback ?? 0));
 
   const isHighlight = (value: number, maxValue: number) => value === maxValue;
 
@@ -76,10 +81,12 @@ export default function RacecourseTable({ title, data }: Props) {
               </tr>
             </thead>
             <tbody>
-              {data.map((row, index) => (
+              {data.map((row, index) => {
+                const isCentral = row.name === '中央';
+                return (
                 <tr
                   key={row.name}
-                  className={index % 2 === 0 ? styles.rowEven : styles.rowOdd}
+                  className={`${index % 2 === 0 ? styles.rowEven : styles.rowOdd} ${isCentral ? styles.summaryRow : ''}`}
                 >
                   <td className={styles.racecourseCol}>
                     <span className={styles.racecourseBadge}>
@@ -132,7 +139,8 @@ export default function RacecourseTable({ title, data }: Props) {
                     </span>
                   </td>
                 </tr>
-              ))}
+              );
+              })}
             </tbody>
           </table>
         </div>

@@ -618,6 +618,36 @@ export default async function JockeyPage({
     };
   }).filter(item => item !== null);
 
+  // 中央・ローカルの集計行を追加（モックデータ）
+  const centralData = {
+    name: '中央',
+    races: 1850,
+    wins: 345,
+    places_2: 290,
+    places_3: 235,
+    win_rate: 18.6,
+    quinella_rate: 34.3,
+    place_rate: 47.0,
+    win_payback: 78.5,
+    place_payback: 82.1,
+  };
+
+  const localData = {
+    name: 'ローカル',
+    races: 639,
+    wins: 108,
+    places_2: 92,
+    places_3: 77,
+    win_rate: 16.9,
+    quinella_rate: 31.3,
+    place_rate: 43.3,
+    win_payback: 72.8,
+    place_payback: 76.5,
+  };
+
+  // 競馬場データの最後に中央・ローカルを追加
+  const racecourseSummaryDataWithTotals = [...racecourseSummaryData, centralData, localData];
+
   // ナビゲーションアイテム
   const navigationItems = [
     { id: 'leading', label: 'リーディング' },
@@ -774,7 +804,7 @@ export default async function JockeyPage({
           <section id="racecourse-stats" aria-label="競馬場別成績">
             <RacecourseTable
               title={`${jockey.name} 競馬場別成績`}
-              data={racecourseSummaryData}
+              data={racecourseSummaryDataWithTotals}
             />
           </section>
 

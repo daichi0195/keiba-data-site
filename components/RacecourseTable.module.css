@@ -159,6 +159,11 @@
     background: #f0f0f0;
   }
 
+  /* 中央・ローカル集計行（区切り線のみ） */
+  .summaryRow {
+    border-top: 2px solid #ddd !important;
+  }
+
   /* ハイライト */
   .highlight {
     background: linear-gradient(135deg, #d1f0e5 0%, #e8f9f0 100%) !important;

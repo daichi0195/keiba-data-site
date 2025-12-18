@@ -278,3 +278,26 @@
       padding: 3px 8px;
     }
   }
+
+  /* 注釈 */
+  .note {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    font-size: 12px;
+    line-height: 1.6;
+    color: #666;
+  }
+
+  .noteTitle {
+    margin: 0 0 0.5rem 0;
+  }
+
+  .noteItem {
+    margin: 0.25rem 0;
+  }
+
+  .noteLabel {
+    display: inline-block;
+    min-width: 4em;
+    text-align: left;
+  }

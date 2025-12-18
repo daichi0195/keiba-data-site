@@ -138,6 +138,15 @@ export default function RunningStyleTable({ title, data }: Props) {
           </table>
         </div>
       </div>
+
+      <div className={styles.note}>
+        <p className={styles.noteTitle}>脚質の定義</p>
+        <p className={styles.noteItem}>逃げ：コーナーのいずれかが1位通過</p>
+        <p className={styles.noteItem}>先行：最終コーナーで第1集団</p>
+        <p className={styles.noteItem}>差し：最終コーナーで第2集団かつ上がりが5位以内</p>
+        <p className={styles.noteItem}>追込：最終コーナーで第3集団かつ上がりが5位以内</p>
+        <p className={styles.noteFooter}>※出走頭数を3で割ったものを第1集団～第3集団とする<br />※上記に該当しない場合は集計から除外する</p>
+      </div>
     </div>
   );
 }

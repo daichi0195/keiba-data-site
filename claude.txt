@@ -1,0 +1,283 @@
+広告データをAWSGlueとGCPでETLしています
+まず現在のアーキテクチャーをmarmeidで添付するので、仕様を理解してくださいgraph LR subgraph API["データソース"] GoogleAPI["Google Ads API"] MicrosoftAPI["Microsoft Ads API"] YahooAPI["Yahoo Ads API"] end subgraph Auth["認証"] SecretsManager["AWS Secrets Manager"] end subgraph Glue["AWS Glue 処理"] GScript["Google Ads<br/>Python shell"] MScript["Microsoft Ads<br/>Python shell"] YScript["Yahoo Ads<br/>Python shell"] end subgraph Storage["データストレージ"] S3[("AWS S3<br/>ads-data-collect")] end subgraph Event["イベント通知"] SQS["AWS SQS"] end subgraph Transfer["データ転送"] StorageTransfer["GCP Storage<br/>Transfer Service"] end subgraph Destination["最終保存先"] GCS[("GCS<br/>ads-data-collect")] end GoogleAPI -->|API呼び出し| GScript MicrosoftAPI -->|API呼び出し| MScript YahooAPI -->|API呼び出し| YScript SecretsManager -.->|認証情報| GScript SecretsManager -.->|認証情報| MScript SecretsManager -.->|認証情報| YScript GScript -->|Parquet保存| S3 MScript -->|Parquet保存| S3 YScript -->|Parquet保存| S3 S3 -->|PutObjectイベント| SQS SQS -->|トリガー| StorageTransfer StorageTransfer -->|転送| GCS style GoogleAPI fill:#4285f4,color:#fff,stroke:#333,stroke-width:2px style MicrosoftAPI fill:#00a4ef,color:#fff,stroke:#333,stroke-width:2px style YahooAPI fill:#ff0033,color:#fff,stroke:#333,stroke-width:2px style SecretsManager fill:#ff9900,color:#fff,stroke:#333,stroke-width:2px style S3 fill:#ff9900,color:#fff,stroke:#333,stroke-width:2px style SQS fill:#ff9900,color:#fff,stroke:#333,stroke-width:2px style GCS fill:#4285f4,color:#fff,stroke:#333,stroke-width:2px style StorageTransfer fill:#4285f4,color:#fff,stroke:#333,stroke-width:2pxもっと表示20:15アーキテクチャを理解しました。以下、現在の仕様をまとめます。
+現在のアーキテクチャ概要
+データフロー
+
+データ収集（AWS Glue）
+
+Google Ads、Microsoft Ads、Yahoo AdsのAPIからデータを取得
+各広告プラットフォーム用のPython Shellジョブが個別に実行
+AWS Secrets Managerから認証情報を取得
+
+
+データ保存（AWS S3）
+
+収集したデータをParquet形式でS3バケット（ads-data-collect）に保存
+
+
+イベント駆動型転送
+
+S3へのPutObjectイベントがAWS SQSに通知される
+SQSがトリガーとなってGCP Storage Transfer Serviceが起動
+
+
+最終保存先（GCS）
+
+Storage Transfer ServiceがS3からGCS（ads-data-collect）へデータを転送
+
+
+
+特徴
+
+マルチクラウド構成: AWS（処理・一時保存）→ GCP（最終保存）
+イベント駆動: S3へのファイル配置を検知して自動的にGCSへ転送
+認証の一元管理: AWS Secrets Managerで各広告APIの認証情報を管理
+データ形式: Parquet（効率的な列指向フォーマット）
+
+このアーキテクチャについて、改善や変更を検討されていますか？それとも、特定の部分について詳しく説明が必要でしょうか？GCPに格納した後は、別のエンジニアがロードするジョブをCloudrunでたててくれています
+下記のようにリクエストがあったのですが、どのように対応すればいいでしょうか・
+＞サーバーサイドレイテンシーは 最大でも５秒程度なので、同一エンティティー（{bucket}/{datasource}/）はまとめて送ってくださって大丈夫で、これ配下のものは for ループで、time.sleep(5.0) とかを入れて順序で送ってもらえると、正しく入ると思います。20:16このリクエストは、GCSにファイルが転送された後のCloud Runジョブの処理に関する配慮事項ですね。
+問題の背景
+現在のアーキテクチャでは、S3へのPutObjectイベントが発生するたびに個別にSQS→Storage Transfer Serviceが起動し、ファイルが即座にGCSへ転送される可能性があります。これにより、同一エンティティ（同じデータソース）の複数ファイルがほぼ同時にGCSに到着し、Cloud Runジョブが並行処理でエラーになる恐れがあるようです。
+対応策
+案1: AWS Glue側でバッチ処理を制御（推奨）
+各Glueジョブ内で、同一データソースのファイル出力時に5秒間のスリープを入れる：
+pythonimport time
+import boto3
+
+# 例: Google Adsジョブ内
+for entity in entities:  # campaign, ad_group, ad など
+    # データ取得・加工
+    df = fetch_and_process_data(entity)
+    
+    # S3へ保存
+    output_path = f"s3://ads-data-collect/google/{entity}/data.parquet"
+    df.to_parquet(output_path)
+    
+    # 次のエンティティ処理前に待機
+    time.sleep(5.0)
+```
+
+### 案2: SQSでメッセージをバッチ処理
+SQSのメッセージを即座に処理せず、同一データソースごとにグルーピングして順次転送する中間Lambda関数を追加：
+```
+S3 → SQS → Lambda（制御層） → Storage Transfer Service → GCS
+案3: Storage Transfer Serviceのスケジュール調整
+データソースごとに異なる時間帯でTransfer Jobを実行するようスケジュール設定
+確認すべきポイント
+
+現在の挙動: 各Glueジョブは何個のファイルを出力していますか？
+エンティティの定義: {bucket}/{datasource}/の具体例は？
+
+例: ads-data-collect/google/campaign/, ads-data-collect/google/ad_group/ など
+
+
+同時実行: 3つのGlueジョブ（Google, Microsoft, Yahoo）は並行実行されていますか？
+
+案1が最もシンプルで、Glueジョブ側で制御できるため推奨します。具体的な実装方法について、現在のGlueスクリプトの構造を教えていただければ、より詳細なコード例を提供できます。案1で対応したいのですが、もう少し詳細に対応方法のイメージをつけたいです20:19案1の詳細な対応方法を説明します。
+現状の推測される処理フロー
+おそらく現在のGlueジョブはこのような構造になっていると思います：
+python# 現在の処理（例: Google Ads）
+import boto3
+from google.ads.googleads.client import GoogleAdsClient
+
+# 認証情報取得
+credentials = get_credentials_from_secrets_manager()
+client = GoogleAdsClient.load_from_dict(credentials)
+
+# 複数のレポートタイプを処理
+report_types = ['campaign', 'ad_group', 'ad', 'keyword']
+
+for report_type in report_types:
+    # データ取得
+    df = fetch_report_data(client, report_type)
+    
+    # S3に保存（ほぼ同時に複数ファイルが作成される）
+    s3_path = f"s3://ads-data-collect/google/{report_type}/data_{today}.parquet"
+    df.to_parquet(s3_path)
+    # ← ここで次のループに即座に進んでしまう
+問題点
+上記のコードでは：
+
+campaignのファイルがS3に保存 → SQS → GCSへ転送開始
+直後にad_groupのファイルがS3に保存 → SQS → GCSへ転送開始
+Cloud Run側でgoogle/配下のファイルがほぼ同時に到着
+サーバー側の処理が追いつかずエラー
+
+対応後のコード（案1の実装）
+pythonimport time
+import boto3
+from google.ads.googleads.client import GoogleAdsClient
+from datetime import datetime
+
+# 認証情報取得
+credentials = get_credentials_from_secrets_manager()
+client = GoogleAdsClient.load_from_dict(credentials)
+
+# 複数のレポートタイプを処理
+report_types = ['campaign', 'ad_group', 'ad', 'keyword']
+
+for i, report_type in enumerate(report_types):
+    print(f"Processing {report_type}...")
+    
+    # データ取得
+    df = fetch_report_data(client, report_type)
+    
+    # S3に保存
+    today = datetime.now().strftime('%Y%m%d')
+    s3_path = f"s3://ads-data-collect/google/{report_type}/data_{today}.parquet"
+    df.to_parquet(s3_path)
+    print(f"Saved {report_type} to {s3_path}")
+    
+    # 最後のループ以外は5秒待機
+    if i < len(report_types) - 1:
+        print(f"Waiting 5 seconds before next entity...")
+        time.sleep(5.0)
+
+print("Google Ads job completed")
+```
+
+## 処理タイムライン（改善後）
+```
+0秒:  campaign データ保存 → SQS → GCS転送開始 → Cloud Run処理開始
+5秒:  (待機中)
+5秒:  ad_group データ保存 → SQS → GCS転送開始 → Cloud Run処理開始
+10秒: (待機中)
+10秒: ad データ保存 → SQS → GCS転送開始 → Cloud Run処理開始
+15秒: (待機中)
+15秒: keyword データ保存 → SQS → GCS転送開始 → Cloud Run処理開始
+このように、同一データソース（google/）内のファイルが5秒間隔で到着するため、Cloud Run側のサーバーレイテンシー（最大5秒）内に収まります。
+3つの広告プラットフォームすべてに適用
+同じ対応を、Microsoft Ads、Yahoo Adsのジョブにも適用します：
+python# Microsoft Ads ジョブ
+report_types = ['campaign', 'ad_group', 'ad']
+for i, report_type in enumerate(report_types):
+    # ... 処理 ...
+    if i < len(report_types) - 1:
+        time.sleep(5.0)
+
+# Yahoo Ads ジョブ
+report_types = ['campaign', 'ad_group', 'ad']
+for i, report_type in enumerate(report_types):
+    # ... 処理 ...
+    if i < len(report_types) - 1:
+        time.sleep(5.0)
+補足: 3つのジョブが並行実行される場合
+もしGoogle、Microsoft、Yahooのジョブが同時刻にスケジュール実行される場合は問題ありません。なぜなら：
+
+google/campaign/ と microsoft/campaign/ は別エンティティ
+エンジニアのリクエストは「同一エンティティ（同じデータソース配下）をまとめて送る」
+
+つまり、異なるデータソース間は並行処理されても問題ないということです。
+
+現在のGlueスクリプトの具体的なコードがあれば、さらに正確な修正案を提示できます。どうでしょうか？これを守らないとキューが詰まるということですよね？20:20いえ、少し違います。キューが詰まるわけではなく、Cloud Run側のデータベースやストレージへの書き込みが競合してエラーになる可能性が高いです。
+何が起きるのか
+シナリオ1: 同時到着によるデータ競合
+同時刻に複数ファイルが到着
+↓
+Cloud Runが複数インスタンス起動（または並行処理）
+↓
+同じテーブル/リソースに同時書き込み
+↓
+- ロック競合
+- トランザクションエラー
+- データの不整合
+- 処理の失敗・リトライ
+シナリオ2: サーバー負荷オーバー
+5ファイルがほぼ同時に到着
+↓
+Cloud Runが5つの処理を同時実行しようとする
+↓
+「サーバーサイドレイテンシーは最大5秒程度」という制約を超える
+↓
+- タイムアウト
+- メモリ不足
+- 処理の失敗
+エンジニアの意図
+
+同一エンティティー（{bucket}/{datasource}/）はまとめて送ってくださって大丈夫で、これ配下のものは for ループで、time.sleep(5.0) とかを入れて順序で送ってもらえると、正しく入ると思います。
+
+この「正しく入る」というのは：
+
+順次処理すれば競合が起きない
+前の処理が完了（5秒以内）してから次が来れば安全
+
+という意味です。
+キューとの関係
+SQS（キュー）自体は詰まりません。SQSは単にメッセージを保持するだけです。
+問題は：
+SQS → Storage Transfer → GCS → Cloud Run（ここで問題発生）
+Cloud Run側で処理が失敗すると：
+
+リトライが発生
+最悪の場合、データが欠損
+エラーログが大量発生
+
+まとめ
+項目現状（対応なし）対応後（5秒待機）ファイル到着ほぼ同時5秒間隔Cloud Run処理並行実行→競合順次処理→安全データ整合性リスクあり保証されるキュー詰まらない詰まらない
+つまり、キューではなく、最終的なデータロード処理の安全性を確保するための対応です。
+現在、実際にエラーが発生しているのでしょうか？それとも事前の予防対応でしょうか？これ、エンティティごとであれば送信してもいいということですか？
+下記の意味が理解できていないです
+＞これ配下のものは for ループで、time.sleep(5.0) とかを入れて順序で送ってもらえると、20:22いい質問ですね！これを具体例で説明します。
+エンティティの構造
+ads-data-collect/
+├── google/              ← データソース（エンティティ）
+│   ├── campaign/        ← レポートタイプ（エンティティ配下のもの）
+│   ├── ad_group/        ← レポートタイプ（エンティティ配下のもの）
+│   └── ad/              ← レポートタイプ（エンティティ配下のもの）
+├── microsoft/           ← データソース（エンティティ）
+│   ├── campaign/
+│   └── ad_group/
+└── yahoo/               ← データソース（エンティティ）
+    ├── campaign/
+    └── ad_group/
+リクエストの意味を分解
+
+同一エンティティー（{bucket}/{datasource}/）はまとめて送ってくださって大丈夫
+
+意味: google/配下のファイル群を一連の流れで送ってOK
+
+これ配下のものは for ループで、time.sleep(5.0) とかを入れて順序で送ってもらえると
+
+意味: google/の中にあるcampaign/, ad_group/, ad/は順番に5秒間隔で送ってほしい
+具体的な送信パターン
+❌NG: 同一エンティティ配下を同時送信
+python# これだとCloud Runで競合が起きる
+df_campaign.to_parquet("s3://ads-data-collect/google/campaign/data.parquet")
+df_ad_group.to_parquet("s3://ads-data-collect/google/ad_group/data.parquet")
+df_ad.to_parquet("s3://ads-data-collect/google/ad/data.parquet")
+# ↑ 3ファイルがほぼ同時にGCSに到着
+✅OK: 同一エンティティ配下を順次送信（5秒間隔）
+python# google/ 配下を順次処理
+df_campaign.to_parquet("s3://ads-data-collect/google/campaign/data.parquet")
+time.sleep(5.0)  # ← 待機
+
+df_ad_group.to_parquet("s3://ads-data-collect/google/ad_group/data.parquet")
+time.sleep(5.0)  # ← 待機
+
+df_ad.to_parquet("s3://ads-data-collect/google/ad/data.parquet")
+# ↑ 5秒ずつ間隔を空けてGCSに到着
+✅OK: 異なるエンティティ間は同時でもOK
+python# これは問題ない（google/, microsoft/, yahoo/ は別エンティティ）
+# Google Adsジョブ（時刻: 9:00）
+df_campaign.to_parquet("s3://ads-data-collect/google/campaign/data.parquet")
+
+# Microsoft Adsジョブ（時刻: 9:00）← 同時刻でもOK
+df_campaign.to_parquet("s3://ads-data-collect/microsoft/campaign/data.parquet")
+
+# Yahoo Adsジョブ（時刻: 9:00）← 同時刻でもOK
+df_campaign.to_parquet("s3://ads-data-collect/yahoo/campaign/data.parquet")
+Cloud Run側の処理イメージ
+おそらくCloud Runはこのような処理をしていると推測されます：
+python# Cloud Run側の疑似コード
+def load_to_database(gcs_path):
+    datasource = extract_datasource(gcs_path)  # "google", "microsoft", etc.
+    
+    # 同一データソースの処理は排他制御が必要
+    with lock(datasource):  # ← ここで競合が起きる
+        data = read_from_gcs(gcs_path)
+        database.insert(datasource, data)
+まとめ
+送信パターン結果理由google/campaign/ と google/ad_group/ を同時❌NG同一エンティティ配下で競合google/campaign/ → 5秒待機 → google/ad_group/✅OK順次処理で競合しないgoogle/campaign/ と microsoft/campaign/ を同時✅OK別エンティティなので問題なし
+つまり、google/というディレクトリ配下のファイル群は、forループで5秒ずつ待ちながら順番に送る必要があるということです。
+理解できましたでしょうか？
