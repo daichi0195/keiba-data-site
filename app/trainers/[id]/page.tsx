@@ -820,10 +820,10 @@ export default async function TrainerPage({
             </div>
           </div>
 
-          {/* 年度別データセクション */}
-          <section id="leading" aria-label="年度別データ">
+          {/* 年度別成績セクション */}
+          <section id="leading" aria-label="年度別成績">
             <JockeyLeadingChart
-              title={`${trainer.name}調教師 年度別データ`}
+              title={`${trainer.name}調教師 年度別成績`}
               data={trainer.yearly_leading}
             >
               <YearlyTable
