@@ -4,6 +4,7 @@ import DataTable from '@/components/DataTable';
 import HeaderMenu from '@/components/HeaderMenu';
 import BottomNav from '@/components/BottomNav';
 import JockeyLeadingChart from '@/components/JockeyLeadingChart';
+import YearlyTable from '@/components/YearlyTable';
 import ClassTable from '@/components/ClassTable';
 import PopularityTable from '@/components/PopularityTable';
 import DistanceTable from '@/components/DistanceTable';
@@ -14,6 +15,7 @@ import GenderTable from '@/components/GenderTable';
 import BarChartAnimation from '@/components/BarChartAnimation';
 import VolatilityExplanation from '@/components/VolatilityExplanation';
 import GatePositionExplanation from '@/components/GatePositionExplanation';
+import DistanceTrendExplanation from '@/components/DistanceTrendExplanation';
 import HighlightsSection from '@/components/HighlightsSection';
 
 // ISR: 週1回（604800秒）再生成
@@ -824,6 +826,10 @@ export default async function TrainerPage({
               title={`${trainer.name}調教師 リーディング`}
               data={trainer.yearly_leading}
             />
+            <YearlyTable
+              title={`${trainer.name}調教師 年度別データ`}
+              data={trainer.yearly_stats}
+            />
           </section>
 
           {/* 調教師特徴セクション */}
@@ -946,6 +952,65 @@ export default async function TrainerPage({
                     </div>
                   </div>
                 </div>
+
+                {/* 区切り線 */}
+                <div className="section-divider"></div>
+
+                {/* 得意な距離傾向 */}
+                {trainer.characteristics.distance_trend_position && (
+                  <div className="gauge-item">
+                    <div className="gauge-header">
+                      <h3 className="gauge-label">得意な距離傾向</h3>
+                      <DistanceTrendExplanation />
+                    </div>
+                    <div className="gauge-track">
+                      <div className="gauge-indicator" style={{ left: `${(trainer.characteristics.distance_trend_position - 1) * 25}%` }}></div>
+                      <div className="gauge-horse-icon" style={{ left: `${(trainer.characteristics.distance_trend_position - 1) * 25}%` }}>🏇</div>
+                    </div>
+                    <div className="gauge-labels">
+                      <span>短距離が得意</span>
+                      <span>互角</span>
+                      <span>長距離が得意</span>
+                    </div>
+                    <div className="gauge-result">
+                      {trainer.characteristics.distance_trend_position === 1 && '短距離が得意'}
+                      {trainer.characteristics.distance_trend_position === 2 && 'やや短距離が得意'}
+                      {trainer.characteristics.distance_trend_position === 3 && '互角'}
+                      {trainer.characteristics.distance_trend_position === 4 && 'やや長距離が得意'}
+                      {trainer.characteristics.distance_trend_position === 5 && '長距離が得意'}
+                    </div>
+
+                    {/* 距離別複勝率グラフ */}
+                    <div className="gate-place-rate-detail">
+                      <div className="gate-detail-title">距離別複勝率</div>
+                      <div className="gate-chart">
+                        {trainer.distance_stats.map((distance) => (
+                          <div key={distance.category} className="gate-chart-item">
+                            <div
+                              className="distance-badge"
+                              style={{
+                                background: '#f0f0f0',
+                                border: '1px solid #ddd',
+                                color: '#333'
+                              }}
+                            >
+                              {distance.category}
+                            </div>
+                            <div className="gate-bar-container">
+                              <div
+                                className="gate-bar"
+                                style={{
+                                  width: `${distance.place_rate}%`
+                                }}
+                              ></div>
+                            </div>
+                            <div className="gate-rate">{distance.place_rate}%</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
 
               </div>
             </BarChartAnimation>
