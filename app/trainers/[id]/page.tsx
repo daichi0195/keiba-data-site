@@ -7,19 +7,14 @@ import JockeyLeadingChart from '@/components/JockeyLeadingChart';
 import YearlyTable from '@/components/YearlyTable';
 import ClassTable from '@/components/ClassTable';
 import PopularityTable from '@/components/PopularityTable';
-import RunningStyleTable from '@/components/RunningStyleTable';
-import GateTable from '@/components/GateTable';
 import DistanceTable from '@/components/DistanceTable';
 import SurfaceTable from '@/components/SurfaceTable';
-import TrackConditionTable from '@/components/TrackConditionTable';
 import RacecourseTable from '@/components/RacecourseTable';
 import RacecourseCourseTable from '@/components/RacecourseCourseTable';
 import GenderTable from '@/components/GenderTable';
 import BarChartAnimation from '@/components/BarChartAnimation';
 import VolatilityExplanation from '@/components/VolatilityExplanation';
 import GatePositionExplanation from '@/components/GatePositionExplanation';
-import RunningStyleExplanation from '@/components/RunningStyleExplanation';
-import DistanceTrendExplanation from '@/components/DistanceTrendExplanation';
 import HighlightsSection from '@/components/HighlightsSection';
 
 // ISR: 週1回（604800秒）再生成
@@ -749,15 +744,11 @@ export default async function TrainerPage({
     { id: 'leading', label: 'リーディング' },
     { id: 'characteristics', label: '特徴' },
     { id: 'highlights-section', label: '注目ポイント' },
-    { id: 'yearly-stats', label: '年度別' },
     { id: 'class-stats', label: 'クラス別' },
     { id: 'popularity-stats', label: '人気別' },
-    { id: 'running-style-stats', label: '脚質別' },
-    { id: 'gate-stats', label: '枠順別' },
     { id: 'distance-stats', label: '距離別' },
     { id: 'gender-stats', label: '性別' },
     { id: 'surface-stats', label: '芝・ダート別' },
-    { id: 'track-condition-stats', label: '馬場状態別' },
     { id: 'racecourse-stats', label: '競馬場別' },
     { id: 'course-stats', label: 'コース別' },
     { id: 'jockey-stats', label: '騎手別' },
@@ -833,6 +824,10 @@ export default async function TrainerPage({
             <JockeyLeadingChart
               title={`${trainer.name}調教師 リーディング`}
               data={trainer.yearly_leading}
+            />
+            <YearlyTable
+              title={`${trainer.name}調教師 年度別データ`}
+              data={trainer.yearly_stats}
             />
           </section>
 
@@ -1089,14 +1084,6 @@ export default async function TrainerPage({
             />
           </section>
 
-          {/* 年度別データセクション */}
-          <section id="yearly-stats" aria-label="年度別データ">
-            <YearlyTable
-              title={`${trainer.name}調教師 年度別データ`}
-              data={trainer.yearly_stats}
-            />
-          </section>
-
           {/* クラス別データセクション */}
           <section id="class-stats" aria-label="クラス別データ">
             <ClassTable
@@ -1110,22 +1097,6 @@ export default async function TrainerPage({
             <PopularityTable
               title={`${trainer.name}調教師 人気別データ`}
               data={trainer.popularity_stats}
-            />
-          </section>
-
-          {/* 脚質別データセクション */}
-          <section id="running-style-stats" aria-label="脚質別データ">
-            <RunningStyleTable
-              title={`${trainer.name}調教師 脚質別データ`}
-              data={trainer.running_style_stats}
-            />
-          </section>
-
-          {/* 枠順別データセクション */}
-          <section id="gate-stats" aria-label="枠順別データ">
-            <GateTable
-              title={`${trainer.name}調教師 枠順別データ`}
-              data={trainer.gate_stats}
             />
           </section>
 
@@ -1150,14 +1121,6 @@ export default async function TrainerPage({
             <SurfaceTable
               title={`${trainer.name}調教師 芝・ダート別データ`}
               data={surfaceStatsData}
-            />
-          </section>
-
-          {/* 馬場状態別データセクション */}
-          <section id="track-condition-stats" aria-label="馬場状態別データ">
-            <TrackConditionTable
-              title={`${trainer.name}調教師 馬場状態別データ`}
-              data={trackConditionStatsData}
             />
           </section>
 
