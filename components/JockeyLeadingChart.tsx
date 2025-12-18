@@ -62,7 +62,7 @@ export default function JockeyLeadingChart({ title, data, children }: JockeyLead
     ctx.scale(dpr, dpr);
 
     // グラフの設定
-    const padding = { top: 40, right: 10, bottom: 50, left: 10 };
+    const padding = { top: 40, right: 0, bottom: 50, left: 0 };
     const chartWidth = rect.width - padding.left - padding.right;
     const chartHeight = rect.height - padding.top - padding.bottom;
 

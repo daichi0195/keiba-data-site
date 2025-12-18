@@ -62,10 +62,5 @@
 
   .chartWrapper {
     height: 300px;
-    width: 730px;
-  }
-
-  .canvas {
-    width: 730px;
   }
 }
