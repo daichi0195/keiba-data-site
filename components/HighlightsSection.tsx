@@ -93,12 +93,15 @@ export default function HighlightsSection({
     return (
       <div className="highlight-cards">
         {items.map((item) => {
+          // 「競馬場」という文字列を削除し、スペースを削除
+          const displayName = item.name.replace(/競馬場/g, '').replace(/\s+/g, '');
+
           return (
             <div
               key={item.name}
               className={`highlight-card ${cardClass}`}
             >
-              <div className="card-name">{item.name}</div>
+              <div className="card-name">{displayName}</div>
             </div>
           );
         })}
@@ -137,21 +140,24 @@ export default function HighlightsSection({
     );
   };
 
+  // 騎手データのみが渡された場合は騎手ページとして扱う
+  const isJockeyPage = jockey_stats && !pedigree_stats && !dam_sire_stats && !trainer_stats;
+
   return (
     <section id="highlights-section">
       <div className="highlights-box">
         <h2 className="section-title">注目ポイント</h2>
 
-        {/* 騎手セクション */}
+        {/* 騎手セクション（コースページ）または コースセクション（騎手ページ） */}
         <div className="highlight-item">
-          <h3 className="gauge-label">騎手</h3>
+          <h3 className="gauge-label">{isJockeyPage ? 'コース' : '騎手'}</h3>
           {renderSubsection(
-            'このコースが得意な騎手',
+            isJockeyPage ? '得意なコース' : 'このコースが得意な騎手',
             jockeyEvaluation.strong,
             'strong',
             'jockey-strong'
           )}
-          {jockeyEvaluation.upset.length > 0 && (
+          {!isJockeyPage && jockeyEvaluation.upset.length > 0 && (
             renderSubsection(
               'このコースでよく穴をあける騎手',
               jockeyEvaluation.upset,
@@ -160,66 +166,75 @@ export default function HighlightsSection({
             )
           )}
           {renderSubsection(
-            'このコースが苦手な騎手',
+            isJockeyPage ? '苦手なコース' : 'このコースが苦手な騎手',
             jockeyEvaluation.weak,
             'weak',
             'jockey-weak'
           )}
-          <div className="section-divider"></div>
+          {!isJockeyPage && <div className="section-divider"></div>}
         </div>
 
-        {/* 血統（種牡馬）セクション */}
-        <div className="highlight-item">
-          <h3 className="gauge-label">血統（種牡馬）</h3>
-          {renderSubsection(
-            'このコースが得意な種牡馬',
-            pedigreeEvaluation.strong,
-            'strong',
-            'sire-strong'
-          )}
-          {renderSubsection(
-            'このコースが苦手な種牡馬',
-            pedigreeEvaluation.weak,
-            'weak',
-            'sire-weak'
-          )}
-          <div className="section-divider"></div>
-        </div>
+        {/* 以下はコースページのみ表示 */}
+        {!isJockeyPage && pedigree_stats && (
+          <>
+            {/* 血統（種牡馬）セクション */}
+            <div className="highlight-item">
+              <h3 className="gauge-label">血統（種牡馬）</h3>
+              {renderSubsection(
+                'このコースが得意な種牡馬',
+                pedigreeEvaluation.strong,
+                'strong',
+                'sire-strong'
+              )}
+              {renderSubsection(
+                'このコースが苦手な種牡馬',
+                pedigreeEvaluation.weak,
+                'weak',
+                'sire-weak'
+              )}
+              <div className="section-divider"></div>
+            </div>
 
-        {/* 血統（母父）セクション */}
-        <div className="highlight-item">
-          <h3 className="gauge-label">血統（母父）</h3>
-          {renderSubsection(
-            'このコースが得意な母父',
-            damSireEvaluation.strong,
-            'strong',
-            'dam-sire-strong'
-          )}
-          {renderSubsection(
-            'このコースが苦手な母父',
-            damSireEvaluation.weak,
-            'weak',
-            'dam-sire-weak'
-          )}
-          <div className="section-divider"></div>
-        </div>
+            {/* 血統（母父）セクション */}
+            {dam_sire_stats && (
+              <div className="highlight-item">
+                <h3 className="gauge-label">血統（母父）</h3>
+                {renderSubsection(
+                  'このコースが得意な母父',
+                  damSireEvaluation.strong,
+                  'strong',
+                  'dam-sire-strong'
+                )}
+                {renderSubsection(
+                  'このコースが苦手な母父',
+                  damSireEvaluation.weak,
+                  'weak',
+                  'dam-sire-weak'
+                )}
+                <div className="section-divider"></div>
+              </div>
+            )}
 
-        {/* 調教師セクション */}
-        <div className="highlight-item">
-          <h3 className="gauge-label">調教師</h3>
-          {renderSubsection(
-            'このコースが得意な調教師',
-            trainerEvaluation.strong,
-            'strong',
-            'trainer-strong'
-          )}
-          {renderSubsection(
-            'このコースが苦手な調教師',
-            trainerEvaluation.weak,
-            'weak',
-            'trainer-weak'
-          )}
-        </div>
+            {/* 調教師セクション */}
+            {trainer_stats && (
+              <div className="highlight-item">
+                <h3 className="gauge-label">調教師</h3>
+                {renderSubsection(
+                  'このコースが得意な調教師',
+                  trainerEvaluation.strong,
+                  'strong',
+                  'trainer-strong'
+                )}
+                {renderSubsection(
+                  'このコースが苦手な調教師',
+                  trainerEvaluation.weak,
+                  'weak',
+                  'trainer-weak'
+                )}
+              </div>
+            )}
+          </>
+        )}
       </div>
 
       {/* モーダル */}

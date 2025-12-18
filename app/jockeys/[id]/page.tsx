@@ -20,6 +20,7 @@ import VolatilityExplanation from '@/components/VolatilityExplanation';
 import GatePositionExplanation from '@/components/GatePositionExplanation';
 import RunningStyleExplanation from '@/components/RunningStyleExplanation';
 import DistanceTrendExplanation from '@/components/DistanceTrendExplanation';
+import HighlightsSection from '@/components/HighlightsSection';
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
@@ -312,6 +313,12 @@ const mockJockeyData: Record<string, JockeyData> = {
       { rank: 20, name: '福島競馬場 ダ 1150m', racecourse: '福島競馬場', racecourse_en: 'fukushima', surface: 'ダート', surface_en: 'dirt', distance: 1150, races: 20, wins: 3, places_2: 3, places_3: 3, win_rate: 15.0, place_rate: 45.0, quinella_rate: 30.0, win_payback: 90, place_payback: 87 },
       { rank: 21, name: '福島競馬場 ダ 1700m', racecourse: '福島競馬場', racecourse_en: 'fukushima', surface: 'ダート', surface_en: 'dirt', distance: 1700, races: 24, wins: 4, places_2: 4, places_3: 3, win_rate: 16.7, place_rate: 45.8, quinella_rate: 33.3, win_payback: 93, place_payback: 90 },
       { rank: 22, name: '福島競馬場 ダ 2400m', racecourse: '福島競馬場', racecourse_en: 'fukushima', surface: 'ダート', surface_en: 'dirt', distance: 2400, races: 8, wins: 1, places_2: 1, places_3: 1, win_rate: 12.5, place_rate: 37.5, quinella_rate: 25.0, win_payback: 86, place_payback: 84 },
+
+      // 苦手なコース例（複勝率20%以下、複勝回収率30%未満）
+      { rank: 93, name: '中京競馬場 芝 2200m', racecourse: '中京競馬場', racecourse_en: 'chukyo', surface: '芝', surface_en: 'turf', distance: 2200, races: 25, wins: 1, places_2: 2, places_3: 2, win_rate: 4.0, place_rate: 20.0, quinella_rate: 12.0, win_payback: 22, place_payback: 28 },
+      { rank: 94, name: '阪神競馬場 ダ 2000m', racecourse: '阪神競馬場', racecourse_en: 'hanshin', surface: 'ダート', surface_en: 'dirt', distance: 2000, races: 28, wins: 1, places_2: 2, places_3: 3, win_rate: 3.6, place_rate: 21.4, quinella_rate: 10.7, win_payback: 20, place_payback: 26 },
+      { rank: 95, name: '京都競馬場 芝 3000m', racecourse: '京都競馬場', racecourse_en: 'kyoto', surface: '芝', surface_en: 'turf', distance: 3000, races: 22, wins: 0, places_2: 2, places_3: 2, win_rate: 0.0, place_rate: 18.2, quinella_rate: 9.1, win_payback: 18, place_payback: 24 },
+      { rank: 96, name: '小倉競馬場 ダ 2400m', racecourse: '小倉競馬場', racecourse_en: 'kokura', surface: 'ダート', surface_en: 'dirt', distance: 2400, races: 20, wins: 1, places_2: 1, places_3: 2, win_rate: 5.0, place_rate: 20.0, quinella_rate: 10.0, win_payback: 21, place_payback: 27 },
 
       // 新潟競馬場
       { rank: 23, name: '新潟競馬場 芝 1000m', racecourse: '新潟競馬場', racecourse_en: 'niigata', surface: '芝', surface_en: 'turf', distance: 1000, races: 30, wins: 6, places_2: 5, places_3: 4, win_rate: 20.0, place_rate: 50.0, quinella_rate: 36.7, win_payback: 101, place_payback: 97 },
@@ -741,6 +748,7 @@ export default async function JockeyPage({
   const navigationItems = [
     { id: 'leading', label: 'リーディング' },
     { id: 'characteristics', label: '特徴' },
+    { id: 'highlights-section', label: '注目ポイント' },
     { id: 'yearly-stats', label: '年度別' },
     { id: 'class-stats', label: 'クラス別' },
     { id: 'popularity-stats', label: '人気別' },
@@ -1072,6 +1080,13 @@ export default async function JockeyPage({
 
               </div>
             </BarChartAnimation>
+          </section>
+
+          {/* 注目ポイントセクション */}
+          <section id="highlights-section" aria-label="注目ポイント">
+            <HighlightsSection
+              jockey_stats={jockey.course_stats}
+            />
           </section>
 
           {/* 年度別データセクション */}
