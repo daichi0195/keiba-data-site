@@ -17,7 +17,7 @@ type YearlyRow = {
 };
 
 type Props = {
-  title: string;
+  title?: string;
   data: YearlyRow[];
 };
 
@@ -52,11 +52,8 @@ export default function YearlyTable({ title, data }: Props) {
 
   const isHighlight = (value: number, maxValue: number) => value === maxValue;
 
-  return (
-    <div className="section">
-      <h2 className="section-title">{title}</h2>
-
-      <div className={styles.tableContainer}>
+  const tableContent = (
+    <div className={styles.tableContainer}>
         <div className={styles.tableScroll} ref={scrollRef}>
           <table className={styles.table}>
             <thead>
@@ -137,6 +134,16 @@ export default function YearlyTable({ title, data }: Props) {
           </table>
         </div>
       </div>
-    </div>
   );
+
+  if (title) {
+    return (
+      <div className="section">
+        <h2 className="section-title">{title}</h2>
+        {tableContent}
+      </div>
+    );
+  }
+
+  return tableContent;
 }

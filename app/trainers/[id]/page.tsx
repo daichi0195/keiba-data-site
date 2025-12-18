@@ -742,7 +742,7 @@ export default async function TrainerPage({
 
   // ナビゲーションアイテム
   const navigationItems = [
-    { id: 'leading', label: 'リーディング' },
+    { id: 'leading', label: '年度別' },
     { id: 'characteristics', label: '特徴' },
     { id: 'highlights-section', label: '注目ポイント' },
     { id: 'class-stats', label: 'クラス別' },
@@ -820,16 +820,16 @@ export default async function TrainerPage({
             </div>
           </div>
 
-          {/* 調教師リーディングセクション */}
-          <section id="leading" aria-label="調教師リーディング">
+          {/* 年度別データセクション */}
+          <section id="leading" aria-label="年度別データ">
             <JockeyLeadingChart
-              title={`${trainer.name}調教師 リーディング`}
-              data={trainer.yearly_leading}
-            />
-            <YearlyTable
               title={`${trainer.name}調教師 年度別データ`}
-              data={trainer.yearly_stats}
-            />
+              data={trainer.yearly_leading}
+            >
+              <YearlyTable
+                data={trainer.yearly_stats}
+              />
+            </JockeyLeadingChart>
           </section>
 
           {/* 調教師特徴セクション */}

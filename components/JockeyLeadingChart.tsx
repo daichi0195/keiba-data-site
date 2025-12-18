@@ -12,9 +12,10 @@ interface YearlyData {
 interface JockeyLeadingChartProps {
   title: string;
   data: YearlyData[];
+  children?: React.ReactNode;
 }
 
-export default function JockeyLeadingChart({ title, data }: JockeyLeadingChartProps) {
+export default function JockeyLeadingChart({ title, data, children }: JockeyLeadingChartProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [animationProgress, setAnimationProgress] = useState(0);
 
@@ -249,6 +250,8 @@ export default function JockeyLeadingChart({ title, data }: JockeyLeadingChartPr
           className={styles.canvas}
         />
       </div>
+
+      {children}
     </div>
   );
 }

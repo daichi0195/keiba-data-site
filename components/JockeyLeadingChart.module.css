@@ -45,6 +45,8 @@
   height: 400px;
   position: relative;
   margin: 0 !important;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .canvas {
@@ -60,5 +62,10 @@
 
   .chartWrapper {
     height: 300px;
+    width: 730px;
+  }
+
+  .canvas {
+    width: 730px;
   }
 }
