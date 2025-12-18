@@ -911,8 +911,8 @@ details[open] .evaluation-content {
 
 /* セクション区切り線 */
 .section-divider {
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
+  margin-top: 30px;
+  margin-bottom: 30px;
   border-top: 2px solid var(--border-subtle);
 }
 
@@ -957,6 +957,21 @@ details[open] .evaluation-content {
   font-size: 0.75rem;
   font-weight: 700;
   color: #fff;
+  flex-shrink: 0;
+  border: 1px solid #ddd;
+}
+
+/* 距離用バッジ（横長） */
+.distance-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 60px;
+  width: 60px;
+  height: 28px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
   flex-shrink: 0;
   border: 1px solid #ddd;
 }

@@ -2,12 +2,33 @@
 
 import { useState } from 'react';
 
-export default function VolatilityExplanation() {
+interface VolatilityExplanationProps {
+  pageType?: 'jockey' | 'course';
+}
+
+export default function VolatilityExplanation({ pageType = 'course' }: VolatilityExplanationProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const explanationPoints = [
+  const isJockeyPage = pageType === 'jockey';
+
+  const explanationPoints = isJockeyPage ? [
+    '人気時の複勝率が高いほど、信頼度が高いことを示します。',
+    '各騎手の1番人気時の複勝率を全騎手で相対比較し、5段階で評価しています。'
+  ] : [
     '三連単の中央値（配当額）が高いほど、レース展開が予測しづらく荒れやすいことを示します。',
     '各コースの中央値を全コースで相対比較し、5段階で評価しています。'
+  ];
+
+  const title = isJockeyPage ? '信頼度の評価方法について' : '荒れやすさの評価方法について';
+  const ariaLabel = isJockeyPage ? '信頼度の評価方法について' : '荒れやすさの評価方法について';
+  const detailTitle = isJockeyPage ? '対象騎手' : '対象コース';
+  const detailItems = isJockeyPage ? [
+    '直近3年間のレースデータを使用',
+    '1番人気での騎乗が10回以上の騎手のみを対象',
+  ] : [
+    '直近3年間のレースデータを使用',
+    '障害のコースは除外',
+    '3年間の実施回数が20回未満のコースは除外'
   ];
 
   return (
@@ -15,8 +36,8 @@ export default function VolatilityExplanation() {
       <button
         className="volatility-info-btn"
         onClick={() => setIsModalOpen(true)}
-        aria-label="荒れやすさの評価方法について"
-        title="荒れやすさの評価方法について"
+        aria-label={ariaLabel}
+        title={ariaLabel}
       >
         ?
       </button>
@@ -30,17 +51,17 @@ export default function VolatilityExplanation() {
             >
               ×
             </button>
-            <h3 className="modal-title">荒れやすさの評価方法について</h3>
+            <h3 className="modal-title">{title}</h3>
             <div className="volatility-explanation">
               {explanationPoints.map((point, index) => (
                 <p key={index} className="explanation-paragraph">{point}</p>
               ))}
               <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #e2e8f0', fontSize: '0.85rem', color: '#475569', lineHeight: '1.5' }}>
-                <p style={{ margin: '0 0 0.5rem 0' }}><strong>対象コース</strong></p>
+                <p style={{ margin: '0 0 0.5rem 0' }}><strong>{detailTitle}</strong></p>
                 <ul style={{ margin: '0.5rem 0 0 1.5rem', paddingLeft: 0, fontSize: '0.85rem' }}>
-                  <li>直近3年間のレースデータを使用</li>
-                  <li>障害のコースは除外</li>
-                  <li>3年間の実施回数が20回未満のコースは除外</li>
+                  {detailItems.map((item, index) => (
+                    <li key={index}>{item}</li>
+                  ))}
                 </ul>
               </div>
             </div>

@@ -11,11 +11,11 @@ export default function BarChartAnimation({ children }: BarChartAnimationProps) 
     // DOMが完全に読み込まれた後に実行
     const initializeObservers = () => {
       // 各表要素が画面内に入ったときにアニメーションを開始
-      const gateDetailElement = document.querySelector('.gate-place-rate-detail');
-      const runningStyleDetailElement = document.querySelector('.running-style-place-rate-detail');
+      const gateDetailElements = document.querySelectorAll('.gate-place-rate-detail');
+      const runningStyleDetailElements = document.querySelectorAll('.running-style-place-rate-detail');
 
-      console.log('BarChartAnimation: gate-place-rate-detail element found:', gateDetailElement);
-      console.log('BarChartAnimation: running-style-place-rate-detail element found:', runningStyleDetailElement);
+      console.log('BarChartAnimation: gate-place-rate-detail elements found:', gateDetailElements.length);
+      console.log('BarChartAnimation: running-style-place-rate-detail elements found:', runningStyleDetailElements.length);
 
       const observer = new IntersectionObserver(
         (entries) => {
@@ -43,19 +43,19 @@ export default function BarChartAnimation({ children }: BarChartAnimationProps) 
       );
 
       // 各表要素を監視
-      if (gateDetailElement) {
+      gateDetailElements.forEach((element) => {
         console.log('BarChartAnimation: Starting to observe gate-place-rate-detail');
-        observer.observe(gateDetailElement);
-      }
+        observer.observe(element);
+      });
 
-      if (runningStyleDetailElement) {
+      runningStyleDetailElements.forEach((element) => {
         console.log('BarChartAnimation: Starting to observe running-style-place-rate-detail');
-        observer.observe(runningStyleDetailElement);
-      }
+        observer.observe(element);
+      });
 
       return () => {
-        if (gateDetailElement) observer.unobserve(gateDetailElement);
-        if (runningStyleDetailElement) observer.unobserve(runningStyleDetailElement);
+        gateDetailElements.forEach((element) => observer.unobserve(element));
+        runningStyleDetailElements.forEach((element) => observer.unobserve(element));
       };
     };
 
