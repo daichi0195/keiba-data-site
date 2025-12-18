@@ -3,28 +3,29 @@
 import { useState } from 'react';
 
 interface VolatilityExplanationProps {
-  pageType?: 'jockey' | 'course';
+  pageType?: 'jockey' | 'trainer' | 'course';
 }
 
 export default function VolatilityExplanation({ pageType = 'course' }: VolatilityExplanationProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const isJockeyPage = pageType === 'jockey';
+  const isJockeyOrTrainerPage = pageType === 'jockey' || pageType === 'trainer';
+  const personType = pageType === 'jockey' ? '騎手' : pageType === 'trainer' ? '調教師' : '';
 
-  const explanationPoints = isJockeyPage ? [
+  const explanationPoints = isJockeyOrTrainerPage ? [
     '人気時の複勝率が高いほど、信頼度が高いことを示します。',
-    '各騎手の1番人気時の複勝率を全騎手で相対比較し、5段階で評価しています。'
+    `各${personType}の1番人気時の複勝率を全${personType}で相対比較し、5段階で評価しています。`
   ] : [
     '三連単の中央値（配当額）が高いほど、レース展開が予測しづらく荒れやすいことを示します。',
     '各コースの中央値を全コースで相対比較し、5段階で評価しています。'
   ];
 
-  const title = isJockeyPage ? '信頼度の評価方法について' : '荒れやすさの評価方法について';
-  const ariaLabel = isJockeyPage ? '信頼度の評価方法について' : '荒れやすさの評価方法について';
-  const detailTitle = isJockeyPage ? '対象騎手' : '対象コース';
-  const detailItems = isJockeyPage ? [
+  const title = isJockeyOrTrainerPage ? '信頼度の評価方法について' : '荒れやすさの評価方法について';
+  const ariaLabel = isJockeyOrTrainerPage ? '信頼度の評価方法について' : '荒れやすさの評価方法について';
+  const detailTitle = isJockeyOrTrainerPage ? `対象${personType}` : '対象コース';
+  const detailItems = isJockeyOrTrainerPage ? [
     '直近3年間のレースデータを使用',
-    '1番人気での騎乗が10回以上の騎手のみを対象',
+    pageType === 'jockey' ? '1番人気での騎乗が10回以上の騎手のみを対象' : '1番人気での出走が10回以上の調教師のみを対象',
   ] : [
     '直近3年間のレースデータを使用',
     '障害のコースは除外',

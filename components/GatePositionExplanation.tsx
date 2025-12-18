@@ -3,24 +3,24 @@
 import { useState } from 'react';
 
 interface GatePositionExplanationProps {
-  pageType?: 'jockey' | 'course';
+  pageType?: 'jockey' | 'trainer' | 'course';
 }
 
 export default function GatePositionExplanation({ pageType = 'course' }: GatePositionExplanationProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const isJockeyPage = pageType === 'jockey';
+  const isJockeyOrTrainerPage = pageType === 'jockey' || pageType === 'trainer';
 
-  const explanationPoints = isJockeyPage ? [
+  const explanationPoints = isJockeyOrTrainerPage ? [
     '芝とダートの複勝率を比較し、得意なコース傾向を判定しています。'
   ] : [
     '内枠（1-4枠）と外枠（5-8枠）の複勝率を比較し、内有利〜外有利を判定しています。'
   ];
 
-  const title = isJockeyPage ? '得意なコース傾向について' : '枠順傾向について';
-  const ariaLabel = isJockeyPage ? '得意なコース傾向について' : '枠順傾向について';
+  const title = isJockeyOrTrainerPage ? '得意なコース傾向について' : '枠順傾向について';
+  const ariaLabel = isJockeyOrTrainerPage ? '得意なコース傾向について' : '枠順傾向について';
 
-  const evaluationItems = isJockeyPage ? [
+  const evaluationItems = isJockeyOrTrainerPage ? [
     'ダートの複勝率が芝より5%以上高い：ダートが得意',
     'ダートの複勝率が芝より2%以上高い：ややダートが得意',
     '複勝率の差がほぼない：互角',
