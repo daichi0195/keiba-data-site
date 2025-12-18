@@ -746,10 +746,9 @@ export default async function JockeyPage({
 
   // ナビゲーションアイテム
   const navigationItems = [
-    { id: 'leading', label: 'リーディング' },
+    { id: 'leading', label: '年度別' },
     { id: 'characteristics', label: '特徴' },
     { id: 'highlights-section', label: '注目ポイント' },
-    { id: 'yearly-stats', label: '年度別' },
     { id: 'class-stats', label: 'クラス別' },
     { id: 'popularity-stats', label: '人気別' },
     { id: 'running-style-stats', label: '脚質別' },
@@ -828,12 +827,16 @@ export default async function JockeyPage({
             </div>
           </div>
 
-          {/* 騎手リーディングセクション */}
-          <section id="leading" aria-label="騎手リーディング">
+          {/* 年度別成績セクション */}
+          <section id="leading" aria-label="年度別成績">
             <JockeyLeadingChart
-              title={`${jockey.name}騎手 リーディング`}
+              title={`${jockey.name}騎手 年度別成績`}
               data={jockey.yearly_leading}
-            />
+            >
+              <YearlyTable
+                data={jockey.yearly_stats}
+              />
+            </JockeyLeadingChart>
           </section>
 
           {/* 騎手特徴セクション */}
@@ -1086,14 +1089,6 @@ export default async function JockeyPage({
           <section id="highlights-section" aria-label="注目ポイント">
             <HighlightsSection
               jockey_stats={jockey.course_stats}
-            />
-          </section>
-
-          {/* 年度別データセクション */}
-          <section id="yearly-stats" aria-label="年度別データ">
-            <YearlyTable
-              title={`${jockey.name}騎手 年度別データ`}
-              data={jockey.yearly_stats}
             />
           </section>
 
