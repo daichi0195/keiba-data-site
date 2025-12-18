@@ -4,7 +4,6 @@ import DataTable from '@/components/DataTable';
 import HeaderMenu from '@/components/HeaderMenu';
 import BottomNav from '@/components/BottomNav';
 import JockeyLeadingChart from '@/components/JockeyLeadingChart';
-import YearlyTable from '@/components/YearlyTable';
 import ClassTable from '@/components/ClassTable';
 import PopularityTable from '@/components/PopularityTable';
 import DistanceTable from '@/components/DistanceTable';
@@ -824,10 +823,6 @@ export default async function TrainerPage({
             <JockeyLeadingChart
               title={`${trainer.name}調教師 リーディング`}
               data={trainer.yearly_leading}
-            />
-            <YearlyTable
-              title={`${trainer.name}調教師 年度別データ`}
-              data={trainer.yearly_stats}
             />
           </section>
 
