@@ -487,9 +487,13 @@ def get_course_stats(client):
         END,
         ' ', CAST(distance AS STRING), 'm',
         CASE
-          WHEN track_variant = '外' THEN '外'
+          -- 京都1400m・1600mは内外両方あるので表記する
+          WHEN (venue_name = '京都' AND surface = '芝' AND distance IN (1400, 1600) AND track_variant = '外') THEN '外'
           WHEN (venue_name = '京都' AND surface = '芝' AND distance IN (1400, 1600) AND track_variant IS NULL) THEN '内'
+          -- 新潟2000mは内外両方あるので表記する
+          WHEN (venue_name = '新潟' AND surface = '芝' AND distance = 2000 AND track_variant = '外') THEN '外'
           WHEN (venue_name = '新潟' AND surface = '芝' AND distance = 2000 AND track_variant IS NULL) THEN '内'
+          -- それ以外のコースは外のみなので表記しない
           ELSE ''
         END
       ) as name,
@@ -705,8 +709,8 @@ def get_track_condition_stats(client):
       END,
       CASE rm.track_condition
         WHEN '良' THEN 1
-        WHEN '稍重' THEN 2
-        WHEN '重' THEN 3
+        WHEN '重' THEN 2
+        WHEN '稍重' THEN 3
         WHEN '不良' THEN 4
         ELSE 5
       END
