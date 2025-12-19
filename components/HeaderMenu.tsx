@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import styles from './HeaderMenu.module.css';
 import { getCoursesByRacecourse, getCourseUrl, getCourseDisplayName } from '@/lib/courses';
+import { ALL_JOCKEYS, type JockeyInfo } from '@/lib/jockeys';
 
 const racecoursesData = getCoursesByRacecourse().map(group => ({
   name: group.racecourse_ja,
@@ -102,116 +103,56 @@ const siresData = [
   },
 ];
 
-// 騎手データ（五十音順）
-const jockeysData = [
-  {
-    kana: 'あ行',
-    jockeys: [
-      { name: '秋山真一郎', nameEn: 'akiyama-shinichiro' },
-      { name: '池添謙一', nameEn: 'ikezoe-kenichi' },
-      { name: '石橋脩', nameEn: 'ishibashi-osamu' },
-      { name: '石川裕紀人', nameEn: 'ishikawa-yukito' },
-      { name: '泉谷楓真', nameEn: 'izumiya-fuuma' },
-      { name: '岩田康誠', nameEn: 'iwata-yasunari' },
-      { name: '岩田望来', nameEn: 'iwata-mitsuki' },
-      { name: '内田博幸', nameEn: 'uchida-hiroyuki' },
-      { name: '大野拓弥', nameEn: 'oono-takuya' },
-      { name: '荻野極', nameEn: 'ogino-kiwamu' },
-    ],
-  },
-  {
-    kana: 'か行',
-    jockeys: [
-      { name: '角田大河', nameEn: 'kakuda-taiga' },
-      { name: '勝浦正樹', nameEn: 'katsuura-masaki' },
-      { name: '川田将雅', nameEn: 'kawata-masayoshi' },
-      { name: '菊沢一樹', nameEn: 'kikuzawa-kazuki' },
-      { name: '北村友一', nameEn: 'kitamura-yuichi' },
-      { name: '国分恭介', nameEn: 'kokubun-kyosuke' },
-      { name: '国分優作', nameEn: 'kokubun-yusaku' },
-      { name: '小林勝太', nameEn: 'kobayashi-shouta' },
-      { name: '小林脩斗', nameEn: 'kobayashi-shuuto' },
-    ],
-  },
-  {
-    kana: 'さ行',
-    jockeys: [
-      { name: '坂井瑠星', nameEn: 'sakai-ryusei' },
-      { name: '酒井学', nameEn: 'sakai-manabu' },
-      { name: '柴田大知', nameEn: 'shibata-daichi' },
-      { name: '島川綾', nameEn: 'shimakawa-ryo' },
-      { name: '杉原誠人', nameEn: 'sugihara-makoto' },
-      { name: '菅原明良', nameEn: 'sugawara-akira' },
-      { name: '鮫島克駿', nameEn: 'sameshima-katsutoshi' },
-    ],
-  },
-  {
-    kana: 'た行',
-    jockeys: [
-      { name: '武豊', nameEn: 'take-yutaka' },
-      { name: '田口貫太', nameEn: 'taguchi-kanta' },
-      { name: '田辺裕信', nameEn: 'tanabe-hironobu' },
-      { name: '津村明秀', nameEn: 'tsumura-akihide' },
-      { name: '戸崎圭太', nameEn: 'tosaki-keita' },
-      { name: '富田暁', nameEn: 'tomita-satoru' },
-      { name: '藤田菜七子', nameEn: 'fujita-nanako' },
-    ],
-  },
-  {
-    kana: 'な行',
-    jockeys: [
-      { name: '永野猛蔵', nameEn: 'nagano-takezou' },
-      { name: '中井裕二', nameEn: 'nakai-yuji' },
-      { name: '西村淳也', nameEn: 'nishimura-junya' },
-    ],
-  },
-  {
-    kana: 'は行',
-    jockeys: [
-      { name: '浜中俊', nameEn: 'hamanaka-shun' },
-      { name: '原優介', nameEn: 'hara-yusuke' },
-      { name: '藤岡佑介', nameEn: 'fujioka-yusuke' },
-      { name: '藤岡康太', nameEn: 'fujioka-kouta' },
-      { name: '古川奈穂', nameEn: 'furukawa-naho' },
-      { name: '福永祐一', nameEn: 'fukunaga-yuichi' },
-    ],
-  },
-  {
-    kana: 'ま行',
-    jockeys: [
-      { name: '松岡正海', nameEn: 'matsuoka-masaumi' },
-      { name: '松山弘平', nameEn: 'matsuyama-kouhei' },
-      { name: '丸田恭介', nameEn: 'maruta-kyosuke' },
-      { name: '三浦皇成', nameEn: 'miura-kousei' },
-      { name: '宮崎北斗', nameEn: 'miyazaki-hokuto' },
-      { name: '武藤雅', nameEn: 'mutou-miyabi' },
-    ],
-  },
-  {
-    kana: 'や行',
-    jockeys: [
-      { name: '横山武史', nameEn: 'yokoyama-takeshi' },
-      { name: '横山和生', nameEn: 'yokoyama-kazuki' },
-      { name: '横山典弘', nameEn: 'yokoyama-norihiro' },
-      { name: '吉田隼人', nameEn: 'yoshida-hayato' },
-    ],
-  },
-  {
-    kana: 'ら行',
-    jockeys: [
-      { name: 'C.ルメール', nameEn: 'lemaire' },
-      { name: 'M.デムーロ', nameEn: 'demuro' },
-      { name: 'R.ムーア', nameEn: 'moore' },
-      { name: '鲁西迪', nameEn: 'russell' },
-    ],
-  },
-  {
-    kana: 'わ行',
-    jockeys: [
-      { name: '和田竜二', nameEn: 'wada-ryuji' },
-    ],
-  },
-];
+// 騎手データを五十音順にグループ化
+const getKanaGroup = (name: string): string => {
+  const first = name.charAt(0);
+
+  // あ行
+  if (/[あいうえおアイウエオ]/.test(first)) return 'あ行';
+  // か行
+  if (/[かきくけこがぎぐげごカキクケコガギグゲゴ]/.test(first)) return 'か行';
+  // さ行
+  if (/[さしすせそざじずぜぞサシスセソザジズゼゾ]/.test(first)) return 'さ行';
+  // た行
+  if (/[たちつてとだぢづでどタチツテトダヂヅデド]/.test(first)) return 'た行';
+  // な行
+  if (/[なにぬねのナニヌネノ]/.test(first)) return 'な行';
+  // は行
+  if (/[はひふへほばびぶべぼぱぴぷぺぽハヒフヘホバビブベボパピプペポ]/.test(first)) return 'は行';
+  // ま行
+  if (/[まみむめもマミムメモ]/.test(first)) return 'ま行';
+  // や行
+  if (/[やゆよヤユヨ]/.test(first)) return 'や行';
+  // ら行
+  if (/[らりるれろラリルレロ]/.test(first)) return 'ら行';
+  // わ行
+  if (/[わをんワヲン]/.test(first)) return 'わ行';
+
+  // 記号・外国人名など
+  return 'その他';
+};
+
+const jockeysData = (() => {
+  const grouped: Record<string, JockeyInfo[]> = {};
+
+  ALL_JOCKEYS.forEach(jockey => {
+    const group = getKanaGroup(jockey.name);
+    if (!grouped[group]) {
+      grouped[group] = [];
+    }
+    grouped[group].push(jockey);
+  });
+
+  // 五十音順に並び替え
+  const kanaOrder = ['あ行', 'か行', 'さ行', 'た行', 'な行', 'は行', 'ま行', 'や行', 'ら行', 'わ行', 'その他'];
+
+  return kanaOrder
+    .filter(kana => grouped[kana])
+    .map(kana => ({
+      kana,
+      jockeys: grouped[kana].sort((a, b) => a.name.localeCompare(b.name, 'ja'))
+    }));
+})();
 
 // 調教師データ（五十音順）
 const trainersData = [
@@ -661,8 +602,8 @@ export default function HeaderMenu() {
                       <div className={styles.dataCardGrid}>
                         {group.jockeys.map((jockey) => (
                           <Link
-                            key={jockey.nameEn}
-                            href={`/jockeys/${jockey.nameEn}`}
+                            key={jockey.id}
+                            href={`/jockeys/${jockey.id}`}
                             className={styles.dataCard}
                             onClick={closeMenu}
                           >
