@@ -281,24 +281,41 @@ def get_popularity_stats(client):
 def get_running_style_stats(client):
     """脚質別成績を取得（過去3年間）"""
     query = f"""
-    WITH corner_data AS (
+    WITH all_horses AS (
       SELECT
         rm.race_id,
         rr.horse_id,
+        rr.jockey_id,
         rr.finish_position,
         rr.win,
         rr.place,
         rm.entry_count,
         rr.last_3f_time,
-        SPLIT(rr.corner_positions, '-') as corner_array
+        SPLIT(rr.corner_positions, '-') as corner_array,
+        RANK() OVER (PARTITION BY rm.race_id ORDER BY rr.last_3f_time ASC) as last_3f_rank
       FROM
         `{DATASET}.race_master` rm
         JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
       WHERE
-        rr.jockey_id = {JOCKEY_ID}
-        AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
-        AND rr.corner_positions IS NOT NULL
-        AND ARRAY_LENGTH(SPLIT(rr.corner_positions, '-')) > 0
+        rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+    ),
+    corner_data AS (
+      SELECT
+        race_id,
+        horse_id,
+        finish_position,
+        win,
+        place,
+        entry_count,
+        last_3f_time,
+        last_3f_rank,
+        corner_array
+      FROM
+        all_horses
+      WHERE
+        jockey_id = {JOCKEY_ID}
+        AND corner_array IS NOT NULL
+        AND ARRAY_LENGTH(corner_array) > 0
     ),
     corner_parsed AS (
       SELECT
@@ -309,13 +326,13 @@ def get_running_style_stats(client):
         place,
         entry_count,
         last_3f_time,
+        last_3f_rank,
         corner_array,
         ARRAY_LENGTH(corner_array) as corner_count,
         CAST(IF(ARRAY_LENGTH(corner_array) >= 1, corner_array[OFFSET(0)], NULL) AS INT64) as corner_1,
         CAST(IF(ARRAY_LENGTH(corner_array) >= 2, corner_array[OFFSET(1)], NULL) AS INT64) as corner_2,
         CAST(IF(ARRAY_LENGTH(corner_array) >= 3, corner_array[OFFSET(2)], NULL) AS INT64) as corner_3,
-        CAST(corner_array[OFFSET(ARRAY_LENGTH(corner_array)-1)] AS INT64) as final_corner,
-        RANK() OVER (PARTITION BY race_id ORDER BY last_3f_time ASC) as last_3f_rank
+        CAST(corner_array[OFFSET(ARRAY_LENGTH(corner_array)-1)] AS INT64) as final_corner
       FROM
         corner_data
     ),
