@@ -62,6 +62,7 @@ export default function JockeyTrainerHighlights({
       places_2: item.places_2 ?? 0,
       places_3: item.places_3 ?? 0,
       quinella_rate: item.quinella_rate ?? 0,
+      link: item.link, // コース別ページへのリンクを明示的に保持
     }));
 
     // 苦手なコース: 複勝率BOTTOM5（rankを付与、コース名を整形）
@@ -78,6 +79,7 @@ export default function JockeyTrainerHighlights({
       places_2: item.places_2 ?? 0,
       places_3: item.places_3 ?? 0,
       quinella_rate: item.quinella_rate ?? 0,
+      link: item.link, // コース別ページへのリンクを明示的に保持
     }));
 
     return { top, bottom };
