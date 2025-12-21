@@ -62,13 +62,13 @@ export default function JockeyLeadingChart({ title, data, children }: JockeyLead
     ctx.scale(dpr, dpr);
 
     // グラフの設定
-    const padding = { top: 15, right: 35, bottom: 30, left: 0 };
+    const padding = { top: 35, right: 35, bottom: 30, left: 0 };
     const chartWidth = rect.width - padding.left - padding.right;
     const chartHeight = rect.height - padding.top - padding.bottom;
 
     // データの最大値・最小値を取得
     const maxWins = Math.max(...data.map(d => d.wins));
-    // 順位の範囲を1位〜50位に固定
+    // 順位の範囲を1位〜50位に固定（50位を超える場合は50位として扱う）
     const minRanking = 1;
     const maxRanking = 50;
 
@@ -148,8 +148,11 @@ export default function JockeyLeadingChart({ title, data, children }: JockeyLead
           const item = validData[i];
           const index = item.originalIndex;
           const x = padding.left + barWidth * index + barWidth / 2;
-          const normalizedRanking = (maxRanking - item.ranking) / (maxRanking - minRanking);
-          const y = padding.top + chartHeight * (1 - normalizedRanking);
+          // ranking が50を超える場合は50として扱う
+          const cappedRanking = Math.min(item.ranking, maxRanking);
+          // 上が1位、下が50位になるように正規化
+          const normalizedRanking = (cappedRanking - minRanking) / (maxRanking - minRanking);
+          const y = padding.top + chartHeight * normalizedRanking;
 
           if (!hasMovedTo) {
             ctx.moveTo(x, y);
@@ -165,12 +168,14 @@ export default function JockeyLeadingChart({ title, data, children }: JockeyLead
           const nextItem = validData[visiblePoints + 1];
 
           const x1 = padding.left + barWidth * currentItem.originalIndex + barWidth / 2;
-          const normalizedRanking1 = (maxRanking - currentItem.ranking) / (maxRanking - minRanking);
-          const y1 = padding.top + chartHeight * (1 - normalizedRanking1);
+          const cappedRanking1 = Math.min(currentItem.ranking, maxRanking);
+          const normalizedRanking1 = (cappedRanking1 - minRanking) / (maxRanking - minRanking);
+          const y1 = padding.top + chartHeight * normalizedRanking1;
 
           const x2 = padding.left + barWidth * nextItem.originalIndex + barWidth / 2;
-          const normalizedRanking2 = (maxRanking - nextItem.ranking) / (maxRanking - minRanking);
-          const y2 = padding.top + chartHeight * (1 - normalizedRanking2);
+          const cappedRanking2 = Math.min(nextItem.ranking, maxRanking);
+          const normalizedRanking2 = (cappedRanking2 - minRanking) / (maxRanking - minRanking);
+          const y2 = padding.top + chartHeight * normalizedRanking2;
 
           const partialX = x1 + (x2 - x1) * partialProgress;
           const partialY = y1 + (y2 - y1) * partialProgress;
@@ -187,8 +192,9 @@ export default function JockeyLeadingChart({ title, data, children }: JockeyLead
         const item = validData[i];
         const index = item.originalIndex;
         const x = padding.left + barWidth * index + barWidth / 2;
-        const normalizedRanking = (maxRanking - item.ranking) / (maxRanking - minRanking);
-        const y = padding.top + chartHeight * (1 - normalizedRanking);
+        const cappedRanking = Math.min(item.ranking, maxRanking);
+        const normalizedRanking = (cappedRanking - minRanking) / (maxRanking - minRanking);
+        const y = padding.top + chartHeight * normalizedRanking;
 
         // 外側の円
         ctx.fillStyle = '#ffffff';
@@ -200,7 +206,8 @@ export default function JockeyLeadingChart({ title, data, children }: JockeyLead
         ctx.stroke();
 
         // 順位のラベル - 背景付きで視認性向上
-        const labelText = item.ranking.toString() + '位';
+        // 50位を超える場合は「50位未満」と表示
+        const labelText = item.ranking > 50 ? '50位未満' : item.ranking.toString() + '位';
         ctx.font = 'bold 12px sans-serif';
         ctx.textAlign = 'center';
         const textMetrics = ctx.measureText(labelText);
