@@ -1000,7 +1000,82 @@ def calculate_reliability_level(ranking, total_trainers):
         return 1  # 低い（上位81-100%）
 
 
-def get_characteristics(client):
+def calculate_surface_position(surface_stats):
+    """芝・ダート傾向を計算
+
+    評価基準:
+    - ダートの複勝率が芝より5%以上高い：1 (ダートが得意)
+    - ダートの複勝率が芝より2%以上高い：2 (ややダートが得意)
+    - 複勝率の差がほぼない：3 (互角)
+    - 芝の複勝率がダートより2%以上高い：4 (やや芝が得意)
+    - 芝の複勝率がダートより5%以上高い：5 (芝が得意)
+    """
+    turf_data = next((s for s in surface_stats if s['surface'] == '芝'), None)
+    dirt_data = next((s for s in surface_stats if s['surface'] == 'ダート'), None)
+
+    if not turf_data or not dirt_data:
+        return 3  # データ不足の場合は互角とする
+
+    turf_place_rate = turf_data.get('place_rate', 0) or 0
+    dirt_place_rate = dirt_data.get('place_rate', 0) or 0
+
+    diff = dirt_place_rate - turf_place_rate
+
+    if diff >= 5:
+        return 1  # ダートが得意
+    elif diff >= 2:
+        return 2  # ややダートが得意
+    elif diff <= -5:
+        return 5  # 芝が得意
+    elif diff <= -2:
+        return 4  # やや芝が得意
+    else:
+        return 3  # 互角
+
+
+def calculate_distance_position(distance_stats):
+    """距離傾向を計算
+
+    評価基準:
+    - 短距離・マイルの複勝率が中距離・長距離より5%以上高い：1 (短距離が得意)
+    - 短距離・マイルの複勝率が中距離・長距離より2%以上高い：2 (やや短距離が得意)
+    - 複勝率の差がほぼない：3 (互角)
+    - 中距離・長距離の複勝率が短距離・マイルより2%以上高い：4 (やや長距離が得意)
+    - 中距離・長距離の複勝率が短距離・マイルより5%以上高い：5 (長距離が得意)
+    """
+    short_categories = ['短距離', 'マイル']
+    long_categories = ['中距離', '長距離']
+
+    short_stats = [s for s in distance_stats if s['category'] in short_categories]
+    long_stats = [s for s in distance_stats if s['category'] in long_categories]
+
+    if not short_stats or not long_stats:
+        return 3  # データ不足の場合は互角とする
+
+    # 加重平均を計算（レース数で重み付け）
+    short_total_races = sum(s.get('races', 0) for s in short_stats)
+    short_total_places = sum(s.get('races', 0) * (s.get('place_rate', 0) or 0) / 100 for s in short_stats)
+    short_place_rate = (short_total_places / short_total_races * 100) if short_total_races > 0 else 0
+
+    long_total_races = sum(s.get('races', 0) for s in long_stats)
+    long_total_places = sum(s.get('races', 0) * (s.get('place_rate', 0) or 0) / 100 for s in long_stats)
+    long_place_rate = (long_total_places / long_total_races * 100) if long_total_races > 0 else 0
+
+    diff = short_place_rate - long_place_rate
+
+    if diff >= 5:
+        return 1  # 短距離が得意
+    elif diff >= 2:
+        return 2  # やや短距離が得意
+    elif diff <= -5:
+        return 5  # 長距離が得意
+    elif diff <= -2:
+        return 4  # やや長距離が得意
+    else:
+        return 3  # 互角
+
+
+def get_characteristics(client, surface_stats, distance_stats):
     """特性データを取得（信頼度など）"""
     # 1番人気時の複勝率を取得
     fav1_data = get_fav1_place_rate(client)
@@ -1026,6 +1101,12 @@ def get_characteristics(client):
     # 信頼度レベルを計算
     volatility = calculate_reliability_level(ranking, total_trainers)
 
+    # 芝・ダート傾向を計算
+    gate_position = calculate_surface_position(surface_stats)
+
+    # 距離傾向を計算
+    distance_trend_position = calculate_distance_position(distance_stats)
+
     return {
         'volatility': volatility,
         'fav1_place_rate': trainer_fav1_place_rate,
@@ -1033,9 +1114,8 @@ def get_characteristics(client):
         'fav1_races': fav1_races,
         'fav1_ranking': ranking if ranking else 0,
         'total_trainers': total_trainers,
-        'gate_position': 3,
-        'running_style_trend_position': 3,
-        'distance_trend_position': 3
+        'gate_position': gate_position,
+        'distance_trend_position': distance_trend_position
     }
 
 
@@ -1102,7 +1182,7 @@ def process_trainer(bq_client, storage_client, trainer_id, trainer_name):
         owner_stats = get_owner_stats(bq_client)
 
         print("  [17/17] Calculating characteristics...")
-        characteristics = get_characteristics(bq_client)
+        characteristics = get_characteristics(bq_client, surface_stats, distance_stats)
 
         # データ期間と更新日を設定
         today = datetime.now()

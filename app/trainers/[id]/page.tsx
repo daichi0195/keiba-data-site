@@ -558,8 +558,8 @@ export default async function TrainerPage({
   // 現在の年度を取得
   const currentYear = new Date().getFullYear();
 
-  // 年度別データを直近3年分に絞り込み、データがない年も必ず含める（新しい順）
-  const years = [currentYear, currentYear - 1, currentYear - 2];
+  // 年度別データを直近3年分に絞り込み、データがない年も必ず含める（左から2年前→1年前→当年）
+  const years = [currentYear - 2, currentYear - 1, currentYear];
   const yearlyStatsData = years.map(year => {
     const existingData = trainer.yearly_stats.find(stat => stat.year === year);
     return existingData ? {
@@ -834,7 +834,7 @@ export default async function TrainerPage({
               </div>
               <div className="meta-item">
                 <span className="meta-label">対象レース数</span>
-                <span>{trainer.total_races}レース</span>
+                <span>{trainer.total_races.toLocaleString()}レース</span>
               </div>
               <div className="meta-item">
                 <span className="meta-label">最終更新日</span>
