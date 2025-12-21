@@ -24,6 +24,7 @@ def get_jockey_basic_info(client):
     SELECT
       jockey_id,
       jockey_name as name,
+      jockey_kana as kana,
       region as affiliation,
       debut_year,
       is_active
@@ -1087,7 +1088,7 @@ def process_jockey(bq_client, storage_client, jockey_id, jockey_name):
         jockey_data = {
             'id': str(jockey_id).zfill(5),
             'name': basic_info['name'],
-            'kana': '',  # TODO: カナデータが必要な場合は追加
+            'kana': basic_info['kana'] or '',
             'affiliation': basic_info['affiliation'] or '',
             'debut_year': basic_info['debut_year'],
             'data_period': data_period,

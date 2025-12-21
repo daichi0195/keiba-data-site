@@ -104,8 +104,11 @@ const siresData = [
 ];
 
 // 騎手データを五十音順にグループ化
-const getKanaGroup = (name: string): string => {
-  const first = name.charAt(0);
+const getKanaGroup = (kana: string): string => {
+  // kanaが空の場合は「その他」に分類
+  if (!kana) return 'その他';
+
+  const first = kana.charAt(0);
 
   // あ行
   if (/[あいうえおアイウエオ]/.test(first)) return 'あ行';
@@ -136,7 +139,7 @@ const jockeysData = (() => {
   const grouped: Record<string, JockeyInfo[]> = {};
 
   ALL_JOCKEYS.forEach(jockey => {
-    const group = getKanaGroup(jockey.name);
+    const group = getKanaGroup(jockey.kana);
     if (!grouped[group]) {
       grouped[group] = [];
     }
@@ -150,7 +153,7 @@ const jockeysData = (() => {
     .filter(kana => grouped[kana])
     .map(kana => ({
       kana,
-      jockeys: grouped[kana].sort((a, b) => a.name.localeCompare(b.name, 'ja'))
+      jockeys: grouped[kana].sort((a, b) => a.kana.localeCompare(b.kana, 'ja'))
     }));
 })();
 
@@ -521,7 +524,7 @@ export default function HeaderMenu() {
               {racecoursesData.map((racecourse) => (
                 <div key={racecourse.nameEn} className={styles.accordionItem}>
                   <button
-                    className={styles.accordionTrigger}
+                    className={`${styles.accordionTrigger} ${expandedRacecourse[racecourse.nameEn] ? styles.expanded : ''}`}
                     onClick={() => toggleRacecourse(racecourse.nameEn)}
                   >
                     <span className={`${styles.accordionIcon} ${expandedRacecourse[racecourse.nameEn] ? styles.expanded : ''}`}>
@@ -588,7 +591,7 @@ export default function HeaderMenu() {
               {jockeysData.map((group) => (
                 <div key={group.kana} className={styles.accordionItem}>
                   <button
-                    className={styles.accordionTrigger}
+                    className={`${styles.accordionTrigger} ${expandedRacecourse[`jockey-${group.kana}`] ? styles.expanded : ''}`}
                     onClick={() => toggleRacecourse(`jockey-${group.kana}`)}
                   >
                     <span className={`${styles.accordionIcon} ${expandedRacecourse[`jockey-${group.kana}`] ? styles.expanded : ''}`}>
@@ -623,7 +626,7 @@ export default function HeaderMenu() {
               {siresData.map((group) => (
                 <div key={group.kana} className={styles.accordionItem}>
                   <button
-                    className={styles.accordionTrigger}
+                    className={`${styles.accordionTrigger} ${expandedRacecourse[`sire-${group.kana}`] ? styles.expanded : ''}`}
                     onClick={() => toggleRacecourse(`sire-${group.kana}`)}
                   >
                     <span className={`${styles.accordionIcon} ${expandedRacecourse[`sire-${group.kana}`] ? styles.expanded : ''}`}>
@@ -658,7 +661,7 @@ export default function HeaderMenu() {
               {trainersData.map((group) => (
                 <div key={group.kana} className={styles.accordionItem}>
                   <button
-                    className={styles.accordionTrigger}
+                    className={`${styles.accordionTrigger} ${expandedRacecourse[`trainer-${group.kana}`] ? styles.expanded : ''}`}
                     onClick={() => toggleRacecourse(`trainer-${group.kana}`)}
                   >
                     <span className={`${styles.accordionIcon} ${expandedRacecourse[`trainer-${group.kana}`] ? styles.expanded : ''}`}>

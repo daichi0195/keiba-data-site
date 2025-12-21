@@ -222,6 +222,10 @@
   color: #1db854;
 }
 
+.accordionTrigger.expanded {
+  color: #1db854;
+}
+
 .accordionIcon {
   display: inline-block;
   width: 1rem;
