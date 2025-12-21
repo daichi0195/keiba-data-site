@@ -130,100 +130,111 @@ export default function JockeyLeadingChart({ title, data, children }: JockeyLead
     });
 
     // 折れ線グラフ（リーディング順位）- 左から右にアニメーション
-    const visiblePoints = Math.floor(data.length * animationProgress);
-    const partialProgress = (data.length * animationProgress) - visiblePoints;
+    // データがある年のみを対象にする（ranking > 0）
+    const validData = data.map((item, index) => ({ ...item, originalIndex: index }))
+                           .filter(item => item.ranking > 0);
 
-    if (visiblePoints > 0 || partialProgress > 0) {
-      ctx.strokeStyle = '#f59e0b';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
+    if (validData.length > 0) {
+      const visiblePoints = Math.floor(validData.length * animationProgress);
+      const partialProgress = (validData.length * animationProgress) - visiblePoints;
 
-      for (let index = 0; index <= Math.min(visiblePoints, data.length - 1); index++) {
-        const item = data[index];
+      if (visiblePoints > 0 || partialProgress > 0) {
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+
+        let hasMovedTo = false;
+        for (let i = 0; i <= Math.min(visiblePoints, validData.length - 1); i++) {
+          const item = validData[i];
+          const index = item.originalIndex;
+          const x = padding.left + barWidth * index + barWidth / 2;
+          const normalizedRanking = (maxRanking - item.ranking) / (maxRanking - minRanking);
+          const y = padding.top + chartHeight * (1 - normalizedRanking);
+
+          if (!hasMovedTo) {
+            ctx.moveTo(x, y);
+            hasMovedTo = true;
+          } else {
+            ctx.lineTo(x, y);
+          }
+        }
+
+        // 部分的に表示される線
+        if (visiblePoints < validData.length - 1 && partialProgress > 0) {
+          const currentItem = validData[visiblePoints];
+          const nextItem = validData[visiblePoints + 1];
+
+          const x1 = padding.left + barWidth * currentItem.originalIndex + barWidth / 2;
+          const normalizedRanking1 = (maxRanking - currentItem.ranking) / (maxRanking - minRanking);
+          const y1 = padding.top + chartHeight * (1 - normalizedRanking1);
+
+          const x2 = padding.left + barWidth * nextItem.originalIndex + barWidth / 2;
+          const normalizedRanking2 = (maxRanking - nextItem.ranking) / (maxRanking - minRanking);
+          const y2 = padding.top + chartHeight * (1 - normalizedRanking2);
+
+          const partialX = x1 + (x2 - x1) * partialProgress;
+          const partialY = y1 + (y2 - y1) * partialProgress;
+
+          ctx.lineTo(partialX, partialY);
+        }
+
+        ctx.stroke();
+      }
+
+      // 折れ線のポイント - データがある年のみ表示
+      const displayPoints = Math.floor(validData.length * animationProgress);
+      for (let i = 0; i <= displayPoints && i < validData.length; i++) {
+        const item = validData[i];
+        const index = item.originalIndex;
         const x = padding.left + barWidth * index + barWidth / 2;
         const normalizedRanking = (maxRanking - item.ranking) / (maxRanking - minRanking);
         const y = padding.top + chartHeight * (1 - normalizedRanking);
 
-        if (index === 0) {
-          ctx.moveTo(x, y);
-        } else {
-          ctx.lineTo(x, y);
-        }
+        // 外側の円
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // 順位のラベル - 背景付きで視認性向上
+        const labelText = item.ranking.toString() + '位';
+        ctx.font = 'bold 12px sans-serif';
+        ctx.textAlign = 'center';
+        const textMetrics = ctx.measureText(labelText);
+        const textWidth = textMetrics.width;
+        const paddingX = 6;
+        const paddingY = 4;
+        const boxHeight = 20;
+        const boxY = y - 28;
+
+        // 背景の四角
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(
+          x - textWidth / 2 - paddingX,
+          boxY,
+          textWidth + paddingX * 2,
+          boxHeight
+        );
+
+        // 枠線
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(
+          x - textWidth / 2 - paddingX,
+          boxY,
+          textWidth + paddingX * 2,
+          boxHeight
+        );
+
+        // テキスト（ボックスの中央に配置）
+        ctx.fillStyle = '#f59e0b';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(labelText, x, boxY + boxHeight / 2);
+        ctx.textBaseline = 'alphabetic';
       }
-
-      // 部分的に表示される線
-      if (visiblePoints < data.length - 1 && partialProgress > 0) {
-        const currentItem = data[visiblePoints];
-        const nextItem = data[visiblePoints + 1];
-
-        const x1 = padding.left + barWidth * visiblePoints + barWidth / 2;
-        const normalizedRanking1 = (maxRanking - currentItem.ranking) / (maxRanking - minRanking);
-        const y1 = padding.top + chartHeight * (1 - normalizedRanking1);
-
-        const x2 = padding.left + barWidth * (visiblePoints + 1) + barWidth / 2;
-        const normalizedRanking2 = (maxRanking - nextItem.ranking) / (maxRanking - minRanking);
-        const y2 = padding.top + chartHeight * (1 - normalizedRanking2);
-
-        const partialX = x1 + (x2 - x1) * partialProgress;
-        const partialY = y1 + (y2 - y1) * partialProgress;
-
-        ctx.lineTo(partialX, partialY);
-      }
-
-      ctx.stroke();
-    }
-
-    // 折れ線のポイント - 表示されたポイントのみ
-    for (let index = 0; index <= visiblePoints && index < data.length; index++) {
-      const item = data[index];
-      const x = padding.left + barWidth * index + barWidth / 2;
-      const normalizedRanking = (maxRanking - item.ranking) / (maxRanking - minRanking);
-      const y = padding.top + chartHeight * (1 - normalizedRanking);
-
-      // 外側の円
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.arc(x, y, 5, 0, 2 * Math.PI);
-      ctx.fill();
-      ctx.strokeStyle = '#f59e0b';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      // 順位のラベル - 背景付きで視認性向上
-      const labelText = item.ranking > 0 ? item.ranking.toString() + '位' : '圏外';
-      ctx.font = 'bold 12px sans-serif';
-      ctx.textAlign = 'center';
-      const textMetrics = ctx.measureText(labelText);
-      const textWidth = textMetrics.width;
-      const paddingX = 6;
-      const paddingY = 4;
-      const boxHeight = 20;
-      const boxY = y - 28;
-
-      // 背景の四角
-      ctx.fillStyle = '#fff';
-      ctx.fillRect(
-        x - textWidth / 2 - paddingX,
-        boxY,
-        textWidth + paddingX * 2,
-        boxHeight
-      );
-
-      // 枠線
-      ctx.strokeStyle = '#f59e0b';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(
-        x - textWidth / 2 - paddingX,
-        boxY,
-        textWidth + paddingX * 2,
-        boxHeight
-      );
-
-      // テキスト（ボックスの中央に配置）
-      ctx.fillStyle = '#f59e0b';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(labelText, x, boxY + boxHeight / 2);
-      ctx.textBaseline = 'alphabetic';
     }
 
   }, [data, animationProgress]);
