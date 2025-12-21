@@ -190,7 +190,7 @@ export default function JockeyLeadingChart({ title, data, children }: JockeyLead
       ctx.stroke();
 
       // 順位のラベル - 背景付きで視認性向上
-      const labelText = item.ranking.toString() + '位';
+      const labelText = item.ranking > 0 ? item.ranking.toString() + '位' : '圏外';
       ctx.font = 'bold 12px sans-serif';
       ctx.textAlign = 'center';
       const textMetrics = ctx.measureText(labelText);

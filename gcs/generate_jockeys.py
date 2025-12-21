@@ -354,10 +354,10 @@ def get_running_style_stats(client):
             THEN 'lead'
           WHEN COALESCE(final_corner, 999) > CAST(CEIL(entry_count / 3.0) AS INT64)
             AND COALESCE(final_corner, 999) <= CAST(CEIL(2 * entry_count / 3.0) AS INT64)
-            AND last_3f_rank <= 5
+            AND last_3f_rank <= 3
             THEN 'pursue'
           WHEN COALESCE(final_corner, 999) > CAST(CEIL(2 * entry_count / 3.0) AS INT64)
-            AND last_3f_rank <= 5
+            AND last_3f_rank <= 3
             THEN 'close'
           ELSE NULL
         END as running_style
@@ -726,8 +726,10 @@ def get_track_condition_stats(client):
       END,
       CASE rm.track_condition
         WHEN '良' THEN 1
+        WHEN '稍' THEN 2
         WHEN '稍重' THEN 2
         WHEN '重' THEN 3
+        WHEN '不' THEN 4
         WHEN '不良' THEN 4
         ELSE 5
       END

@@ -295,10 +295,25 @@ export default async function JockeyPage({
   // 現在の年度を取得
   const currentYear = new Date().getFullYear();
 
-  // 年度別データを直近3年分に絞り込み、新しい順（今年→昨年→一昨年）に並び替え
-  const yearlyStatsData = jockey.yearly_stats
-    .filter((stat) => stat.year >= currentYear - 2 && stat.year <= currentYear)
-    .sort((a, b) => b.year - a.year); // 降順（新しい年が先）
+  // 年度別データを直近3年分に絞り込み、データがない年も必ず含める
+  const yearlyStatsData = (() => {
+    const years = [currentYear, currentYear - 1, currentYear - 2];
+    return years.map(year => {
+      const existingData = jockey.yearly_stats.find(stat => stat.year === year);
+      return existingData || {
+        year,
+        races: 0,
+        wins: 0,
+        places_2: 0,
+        places_3: 0,
+        win_rate: 0,
+        place_rate: 0,
+        quinella_rate: 0,
+        win_payback: 0,
+        place_payback: 0,
+      };
+    });
+  })();
 
   // 距離別データをテーブル形式に変換（中長距離と長距離をマージ）
   const distanceStatsRaw = jockey.distance_stats.reduce((acc, stat) => {
@@ -669,16 +684,21 @@ export default async function JockeyPage({
           <section id="leading" aria-label="年度別成績">
             <JockeyLeadingChart
               title={`${jockey.name}騎手 年度別成績`}
-              data={jockey.yearly_leading
-                .filter((stat) => stat.year >= currentYear - 2 && stat.year <= currentYear)
-                .sort((a, b) => a.year - b.year) // チャートは古い順（左から右）
-              }
+              data={(() => {
+                // チャート用: 2年前→1年前→今年の順（古い順）で、データがない年も含める
+                const years = [currentYear - 2, currentYear - 1, currentYear];
+                return years.map(year => {
+                  const existingData = jockey.yearly_leading.find(stat => stat.year === year);
+                  return existingData || {
+                    year,
+                    wins: 0,
+                    ranking: 0,
+                  };
+                });
+              })()}
             >
               <YearlyTable
-                data={jockey.yearly_stats
-                  .filter((stat) => stat.year >= currentYear - 2 && stat.year <= currentYear)
-                  .sort((a, b) => b.year - a.year) // テーブルは新しい順（上から下）
-                }
+                data={yearlyStatsData}
               />
             </JockeyLeadingChart>
           </section>
