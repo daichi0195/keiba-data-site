@@ -551,7 +551,16 @@ def get_course_stats(client):
 
     try:
         results = client.query(query).result()
-        return [dict(row) for row in results]
+        # リンクを追加
+        course_list = []
+        for row in results:
+            row_dict = dict(row)
+            # コース別ページへのリンクを生成
+            if row_dict.get('racecourse_en') and row_dict.get('surface_en') and row_dict.get('distance'):
+                link = f"/courses/{row_dict['racecourse_en']}/{row_dict['surface_en']}/{row_dict['distance']}"
+                row_dict['link'] = link
+            course_list.append(row_dict)
+        return course_list
     except Exception as e:
         print(f"   ⚠️  Error fetching course stats: {str(e)}", file=sys.stderr)
         raise
