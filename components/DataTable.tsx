@@ -37,8 +37,10 @@ export default function DataTable({ title, data, initialShow = 10, nameLabel = '
   const scrollRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const prevShowAllRef = useRef(false);
-  
-  const displayData = showAll ? data : data.slice(0, initialShow);
+
+  // dataがundefinedまたは空の場合は空配列を使用
+  const safeData = data || [];
+  const displayData = showAll ? safeData : safeData.slice(0, initialShow);
 
   // 数値を3桁カンマ区切りでフォーマット
   const formatNumber = (num: number) => {
@@ -85,15 +87,15 @@ export default function DataTable({ title, data, initialShow = 10, nameLabel = '
   }, [showAll]);
   
   // 各カラムの最大値を取得（全カラム対応）
-  const maxRaces = Math.max(...data.map(d => d.races ?? 0));
-  const maxWins = Math.max(...data.map(d => d.wins ?? 0));
-  const maxPlaces2 = Math.max(...data.map(d => d.places_2 ?? 0));
-  const maxPlaces3 = Math.max(...data.map(d => d.places_3 ?? 0));
-  const maxWinRate = Math.max(...data.map(d => d.win_rate ?? 0));
-  const maxPlaceRate = Math.max(...data.map(d => d.place_rate ?? 0));
-  const maxQuinellaRate = Math.max(...data.map(d => d.quinella_rate ?? 0));
-  const maxWinPayback = Math.max(...data.map(d => d.win_payback ?? 0));
-  const maxPlacePayback = Math.max(...data.map(d => d.place_payback ?? 0));
+  const maxRaces = Math.max(...safeData.map(d => d.races ?? 0));
+  const maxWins = Math.max(...safeData.map(d => d.wins ?? 0));
+  const maxPlaces2 = Math.max(...safeData.map(d => d.places_2 ?? 0));
+  const maxPlaces3 = Math.max(...safeData.map(d => d.places_3 ?? 0));
+  const maxWinRate = Math.max(...safeData.map(d => d.win_rate ?? 0));
+  const maxPlaceRate = Math.max(...safeData.map(d => d.place_rate ?? 0));
+  const maxQuinellaRate = Math.max(...safeData.map(d => d.quinella_rate ?? 0));
+  const maxWinPayback = Math.max(...safeData.map(d => d.win_payback ?? 0));
+  const maxPlacePayback = Math.max(...safeData.map(d => d.place_payback ?? 0));
   
   // セルがハイライト対象かチェック
   const isHighlight = (value: number, maxValue: number) => !disableHighlight && value === maxValue;
@@ -288,19 +290,24 @@ export default function DataTable({ title, data, initialShow = 10, nameLabel = '
         </p>
       )}
 
-      {data.length > initialShow && (
+      {safeData.length > initialShow && (
         <div className="show-more-container">
           <button
             ref={buttonRef}
             className="show-more-button"
             onClick={() => setShowAll(!showAll)}
           >
-            {showAll ? '▲ 閉じる' : `▼ さらに表示（残り${data.length - initialShow}件）`}
+            {showAll ? '▲ 閉じる' : `▼ さらに表示（残り${safeData.length - initialShow}件）`}
           </button>
         </div>
       )}
     </>
   );
+
+  // データがない場合はnullを返す
+  if (safeData.length === 0) {
+    return null;
+  }
 
   // タイトルがある場合はsectionで囲む、ない場合は直接返す
   return title ? <div className="section">{tableContent}</div> : tableContent;
