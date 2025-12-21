@@ -562,6 +562,7 @@ def get_trainer_stats(client):
     query = f"""
     WITH trainer_data AS (
       SELECT
+        t.trainer_id,
         t.trainer_name as name,
         COUNT(*) as races,
         SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
@@ -580,10 +581,11 @@ def get_trainer_stats(client):
         rr.jockey_id = {JOCKEY_ID}
         AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
         AND t.is_active = true
-      GROUP BY t.trainer_name
+      GROUP BY t.trainer_id, t.trainer_name
     )
     SELECT
       ROW_NUMBER() OVER (ORDER BY wins DESC, win_rate DESC) as rank,
+      trainer_id,
       name,
       races,
       wins,
@@ -601,7 +603,8 @@ def get_trainer_stats(client):
 
     try:
         results = client.query(query).result()
-        return [dict(row) for row in results]
+        # リンクを追加
+        return [{**dict(row), 'link': f'/trainers/{row.trainer_id}'} for row in results]
     except Exception as e:
         print(f"   ⚠️  Error fetching trainer stats: {str(e)}", file=sys.stderr)
         raise

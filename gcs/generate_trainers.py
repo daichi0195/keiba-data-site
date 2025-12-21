@@ -593,6 +593,7 @@ def get_jockey_stats(client):
     query = f"""
     WITH jockey_data AS (
       SELECT
+        j.jockey_id,
         j.jockey_name as name,
         COUNT(*) as races,
         SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
@@ -611,10 +612,11 @@ def get_jockey_stats(client):
         CAST(rr.trainer_id AS STRING) = CAST({TRAINER_ID} AS STRING)
         AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
         AND j.is_active = true
-      GROUP BY j.jockey_name
+      GROUP BY j.jockey_id, j.jockey_name
     )
     SELECT
       ROW_NUMBER() OVER (ORDER BY wins DESC, win_rate DESC) as rank,
+      jockey_id,
       name,
       races,
       wins,
@@ -632,7 +634,7 @@ def get_jockey_stats(client):
 
     try:
         results = client.query(query).result()
-        jockey_list = [dict(row) for row in results]
+        jockey_list = [{**dict(row), 'link': f'/jockeys/{row.jockey_id}'} for row in results]
         print(f"   Found {len(jockey_list)} jockeys")
         return jockey_list
     except Exception as e:
