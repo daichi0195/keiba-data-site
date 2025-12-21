@@ -558,9 +558,38 @@ export default async function TrainerPage({
   // 現在の年度を取得
   const currentYear = new Date().getFullYear();
 
-  // 年度別データを直近3年分に絞り込み、データがない年も必ず含める（左から2年前→1年前→当年）
-  const years = [currentYear - 2, currentYear - 1, currentYear];
-  const yearlyStatsData = years.map(year => {
+  // チャート用: 左から2年前→1年前→当年
+  const yearsForChart = [currentYear - 2, currentYear - 1, currentYear];
+  const yearlyStatsDataForChart = yearsForChart.map(year => {
+    const existingData = trainer.yearly_stats.find(stat => stat.year === year);
+    return existingData ? {
+      year: year,
+      races: existingData.races,
+      wins: existingData.wins,
+      places_2: existingData.places_2,
+      places_3: existingData.places_3,
+      win_rate: existingData.win_rate,
+      quinella_rate: existingData.quinella_rate,
+      place_rate: existingData.place_rate,
+      win_payback: existingData.win_payback || 0,
+      place_payback: existingData.place_payback || 0,
+    } : {
+      year: year,
+      races: 0,
+      wins: 0,
+      places_2: 0,
+      places_3: 0,
+      win_rate: 0,
+      quinella_rate: 0,
+      place_rate: 0,
+      win_payback: 0,
+      place_payback: 0,
+    };
+  });
+
+  // テーブル用: 上から当年→1年前→2年前
+  const yearsForTable = [currentYear, currentYear - 1, currentYear - 2];
+  const yearlyStatsDataForTable = yearsForTable.map(year => {
     const existingData = trainer.yearly_stats.find(stat => stat.year === year);
     return existingData ? {
       year: year,
@@ -848,9 +877,8 @@ export default async function TrainerPage({
             <JockeyLeadingChart
               title={`${trainer.name}調教師 年度別成績`}
               data={(() => {
-                // チャート用: 今年→1年前→2年前の順（新しい順）で、データがない年も含める
-                const years = [currentYear, currentYear - 1, currentYear - 2];
-                return years.map(year => {
+                // チャート用: 左から2年前→1年前→当年の順で、データがない年も含める
+                return yearsForChart.map(year => {
                   const existingData = trainer.yearly_leading.find(stat => stat.year === year);
                   return existingData || {
                     year,
@@ -861,7 +889,7 @@ export default async function TrainerPage({
               })()}
             >
               <YearlyTable
-                data={yearlyStatsData}
+                data={yearlyStatsDataForTable}
               />
             </JockeyLeadingChart>
           </section>
