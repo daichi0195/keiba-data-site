@@ -17,6 +17,7 @@ import VolatilityExplanation from '@/components/VolatilityExplanation';
 import GatePositionExplanation from '@/components/GatePositionExplanation';
 import DistanceTrendExplanation from '@/components/DistanceTrendExplanation';
 import JockeyTrainerHighlights from '@/components/JockeyTrainerHighlights';
+import { getTrainerDataFromGCS } from '@/lib/getTrainerDataFromGCS';
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
@@ -539,30 +540,52 @@ export default async function TrainerPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const trainer = mockTrainerData[id];
 
-  if (!trainer) {
+  // GCSから調教師データを取得
+  let trainer: TrainerData;
+  try {
+    trainer = await getTrainerDataFromGCS(id) as TrainerData;
+  } catch (error) {
+    console.error('Failed to load trainer data:', error);
     return (
       <div style={{ padding: '2rem', textAlign: 'center' }}>
-        <h1>調教師データが見つかりません</h1>
+        <h1>調教師データの読み込みに失敗しました</h1>
         <Link href="/">トップページに戻る</Link>
       </div>
     );
   }
 
-  // 年度別データをテーブル形式に変換（順位なし）
-  const yearlyStatsData = trainer.yearly_stats.map((stat) => ({
-    name: `${stat.year}年`,
-    races: stat.races,
-    wins: stat.wins,
-    places_2: stat.places_2,
-    places_3: stat.places_3,
-    win_rate: stat.win_rate,
-    quinella_rate: stat.quinella_rate,
-    place_rate: stat.place_rate,
-    win_payback: 0, // 年度別では非表示
-    place_payback: 0, // 年度別では非表示
-  }));
+  // 現在の年度を取得
+  const currentYear = new Date().getFullYear();
+
+  // 年度別データを直近3年分に絞り込み、データがない年も必ず含める（新しい順）
+  const years = [currentYear, currentYear - 1, currentYear - 2];
+  const yearlyStatsData = years.map(year => {
+    const existingData = trainer.yearly_stats.find(stat => stat.year === year);
+    return existingData ? {
+      year: year,
+      races: existingData.races,
+      wins: existingData.wins,
+      places_2: existingData.places_2,
+      places_3: existingData.places_3,
+      win_rate: existingData.win_rate,
+      quinella_rate: existingData.quinella_rate,
+      place_rate: existingData.place_rate,
+      win_payback: existingData.win_payback || 0,
+      place_payback: existingData.place_payback || 0,
+    } : {
+      year: year,
+      races: 0,
+      wins: 0,
+      places_2: 0,
+      places_3: 0,
+      win_rate: 0,
+      quinella_rate: 0,
+      place_rate: 0,
+      win_payback: 0,
+      place_payback: 0,
+    };
+  });
 
   // 距離別データをテーブル形式に変換（順位なし）
   const distanceStatsData = trainer.distance_stats.map((stat) => ({
@@ -824,76 +847,31 @@ export default async function TrainerPage({
           <section id="leading" aria-label="年度別成績">
             <JockeyLeadingChart
               title={`${trainer.name}調教師 年度別成績`}
-              data={trainer.yearly_leading}
+              data={(() => {
+                // チャート用: 今年→1年前→2年前の順（新しい順）で、データがない年も含める
+                const years = [currentYear, currentYear - 1, currentYear - 2];
+                return years.map(year => {
+                  const existingData = trainer.yearly_leading.find(stat => stat.year === year);
+                  return existingData || {
+                    year,
+                    wins: 0,
+                    ranking: 0,
+                  };
+                });
+              })()}
             >
               <YearlyTable
-                data={trainer.yearly_stats}
+                data={yearlyStatsData}
               />
             </JockeyLeadingChart>
           </section>
 
           {/* 調教師特徴セクション */}
-          <section id="characteristics" aria-label="調教師特徴">
-            <BarChartAnimation>
-              <div className="characteristics-box">
+          {trainer.characteristics && (
+            <section id="characteristics" aria-label="調教師特徴">
+              <BarChartAnimation>
+                <div className="characteristics-box">
                 <h2 className="section-title">{trainer.name}調教師の特徴</h2>
-
-                {/* 人気時の信頼度 */}
-                <div className="gauge-item">
-                  <div className="gauge-header">
-                    <h3 className="gauge-label">人気時の信頼度</h3>
-                    <VolatilityExplanation pageType="trainer" />
-                  </div>
-                  <div className="gauge-track">
-                    <div className="gauge-indicator" style={{ left: `${(trainer.characteristics.volatility - 1) * 25}%` }}></div>
-                    <div className="gauge-horse-icon" style={{ left: `${(trainer.characteristics.volatility - 1) * 25}%` }}>🏇</div>
-                  </div>
-                  <div className="gauge-labels">
-                    <span>低い</span>
-                    <span>標準</span>
-                    <span>高い</span>
-                  </div>
-                  <div className="gauge-result">
-                    {trainer.characteristics.volatility === 1 && '低い'}
-                    {trainer.characteristics.volatility === 2 && 'やや低い'}
-                    {trainer.characteristics.volatility === 3 && '標準'}
-                    {trainer.characteristics.volatility === 4 && 'やや高い'}
-                    {trainer.characteristics.volatility === 5 && '高い'}
-                  </div>
-                  <div className="gauge-ranking">
-                    <div className="ranking-item">
-                      <span className="ranking-label">1番人気時の複勝率ランキング</span>
-                      <span className="ranking-value">
-                        {trainer.characteristics.trifecta_avg_payback_rank > 0 && trainer.characteristics.total_courses > 0
-                          ? `${trainer.characteristics.trifecta_avg_payback_rank}位/${trainer.characteristics.total_courses}人`
-                          : 'データなし'}
-                      </span>
-                    </div>
-                    <div className="ranking-detail">
-                      <div className="ranking-detail-title">1番人気時の複勝率</div>
-                      <div className="detail-row">
-                        <span className="detail-label">この調教師の複勝率</span>
-                        <span className="detail-value">
-                          {trainer.characteristics.trifecta_median_payback > 0
-                            ? `${trainer.characteristics.trifecta_median_payback.toFixed(1)}%`
-                            : 'データなし'}
-                        </span>
-                      </div>
-                      <div className="detail-row">
-                        <span className="detail-label">全調教師の1番人気の複勝率</span>
-                        <span className="detail-value">
-                          {trainer.characteristics.trifecta_all_median_payback > 0
-                            ? `${trainer.characteristics.trifecta_all_median_payback.toFixed(1)}%`
-                            : 'データなし'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-
-                {/* 区切り線 */}
-                <div className="section-divider"></div>
 
                 {/* 得意なコース傾向 */}
                 <div className="gauge-item">
@@ -1012,9 +990,10 @@ export default async function TrainerPage({
                   </div>
                 )}
 
-              </div>
-            </BarChartAnimation>
-          </section>
+                </div>
+              </BarChartAnimation>
+            </section>
+          )}
 
           {/* 注目ポイントセクション */}
           <JockeyTrainerHighlights

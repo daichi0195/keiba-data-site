@@ -73,7 +73,44 @@ export default function JockeyLeadingChart({ title, data, children }: JockeyLead
     const maxRanking = 50;
 
     // 勝利数の軸をキリの良い数値に調整
-    const maxWinsRounded = Math.ceil(maxWins / 50) * 50;
+    // データの最大値+余白を持たせて上限を設定
+    const maxWinsWithMargin = maxWins * 1.15; // 15%のマージン
+    let maxWinsRounded;
+
+    if (maxWinsWithMargin <= 5) {
+      maxWinsRounded = 5;
+    } else if (maxWinsWithMargin <= 10) {
+      maxWinsRounded = 10;
+    } else if (maxWinsWithMargin <= 15) {
+      maxWinsRounded = 15;
+    } else if (maxWinsWithMargin <= 20) {
+      maxWinsRounded = 20;
+    } else if (maxWinsWithMargin <= 25) {
+      maxWinsRounded = 25;
+    } else if (maxWinsWithMargin <= 30) {
+      maxWinsRounded = 30;
+    } else if (maxWinsWithMargin <= 40) {
+      maxWinsRounded = 40;
+    } else if (maxWinsWithMargin <= 50) {
+      maxWinsRounded = 50;
+    } else if (maxWinsWithMargin <= 60) {
+      maxWinsRounded = 60;
+    } else if (maxWinsWithMargin <= 70) {
+      maxWinsRounded = 70;
+    } else if (maxWinsWithMargin <= 80) {
+      maxWinsRounded = 80;
+    } else if (maxWinsWithMargin <= 90) {
+      maxWinsRounded = 90;
+    } else if (maxWinsWithMargin <= 100) {
+      maxWinsRounded = 100;
+    } else if (maxWinsWithMargin <= 120) {
+      maxWinsRounded = 120;
+    } else if (maxWinsWithMargin <= 150) {
+      maxWinsRounded = 150;
+    } else {
+      // 150以上の場合は50刻み
+      maxWinsRounded = Math.ceil(maxWinsWithMargin / 50) * 50;
+    }
 
     // クリア
     ctx.clearRect(0, 0, rect.width, rect.height);

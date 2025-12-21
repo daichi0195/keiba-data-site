@@ -5,6 +5,7 @@ import Link from 'next/link';
 import styles from './HeaderMenu.module.css';
 import { getCoursesByRacecourse, getCourseUrl, getCourseDisplayName } from '@/lib/courses';
 import { ALL_JOCKEYS, type JockeyInfo } from '@/lib/jockeys';
+import { ALL_TRAINERS, type TrainerInfo } from '@/lib/trainers';
 
 const racecoursesData = getCoursesByRacecourse().map(group => ({
   name: group.racecourse_ja,
@@ -157,116 +158,28 @@ const jockeysData = (() => {
     }));
 })();
 
-// 調教師データ（五十音順）
-const trainersData = [
-  {
-    kana: 'あ行',
-    trainers: [
-      { name: '青木孝文', nameEn: 'aoki-takafumi' },
-      { name: '安田隆行', nameEn: 'yasuda-takayuki' },
-      { name: '安田翔伍', nameEn: 'yasuda-shogo' },
-      { name: '池江泰寿', nameEn: 'ikee-taiju' },
-      { name: '石坂公一', nameEn: 'ishizaka-koichi' },
-      { name: '石坂正', nameEn: 'ishizaka-tadashi' },
-      { name: '伊藤圭三', nameEn: 'ito-keizo' },
-      { name: '伊藤大士', nameEn: 'ito-hiroshi' },
-      { name: '岩戸孝樹', nameEn: 'iwato-takaki' },
-      { name: '上村洋行', nameEn: 'uemura-hiroyuki' },
-      { name: '音無秀孝', nameEn: 'otonashi-hidetaka' },
-    ],
-  },
-  {
-    kana: 'か行',
-    trainers: [
-      { name: '角居勝彦', nameEn: 'kakoi-katsuhiko' },
-      { name: '加藤征弘', nameEn: 'kato-yukihiro' },
-      { name: '金成貴史', nameEn: 'kanenari-takashi' },
-      { name: '木村哲也', nameEn: 'kimura-tetsuya' },
-      { name: '久保田貴士', nameEn: 'kubota-takashi' },
-      { name: '国枝栄', nameEn: 'kunieda-sakae' },
-    ],
-  },
-  {
-    kana: 'さ行',
-    trainers: [
-      { name: '斉藤崇史', nameEn: 'saito-takashi' },
-      { name: '笹田和秀', nameEn: 'sasada-kazuhide' },
-      { name: '佐々木晶三', nameEn: 'sasaki-shozo' },
-      { name: '清水久詞', nameEn: 'shimizu-hisashi' },
-      { name: '須貝尚介', nameEn: 'sugai-shosuke' },
-      { name: '杉山晴紀', nameEn: 'sugiyama-haruki' },
-      { name: '鈴木孝志', nameEn: 'suzuki-takashi' },
-    ],
-  },
-  {
-    kana: 'た行',
-    trainers: [
-      { name: '高木登', nameEn: 'takagi-noboru' },
-      { name: '高野友和', nameEn: 'takano-tomokazu' },
-      { name: '高橋亮', nameEn: 'takahashi-ryo' },
-      { name: '武井亮', nameEn: 'takei-ryo' },
-      { name: '田中博康', nameEn: 'tanaka-hiroyasu' },
-      { name: '田中剛', nameEn: 'tanaka-takeshi' },
-      { name: '田村康仁', nameEn: 'tamura-yasuhito' },
-      { name: '友道康夫', nameEn: 'tomodo-yasuo' },
-    ],
-  },
-  {
-    kana: 'な行',
-    trainers: [
-      { name: '中内田充正', nameEn: 'nakauchida-mitsumasa' },
-      { name: '中竹和也', nameEn: 'nakatake-kazuya' },
-      { name: '中舘英二', nameEn: 'nakadate-eiji' },
-      { name: '西園正都', nameEn: 'nishizono-masato' },
-      { name: '西村真幸', nameEn: 'nishimura-masaki' },
-    ],
-  },
-  {
-    kana: 'は行',
-    trainers: [
-      { name: '橋口慎介', nameEn: 'hashiguchi-shinsuke' },
-      { name: '橋田満', nameEn: 'hashida-mitsuru' },
-      { name: '浜田多実雄', nameEn: 'hamada-tamio' },
-      { name: '藤岡健一', nameEn: 'fujioka-kenichi' },
-      { name: '藤沢和雄', nameEn: 'fujisawa-kazuo' },
-      { name: '藤原英昭', nameEn: 'fujiwara-hideaki' },
-      { name: '堀宣行', nameEn: 'hori-nobuyuki' },
-    ],
-  },
-  {
-    kana: 'ま行',
-    trainers: [
-      { name: '松下武士', nameEn: 'matsushita-takeshi' },
-      { name: '松田国英', nameEn: 'matsuda-kunihide' },
-      { name: '松永幹夫', nameEn: 'matsunaga-mikio' },
-      { name: '松永昌博', nameEn: 'matsunaga-masahiro' },
-      { name: '宮田敬介', nameEn: 'miyata-keisuke' },
-      { name: '宮本博', nameEn: 'miyamoto-hiroshi' },
-      { name: '武幸四郎', nameEn: 'take-koshiro' },
-    ],
-  },
-  {
-    kana: 'や行',
-    trainers: [
-      { name: '矢作芳人', nameEn: 'yahagi-yoshito' },
-      { name: '矢野英一', nameEn: 'yano-eiichi' },
-      { name: '吉田直弘', nameEn: 'yoshida-naohiro' },
-      { name: '吉村圭司', nameEn: 'yoshimura-keiji' },
-    ],
-  },
-  {
-    kana: 'ら行',
-    trainers: [
-      { name: '陸奥克也', nameEn: 'mutsu-katsuya' },
-    ],
-  },
-  {
-    kana: 'わ行',
-    trainers: [
-      { name: '渡辺薫彦', nameEn: 'watanabe-kunihiko' },
-    ],
-  },
-];
+// 調教師データを五十音順にグループ化
+const trainersData = (() => {
+  const grouped: Record<string, TrainerInfo[]> = {};
+
+  ALL_TRAINERS.forEach(trainer => {
+    const group = getKanaGroup(trainer.kana);
+    if (!grouped[group]) {
+      grouped[group] = [];
+    }
+    grouped[group].push(trainer);
+  });
+
+  // 五十音順に並び替え
+  const kanaOrder = ['あ行', 'か行', 'さ行', 'た行', 'な行', 'は行', 'ま行', 'や行', 'ら行', 'わ行', 'その他'];
+
+  return kanaOrder
+    .filter(kana => grouped[kana])
+    .map(kana => ({
+      kana,
+      trainers: grouped[kana].sort((a, b) => a.kana.localeCompare(b.kana, 'ja'))
+    }));
+})();
 
 // 既存の型定義（後方互換性のため残す）
 const _oldRacecoursesData_UNUSED = [
@@ -675,8 +588,8 @@ export default function HeaderMenu() {
                       <div className={styles.dataCardGrid}>
                         {group.trainers.map((trainer) => (
                           <Link
-                            key={trainer.nameEn}
-                            href={`/trainers/${trainer.nameEn}`}
+                            key={trainer.id}
+                            href={`/trainers/${trainer.id}`}
                             className={styles.dataCard}
                             onClick={closeMenu}
                           >
