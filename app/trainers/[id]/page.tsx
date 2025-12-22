@@ -508,7 +508,7 @@ export async function generateMetadata({
     };
   }
 
-  const title = `${trainer.name}調教師の成績・データ - KEIBA DATA LAB`;
+  const title = `${trainer.name}調教師の成績・データまとめ - 競馬データ.com`;
   const description = `${trainer.name}調教師の詳細な成績データを分析。コース別成績、得意条件などを網羅。通算${trainer.total_stats.wins}勝、勝率${trainer.total_stats.win_rate}%。`;
   const url = `https://www.keibadata.com/trainers/${id}`;
 

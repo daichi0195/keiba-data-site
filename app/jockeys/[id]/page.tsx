@@ -245,7 +245,7 @@ export async function generateMetadata({
     };
   }
 
-  const title = `${jockey.name} | 騎手データ | KEIBA DATA LAB`;
+  const title = `${jockey.name}騎手の成績・データまとめ - 競馬データ.com`;
   const description = `${jockey.name}騎手のコース別成績、得意条件などの詳細データを分析。通算${jockey.total_stats.wins}勝、勝率${jockey.total_stats.win_rate}%。`;
   const url = `https://www.keibadata.com/jockeys/${id}`;
 
