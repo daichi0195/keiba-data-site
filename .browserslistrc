@@ -1,0 +1,8 @@
+# Modern browsers with full ES6+ support
+# This removes unnecessary polyfills
+
+>= 0.5%
+last 2 versions
+not dead
+not IE 11
+not op_mini all
