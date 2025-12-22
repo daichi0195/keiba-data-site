@@ -1,5 +1,7 @@
 import { MetadataRoute } from 'next';
 import { ALL_COURSES } from '@/lib/courses';
+import { ALL_JOCKEYS } from '@/lib/jockeys';
+import { ALL_TRAINERS } from '@/lib/trainers';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   // ベースURL
@@ -33,5 +35,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
     };
   });
 
-  return [...homeEntry, ...courseEntries];
+  // 騎手ページ
+  const jockeyEntries: MetadataRoute.Sitemap = ALL_JOCKEYS.map(jockey => ({
+    url: `${baseUrl}/jockeys/${jockey.id}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.7,
+  }));
+
+  // 調教師ページ
+  const trainerEntries: MetadataRoute.Sitemap = ALL_TRAINERS.map(trainer => ({
+    url: `${baseUrl}/trainers/${trainer.id}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.7,
+  }));
+
+  return [...homeEntry, ...courseEntries, ...jockeyEntries, ...trainerEntries];
 }
