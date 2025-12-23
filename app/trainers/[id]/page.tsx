@@ -12,6 +12,7 @@ import SurfaceTable from '@/components/SurfaceTable';
 import RacecourseTable from '@/components/RacecourseTable';
 import RacecourseCourseTable from '@/components/RacecourseCourseTable';
 import GenderTable from '@/components/GenderTable';
+import IntervalTable from '@/components/IntervalTable';
 import BarChartAnimation from '@/components/BarChartAnimation';
 import VolatilityExplanation from '@/components/VolatilityExplanation';
 import GatePositionExplanation from '@/components/GatePositionExplanation';
@@ -189,6 +190,18 @@ interface TrainerData {
   }>;
   gender_stats: Array<{
     name: string;
+    races: number;
+    wins: number;
+    places_2: number;
+    places_3: number;
+    win_rate: number;
+    place_rate: number;
+    quinella_rate: number;
+    win_payback: number;
+    place_payback: number;
+  }>;
+  interval_stats: Array<{
+    interval: string;
     races: number;
     wins: number;
     places_2: number;
@@ -475,6 +488,13 @@ const mockTrainerData: Record<string, TrainerData> = {
       { name: '牝馬', races: 856, wins: 145, places_2: 120, places_3: 98, win_rate: 16.9, place_rate: 42.4, quinella_rate: 31.0, win_payback: 98, place_payback: 93 },
       { name: 'セン馬', races: 177, wins: 40, places_2: 37, places_3: 29, win_rate: 22.6, place_rate: 59.9, quinella_rate: 43.5, win_payback: 108, place_payback: 103 },
     ],
+    interval_stats: [
+      { interval: '連闘', races: 245, wins: 52, places_2: 41, places_3: 35, win_rate: 21.2, place_rate: 52.2, quinella_rate: 38.0, win_payback: 105, place_payback: 101 },
+      { interval: '2-4週', races: 1523, wins: 285, places_2: 238, places_3: 195, win_rate: 18.7, place_rate: 47.1, quinella_rate: 34.3, win_payback: 103, place_payback: 98 },
+      { interval: '5-7週', races: 456, wins: 75, places_2: 62, places_3: 51, win_rate: 16.4, place_rate: 41.2, quinella_rate: 30.0, win_payback: 97, place_payback: 92 },
+      { interval: '8-10週', races: 198, wins: 28, places_2: 25, places_3: 21, win_rate: 14.1, place_rate: 37.4, quinella_rate: 26.8, win_payback: 92, place_payback: 88 },
+      { interval: '11週-', races: 267, wins: 33, places_2: 30, places_3: 25, win_rate: 12.4, place_rate: 33.0, quinella_rate: 23.6, win_payback: 89, place_payback: 85 },
+    ],
     characteristics: {
       volatility: 3,
       trifecta_avg_payback_rank: 50,
@@ -545,6 +565,17 @@ export default async function TrainerPage({
   let trainer: TrainerData;
   try {
     trainer = await getTrainerDataFromGCS(id) as TrainerData;
+
+    // interval_statsがない場合はデフォルト値を設定
+    if (!trainer.interval_stats) {
+      trainer.interval_stats = [
+        { interval: '連闘', races: 0, wins: 0, places_2: 0, places_3: 0, win_rate: 0, place_rate: 0, quinella_rate: 0, win_payback: 0, place_payback: 0 },
+        { interval: '2-4週', races: 0, wins: 0, places_2: 0, places_3: 0, win_rate: 0, place_rate: 0, quinella_rate: 0, win_payback: 0, place_payback: 0 },
+        { interval: '5-7週', races: 0, wins: 0, places_2: 0, places_3: 0, win_rate: 0, place_rate: 0, quinella_rate: 0, win_payback: 0, place_payback: 0 },
+        { interval: '8-10週', races: 0, wins: 0, places_2: 0, places_3: 0, win_rate: 0, place_rate: 0, quinella_rate: 0, win_payback: 0, place_payback: 0 },
+        { interval: '11週-', races: 0, wins: 0, places_2: 0, places_3: 0, win_rate: 0, place_rate: 0, quinella_rate: 0, win_payback: 0, place_payback: 0 },
+      ];
+    }
   } catch (error) {
     console.error('Failed to load trainer data:', error);
     return (
@@ -801,6 +832,7 @@ export default async function TrainerPage({
     { id: 'popularity-stats', label: '人気別' },
     { id: 'distance-stats', label: '距離別' },
     { id: 'gender-stats', label: '性別' },
+    { id: 'interval-stats', label: 'レース間隔' },
     { id: 'surface-stats', label: '芝・ダート別' },
     { id: 'racecourse-stats', label: '競馬場別' },
     { id: 'course-stats', label: 'コース別' },
@@ -1057,6 +1089,14 @@ export default async function TrainerPage({
             <GenderTable
               title={`${trainer.name}調教師 性別データ`}
               data={trainer.gender_stats}
+            />
+          </section>
+
+          {/* レース間隔別データセクション */}
+          <section id="interval-stats" aria-label="レース間隔別データ">
+            <IntervalTable
+              title={`${trainer.name}調教師 レース間隔別データ`}
+              data={trainer.interval_stats}
             />
           </section>
 
