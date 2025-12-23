@@ -832,6 +832,96 @@ def get_gender_stats(client):
         raise
 
 
+def get_interval_stats(client):
+    """レース間隔別成績を取得（過去3年間）"""
+    query = f"""
+    WITH trainer_races AS (
+      SELECT
+        rr.horse_id,
+        rr.finish_position,
+        rr.win,
+        rr.place,
+        rm.race_date
+      FROM `{DATASET}.race_result` rr
+      JOIN `{DATASET}.race_master` rm ON rr.race_id = rm.race_id
+      WHERE CAST(rr.trainer_id AS STRING) = '{TRAINER_ID}'
+        AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+    ),
+    with_intervals AS (
+      SELECT
+        finish_position,
+        win,
+        place,
+        DATE_DIFF(
+          race_date,
+          LAG(race_date) OVER (PARTITION BY horse_id ORDER BY race_date),
+          DAY
+        ) as days_gap
+      FROM trainer_races
+    )
+    SELECT
+      CASE
+        WHEN days_gap <= 7 THEN '連闘'
+        WHEN days_gap BETWEEN 8 AND 28 THEN '1-3週'
+        WHEN days_gap BETWEEN 29 AND 56 THEN '4-7週'
+        WHEN days_gap BETWEEN 57 AND 77 THEN '8-10週'
+        ELSE '11週-'
+      END as race_interval,
+      COUNT(*) as races,
+      COUNTIF(finish_position = 1) as wins,
+      COUNTIF(finish_position = 2) as places_2,
+      COUNTIF(finish_position = 3) as places_3,
+      ROUND(COUNTIF(finish_position = 1) / COUNT(*) * 100, 1) as win_rate,
+      ROUND(COUNTIF(finish_position <= 2) / COUNT(*) * 100, 1) as quinella_rate,
+      ROUND(COUNTIF(finish_position <= 3) / COUNT(*) * 100, 1) as place_rate,
+      ROUND(SUM(IF(finish_position = 1, win, 0)) / COUNT(*) / 100 * 100, 1) as win_payback,
+      ROUND(SUM(IF(finish_position <= 3, place, 0)) / COUNT(*) / 100 * 100, 1) as place_payback
+    FROM with_intervals
+    WHERE days_gap IS NOT NULL
+    GROUP BY race_interval
+    ORDER BY
+      CASE race_interval
+        WHEN '連闘' THEN 1
+        WHEN '1-3週' THEN 2
+        WHEN '4-7週' THEN 3
+        WHEN '8-10週' THEN 4
+        ELSE 5
+      END
+    """
+
+    try:
+        results = client.query(query).result()
+        query_data = [{'interval': row['race_interval'], **{k: v for k, v in dict(row).items() if k != 'race_interval'}} for row in results]
+
+        # 全カテゴリのデフォルト値を定義
+        all_intervals = ['連闘', '1-3週', '4-7週', '8-10週', '11週-']
+        default_row = {
+            'races': 0,
+            'wins': 0,
+            'places_2': 0,
+            'places_3': 0,
+            'win_rate': 0.0,
+            'quinella_rate': 0.0,
+            'place_rate': 0.0,
+            'win_payback': 0,
+            'place_payback': 0
+        }
+
+        # 全カテゴリを含む結果を作成（既存データがあれば使用、なければデフォルト値）
+        result = []
+        for interval in all_intervals:
+            existing = next((item for item in query_data if item['interval'] == interval), None)
+            if existing:
+                result.append(existing)
+            else:
+                result.append({'interval': interval, **default_row})
+
+        return result
+    except Exception as e:
+        print(f"   ⚠️  Error fetching interval stats: {str(e)}", file=sys.stderr)
+        raise
+
+
 def get_racecourse_stats(client):
     """競馬場別成績を取得（過去3年間）"""
     query = f"""
@@ -1181,16 +1271,19 @@ def process_trainer(bq_client, storage_client, trainer_id, trainer_name):
         print("  [13/17] Fetching track condition stats...")
         track_condition_stats = get_track_condition_stats(bq_client)
 
-        print("  [14/17] Fetching gender stats...")
+        print("  [14/18] Fetching gender stats...")
         gender_stats = get_gender_stats(bq_client)
 
-        print("  [15/17] Fetching racecourse stats...")
+        print("  [15/18] Fetching interval stats...")
+        interval_stats = get_interval_stats(bq_client)
+
+        print("  [16/18] Fetching racecourse stats...")
         racecourse_stats = get_racecourse_stats(bq_client)
 
-        print("  [16/17] Fetching owner stats...")
+        print("  [17/18] Fetching owner stats...")
         owner_stats = get_owner_stats(bq_client)
 
-        print("  [17/17] Calculating characteristics...")
+        print("  [18/18] Calculating characteristics...")
         characteristics = get_characteristics(bq_client, surface_stats, distance_stats)
 
         # データ期間と更新日を設定
@@ -1231,6 +1324,7 @@ def process_trainer(bq_client, storage_client, trainer_id, trainer_name):
             'class_stats': class_stats or [],
             'track_condition_stats': track_condition_stats or [],
             'gender_stats': gender_stats or [],
+            'interval_stats': interval_stats or [],
             'racecourse_stats': racecourse_stats or [],
             'owner_stats': owner_stats or [],
             'characteristics': characteristics or {}

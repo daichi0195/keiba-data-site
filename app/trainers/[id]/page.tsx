@@ -19,9 +19,17 @@ import GatePositionExplanation from '@/components/GatePositionExplanation';
 import DistanceTrendExplanation from '@/components/DistanceTrendExplanation';
 import JockeyTrainerHighlights from '@/components/JockeyTrainerHighlights';
 import { getTrainerDataFromGCS } from '@/lib/getTrainerDataFromGCS';
+import { ALL_TRAINERS } from '@/lib/trainers';
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
+
+// generateStaticParams: 全調教師ページを事前生成
+export async function generateStaticParams() {
+  return ALL_TRAINERS.map((trainer) => ({
+    id: String(trainer.id),
+  }));
+}
 
 // 調教師データ型定義
 interface TrainerData {
@@ -520,11 +528,14 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const trainer = mockTrainerData[id];
 
-  if (!trainer) {
+  // GCSから調教師データを取得
+  let trainer: TrainerData;
+  try {
+    trainer = await getTrainerDataFromGCS(id) as TrainerData;
+  } catch (error) {
     return {
-      title: '調教師データが見つかりません | KEIBA DATA LAB',
+      title: '調教師データが見つかりません | 競馬データ.com',
     };
   }
 
@@ -566,16 +577,20 @@ export default async function TrainerPage({
   try {
     trainer = await getTrainerDataFromGCS(id) as TrainerData;
 
-    // interval_statsがない場合はデフォルト値を設定
-    if (!trainer.interval_stats) {
-      trainer.interval_stats = [
-        { interval: '連闘', races: 0, wins: 0, places_2: 0, places_3: 0, win_rate: 0, place_rate: 0, quinella_rate: 0, win_payback: 0, place_payback: 0 },
-        { interval: '2-4週', races: 0, wins: 0, places_2: 0, places_3: 0, win_rate: 0, place_rate: 0, quinella_rate: 0, win_payback: 0, place_payback: 0 },
-        { interval: '5-7週', races: 0, wins: 0, places_2: 0, places_3: 0, win_rate: 0, place_rate: 0, quinella_rate: 0, win_payback: 0, place_payback: 0 },
-        { interval: '8-10週', races: 0, wins: 0, places_2: 0, places_3: 0, win_rate: 0, place_rate: 0, quinella_rate: 0, win_payback: 0, place_payback: 0 },
-        { interval: '11週-', races: 0, wins: 0, places_2: 0, places_3: 0, win_rate: 0, place_rate: 0, quinella_rate: 0, win_payback: 0, place_payback: 0 },
-      ];
-    }
+    // interval_statsの全カテゴリを保証（欠けているカテゴリを0で補完）
+    const defaultIntervals = [
+      { interval: '連闘', races: 0, wins: 0, places_2: 0, places_3: 0, win_rate: 0, place_rate: 0, quinella_rate: 0, win_payback: 0, place_payback: 0 },
+      { interval: '1-3週', races: 0, wins: 0, places_2: 0, places_3: 0, win_rate: 0, place_rate: 0, quinella_rate: 0, win_payback: 0, place_payback: 0 },
+      { interval: '4-7週', races: 0, wins: 0, places_2: 0, places_3: 0, win_rate: 0, place_rate: 0, quinella_rate: 0, win_payback: 0, place_payback: 0 },
+      { interval: '8-10週', races: 0, wins: 0, places_2: 0, places_3: 0, win_rate: 0, place_rate: 0, quinella_rate: 0, win_payback: 0, place_payback: 0 },
+      { interval: '11週-', races: 0, wins: 0, places_2: 0, places_3: 0, win_rate: 0, place_rate: 0, quinella_rate: 0, win_payback: 0, place_payback: 0 },
+    ];
+
+    // 既存のデータがあれば上書き、なければデフォルト値を使用
+    trainer.interval_stats = defaultIntervals.map(defaultInterval => {
+      const existingData = trainer.interval_stats?.find(s => s.interval === defaultInterval.interval);
+      return existingData || defaultInterval;
+    });
   } catch (error) {
     console.error('Failed to load trainer data:', error);
     return (

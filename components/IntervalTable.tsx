@@ -108,27 +108,27 @@ export default function IntervalTable({ title, data }: Props) {
                   </td>
                   <td className={styles.scrollCol}>
                     <span className={isHighlight(row.win_rate ?? 0, maxWinRate) ? styles.highlight : ''}>
-                      {(row.win_rate ?? 0).toFixed(1)}%
+                      {row.races === 0 ? '-' : `${(row.win_rate ?? 0).toFixed(1)}%`}
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
                     <span className={isHighlight(row.quinella_rate ?? 0, maxQuinellaRate) ? styles.highlight : ''}>
-                      {(row.quinella_rate ?? 0).toFixed(1)}%
+                      {row.races === 0 ? '-' : `${(row.quinella_rate ?? 0).toFixed(1)}%`}
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
                     <span className={isHighlight(row.place_rate ?? 0, maxPlaceRate) ? styles.highlight : ''}>
-                      {(row.place_rate ?? 0).toFixed(1)}%
+                      {row.races === 0 ? '-' : `${(row.place_rate ?? 0).toFixed(1)}%`}
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
                     <span className={isHighlight(row.win_payback ?? 0, maxWinPayback) ? styles.highlight : ''}>
-                      {(row.win_payback ?? 0).toFixed(1)}%
+                      {row.races === 0 ? '-' : `${(row.win_payback ?? 0).toFixed(1)}%`}
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
                     <span className={isHighlight(row.place_payback ?? 0, maxPlacePayback) ? styles.highlight : ''}>
-                      {(row.place_payback ?? 0).toFixed(1)}%
+                      {row.races === 0 ? '-' : `${(row.place_payback ?? 0).toFixed(1)}%`}
                     </span>
                   </td>
                 </tr>

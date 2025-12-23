@@ -15,32 +15,32 @@ import TrackConditionTable from '@/components/TrackConditionTable';
 import RacecourseTable from '@/components/RacecourseTable';
 import RacecourseCourseTable from '@/components/RacecourseCourseTable';
 import GenderTable from '@/components/GenderTable';
+import IntervalTable from '@/components/IntervalTable';
 import BarChartAnimation from '@/components/BarChartAnimation';
 import VolatilityExplanation from '@/components/VolatilityExplanation';
 import GatePositionExplanation from '@/components/GatePositionExplanation';
 import RunningStyleExplanation from '@/components/RunningStyleExplanation';
 import DistanceTrendExplanation from '@/components/DistanceTrendExplanation';
 import JockeyTrainerHighlights from '@/components/JockeyTrainerHighlights';
-import { getJockeyDataFromGCS } from '@/lib/getJockeyDataFromGCS';
-import { ALL_JOCKEYS } from '@/lib/jockeys';
+import { getSireDataFromGCS } from '@/lib/getSireDataFromGCS';
+import { ALL_SIRES } from '@/lib/sires';
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
 
-// generateStaticParams: 全騎手ページを事前生成
+// generateStaticParams: 全種牡馬ページを事前生成
 export async function generateStaticParams() {
-  return ALL_JOCKEYS.map((jockey) => ({
-    id: String(jockey.id),
+  return ALL_SIRES.map((sire) => ({
+    id: String(sire.id),
   }));
 }
 
-// 騎手データ型定義
-interface JockeyData {
+// 種牡馬データ型定義
+interface SireData {
   id: string;
   name: string;
-  kana: string;
-  affiliation: string;
-  debut_year: number;
+  name_en: string;
+  birth_year: number;
   total_stats: {
     races: number;
     wins: number;
@@ -159,6 +159,19 @@ interface JockeyData {
     win_payback: number;
     place_payback: number;
   }>;
+  jockey_stats: Array<{
+    rank: number;
+    name: string;
+    races: number;
+    wins: number;
+    places_2: number;
+    places_3: number;
+    win_rate: number;
+    place_rate: number;
+    quinella_rate: number;
+    win_payback: number;
+    place_payback: number;
+  }>;
   track_condition_stats: Array<{
     surface: string;
     condition: string;
@@ -186,8 +199,7 @@ interface JockeyData {
     win_payback: number;
     place_payback: number;
   }>;
-  owner_stats: Array<{
-    rank: number;
+  gender_stats: Array<{
     name: string;
     races: number;
     wins: number;
@@ -199,7 +211,19 @@ interface JockeyData {
     win_payback: number;
     place_payback: number;
   }>;
-  gender_stats: Array<{
+  interval_stats: Array<{
+    interval: string;
+    races: number;
+    wins: number;
+    places_2: number;
+    places_3: number;
+    win_rate: number;
+    place_rate: number;
+    quinella_rate: number;
+    win_payback: number;
+    place_payback: number;
+  }>;
+  racecourse_stats: Array<{
     name: string;
     races: number;
     wins: number;
@@ -217,7 +241,7 @@ interface JockeyData {
     all_fav1_place_rate: number;
     fav1_races: number;
     fav1_ranking: number;
-    total_jockeys: number;
+    total_sires: number;
     running_style_trend_position?: number;
   };
   running_style_trends?: Array<{
@@ -235,19 +259,19 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
 
-  // GCSから騎手データを取得
-  let jockey: JockeyData;
+  // GCSから種牡馬データを取得
+  let sire: SireData;
   try {
-    jockey = await getJockeyDataFromGCS(id) as JockeyData;
+    sire = await getSireDataFromGCS(id) as SireData;
   } catch (error) {
     return {
-      title: '騎手データが見つかりません | 競馬データ.com',
+      title: '種牡馬データが見つかりません | 競馬データ.com',
     };
   }
 
-  const title = `${jockey.name}騎手の成績・データまとめ - 競馬データ.com`;
-  const description = `${jockey.name}騎手のコース別成績、得意条件などの詳細データを分析。通算${jockey.total_stats.wins}勝、勝率${jockey.total_stats.win_rate}%。`;
-  const url = `https://www.keibadata.com/jockeys/${id}`;
+  const title = `${sire.name}産駒の成績・データまとめ - 競馬データ.com`;
+  const description = `${sire.name}産駒のコース別成績、得意条件などの詳細データを分析。通算${sire.total_stats.wins}勝、勝率${sire.total_stats.win_rate}%。`;
+  const url = `https://www.keibadata.com/sires/${id}`;
 
   return {
     title,
@@ -271,22 +295,22 @@ export async function generateMetadata({
   };
 }
 
-export default async function JockeyPage({
+export default async function SirePage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
 
-  // GCSから騎手データを取得
-  let jockey: JockeyData;
+  // GCSから種牡馬データを取得
+  let sire: SireData;
   try {
-    jockey = await getJockeyDataFromGCS(id) as JockeyData;
+    sire = await getSireDataFromGCS(id) as SireData;
   } catch (error) {
-    console.error('Failed to load jockey data:', error);
+    console.error('Failed to load sire data:', error);
     return (
       <div style={{ padding: '2rem', textAlign: 'center' }}>
-        <h1>騎手データの読み込みに失敗しました</h1>
+        <h1>種牡馬データの読み込みに失敗しました</h1>
         <Link href="/">トップページに戻る</Link>
       </div>
     );
@@ -299,7 +323,7 @@ export default async function JockeyPage({
   const yearlyStatsData = (() => {
     const years = [currentYear, currentYear - 1, currentYear - 2];
     return years.map(year => {
-      const existingData = jockey.yearly_stats.find(stat => stat.year === year);
+      const existingData = sire.yearly_stats.find(stat => stat.year === year);
       return existingData || {
         year,
         races: 0,
@@ -316,7 +340,7 @@ export default async function JockeyPage({
   })();
 
   // 距離別データをテーブル形式に変換（中長距離と長距離をマージ）
-  const distanceStatsRaw = jockey.distance_stats.reduce((acc, stat) => {
+  const distanceStatsRaw = sire.distance_stats.reduce((acc, stat) => {
     // 中長距離を長距離にマージ
     const categoryName = stat.category === '中長距離' ? '長距離' : stat.category;
 
@@ -365,7 +389,7 @@ export default async function JockeyPage({
   }));
 
   // 芝・ダート別データをテーブル形式に変換（順位なし）
-  const surfaceStatsData = jockey.surface_stats.map((stat) => ({
+  const surfaceStatsData = sire.surface_stats.map((stat) => ({
     name: stat.surface,
     races: stat.races,
     wins: stat.wins,
@@ -379,8 +403,8 @@ export default async function JockeyPage({
   }));
 
   // 芝・ダートの得意傾向を計算（複勝率の差から判定）
-  const turfStat = jockey.surface_stats.find(s => s.surface === '芝');
-  const dirtStat = jockey.surface_stats.find(s => s.surface === 'ダート');
+  const turfStat = sire.surface_stats.find(s => s.surface === '芝');
+  const dirtStat = sire.surface_stats.find(s => s.surface === 'ダート');
   let surfaceTrendPosition = 3; // デフォルトは互角
   if (turfStat && dirtStat) {
     const diff = turfStat.place_rate - dirtStat.place_rate;
@@ -392,10 +416,10 @@ export default async function JockeyPage({
   }
 
   // 得意な脚質傾向を計算（逃げ・先行 vs 差し・追込の複勝率差から判定）
-  const frontRunners = jockey.running_style_stats.filter(s =>
+  const frontRunners = sire.running_style_stats.filter(s =>
     s.style === 'escape' || s.style === 'lead'
   );
-  const closers = jockey.running_style_stats.filter(s =>
+  const closers = sire.running_style_stats.filter(s =>
     s.style === 'pursue' || s.style === 'close'
   );
 
@@ -450,7 +474,7 @@ export default async function JockeyPage({
   }
 
   // 馬場状態別データをテーブル形式に変換（順位なし）
-  const trackConditionStatsData = jockey.track_condition_stats.map((stat) => {
+  const trackConditionStatsData = sire.track_condition_stats.map((stat) => {
     // 馬場状態ラベルを短縮
     let shortLabel = stat.condition_label;
     if (shortLabel === '稍重') shortLabel = '稍';
@@ -473,7 +497,7 @@ export default async function JockeyPage({
   });
 
   // クラス別データをテーブル形式に変換（順位なし）
-  const classStatsData = jockey.class_stats.map((stat) => ({
+  const classStatsData = sire.class_stats.map((stat) => ({
     name: stat.class_name,
     races: stat.races,
     wins: stat.wins,
@@ -488,7 +512,7 @@ export default async function JockeyPage({
 
   // DataTableコンポーネント用にデータ整形（linkプロパティを追加）
   // 障害コースを除外
-  const courseTableData = jockey.course_stats
+  const courseTableData = sire.course_stats
     .filter((stat) => stat.surface_en !== 'obstacle')
     .map((stat) => ({
       ...stat,
@@ -532,7 +556,7 @@ export default async function JockeyPage({
 
   // 競馬場別サマリーデータを集計
   const racecourseSummaryData = racecourseOrder.map(racecourse => {
-    const racecourseCourses = jockey.course_stats.filter(c => c.racecourse_en === racecourse.en);
+    const racecourseCourses = sire.course_stats.filter(c => c.racecourse_en === racecourse.en);
 
     if (racecourseCourses.length === 0) return null;
 
@@ -608,12 +632,13 @@ export default async function JockeyPage({
     { id: 'gate-stats', label: '枠順別' },
     { id: 'distance-stats', label: '距離別' },
     { id: 'gender-stats', label: '性別' },
+    { id: 'interval-stats', label: 'レース間隔' },
     { id: 'surface-stats', label: '芝・ダート別' },
     { id: 'track-condition-stats', label: '馬場状態別' },
     { id: 'racecourse-stats', label: '競馬場別' },
     { id: 'course-stats', label: 'コース別' },
     { id: 'trainer-stats', label: '調教師別' },
-    { id: 'owner-stats', label: '馬主別' },
+    { id: 'jockey-stats', label: '騎手別' },
   ];
 
   // 構造化データ - BreadcrumbList
@@ -631,14 +656,14 @@ export default async function JockeyPage({
       {
         '@type': 'ListItem',
         position: 2,
-        name: '騎手一覧',
-        item: `${baseUrl}/jockeys`,
+        name: '種牡馬一覧',
+        item: `${baseUrl}/sires`,
       },
       {
         '@type': 'ListItem',
         position: 3,
-        name: jockey.name,
-        item: `${baseUrl}/jockeys/${id}`,
+        name: sire.name,
+        item: `${baseUrl}/sires/${id}`,
       },
     ],
   };
@@ -654,9 +679,9 @@ export default async function JockeyPage({
       <BottomNav items={navigationItems} />
       <main>
         <article>
-          {/* 騎手ヘッダー */}
+          {/* 種牡馬ヘッダー */}
           <div className="page-header">
-            <h1>{jockey.name}騎手の成績・データ</h1>
+            <h1>{sire.name}産駒の成績・データ</h1>
 
             {/* データ情報セクション */}
             <div className="course-meta-section">
@@ -665,17 +690,17 @@ export default async function JockeyPage({
                 <span>
                   直近3年間分
                   <span className="meta-sub-text">
-                    {jockey.data_period.match(/（[^）]+）/)?.[0] || jockey.data_period}
+                    {sire.data_period.match(/（[^）]+）/)?.[0] || sire.data_period}
                   </span>
                 </span>
               </div>
               <div className="meta-item">
                 <span className="meta-label">対象レース数</span>
-                <span>{jockey.total_races.toLocaleString()}レース</span>
+                <span>{sire.total_races.toLocaleString()}レース</span>
               </div>
               <div className="meta-item">
                 <span className="meta-label">最終更新日</span>
-                <span>{jockey.last_updated}</span>
+                <span>{sire.last_updated}</span>
               </div>
             </div>
           </div>
@@ -683,12 +708,12 @@ export default async function JockeyPage({
           {/* 年度別成績セクション */}
           <section id="leading" aria-label="年度別成績">
             <JockeyLeadingChart
-              title={`${jockey.name}騎手 年度別成績`}
+              title={`${sire.name}産駒 年度別成績`}
               data={(() => {
                 // チャート用: 2年前→1年前→今年の順（古い順）で、データがない年も含める
                 const years = [currentYear - 2, currentYear - 1, currentYear];
                 return years.map(year => {
-                  const existingData = jockey.yearly_leading.find(stat => stat.year === year);
+                  const existingData = sire.yearly_leading.find(stat => stat.year === year);
                   return existingData || {
                     year,
                     wins: 0,
@@ -703,21 +728,21 @@ export default async function JockeyPage({
             </JockeyLeadingChart>
           </section>
 
-          {/* 騎手特徴セクション */}
-          <section id="characteristics" aria-label="騎手特徴">
+          {/* 種牡馬特徴セクション */}
+          <section id="characteristics" aria-label="種牡馬特徴">
             <BarChartAnimation>
               <div className="characteristics-box">
-                <h2 className="section-title">{jockey.name}騎手の特徴</h2>
+                <h2 className="section-title">{sire.name}産駒の特徴</h2>
 
                 {/* 人気時の信頼度 */}
                 <div className="gauge-item">
                   <div className="gauge-header">
                     <h3 className="gauge-label">人気時の信頼度</h3>
-                    <VolatilityExplanation pageType="jockey" />
+                    <VolatilityExplanation pageType="sire" />
                   </div>
                   <div className="gauge-track">
-                    <div className="gauge-indicator" style={{ left: `${(jockey.characteristics.volatility - 1) * 25}%` }}></div>
-                    <div className="gauge-horse-icon" style={{ left: `${(jockey.characteristics.volatility - 1) * 25}%` }}>🏇</div>
+                    <div className="gauge-indicator" style={{ left: `${(sire.characteristics.volatility - 1) * 25}%` }}></div>
+                    <div className="gauge-horse-icon" style={{ left: `${(sire.characteristics.volatility - 1) * 25}%` }}>🏇</div>
                   </div>
                   <div className="gauge-labels">
                     <span>低い</span>
@@ -725,36 +750,36 @@ export default async function JockeyPage({
                     <span>高い</span>
                   </div>
                   <div className="gauge-result">
-                    {jockey.characteristics.volatility === 1 && '低い'}
-                    {jockey.characteristics.volatility === 2 && 'やや低い'}
-                    {jockey.characteristics.volatility === 3 && '標準'}
-                    {jockey.characteristics.volatility === 4 && 'やや高い'}
-                    {jockey.characteristics.volatility === 5 && '高い'}
+                    {sire.characteristics.volatility === 1 && '低い'}
+                    {sire.characteristics.volatility === 2 && 'やや低い'}
+                    {sire.characteristics.volatility === 3 && '標準'}
+                    {sire.characteristics.volatility === 4 && 'やや高い'}
+                    {sire.characteristics.volatility === 5 && '高い'}
                   </div>
                   <div className="gauge-ranking">
                     <div className="ranking-item">
                       <span className="ranking-label">1番人気時の複勝率ランキング</span>
                       <span className="ranking-value">
-                        {jockey.characteristics.fav1_ranking > 0 && jockey.characteristics.total_jockeys > 0
-                          ? `${jockey.characteristics.fav1_ranking}位/${jockey.characteristics.total_jockeys}人`
+                        {sire.characteristics.fav1_ranking > 0 && sire.characteristics.total_sires > 0
+                          ? `${sire.characteristics.fav1_ranking}位/${sire.characteristics.total_sires}頭`
                           : 'データなし'}
                       </span>
                     </div>
                     <div className="ranking-detail">
                       <div className="ranking-detail-title">1番人気時の複勝率</div>
                       <div className="detail-row">
-                        <span className="detail-label">この騎手の複勝率</span>
+                        <span className="detail-label">この種牡馬産駒の複勝率</span>
                         <span className="detail-value">
-                          {jockey.characteristics.fav1_place_rate > 0
-                            ? `${jockey.characteristics.fav1_place_rate.toFixed(1)}%`
+                          {sire.characteristics.fav1_place_rate > 0
+                            ? `${sire.characteristics.fav1_place_rate.toFixed(1)}%`
                             : 'データなし'}
                         </span>
                       </div>
                       <div className="detail-row">
-                        <span className="detail-label">全騎手の1番人気の複勝率</span>
+                        <span className="detail-label">全種牡馬産駒の1番人気の複勝率</span>
                         <span className="detail-value">
-                          {jockey.characteristics.all_fav1_place_rate > 0
-                            ? `${jockey.characteristics.all_fav1_place_rate.toFixed(1)}%`
+                          {sire.characteristics.all_fav1_place_rate > 0
+                            ? `${sire.characteristics.all_fav1_place_rate.toFixed(1)}%`
                             : 'データなし'}
                         </span>
                       </div>
@@ -763,7 +788,7 @@ export default async function JockeyPage({
 
                 </div>
                 <p className="note-text">
-                  ※複勝率ランキングは1番人気が10走以上の騎手を対象
+                  ※複勝率ランキングは1番人気が10走以上の種牡馬を対象
                 </p>
 
                 {/* 区切り線 */}
@@ -773,7 +798,7 @@ export default async function JockeyPage({
                 <div className="gauge-item">
                   <div className="gauge-header">
                     <h3 className="gauge-label">得意なコース傾向</h3>
-                    <GatePositionExplanation pageType="jockey" />
+                    <GatePositionExplanation pageType="sire" />
                   </div>
                   <div className="gauge-track">
                     <div className="gauge-indicator" style={{ left: `${(surfaceTrendPosition - 1) * 25}%` }}></div>
@@ -796,7 +821,7 @@ export default async function JockeyPage({
                   <div className="gate-place-rate-detail">
                     <div className="gate-detail-title">コース別複勝率</div>
                     <div className="gate-chart">
-                      {jockey.surface_stats
+                      {sire.surface_stats
                         .sort((a, b) => {
                           // 芝を先に、ダートを後に
                           if (a.surface === '芝' && b.surface !== '芝') return -1;
@@ -864,7 +889,7 @@ export default async function JockeyPage({
                     <div className="running-style-place-rate-detail">
                       <div className="running-style-detail-title">脚質別複勝率</div>
                       <div className="running-style-chart">
-                        {jockey.running_style_stats.map((style) => {
+                        {sire.running_style_stats.map((style) => {
                           // アイコンマッピング
                           const styleIcons: { [key: string]: string } = {
                             'escape': '逃',
@@ -963,55 +988,63 @@ export default async function JockeyPage({
           {/* クラス別データセクション */}
           <section id="class-stats" aria-label="クラス別データ">
             <ClassTable
-              title={`${jockey.name}騎手 クラス別データ`}
-              data={jockey.class_stats}
+              title={`${sire.name}産駒 クラス別データ`}
+              data={sire.class_stats}
             />
           </section>
 
           {/* 人気別データセクション */}
           <section id="popularity-stats" aria-label="人気別データ">
             <PopularityTable
-              title={`${jockey.name}騎手 人気別データ`}
-              data={jockey.popularity_stats}
+              title={`${sire.name}産駒 人気別データ`}
+              data={sire.popularity_stats}
             />
           </section>
 
           {/* 脚質別データセクション */}
           <section id="running-style-stats" aria-label="脚質別データ">
             <RunningStyleTable
-              title={`${jockey.name}騎手 脚質別データ`}
-              data={jockey.running_style_stats}
+              title={`${sire.name}産駒 脚質別データ`}
+              data={sire.running_style_stats}
             />
           </section>
 
           {/* 枠順別データセクション */}
           <section id="gate-stats" aria-label="枠順別データ">
             <GateTable
-              title={`${jockey.name}騎手 枠順別データ`}
-              data={jockey.gate_stats}
+              title={`${sire.name}産駒 枠順別データ`}
+              data={sire.gate_stats}
             />
           </section>
 
           {/* 距離別データセクション */}
           <section id="distance-stats" aria-label="距離別データ">
             <DistanceTable
-              title={`${jockey.name}騎手 距離別データ`}
-              data={jockey.distance_stats}
+              title={`${sire.name}産駒 距離別データ`}
+              data={sire.distance_stats}
             />
           </section>
 
           {/* 性別データセクション */}
           <section id="gender-stats" aria-label="性別データ">
             <GenderTable
-              title={`${jockey.name}騎手 性別データ`}
-              data={jockey.gender_stats}
+              title={`${sire.name}産駒 性別データ`}
+              data={sire.gender_stats}
+            />
+          </section>
+
+          {/* レース間隔別データセクション */}
+          <section id="interval-stats" aria-label="レース間隔別データ">
+            <IntervalTable
+              title={`${sire.name}産駒 レース間隔別データ`}
+              data={sire.interval_stats}
             />
           </section>
 
           {/* 芝・ダート別データセクション */}
           <section id="surface-stats" aria-label="芝・ダート別データ">
             <SurfaceTable
-              title={`${jockey.name}騎手 芝・ダート別データ`}
+              title={`${sire.name}産駒 芝・ダート別データ`}
               data={surfaceStatsData}
             />
           </section>
@@ -1019,7 +1052,7 @@ export default async function JockeyPage({
           {/* 馬場状態別データセクション */}
           <section id="track-condition-stats" aria-label="馬場状態別データ">
             <TrackConditionTable
-              title={`${jockey.name}騎手 馬場状態別データ`}
+              title={`${sire.name}産駒 馬場状態別データ`}
               data={trackConditionStatsData}
             />
           </section>
@@ -1027,7 +1060,7 @@ export default async function JockeyPage({
           {/* 競馬場別成績セクション */}
           <section id="racecourse-stats" aria-label="競馬場別成績">
             <RacecourseTable
-              title={`${jockey.name}騎手 競馬場別成績`}
+              title={`${sire.name}産駒 競馬場別成績`}
               data={racecourseSummaryDataWithTotals}
             />
           </section>
@@ -1035,7 +1068,7 @@ export default async function JockeyPage({
           {/* コース別成績 */}
           <section id="course-stats" aria-label="コース別成績">
             <RacecourseCourseTable
-              title={`${jockey.name}騎手 コース別成績`}
+              title={`${sire.name}産駒 コース別成績`}
               data={coursesByRacecourse}
             />
           </section>
@@ -1043,21 +1076,21 @@ export default async function JockeyPage({
           {/* 調教師別データセクション */}
           <section id="trainer-stats" aria-label="調教師別データ">
             <DataTable
-              title={`${jockey.name}騎手 調教師別データ`}
-              data={jockey.trainer_stats}
+              title={`${sire.name}産駒 調教師別データ`}
+              data={sire.trainer_stats}
               initialShow={10}
               nameLabel="調教師"
               note="※現役調教師のみ"
             />
           </section>
 
-          {/* 馬主別データセクション */}
-          <section id="owner-stats" aria-label="馬主別データ">
+          {/* 騎手別データセクション */}
+          <section id="jockey-stats" aria-label="騎手別データ">
             <DataTable
-              title={`${jockey.name}騎手 馬主別データ`}
-              data={jockey.owner_stats}
+              title={`${sire.name}産駒 騎手別データ`}
+              data={sire.jockey_stats}
               initialShow={10}
-              nameLabel="馬主"
+              nameLabel="騎手"
             />
           </section>
         </article>
@@ -1068,9 +1101,9 @@ export default async function JockeyPage({
         <ol style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
           <li><Link href="/">ホーム</Link></li>
           <li aria-hidden="true">&gt;</li>
-          <li><Link href="/jockeys">騎手一覧</Link></li>
+          <li><Link href="/sires">種牡馬一覧</Link></li>
           <li aria-hidden="true">&gt;</li>
-          <li aria-current="page">{jockey.name}</li>
+          <li aria-current="page">{sire.name}</li>
         </ol>
       </nav>
     </>

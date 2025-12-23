@@ -17,7 +17,6 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ['react-icons'],
   },
   // Optimize for modern browsers (ES2020+)
-  swcMinify: true,
 };
 
 export default nextConfig;
