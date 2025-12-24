@@ -391,7 +391,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const title = `${racecourse}${surface}${distanceDisplay}m${trackVariant}の傾向・特徴まとめ｜騎手や血統などのデータをどこよりも見やすく`;
-  const description = `${racecourse}競馬場の${surface}${distanceDisplay}m${trackVariant}コースの詳細データ。人気別成績、枠番別成績、脚質傾向、騎手・種牡馬・母父・調教師の成績など、豊富な統計データで予想をサポート。`;
+  const description = `${racecourse}${surface}${distanceDisplay}m${trackVariant}の傾向や特徴が丸わかり！騎手、血統、枠順、脚質、調教師など、豊富な統計データで予想をサポート。`;
   const url = `https://www.keibadata.com/courses/${resolvedParams.racecourse}/${resolvedParams.surface}/${resolvedParams.distance}`;
 
   return {
