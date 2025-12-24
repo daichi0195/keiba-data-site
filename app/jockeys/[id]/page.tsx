@@ -245,8 +245,8 @@ export async function generateMetadata({
     };
   }
 
-  const title = `${jockey.name}騎手の成績・データまとめ - 競馬データ.com`;
-  const description = `${jockey.name}騎手のコース別成績、得意条件などの詳細データを分析。通算${jockey.total_stats.wins}勝、勝率${jockey.total_stats.win_rate}%。`;
+  const title = `${jockey.name}騎手の成績・特徴まとめ｜得意な条件がまるわかり！`;
+  const description = `${jockey.name}騎手の成績や特徴を徹底分析！得意なコースや得意な距離など、豊富な統計データで予想をサポート。`;
   const url = `https://www.keibadata.com/jockeys/${id}`;
 
   return {
