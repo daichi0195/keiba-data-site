@@ -50,6 +50,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-N3DT5GPQ');`,
           }}
         />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Organization',
+              name: '競馬データ.com',
+              url: 'https://www.keibadata.com',
+              logo: 'https://www.keibadata.com/logo.png',
+              description: '競馬の予想に役立つあらゆるデータを網羅した競馬分析サイト',
+            }),
+          }}
+        />
       </head>
       <body suppressHydrationWarning>
         {/* Google Tag Manager (noscript) */}
