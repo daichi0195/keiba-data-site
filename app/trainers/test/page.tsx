@@ -44,8 +44,8 @@ export default function TrainerTestPage() {
     ],
     interval_stats: [
       { interval: '連闘', races: 245, wins: 52, places_2: 41, places_3: 35, win_rate: 21.2, place_rate: 52.2, quinella_rate: 38.0, win_payback: 105, place_payback: 101 },
-      { interval: '2-4週', races: 1523, wins: 285, places_2: 238, places_3: 195, win_rate: 18.7, place_rate: 47.1, quinella_rate: 34.3, win_payback: 103, place_payback: 98 },
-      { interval: '5-7週', races: 456, wins: 75, places_2: 62, places_3: 51, win_rate: 16.4, place_rate: 41.2, quinella_rate: 30.0, win_payback: 97, place_payback: 92 },
+      { interval: '1-3週', races: 1523, wins: 285, places_2: 238, places_3: 195, win_rate: 18.7, place_rate: 47.1, quinella_rate: 34.3, win_payback: 103, place_payback: 98 },
+      { interval: '4-7週', races: 456, wins: 75, places_2: 62, places_3: 51, win_rate: 16.4, place_rate: 41.2, quinella_rate: 30.0, win_payback: 97, place_payback: 92 },
       { interval: '8-10週', races: 198, wins: 28, places_2: 25, places_3: 21, win_rate: 14.1, place_rate: 37.4, quinella_rate: 26.8, win_payback: 92, place_payback: 88 },
       { interval: '11週-', races: 267, wins: 33, places_2: 30, places_3: 25, win_rate: 12.4, place_rate: 33.0, quinella_rate: 23.6, win_payback: 89, place_payback: 85 },
     ],
