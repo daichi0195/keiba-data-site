@@ -9,12 +9,12 @@ export async function getSireDataFromGCS(sireId: string | number) {
     throw new Error(`Sire not found: ${sireId}`);
   }
 
-  // 種牡馬名をURLエンコード（GCSファイル名と一致させる）
-  const encodedName = encodeURIComponent(sire.name);
+  // ID番号を5桁のゼロパディング形式に変換（調教師・騎手と同じ形式）
+  const paddedId = String(sireId).padStart(5, '0');
 
   // キャッシュバスターを付けてCDNキャッシュを回避
   const timestamp = Math.floor(Date.now() / 1000);
-  const url = `${BASE_URL}/sires/${encodedName}.json?v=${timestamp}`;
+  const url = `${BASE_URL}/sires/${paddedId}.json?v=${timestamp}`;
 
   console.log('🔍 Fetching sire data from GCS:', url);
 

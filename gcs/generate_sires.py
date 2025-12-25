@@ -970,13 +970,13 @@ def get_surface_change_stats(client):
         }
 
 
-def process_sire(bq_client, storage_client, sire_name):
+def process_sire(bq_client, storage_client, sire_id, sire_name):
     """1頭の種牡馬のデータを処理してGCSにアップロード"""
     global SIRE_NAME
     SIRE_NAME = sire_name
 
     print(f"\n{'='*60}")
-    print(f"🏇 Processing: {sire_name}")
+    print(f"🏇 Processing: {sire_name} (ID: {sire_id})")
     print(f"{'='*60}")
 
     try:
@@ -1056,7 +1056,7 @@ def process_sire(bq_client, storage_client, sire_name):
 
         # JSONデータ構築
         sire_data = {
-            "id": sire_name,  # 暫定的に名前をIDとして使用
+            "id": str(sire_id).zfill(5),  # 5桁ゼロパディングのID
             "name": sire_name,
             "name_en": basic_info.get('name_en', sire_name),
             "birth_year": basic_info.get('birth_year'),
@@ -1093,10 +1093,9 @@ def process_sire(bq_client, storage_client, sire_name):
         print("  [17/17] Uploading to GCS...")
         bucket = storage_client.bucket(BUCKET_NAME)
 
-        # ファイル名をURLセーフな形式に変換（日本語を避ける）
-        import urllib.parse
-        safe_name = urllib.parse.quote(sire_name, safe='')
-        blob_path = f"sires/{safe_name}.json"
+        # ID番号を5桁のゼロパディング形式に変換（調教師・騎手と同じ形式）
+        padded_id = str(sire_id).zfill(5)
+        blob_path = f"sires/{padded_id}.json"
         blob = bucket.blob(blob_path)
 
         blob.upload_from_string(
@@ -1104,7 +1103,7 @@ def process_sire(bq_client, storage_client, sire_name):
             content_type='application/json'
         )
 
-        print(f"  ✅ {sire_name} uploaded to {blob_path}")
+        print(f"  ✅ {sire_name} (ID: {sire_id}) uploaded to {blob_path}")
         return True
 
     except Exception as e:
@@ -1167,9 +1166,26 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(description='Export sire data from BigQuery to GCS')
+    parser.add_argument('--sire-id', type=int, help='Process a specific sire by ID')
     parser.add_argument('--sire-name', type=str, help='Process a specific sire by name')
     parser.add_argument('--test', action='store_true', help='Test mode: process only ディープインパクト')
     args = parser.parse_args()
+
+    # lib/sires.tsからIDマッピングをロード
+    import os
+    sire_mapping = {}
+    sires_ts_path = os.path.join(os.path.dirname(__file__), '..', 'lib', 'sires.ts')
+    if os.path.exists(sires_ts_path):
+        with open(sires_ts_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+            import re
+            # { id: 1, name: 'ロードカナロア' } のようなパターンをマッチ
+            pattern = r"\{\s*id:\s*(\d+),\s*name:\s*'([^']+)'\s*\}"
+            for match in re.finditer(pattern, content):
+                sire_id = int(match.group(1))
+                sire_name = match.group(2)
+                sire_mapping[sire_id] = sire_name
+                sire_mapping[sire_name] = sire_id
 
     try:
         # BigQueryとGCS クライアント
@@ -1180,7 +1196,9 @@ def main():
             # テストモード: ディープインパクトのみ
             print(f"🚀 Starting sire data export (TEST MODE)")
             print(f"   Processing single sire: ディープインパクト")
-            success = process_sire(bq_client, storage_client, "ディープインパクト")
+            sire_name = "ディープインパクト"
+            sire_id = sire_mapping.get(sire_name, 36)  # ディープインパクトはID=36
+            success = process_sire(bq_client, storage_client, sire_id, sire_name)
 
             print(f"\n{'='*60}")
             if success:
@@ -1190,11 +1208,35 @@ def main():
             print(f"{'='*60}")
             sys.exit(0 if success else 1)
 
-        elif args.sire_name:
-            # 特定の種牡馬のみ処理
+        elif args.sire_id:
+            # 特定の種牡馬のみ処理（IDで指定）
+            sire_id = args.sire_id
+            sire_name = sire_mapping.get(sire_id)
+            if not sire_name:
+                print(f"❌ Sire ID {sire_id} not found in sires.ts")
+                sys.exit(1)
             print(f"🚀 Starting sire data export (SINGLE SIRE MODE)")
-            print(f"   Processing sire: {args.sire_name}")
-            success = process_sire(bq_client, storage_client, args.sire_name)
+            print(f"   Processing sire: {sire_name} (ID: {sire_id})")
+            success = process_sire(bq_client, storage_client, sire_id, sire_name)
+
+            print(f"\n{'='*60}")
+            if success:
+                print(f"✅ Processing complete!")
+            else:
+                print(f"❌ Processing failed!")
+            print(f"{'='*60}")
+            sys.exit(0 if success else 1)
+
+        elif args.sire_name:
+            # 特定の種牡馬のみ処理（名前で指定）
+            sire_name = args.sire_name
+            sire_id = sire_mapping.get(sire_name)
+            if not sire_id:
+                print(f"❌ Sire name '{sire_name}' not found in sires.ts")
+                sys.exit(1)
+            print(f"🚀 Starting sire data export (SINGLE SIRE MODE)")
+            print(f"   Processing sire: {sire_name} (ID: {sire_id})")
+            success = process_sire(bq_client, storage_client, sire_id, sire_name)
 
             print(f"\n{'='*60}")
             if success:
@@ -1223,11 +1265,17 @@ def main():
 
             for i, sire_info in enumerate(sires, 1):
                 sire_name = sire_info['name']
-                print(f"\n[{i}/{len(sires)}] Processing: {sire_name}")
+                sire_id = sire_mapping.get(sire_name)
+                if not sire_id:
+                    print(f"\n[{i}/{len(sires)}] ⚠️  Skipping {sire_name} (not found in sires.ts)")
+                    fail_count += 1
+                    continue
+
+                print(f"\n[{i}/{len(sires)}] Processing: {sire_name} (ID: {sire_id})")
                 print(f"   (レース数: {sire_info['race_count']}, 産駒数: {sire_info['horse_count']})")
 
                 try:
-                    if process_sire(bq_client, storage_client, sire_name):
+                    if process_sire(bq_client, storage_client, sire_id, sire_name):
                         success_count += 1
                     else:
                         fail_count += 1
