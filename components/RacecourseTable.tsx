@@ -41,8 +41,13 @@ export default function RacecourseTable({ title, data }: Props) {
     }
   }, []);
 
-  // 中央・ローカル行を除外したデータで最大値を計算
-  const racecourseData = data.filter(d => d.name !== '中央' && d.name !== 'ローカル');
+  // 中央・ローカル・右回り・左回り行を除外したデータで最大値を計算
+  const racecourseData = data.filter(d =>
+    d.name !== '中央' &&
+    d.name !== 'ローカル' &&
+    d.name !== '右回り' &&
+    d.name !== '左回り'
+  );
 
   // 各カラムの最大値を取得（競馬場のみ）
   const maxRaces = Math.max(...racecourseData.map(d => d.races ?? 0));
@@ -82,11 +87,12 @@ export default function RacecourseTable({ title, data }: Props) {
             </thead>
             <tbody>
               {data.map((row, index) => {
-                const isCentral = row.name === '中央';
+                const isSummaryRow = row.name === '右回り' || row.name === '左回り' || row.name === '中央' || row.name === 'ローカル';
+                const isFirstSummaryRow = row.name === '中央' || row.name === '右回り';
                 return (
                 <tr
                   key={row.name}
-                  className={`${index % 2 === 0 ? styles.rowEven : styles.rowOdd} ${isCentral ? styles.summaryRow : ''}`}
+                  className={`${index % 2 === 0 ? styles.rowEven : styles.rowOdd} ${isSummaryRow ? styles.summaryRow : ''} ${isFirstSummaryRow ? styles.firstSummaryRow : ''}`}
                 >
                   <td className={styles.racecourseCol}>
                     <span className={styles.racecourseBadge}>

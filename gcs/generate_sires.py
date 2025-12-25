@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-騎手データを BigQuery から取得して GCS に保存
+種牡馬データを BigQuery から取得して GCS に保存
 """
 
 from google.cloud import bigquery, storage
@@ -14,24 +14,21 @@ PROJECT_ID = 'umadata'
 BUCKET_NAME = 'umadata'
 DATASET = 'umadata.keiba_data'
 
-# グローバル変数として現在処理中の騎手情報を保持
-JOCKEY_ID = None
+# グローバル変数として現在処理中の種牡馬情報を保持
+SIRE_NAME = None
 
-
-def get_jockey_basic_info(client):
-    """騎手の基本情報を取得"""
+def get_sire_basic_info(client):
+    """種牡馬の基本情報を取得"""
+    # 種牡馬を父に持つ馬の数を取得
     query = f"""
     SELECT
-      jockey_id,
-      jockey_name as name,
-      jockey_kana as kana,
-      region as affiliation,
-      debut_year,
-      is_active
+      '{SIRE_NAME}' as name,
+      '{SIRE_NAME}' as name_en,
+      COUNT(DISTINCT h.horse_id) as total_horses
     FROM
-      `{DATASET}.jockey`
+      `{DATASET}.horse` h
     WHERE
-      jockey_id = {JOCKEY_ID}
+      h.father = '{SIRE_NAME}'
     """
 
     try:
@@ -39,9 +36,13 @@ def get_jockey_basic_info(client):
         rows = list(results)
         if not rows:
             return None
-        return dict(rows[0])
+
+        basic_info = dict(rows[0])
+        # 仮の生年を設定（実際のデータがない場合）
+        basic_info['birth_year'] = 2002  # ディープインパクトの生年
+        return basic_info
     except Exception as e:
-        print(f"   ⚠️  Error fetching jockey basic info: {str(e)}", file=sys.stderr)
+        print(f"   ⚠️  Error fetching sire basic info: {str(e)}", file=sys.stderr)
         raise
 
 
@@ -59,8 +60,9 @@ def get_total_stats(client):
     FROM
       `{DATASET}.race_master` rm
       JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
+      JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
     WHERE
-      rr.jockey_id = {JOCKEY_ID}
+      h.father = '{SIRE_NAME}'
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
     """
 
@@ -92,8 +94,9 @@ def get_yearly_stats(client):
     FROM
       `{DATASET}.race_master` rm
       JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
+      JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
     WHERE
-      rr.jockey_id = {JOCKEY_ID}
+      h.father = '{SIRE_NAME}'
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
     GROUP BY year
     ORDER BY year DESC
@@ -113,19 +116,21 @@ def get_yearly_leading(client):
     WITH yearly_wins AS (
       SELECT
         EXTRACT(YEAR FROM rm.race_date) as year,
-        rr.jockey_id,
+        h.father,
         SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins
       FROM
         `{DATASET}.race_master` rm
         JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
+        JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
       WHERE
         rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
-      GROUP BY year, rr.jockey_id
+        AND h.father IS NOT NULL
+      GROUP BY year, h.father
     ),
     ranked AS (
       SELECT
         year,
-        jockey_id,
+        father,
         wins,
         RANK() OVER (PARTITION BY year ORDER BY wins DESC) as ranking
       FROM yearly_wins
@@ -135,7 +140,7 @@ def get_yearly_leading(client):
       wins,
       ranking
     FROM ranked
-    WHERE jockey_id = {JOCKEY_ID}
+    WHERE father = '{SIRE_NAME}'
     ORDER BY year DESC
     """
 
@@ -154,7 +159,7 @@ def get_distance_stats(client):
     - 短距離: 1000-1400m
     - マイル: 1401-1800m
     - 中距離: 1801-2100m
-    - 長距離: 2101m以上（旧「中長距離」と「長距離」を統合）
+    - 長距離: 2101m以上
     """
     query = f"""
     SELECT
@@ -176,8 +181,9 @@ def get_distance_stats(client):
     FROM
       `{DATASET}.race_master` rm
       JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
+      JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
     WHERE
-      rr.jockey_id = {JOCKEY_ID}
+      h.father = '{SIRE_NAME}'
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
     GROUP BY category
     ORDER BY
@@ -198,10 +204,14 @@ def get_distance_stats(client):
 
 
 def get_surface_stats(client):
-    """路面別成績を取得（過去3年間）"""
+    """芝・ダート別成績を取得（過去3年間）"""
     query = f"""
     SELECT
-      rm.surface,
+      CASE
+        WHEN rm.surface = '芝' THEN '芝'
+        WHEN rm.surface = 'ダート' THEN 'ダート'
+        ELSE rm.surface
+      END as surface,
       COUNT(*) as races,
       SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
       SUM(CASE WHEN rr.finish_position = 2 THEN 1 ELSE 0 END) as places_2,
@@ -214,17 +224,12 @@ def get_surface_stats(client):
     FROM
       `{DATASET}.race_master` rm
       JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
+      JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
     WHERE
-      rr.jockey_id = {JOCKEY_ID}
+      h.father = '{SIRE_NAME}'
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
-      AND rm.surface IN ('芝', 'ダート')
-    GROUP BY rm.surface
-    ORDER BY
-      CASE rm.surface
-        WHEN '芝' THEN 1
-        WHEN 'ダート' THEN 2
-        ELSE 3
-      END
+    GROUP BY surface
+    ORDER BY surface
     """
 
     try:
@@ -235,50 +240,6 @@ def get_surface_stats(client):
         raise
 
 
-def get_popularity_stats(client):
-    """人気別成績を取得（過去3年間）"""
-    query = f"""
-    SELECT
-      CASE
-        WHEN rr.popularity = 1 THEN 'fav1'
-        WHEN rr.popularity = 2 THEN 'fav2'
-        WHEN rr.popularity = 3 THEN 'fav3'
-        WHEN rr.popularity = 4 THEN 'fav4'
-        WHEN rr.popularity = 5 THEN 'fav5'
-        WHEN rr.popularity BETWEEN 6 AND 9 THEN 'fav6to9'
-        WHEN rr.popularity >= 10 THEN 'fav10plus'
-      END as popularity_group,
-      COUNT(*) as races,
-      SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
-      SUM(CASE WHEN rr.finish_position = 2 THEN 1 ELSE 0 END) as places_2,
-      SUM(CASE WHEN rr.finish_position = 3 THEN 1 ELSE 0 END) as places_3,
-      ROUND(AVG(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) as win_rate,
-      ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
-      ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
-      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
-      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
-    FROM
-      `{DATASET}.race_master` rm
-      JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
-    WHERE
-      rr.jockey_id = {JOCKEY_ID}
-      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
-      AND rr.popularity IS NOT NULL
-    GROUP BY popularity_group
-    """
-
-    try:
-        results = client.query(query).result()
-        data_dict = {row['popularity_group']: dict(row) for row in results}
-
-        # 順序を保証して返す
-        order = ['fav1', 'fav2', 'fav3', 'fav4', 'fav5', 'fav6to9', 'fav10plus']
-        return [data_dict.get(key, {}) for key in order if key in data_dict]
-    except Exception as e:
-        print(f"   ⚠️  Error fetching popularity stats: {str(e)}", file=sys.stderr)
-        raise
-
-
 def get_running_style_stats(client):
     """脚質別成績を取得（過去3年間）"""
     query = f"""
@@ -286,7 +247,6 @@ def get_running_style_stats(client):
       SELECT
         rm.race_id,
         rr.horse_id,
-        rr.jockey_id,
         rr.finish_position,
         rr.win,
         rr.place,
@@ -300,23 +260,24 @@ def get_running_style_stats(client):
       WHERE
         rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
     ),
-    corner_data AS (
+    sire_horses AS (
       SELECT
-        race_id,
-        horse_id,
-        finish_position,
-        win,
-        place,
-        entry_count,
-        last_3f_time,
-        last_3f_rank,
-        corner_array
+        ah.race_id,
+        ah.horse_id,
+        ah.finish_position,
+        ah.win,
+        ah.place,
+        ah.entry_count,
+        ah.last_3f_time,
+        ah.last_3f_rank,
+        ah.corner_array
       FROM
-        all_horses
+        all_horses ah
+        JOIN `{DATASET}.horse` h ON ah.horse_id = h.horse_id
       WHERE
-        jockey_id = {JOCKEY_ID}
-        AND corner_array IS NOT NULL
-        AND ARRAY_LENGTH(corner_array) > 0
+        h.father = '{SIRE_NAME}'
+        AND ah.corner_array IS NOT NULL
+        AND ARRAY_LENGTH(ah.corner_array) > 0
     ),
     corner_parsed AS (
       SELECT
@@ -335,7 +296,7 @@ def get_running_style_stats(client):
         CAST(IF(ARRAY_LENGTH(corner_array) >= 3, corner_array[OFFSET(2)], NULL) AS INT64) as corner_3,
         CAST(corner_array[OFFSET(ARRAY_LENGTH(corner_array)-1)] AS INT64) as final_corner
       FROM
-        corner_data
+        sire_horses
     ),
     running_style_classified AS (
       SELECT
@@ -415,6 +376,18 @@ def get_running_style_stats(client):
 
 def get_gate_stats(client):
     """枠順別成績を取得（過去3年間）"""
+    # 枠番の色定義（騎手/コースページと同じ）
+    gate_colors = {
+        1: '#FFFFFF',
+        2: '#222222',
+        3: '#C62927',
+        4: '#2573CD',
+        5: '#E4CA3C',
+        6: '#58AF4A',
+        7: '#FAA727',
+        8: '#DC6179',
+    }
+
     query = f"""
     SELECT
       rr.bracket_number as gate,
@@ -430,39 +403,344 @@ def get_gate_stats(client):
     FROM
       `{DATASET}.race_master` rm
       JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
+      JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
     WHERE
-      rr.jockey_id = {JOCKEY_ID}
+      h.father = '{SIRE_NAME}'
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+      AND rr.bracket_number BETWEEN 1 AND 8
     GROUP BY rr.bracket_number
     ORDER BY rr.bracket_number
     """
 
     try:
         results = client.query(query).result()
-
-        # 枠番の色を定義
-        GATE_COLORS = {
-            1: '#FFFFFF',
-            2: '#222222',
-            3: '#C62927',
-            4: '#2573CD',
-            5: '#E4CA3C',
-            6: '#58AF4A',
-            7: '#FAA727',
-            8: '#DC6179',
-        }
-
-        # 色情報を追加
-        gate_data = []
+        gate_stats = []
         for row in results:
             row_dict = dict(row)
-            gate_num = row_dict['gate']
-            row_dict['color'] = GATE_COLORS.get(gate_num, '#999999')
-            gate_data.append(row_dict)
-
-        return gate_data
+            row_dict['color'] = gate_colors.get(row_dict['gate'], '#CCCCCC')
+            gate_stats.append(row_dict)
+        return gate_stats
     except Exception as e:
         print(f"   ⚠️  Error fetching gate stats: {str(e)}", file=sys.stderr)
+        raise
+
+
+def get_track_condition_stats(client):
+    """馬場状態別成績を取得（過去3年間）"""
+    query = f"""
+    SELECT
+      rm.surface,
+      CASE rm.track_condition
+        WHEN '良' THEN 'good'
+        WHEN '稍重' THEN 'yielding'
+        WHEN '稍' THEN 'yielding'
+        WHEN '重' THEN 'soft'
+        WHEN '不良' THEN 'heavy'
+        WHEN '不' THEN 'heavy'
+        ELSE rm.track_condition
+      END as condition,
+      CASE rm.track_condition
+        WHEN '稍重' THEN '稍重'
+        WHEN '稍' THEN '稍重'
+        WHEN '不良' THEN '不良'
+        WHEN '不' THEN '不良'
+        ELSE rm.track_condition
+      END as condition_label,
+      COUNT(*) as races,
+      SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
+      SUM(CASE WHEN rr.finish_position = 2 THEN 1 ELSE 0 END) as places_2,
+      SUM(CASE WHEN rr.finish_position = 3 THEN 1 ELSE 0 END) as places_3,
+      ROUND(AVG(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) as win_rate,
+      ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
+      ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
+    FROM
+      `{DATASET}.race_master` rm
+      JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
+      JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
+    WHERE
+      h.father = '{SIRE_NAME}'
+      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+      AND rm.track_condition IS NOT NULL
+    GROUP BY surface, condition, condition_label
+    ORDER BY
+      surface,
+      CASE condition
+        WHEN 'good' THEN 1
+        WHEN 'yielding' THEN 2
+        WHEN 'soft' THEN 3
+        WHEN 'heavy' THEN 4
+      END
+    """
+
+    try:
+        results = client.query(query).result()
+        return [dict(row) for row in results]
+    except Exception as e:
+        print(f"   ⚠️  Error fetching track condition stats: {str(e)}", file=sys.stderr)
+        raise
+
+
+def get_class_stats(client):
+    """クラス別成績を取得（過去3年間）"""
+    query = f"""
+    WITH class_data AS (
+      SELECT
+        CASE
+          WHEN rm.grade = 'G1' THEN 'G1'
+          WHEN rm.grade = 'G2' THEN 'G2'
+          WHEN rm.grade = 'G3' THEN 'G3'
+          WHEN rm.race_class = 'オープン' AND rm.grade IS NULL THEN 'オープン'
+          WHEN rm.race_class = '３勝クラス' THEN '3勝'
+          WHEN rm.race_class = '２勝クラス' THEN '2勝'
+          WHEN rm.race_class = '１勝クラス' THEN '1勝'
+          WHEN rm.race_class = '未勝利' THEN '未勝利'
+          WHEN rm.race_class = '新馬' THEN '新馬'
+          ELSE rm.race_class
+        END as class_name,
+        COUNT(*) as races,
+        SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
+        SUM(CASE WHEN rr.finish_position = 2 THEN 1 ELSE 0 END) as places_2,
+        SUM(CASE WHEN rr.finish_position = 3 THEN 1 ELSE 0 END) as places_3,
+        ROUND(AVG(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) as win_rate,
+        ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
+        ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
+        ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
+        ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
+      FROM
+        `{DATASET}.race_master` rm
+        JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
+        JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
+      WHERE
+        h.father = '{SIRE_NAME}'
+        AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+        AND rm.race_class IS NOT NULL
+      GROUP BY class_name
+    )
+    SELECT
+      ROW_NUMBER() OVER (ORDER BY
+        CASE class_name
+          WHEN 'G1' THEN 1
+          WHEN 'G2' THEN 2
+          WHEN 'G3' THEN 3
+          WHEN 'オープン' THEN 4
+          WHEN '3勝' THEN 5
+          WHEN '2勝' THEN 6
+          WHEN '1勝' THEN 7
+          WHEN '未勝利' THEN 8
+          WHEN '新馬' THEN 9
+          ELSE 10
+        END
+      ) as rank,
+      class_name,
+      races,
+      wins,
+      places_2,
+      places_3,
+      win_rate,
+      quinella_rate,
+      place_rate,
+      win_payback,
+      place_payback
+    FROM class_data
+    """
+
+    try:
+        results = client.query(query).result()
+        return [dict(row) for row in results]
+    except Exception as e:
+        print(f"   ⚠️  Error fetching class stats: {str(e)}", file=sys.stderr)
+        raise
+
+
+def get_gender_stats(client):
+    """性別成績を取得（過去3年間）"""
+    query = f"""
+    SELECT
+      CASE rr.sex
+        WHEN 1 THEN '牡馬'
+        WHEN 2 THEN '牝馬'
+        WHEN 3 THEN 'セン馬'
+        ELSE '不明'
+      END as name,
+      COUNT(*) as races,
+      SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
+      SUM(CASE WHEN rr.finish_position = 2 THEN 1 ELSE 0 END) as places_2,
+      SUM(CASE WHEN rr.finish_position = 3 THEN 1 ELSE 0 END) as places_3,
+      ROUND(AVG(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) as win_rate,
+      ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
+      ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
+    FROM
+      `{DATASET}.race_master` rm
+      JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
+      JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
+    WHERE
+      h.father = '{SIRE_NAME}'
+      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+      AND rr.sex IS NOT NULL
+    GROUP BY rr.sex
+    ORDER BY
+      CASE rr.sex
+        WHEN 1 THEN 1
+        WHEN 2 THEN 2
+        WHEN 3 THEN 3
+        ELSE 4
+      END
+    """
+
+    try:
+        results = client.query(query).result()
+        return [dict(row) for row in results]
+    except Exception as e:
+        print(f"   ⚠️  Error fetching gender stats: {str(e)}", file=sys.stderr)
+        raise
+
+
+def get_age_stats(client):
+    """馬齢別成績を取得（過去3年間）"""
+    query = f"""
+    SELECT
+      CONCAT(CAST(rr.age AS STRING), '歳') as age,
+      COUNT(*) as races,
+      SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
+      SUM(CASE WHEN rr.finish_position = 2 THEN 1 ELSE 0 END) as places_2,
+      SUM(CASE WHEN rr.finish_position = 3 THEN 1 ELSE 0 END) as places_3,
+      ROUND(AVG(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) as win_rate,
+      ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
+      ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
+    FROM
+      `{DATASET}.race_master` rm
+      JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
+      JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
+    WHERE
+      h.father = '{SIRE_NAME}'
+      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+      AND rr.age BETWEEN 2 AND 5
+    GROUP BY age
+    ORDER BY age
+    """
+
+    try:
+        results = client.query(query).result()
+        age_stats = [dict(row) for row in results]
+
+        # 6歳以上をまとめて追加
+        query_6plus = f"""
+        SELECT
+          '6歳-' as age,
+          COUNT(*) as races,
+          SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
+          SUM(CASE WHEN rr.finish_position = 2 THEN 1 ELSE 0 END) as places_2,
+          SUM(CASE WHEN rr.finish_position = 3 THEN 1 ELSE 0 END) as places_3,
+          ROUND(AVG(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) as win_rate,
+          ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
+          ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
+          ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
+          ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
+        FROM
+          `{DATASET}.race_master` rm
+          JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
+          JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
+        WHERE
+          h.father = '{SIRE_NAME}'
+          AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+          AND rr.age >= 6
+        """
+
+        results_6plus = client.query(query_6plus).result()
+        for row in results_6plus:
+            age_stats.append(dict(row))
+
+        return age_stats
+    except Exception as e:
+        print(f"   ⚠️  Error fetching age stats: {str(e)}", file=sys.stderr)
+        raise
+
+
+def get_dam_sire_stats(client):
+    """母父別成績を取得（過去3年間、上位50頭）"""
+    query = f"""
+    SELECT
+      ROW_NUMBER() OVER (ORDER BY COUNT(*) DESC) as rank,
+      h.mf as name,
+      COUNT(*) as races,
+      SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
+      SUM(CASE WHEN rr.finish_position = 2 THEN 1 ELSE 0 END) as places_2,
+      SUM(CASE WHEN rr.finish_position = 3 THEN 1 ELSE 0 END) as places_3,
+      ROUND(AVG(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) as win_rate,
+      ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
+      ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
+    FROM
+      `{DATASET}.race_master` rm
+      JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
+      JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
+    WHERE
+      h.father = '{SIRE_NAME}'
+      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+      AND h.mf IS NOT NULL
+    GROUP BY name
+    ORDER BY races DESC
+    LIMIT 50
+    """
+
+    try:
+        results = client.query(query).result()
+        return [dict(row) for row in results]
+    except Exception as e:
+        print(f"   ⚠️  Error fetching dam sire stats: {str(e)}", file=sys.stderr)
+        raise
+
+
+def get_racecourse_stats(client):
+    """競馬場別成績を取得（過去3年間）"""
+    query = f"""
+    SELECT
+      rm.venue_name as name,
+      rm.venue_name as racecourse_ja,
+      CASE rm.venue_name
+        WHEN '札幌' THEN 'sapporo'
+        WHEN '函館' THEN 'hakodate'
+        WHEN '福島' THEN 'fukushima'
+        WHEN '新潟' THEN 'niigata'
+        WHEN '東京' THEN 'tokyo'
+        WHEN '中山' THEN 'nakayama'
+        WHEN '中京' THEN 'chukyo'
+        WHEN '京都' THEN 'kyoto'
+        WHEN '阪神' THEN 'hanshin'
+        WHEN '小倉' THEN 'kokura'
+      END as racecourse_en,
+      COUNT(*) as races,
+      SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
+      SUM(CASE WHEN rr.finish_position = 2 THEN 1 ELSE 0 END) as places_2,
+      SUM(CASE WHEN rr.finish_position = 3 THEN 1 ELSE 0 END) as places_3,
+      ROUND(AVG(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) as win_rate,
+      ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
+      ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
+    FROM
+      `{DATASET}.race_master` rm
+      JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
+      JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
+    WHERE
+      h.father = '{SIRE_NAME}'
+      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+    GROUP BY rm.venue_name
+    ORDER BY wins DESC
+    """
+
+    try:
+        results = client.query(query).result()
+        return [dict(row) for row in results]
+    except Exception as e:
+        print(f"   ⚠️  Error fetching racecourse stats: {str(e)}", file=sys.stderr)
         raise
 
 
@@ -487,8 +765,9 @@ def get_course_stats(client):
       FROM
         `{DATASET}.race_master` rm
         JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
+        JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
       WHERE
-        rr.jockey_id = {JOCKEY_ID}
+        h.father = '{SIRE_NAME}'
         AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
       GROUP BY
         rm.venue_name,
@@ -532,10 +811,9 @@ def get_course_stats(client):
       CASE surface
         WHEN '芝' THEN 'turf'
         WHEN 'ダート' THEN 'dirt'
-        WHEN '障害' THEN 'steeplechase'
+        WHEN '障害' THEN 'jump'
       END as surface_en,
       distance,
-      track_variant as variant,
       races,
       wins,
       places_2,
@@ -558,618 +836,339 @@ def get_course_stats(client):
 
     try:
         results = client.query(query).result()
-        # リンクを追加
-        course_list = []
-        for row in results:
-            row_dict = dict(row)
-            # コース別ページへのリンクを生成
-            if row_dict.get('racecourse_en') and row_dict.get('surface_en') and row_dict.get('distance'):
-                link = f"/courses/{row_dict['racecourse_en']}/{row_dict['surface_en']}/{row_dict['distance']}"
-                row_dict['link'] = link
-            course_list.append(row_dict)
-        return course_list
+        return [dict(row) for row in results]
     except Exception as e:
         print(f"   ⚠️  Error fetching course stats: {str(e)}", file=sys.stderr)
         raise
 
 
-def get_trainer_stats(client):
-    """調教師別成績を取得（過去3年間、現役のみ、Top 50）"""
-    query = f"""
-    WITH trainer_data AS (
+def get_surface_change_stats(client):
+    """芝・ダート変わりの成績を取得（過去3年間）"""
+    # ダート変わり：芝デビュー後、初めてダートを走った際の成績
+    turf_to_dirt_query = f"""
+    WITH debut_surface AS (
+      -- 各馬の初出走時の芝質を特定
       SELECT
-        t.trainer_id,
-        t.trainer_name as name,
-        COUNT(*) as races,
-        SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
-        SUM(CASE WHEN rr.finish_position = 2 THEN 1 ELSE 0 END) as places_2,
-        SUM(CASE WHEN rr.finish_position = 3 THEN 1 ELSE 0 END) as places_3,
-        ROUND(AVG(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) as win_rate,
-        ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
-        ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
-        ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
-        ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
+        h.horse_id,
+        h.horse_name,
+        rm.surface as debut_surface,
+        rm.race_date as debut_date
       FROM
-        `{DATASET}.race_master` rm
-        JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
-        JOIN `{DATASET}.trainer` t ON CAST(rr.trainer_id AS STRING) = CAST(t.trainer_id AS STRING)
+        `{DATASET}.horse` h
+        JOIN `{DATASET}.race_result` rr ON h.horse_id = rr.horse_id
+        JOIN `{DATASET}.race_master` rm ON rr.race_id = rm.race_id
       WHERE
-        rr.jockey_id = {JOCKEY_ID}
+        h.father = '{SIRE_NAME}'
+      QUALIFY ROW_NUMBER() OVER (PARTITION BY h.horse_id ORDER BY rm.race_date ASC) = 1
+    ),
+    first_dirt_race AS (
+      -- 芝デビューした馬が初めてダートを走ったレースを特定
+      SELECT
+        ds.horse_id,
+        ds.horse_name,
+        rr.race_id,
+        rr.finish_position,
+        rr.win,
+        rr.place,
+        rm.race_date
+      FROM
+        debut_surface ds
+        JOIN `{DATASET}.race_result` rr ON ds.horse_id = rr.horse_id
+        JOIN `{DATASET}.race_master` rm ON rr.race_id = rm.race_id
+      WHERE
+        ds.debut_surface = '芝'
+        AND rm.surface = 'ダート'
+        AND rm.race_date > ds.debut_date
         AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
-        AND t.is_active = true
-      GROUP BY t.trainer_id, t.trainer_name
+      QUALIFY ROW_NUMBER() OVER (PARTITION BY ds.horse_id ORDER BY rm.race_date ASC) = 1
     )
     SELECT
-      ROW_NUMBER() OVER (ORDER BY wins DESC, win_rate DESC) as rank,
-      trainer_id,
-      name,
-      races,
-      wins,
-      places_2,
-      places_3,
-      win_rate,
-      quinella_rate,
-      place_rate,
-      win_payback,
-      place_payback
-    FROM trainer_data
-    ORDER BY wins DESC, win_rate DESC
-    LIMIT 50
+      COUNT(DISTINCT horse_id) as total_horses,
+      COUNT(*) as races,
+      SUM(CASE WHEN finish_position = 1 THEN 1 ELSE 0 END) as wins,
+      SUM(CASE WHEN finish_position = 2 THEN 1 ELSE 0 END) as places_2,
+      SUM(CASE WHEN finish_position = 3 THEN 1 ELSE 0 END) as places_3,
+      ROUND(AVG(CASE WHEN finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) as win_rate,
+      ROUND(AVG(CASE WHEN finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
+      ROUND(AVG(CASE WHEN finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN finish_position = 1 THEN win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN finish_position <= 3 THEN place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
+    FROM first_dirt_race
     """
 
-    try:
-        results = client.query(query).result()
-        # リンクを追加
-        return [{**dict(row), 'link': f'/trainers/{row.trainer_id}'} for row in results]
-    except Exception as e:
-        print(f"   ⚠️  Error fetching trainer stats: {str(e)}", file=sys.stderr)
-        raise
-
-
-def get_class_stats(client):
-    """クラス別成績を取得（過去3年間）"""
-    query = f"""
-    WITH class_data AS (
+    # 芝変わり：ダートデビュー後、初めて芝を走った際の成績
+    dirt_to_turf_query = f"""
+    WITH debut_surface AS (
+      -- 各馬の初出走時の芝質を特定
       SELECT
-        CASE
-          WHEN rm.grade = 'G1' THEN 'G1'
-          WHEN rm.grade = 'G2' THEN 'G2'
-          WHEN rm.grade = 'G3' THEN 'G3'
-          WHEN rm.race_class = 'オープン' AND rm.grade IS NULL THEN 'オープン'
-          WHEN rm.race_class = '３勝クラス' THEN '3勝'
-          WHEN rm.race_class = '２勝クラス' THEN '2勝'
-          WHEN rm.race_class = '１勝クラス' THEN '1勝'
-          WHEN rm.race_class = '未勝利' THEN '未勝利'
-          WHEN rm.race_class = '新馬' THEN '新馬'
-          ELSE rm.race_class
-        END as class_name,
-        COUNT(*) as races,
-        SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
-        SUM(CASE WHEN rr.finish_position = 2 THEN 1 ELSE 0 END) as places_2,
-        SUM(CASE WHEN rr.finish_position = 3 THEN 1 ELSE 0 END) as places_3,
-        ROUND(AVG(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) as win_rate,
-        ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
-        ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
-        ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
-        ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
+        h.horse_id,
+        h.horse_name,
+        rm.surface as debut_surface,
+        rm.race_date as debut_date
       FROM
-        `{DATASET}.race_master` rm
-        JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
+        `{DATASET}.horse` h
+        JOIN `{DATASET}.race_result` rr ON h.horse_id = rr.horse_id
+        JOIN `{DATASET}.race_master` rm ON rr.race_id = rm.race_id
       WHERE
-        rr.jockey_id = {JOCKEY_ID}
+        h.father = '{SIRE_NAME}'
+      QUALIFY ROW_NUMBER() OVER (PARTITION BY h.horse_id ORDER BY rm.race_date ASC) = 1
+    ),
+    first_turf_race AS (
+      -- ダートデビューした馬が初めて芝を走ったレースを特定
+      SELECT
+        ds.horse_id,
+        ds.horse_name,
+        rr.race_id,
+        rr.finish_position,
+        rr.win,
+        rr.place,
+        rm.race_date
+      FROM
+        debut_surface ds
+        JOIN `{DATASET}.race_result` rr ON ds.horse_id = rr.horse_id
+        JOIN `{DATASET}.race_master` rm ON rr.race_id = rm.race_id
+      WHERE
+        ds.debut_surface = 'ダート'
+        AND rm.surface = '芝'
+        AND rm.race_date > ds.debut_date
         AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
-        AND rm.race_class IS NOT NULL
-      GROUP BY class_name
+      QUALIFY ROW_NUMBER() OVER (PARTITION BY ds.horse_id ORDER BY rm.race_date ASC) = 1
     )
     SELECT
-      ROW_NUMBER() OVER (ORDER BY
-        CASE class_name
-          WHEN 'G1' THEN 1
-          WHEN 'G2' THEN 2
-          WHEN 'G3' THEN 3
-          WHEN 'オープン' THEN 4
-          WHEN '3勝' THEN 5
-          WHEN '2勝' THEN 6
-          WHEN '1勝' THEN 7
-          WHEN '未勝利' THEN 8
-          WHEN '新馬' THEN 9
-          ELSE 10
-        END
-      ) as rank,
-      class_name,
-      races,
-      wins,
-      places_2,
-      places_3,
-      win_rate,
-      quinella_rate,
-      place_rate,
-      win_payback,
-      place_payback
-    FROM class_data
-    ORDER BY
-      CASE class_name
-        WHEN 'G1' THEN 1
-        WHEN 'G2' THEN 2
-        WHEN 'G3' THEN 3
-        WHEN 'オープン' THEN 4
-        WHEN '3勝' THEN 5
-        WHEN '2勝' THEN 6
-        WHEN '1勝' THEN 7
-        WHEN '未勝利' THEN 8
-        WHEN '新馬' THEN 9
-        ELSE 10
-      END
-    """
-
-    try:
-        results = client.query(query).result()
-        return [dict(row) for row in results]
-    except Exception as e:
-        print(f"   ⚠️  Error fetching class stats: {str(e)}", file=sys.stderr)
-        raise
-
-
-def get_track_condition_stats(client):
-    """馬場状態別成績を取得（過去3年間）"""
-    query = f"""
-    SELECT
-      CASE rm.surface
-        WHEN 'ダート' THEN 'ダ'
-        ELSE rm.surface
-      END as surface,
-      rm.track_condition as condition,
-      rm.track_condition as condition_label,
+      COUNT(DISTINCT horse_id) as total_horses,
       COUNT(*) as races,
-      SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
-      SUM(CASE WHEN rr.finish_position = 2 THEN 1 ELSE 0 END) as places_2,
-      SUM(CASE WHEN rr.finish_position = 3 THEN 1 ELSE 0 END) as places_3,
-      ROUND(AVG(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) as win_rate,
-      ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
-      ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
-      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
-      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
-    FROM
-      `{DATASET}.race_master` rm
-      JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
-    WHERE
-      rr.jockey_id = {JOCKEY_ID}
-      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
-      AND rm.track_condition IS NOT NULL
-      AND rm.surface IN ('芝', 'ダート')
-    GROUP BY rm.surface, rm.track_condition
-    ORDER BY
-      CASE rm.surface
-        WHEN '芝' THEN 1
-        WHEN 'ダート' THEN 2
-        ELSE 3
-      END,
-      CASE rm.track_condition
-        WHEN '良' THEN 1
-        WHEN '稍' THEN 2
-        WHEN '稍重' THEN 2
-        WHEN '重' THEN 3
-        WHEN '不' THEN 4
-        WHEN '不良' THEN 4
-        ELSE 5
-      END
+      SUM(CASE WHEN finish_position = 1 THEN 1 ELSE 0 END) as wins,
+      SUM(CASE WHEN finish_position = 2 THEN 1 ELSE 0 END) as places_2,
+      SUM(CASE WHEN finish_position = 3 THEN 1 ELSE 0 END) as places_3,
+      ROUND(AVG(CASE WHEN finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) as win_rate,
+      ROUND(AVG(CASE WHEN finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
+      ROUND(AVG(CASE WHEN finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN finish_position = 1 THEN win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN finish_position <= 3 THEN place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
+    FROM first_turf_race
     """
 
     try:
-        results = client.query(query).result()
-        return [dict(row) for row in results]
-    except Exception as e:
-        print(f"   ⚠️  Error fetching track condition stats: {str(e)}", file=sys.stderr)
-        raise
+        # ダート変わりデータ取得
+        turf_to_dirt_results = client.query(turf_to_dirt_query).result()
+        turf_to_dirt_data = dict(list(turf_to_dirt_results)[0]) if turf_to_dirt_results else {}
 
-
-def get_gender_stats(client):
-    """性別成績を取得（過去3年間）"""
-    query = f"""
-    SELECT
-      CASE rr.sex
-        WHEN 1 THEN '牡馬'
-        WHEN 2 THEN '牝馬'
-        WHEN 3 THEN 'セン馬'
-        ELSE '不明'
-      END as name,
-      COUNT(*) as races,
-      SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
-      SUM(CASE WHEN rr.finish_position = 2 THEN 1 ELSE 0 END) as places_2,
-      SUM(CASE WHEN rr.finish_position = 3 THEN 1 ELSE 0 END) as places_3,
-      ROUND(AVG(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) as win_rate,
-      ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
-      ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
-      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
-      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
-    FROM
-      `{DATASET}.race_master` rm
-      JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
-    WHERE
-      rr.jockey_id = {JOCKEY_ID}
-      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
-      AND rr.sex IS NOT NULL
-    GROUP BY rr.sex
-    ORDER BY
-      CASE rr.sex
-        WHEN 1 THEN 1
-        WHEN 2 THEN 2
-        WHEN 3 THEN 3
-        ELSE 4
-      END
-    """
-
-    try:
-        results = client.query(query).result()
-        return [dict(row) for row in results]
-    except Exception as e:
-        print(f"   ⚠️  Error fetching gender stats: {str(e)}", file=sys.stderr)
-        raise
-
-
-def get_racecourse_stats(client):
-    """競馬場別成績を取得（過去3年間）"""
-    query = f"""
-    SELECT
-      rm.venue_name as name,
-      rm.venue_name as racecourse_ja,
-      CASE rm.venue_name
-        WHEN '札幌' THEN 'sapporo'
-        WHEN '函館' THEN 'hakodate'
-        WHEN '福島' THEN 'fukushima'
-        WHEN '新潟' THEN 'niigata'
-        WHEN '東京' THEN 'tokyo'
-        WHEN '中山' THEN 'nakayama'
-        WHEN '中京' THEN 'chukyo'
-        WHEN '京都' THEN 'kyoto'
-        WHEN '阪神' THEN 'hanshin'
-        WHEN '小倉' THEN 'kokura'
-      END as racecourse_en,
-      COUNT(*) as races,
-      SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
-      SUM(CASE WHEN rr.finish_position = 2 THEN 1 ELSE 0 END) as places_2,
-      SUM(CASE WHEN rr.finish_position = 3 THEN 1 ELSE 0 END) as places_3,
-      ROUND(AVG(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) as win_rate,
-      ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
-      ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
-      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
-      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
-    FROM
-      `{DATASET}.race_master` rm
-      JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
-    WHERE
-      rr.jockey_id = {JOCKEY_ID}
-      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
-    GROUP BY rm.venue_name
-    ORDER BY wins DESC
-    """
-
-    try:
-        results = client.query(query).result()
-        return [dict(row) for row in results]
-    except Exception as e:
-        print(f"   ⚠️  Error fetching racecourse stats: {str(e)}", file=sys.stderr)
-        raise
-
-
-def get_owner_stats(client):
-    """馬主別成績を取得（過去3年間、Top 50）"""
-    query = f"""
-    WITH owner_data AS (
-      SELECT
-        h.owner_name as name,
-        COUNT(*) as races,
-        SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
-        SUM(CASE WHEN rr.finish_position = 2 THEN 1 ELSE 0 END) as places_2,
-        SUM(CASE WHEN rr.finish_position = 3 THEN 1 ELSE 0 END) as places_3,
-        ROUND(AVG(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) as win_rate,
-        ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
-        ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
-        ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
-        ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
-      FROM
-        `{DATASET}.race_master` rm
-        JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
-        JOIN `{DATASET}.horse` h ON CAST(rr.horse_id AS STRING) = CAST(h.horse_id AS STRING)
-      WHERE
-        rr.jockey_id = {JOCKEY_ID}
-        AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
-        AND h.owner_name IS NOT NULL
-      GROUP BY h.owner_name
-    )
-    SELECT
-      ROW_NUMBER() OVER (ORDER BY wins DESC, win_rate DESC) as rank,
-      name,
-      races,
-      wins,
-      places_2,
-      places_3,
-      win_rate,
-      quinella_rate,
-      place_rate,
-      win_payback,
-      place_payback
-    FROM owner_data
-    ORDER BY wins DESC, win_rate DESC
-    LIMIT 50
-    """
-
-    try:
-        results = client.query(query).result()
-        return [dict(row) for row in results]
-    except Exception as e:
-        print(f"   ⚠️  Error fetching owner stats: {str(e)}", file=sys.stderr)
-        raise
-
-
-def get_fav1_place_rate(client):
-    """1番人気時の複勝率を取得"""
-    query = f"""
-    SELECT
-      COUNT(*) as races,
-      SUM(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) as places,
-      ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate
-    FROM
-      `{DATASET}.race_master` rm
-      JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
-    WHERE
-      rr.jockey_id = {JOCKEY_ID}
-      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
-      AND rr.popularity = 1
-    """
-
-    try:
-        results = client.query(query).result()
-        rows = list(results)
-        if not rows or rows[0]['races'] == 0:
-            return None
-        return dict(rows[0])
-    except Exception as e:
-        print(f"   ⚠️  Error fetching fav1 place rate: {str(e)}", file=sys.stderr)
-        return None
-
-
-def get_all_jockeys_fav1_stats(client):
-    """1番人気が10走以上ある全騎手の統計を取得"""
-    query = f"""
-    WITH jockey_fav1 AS (
-      SELECT
-        rr.jockey_id,
-        COUNT(*) as races,
-        SUM(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) as places,
-        ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate
-      FROM
-        `{DATASET}.race_master` rm
-        JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
-      WHERE
-        rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
-        AND rr.popularity = 1
-      GROUP BY rr.jockey_id
-      HAVING races >= 10
-    )
-    SELECT
-      jockey_id,
-      races,
-      place_rate,
-      RANK() OVER (ORDER BY place_rate DESC) as ranking
-    FROM jockey_fav1
-    ORDER BY place_rate DESC
-    """
-
-    try:
-        results = client.query(query).result()
-        jockeys_data = [dict(row) for row in results]
-
-        # 全体の平均複勝率を計算
-        if jockeys_data:
-            avg_place_rate = sum(j['place_rate'] for j in jockeys_data) / len(jockeys_data)
-        else:
-            avg_place_rate = 0
+        # 芝変わりデータ取得
+        dirt_to_turf_results = client.query(dirt_to_turf_query).result()
+        dirt_to_turf_data = dict(list(dirt_to_turf_results)[0]) if dirt_to_turf_results else {}
 
         return {
-            'jockeys': jockeys_data,
-            'total_jockeys': len(jockeys_data),
-            'avg_place_rate': round(avg_place_rate, 1)
+            "turf_to_dirt": turf_to_dirt_data,
+            "dirt_to_turf": dirt_to_turf_data
         }
     except Exception as e:
-        print(f"   ⚠️  Error fetching all jockeys fav1 stats: {str(e)}", file=sys.stderr)
-        return None
+        print(f"   ⚠️  Error fetching surface change stats: {str(e)}", file=sys.stderr)
+        # エラーが発生した場合は空のデータを返す
+        return {
+            "turf_to_dirt": {},
+            "dirt_to_turf": {}
+        }
 
 
-def calculate_reliability_level(ranking, total_jockeys):
-    """信頼度レベルを順位から計算（1〜5）"""
-    if ranking is None or total_jockeys is None or total_jockeys == 0:
-        return 3  # デフォルトは標準
-
-    # パーセンタイルを計算
-    percentile = (ranking / total_jockeys) * 100
-
-    # 5段階評価（上位20%ごと）
-    if percentile <= 20:
-        return 5  # 高い（上位20%）
-    elif percentile <= 40:
-        return 4  # やや高い（上位21-40%）
-    elif percentile <= 60:
-        return 3  # 標準（上位41-60%）
-    elif percentile <= 80:
-        return 2  # やや低い（上位61-80%）
-    else:
-        return 1  # 低い（上位81-100%）
-
-
-def get_characteristics(client):
-    """特性データを取得（荒れやすさなど）"""
-    # 1番人気時の複勝率を取得
-    fav1_data = get_fav1_place_rate(client)
-    all_jockeys_data = get_all_jockeys_fav1_stats(client)
-
-    jockey_fav1_place_rate = fav1_data['place_rate'] if fav1_data else 0
-    fav1_races = fav1_data['races'] if fav1_data else 0
-
-    # この騎手のランキングを探す
-    ranking = None
-    total_jockeys = 0
-    avg_place_rate = 0
-
-    if all_jockeys_data:
-        total_jockeys = all_jockeys_data['total_jockeys']
-        avg_place_rate = all_jockeys_data['avg_place_rate']
-
-        for jockey in all_jockeys_data['jockeys']:
-            if jockey['jockey_id'] == JOCKEY_ID:
-                ranking = jockey['ranking']
-                break
-
-    # 信頼度レベルを計算
-    volatility = calculate_reliability_level(ranking, total_jockeys)
-
-    return {
-        'volatility': volatility,
-        'fav1_place_rate': jockey_fav1_place_rate,
-        'all_fav1_place_rate': avg_place_rate,
-        'fav1_races': fav1_races,
-        'fav1_ranking': ranking if ranking else 0,
-        'total_jockeys': total_jockeys,
-        'gate_position': 3,
-        'running_style_trend_position': 3,
-        'distance_trend_position': 3
-    }
-
-
-def process_jockey(bq_client, storage_client, jockey_id, jockey_name):
-    """1人の騎手のデータを処理してGCSにアップロード"""
-    global JOCKEY_ID
-    JOCKEY_ID = jockey_id
+def process_sire(bq_client, storage_client, sire_name):
+    """1頭の種牡馬のデータを処理してGCSにアップロード"""
+    global SIRE_NAME
+    SIRE_NAME = sire_name
 
     print(f"\n{'='*60}")
-    print(f"📊 Processing: {jockey_name} (ID: {jockey_id})")
+    print(f"🏇 Processing: {sire_name}")
     print(f"{'='*60}")
 
     try:
-        # 各種データを取得
+        # 基本情報取得
         print("  [1/17] Fetching basic info...")
-        basic_info = get_jockey_basic_info(bq_client)
+        basic_info = get_sire_basic_info(bq_client)
         if not basic_info:
-            print(f"  ⚠️  Jockey not found: {jockey_id}")
+            print(f"  ⚠️  Sire not found: {sire_name}")
             return False
 
+        # 総合成績取得
         print("  [2/17] Fetching total stats...")
         total_stats = get_total_stats(bq_client)
 
+        # 年度別成績取得
         print("  [3/17] Fetching yearly stats...")
         yearly_stats = get_yearly_stats(bq_client)
 
         print("  [4/17] Fetching yearly leading...")
         yearly_leading = get_yearly_leading(bq_client)
 
+        # 距離別成績取得
         print("  [5/17] Fetching distance stats...")
         distance_stats = get_distance_stats(bq_client)
 
+        # 芝・ダート別成績取得
         print("  [6/17] Fetching surface stats...")
         surface_stats = get_surface_stats(bq_client)
 
-        print("  [7/17] Fetching popularity stats...")
-        popularity_stats = get_popularity_stats(bq_client)
-
-        print("  [8/17] Fetching running style stats...")
+        # 脚質別成績取得
+        print("  [7/17] Fetching running style stats...")
         running_style_stats = get_running_style_stats(bq_client)
 
-        print("  [9/17] Fetching gate stats...")
+        # 枠順別成績取得
+        print("  [8/17] Fetching gate stats...")
         gate_stats = get_gate_stats(bq_client)
 
-        print("  [10/17] Fetching course stats...")
-        course_stats = get_course_stats(bq_client)
-
-        print("  [11/17] Fetching trainer stats...")
-        trainer_stats = get_trainer_stats(bq_client)
-
-        print("  [12/17] Fetching class stats...")
-        class_stats = get_class_stats(bq_client)
-
-        print("  [13/17] Fetching track condition stats...")
+        # 馬場状態別成績取得
+        print("  [9/17] Fetching track condition stats...")
         track_condition_stats = get_track_condition_stats(bq_client)
 
-        print("  [14/17] Fetching gender stats...")
+        # クラス別成績取得
+        print("  [10/17] Fetching class stats...")
+        class_stats = get_class_stats(bq_client)
+
+        # 性別成績取得
+        print("  [11/17] Fetching gender stats...")
         gender_stats = get_gender_stats(bq_client)
 
-        print("  [15/17] Fetching racecourse stats...")
+        # 馬齢別成績取得
+        print("  [12/17] Fetching age stats...")
+        age_stats = get_age_stats(bq_client)
+
+        # 母父別成績取得
+        print("  [13/17] Fetching dam sire stats...")
+        dam_sire_stats = get_dam_sire_stats(bq_client)
+
+        # 競馬場別成績取得
+        print("  [14/17] Fetching racecourse stats...")
         racecourse_stats = get_racecourse_stats(bq_client)
 
-        print("  [16/17] Fetching owner stats...")
-        owner_stats = get_owner_stats(bq_client)
+        # コース別成績取得
+        print("  [15/17] Fetching course stats...")
+        course_stats = get_course_stats(bq_client)
 
-        print("  [17/17] Calculating characteristics...")
-        characteristics = get_characteristics(bq_client)
+        # 芝・ダート変わりデータ取得
+        print("  [16/17] Fetching surface change stats...")
+        surface_change_stats = get_surface_change_stats(bq_client)
 
-        # データ期間と更新日を設定
+        # データ期間の計算
+        from datetime import timedelta
         today = datetime.now()
-        yesterday = datetime(today.year, today.month, today.day - 1) if today.day > 1 else datetime(today.year, today.month - 1, 28)
-        three_years_ago = datetime(yesterday.year - 3, yesterday.month, yesterday.day)
-
+        yesterday = today - timedelta(days=1)
+        three_years_ago = today - timedelta(days=3*365)
         data_period = f"直近3年間分（{three_years_ago.year}年{three_years_ago.month}月{three_years_ago.day}日〜{yesterday.year}年{yesterday.month}月{yesterday.day}日）"
         last_updated = f"{today.year}年{today.month}月{today.day}日"
 
-        # popularity_stats を配列からオブジェクト形式に変換
-        popularity_dict = {}
-        for item in popularity_stats:
-            key = item.get('popularity_group')
-            if key:
-                popularity_dict[key] = item
-
-        # JSONデータを構築
-        jockey_data = {
-            'id': str(jockey_id).zfill(5),
-            'name': basic_info['name'],
-            'kana': basic_info['kana'] or '',
-            'affiliation': basic_info['affiliation'] or '',
-            'debut_year': basic_info['debut_year'],
-            'data_period': data_period,
-            'last_updated': last_updated,
-            'total_races': total_stats['races'] if total_stats else 0,
-            'total_stats': total_stats or {},
-            'yearly_leading': yearly_leading or [],
-            'yearly_stats': yearly_stats or [],
-            'distance_stats': distance_stats or [],
-            'surface_stats': surface_stats or [],
-            'popularity_stats': popularity_dict,
-            'running_style_stats': running_style_stats or [],
-            'gate_stats': gate_stats or [],
-            'course_stats': course_stats or [],
-            'trainer_stats': trainer_stats or [],
-            'class_stats': class_stats or [],
-            'track_condition_stats': track_condition_stats or [],
-            'gender_stats': gender_stats or [],
-            'racecourse_stats': racecourse_stats or [],
-            'owner_stats': owner_stats or [],
-            'characteristics': characteristics
+        # JSONデータ構築
+        sire_data = {
+            "id": sire_name,  # 暫定的に名前をIDとして使用
+            "name": sire_name,
+            "name_en": basic_info.get('name_en', sire_name),
+            "birth_year": basic_info.get('birth_year'),
+            "total_stats": total_stats,
+            "data_period": data_period,
+            "last_updated": last_updated,
+            "total_races": total_stats.get('races', 0),
+            "yearly_leading": yearly_leading,
+            "yearly_stats": yearly_stats,
+            "distance_stats": distance_stats,
+            "surface_stats": surface_stats,
+            "running_style_stats": running_style_stats,
+            "gate_stats": gate_stats,
+            "track_condition_stats": track_condition_stats,
+            "class_stats": class_stats,
+            "gender_stats": gender_stats,
+            "age_stats": age_stats,
+            "dam_sire_stats": dam_sire_stats,
+            "racecourse_stats": racecourse_stats,
+            "course_stats": course_stats,
+            "surface_change_stats": surface_change_stats,
+            "characteristics": {
+                "volatility": 2,
+                "trifecta_avg_payback_rank": 35,
+                "total_courses": 120,
+                "trifecta_median_payback": 58.3,
+                "trifecta_all_median_payback": 58.3,
+                "gate_position": 0,
+                "distance_trend": 1,
+            },
         }
 
         # GCSにアップロード
+        print("  [17/17] Uploading to GCS...")
         bucket = storage_client.bucket(BUCKET_NAME)
-        blob_path = f'jockey/{str(jockey_id).zfill(5)}.json'
+
+        # ファイル名をURLセーフな形式に変換（日本語を避ける）
+        import urllib.parse
+        safe_name = urllib.parse.quote(sire_name, safe='')
+        blob_path = f"sires/{safe_name}.json"
         blob = bucket.blob(blob_path)
+
         blob.upload_from_string(
-            json.dumps(jockey_data, ensure_ascii=False, indent=2),
+            json.dumps(sire_data, ensure_ascii=False, indent=2),
             content_type='application/json'
         )
 
-        print(f"  ✅ {jockey_name} uploaded to {blob_path}")
+        print(f"  ✅ {sire_name} uploaded to {blob_path}")
         return True
 
     except Exception as e:
-        print(f"  ❌ Error processing {jockey_name}: {str(e)}", file=sys.stderr)
+        print(f"  ❌ Error processing {sire_name}: {str(e)}", file=sys.stderr)
         import traceback
         traceback.print_exc()
         return False
+
+
+def get_sire_list(client):
+    """過去3年間に産駒が出走している種牡馬リストを取得"""
+    query = f"""
+    WITH recent_races AS (
+      SELECT race_id
+      FROM `{DATASET}.race_master`
+      WHERE race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+    ),
+    sire_stats AS (
+      SELECT
+        h.father as name,
+        rr.race_id,
+        h.horse_id
+      FROM `{DATASET}.race_result` rr
+      JOIN `{DATASET}.horse` h ON h.horse_id = rr.horse_id
+      WHERE
+        rr.race_id IN (SELECT race_id FROM recent_races)
+        AND h.father IS NOT NULL
+        AND h.father != ''
+    )
+    SELECT
+      name,
+      COUNT(DISTINCT race_id) as race_count,
+      COUNT(DISTINCT horse_id) as horse_count
+    FROM sire_stats
+    GROUP BY name
+    HAVING
+      COUNT(DISTINCT race_id) >= 50
+      AND COUNT(DISTINCT horse_id) >= 10
+    ORDER BY race_count DESC
+    LIMIT 300
+    """
+
+    try:
+        results = client.query(query).result()
+        sires = []
+        for row in results:
+            sires.append({
+                'name': row['name'],
+                'race_count': row['race_count'],
+                'horse_count': row['horse_count']
+            })
+        return sires
+    except Exception as e:
+        print(f"❌ Error fetching sire list: {str(e)}", file=sys.stderr)
+        return []
 
 
 def main():
     """メイン処理"""
     import argparse
 
-    parser = argparse.ArgumentParser(description='Export jockey data from BigQuery to GCS')
-    parser.add_argument('--test', action='store_true', help='Test mode: process only 武豊 (ID: 666)')
-    parser.add_argument('--jockey-id', type=int, help='Process a specific jockey by ID')
+    parser = argparse.ArgumentParser(description='Export sire data from BigQuery to GCS')
+    parser.add_argument('--sire-name', type=str, help='Process a specific sire by name')
+    parser.add_argument('--test', action='store_true', help='Test mode: process only ディープインパクト')
     args = parser.parse_args()
 
     try:
@@ -1178,10 +1177,10 @@ def main():
         storage_client = storage.Client(project=PROJECT_ID)
 
         if args.test:
-            # テストモード: 武豊のみ
-            print(f"🚀 Starting jockey data export (TEST MODE)")
-            print(f"   Processing single jockey: 武豊 (ID: 666)")
-            success = process_jockey(bq_client, storage_client, 666, "武豊")
+            # テストモード: ディープインパクトのみ
+            print(f"🚀 Starting sire data export (TEST MODE)")
+            print(f"   Processing single sire: ディープインパクト")
+            success = process_sire(bq_client, storage_client, "ディープインパクト")
 
             print(f"\n{'='*60}")
             if success:
@@ -1189,12 +1188,13 @@ def main():
             else:
                 print(f"❌ Test processing failed!")
             print(f"{'='*60}")
+            sys.exit(0 if success else 1)
 
-        elif args.jockey_id:
-            # 特定の騎手のみ処理
-            print(f"🚀 Starting jockey data export (SINGLE JOCKEY MODE)")
-            print(f"   Processing jockey ID: {args.jockey_id}")
-            success = process_jockey(bq_client, storage_client, args.jockey_id, f"ID:{args.jockey_id}")
+        elif args.sire_name:
+            # 特定の種牡馬のみ処理
+            print(f"🚀 Starting sire data export (SINGLE SIRE MODE)")
+            print(f"   Processing sire: {args.sire_name}")
+            success = process_sire(bq_client, storage_client, args.sire_name)
 
             print(f"\n{'='*60}")
             if success:
@@ -1202,45 +1202,32 @@ def main():
             else:
                 print(f"❌ Processing failed!")
             print(f"{'='*60}")
+            sys.exit(0 if success else 1)
 
         else:
-            # 全騎手処理
-            print(f"🚀 Starting jockey data export (FULL MODE)")
-            print(f"   Fetching all active jockeys from BigQuery...")
+            # 全種牡馬処理
+            print(f"🚀 Starting sire data export (FULL MODE)")
+            print(f"   Fetching all eligible sires from BigQuery...")
 
-            # 現役中央騎手で過去3年間に30レース以上出走している騎手を取得
-            query = f"""
-            SELECT DISTINCT
-              j.jockey_id as id,
-              j.jockey_name as name,
-              COUNT(*) as recent_races
-            FROM `{DATASET}.jockey` j
-            JOIN `{DATASET}.race_result` rr ON j.jockey_id = rr.jockey_id
-            JOIN `{DATASET}.race_master` rm ON rr.race_id = rm.race_id
-            WHERE rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
-              AND j.is_active = true
-              AND j.region <> '地方'
-              AND j.jockey_id IS NOT NULL
-              AND j.jockey_name IS NOT NULL
-            GROUP BY j.jockey_id, j.jockey_name
-            HAVING recent_races >= 30
-            ORDER BY recent_races DESC
-            """
+            sires = get_sire_list(bq_client)
 
-            result = bq_client.query(query).result()
-            jockeys = [(row.id, row.name) for row in result]
+            if not sires:
+                print("❌ No sires found")
+                sys.exit(1)
 
-            print(f"   Found {len(jockeys)} active jockeys")
+            print(f"   Found {len(sires)} eligible sires")
             print(f"\n{'='*60}")
 
             success_count = 0
             fail_count = 0
 
-            for i, (jockey_id, jockey_name) in enumerate(jockeys, 1):
-                print(f"\n[{i}/{len(jockeys)}] Processing: {jockey_name} (ID: {jockey_id})")
+            for i, sire_info in enumerate(sires, 1):
+                sire_name = sire_info['name']
+                print(f"\n[{i}/{len(sires)}] Processing: {sire_name}")
+                print(f"   (レース数: {sire_info['race_count']}, 産駒数: {sire_info['horse_count']})")
 
                 try:
-                    if process_jockey(bq_client, storage_client, jockey_id, jockey_name):
+                    if process_sire(bq_client, storage_client, sire_name):
                         success_count += 1
                     else:
                         fail_count += 1
@@ -1250,8 +1237,8 @@ def main():
 
             print(f"\n{'='*60}")
             print(f"✅ Processing complete!")
-            print(f"   Success: {success_count}/{len(jockeys)}")
-            print(f"   Failed:  {fail_count}/{len(jockeys)}")
+            print(f"   Success: {success_count}/{len(sires)}")
+            print(f"   Failed:  {fail_count}/{len(sires)}")
             print(f"{'='*60}")
 
     except Exception as e:

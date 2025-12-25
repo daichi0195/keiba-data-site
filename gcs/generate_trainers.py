@@ -232,7 +232,11 @@ def get_surface_stats(client):
     """路面別成績を取得（過去3年間）"""
     query = f"""
     SELECT
-      rm.surface,
+      CASE
+        WHEN rm.surface = '芝' THEN '芝'
+        WHEN rm.surface = 'ダート' THEN 'ダート'
+        ELSE rm.surface
+      END as surface,
       COUNT(*) as races,
       SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
       SUM(CASE WHEN rr.finish_position = 2 THEN 1 ELSE 0 END) as places_2,
@@ -248,14 +252,8 @@ def get_surface_stats(client):
     WHERE
       CAST(rr.trainer_id AS STRING) = CAST({TRAINER_ID} AS STRING)
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
-      AND rm.surface IN ('芝', 'ダート')
-    GROUP BY rm.surface
-    ORDER BY
-      CASE rm.surface
-        WHEN '芝' THEN 1
-        WHEN 'ダート' THEN 2
-        ELSE 3
-      END
+    GROUP BY surface
+    ORDER BY surface
     """
 
     try:
@@ -498,7 +496,7 @@ def get_gate_stats(client):
 
 
 def get_course_stats(client):
-    """コース別成績を取得（過去3年間、Top 50）"""
+    """コース別成績を取得（過去3年間）"""
     query = f"""
     WITH course_data AS (
       SELECT
@@ -577,7 +575,14 @@ def get_course_stats(client):
       win_payback,
       place_payback
     FROM course_data
-    ORDER BY wins DESC, win_rate DESC
+    ORDER BY
+      CASE surface
+        WHEN '芝' THEN 1
+        WHEN 'ダート' THEN 2
+        WHEN '障害' THEN 3
+        ELSE 4
+      END,
+      distance ASC
     """
 
     try:
@@ -927,6 +932,19 @@ def get_racecourse_stats(client):
     query = f"""
     SELECT
       rm.venue_name as name,
+      rm.venue_name as racecourse_ja,
+      CASE rm.venue_name
+        WHEN '札幌' THEN 'sapporo'
+        WHEN '函館' THEN 'hakodate'
+        WHEN '福島' THEN 'fukushima'
+        WHEN '新潟' THEN 'niigata'
+        WHEN '東京' THEN 'tokyo'
+        WHEN '中山' THEN 'nakayama'
+        WHEN '中京' THEN 'chukyo'
+        WHEN '京都' THEN 'kyoto'
+        WHEN '阪神' THEN 'hanshin'
+        WHEN '小倉' THEN 'kokura'
+      END as racecourse_en,
       COUNT(*) as races,
       SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
       SUM(CASE WHEN rr.finish_position = 2 THEN 1 ELSE 0 END) as places_2,

@@ -402,6 +402,38 @@ export default async function SirePage({
     place_payback: stat.place_payback,
   }));
 
+  // 芝・ダート変わりデータ（GCSから取得、存在しない場合は空配列）
+  const surfaceChangeStatsData = sire.surface_change_stats ? [
+    {
+      name: '芝→ダ',
+      description: '芝デビュー後、初ダート時の成績',
+      total_horses: sire.surface_change_stats.turf_to_dirt?.total_horses || 0,
+      races: sire.surface_change_stats.turf_to_dirt?.races || 0,
+      wins: sire.surface_change_stats.turf_to_dirt?.wins || 0,
+      places_2: sire.surface_change_stats.turf_to_dirt?.places_2 || 0,
+      places_3: sire.surface_change_stats.turf_to_dirt?.places_3 || 0,
+      win_rate: sire.surface_change_stats.turf_to_dirt?.win_rate || 0,
+      quinella_rate: sire.surface_change_stats.turf_to_dirt?.quinella_rate || 0,
+      place_rate: sire.surface_change_stats.turf_to_dirt?.place_rate || 0,
+      win_payback: sire.surface_change_stats.turf_to_dirt?.win_payback || 0,
+      place_payback: sire.surface_change_stats.turf_to_dirt?.place_payback || 0,
+    },
+    {
+      name: 'ダ→芝',
+      description: 'ダートデビュー後、初芝時の成績',
+      total_horses: sire.surface_change_stats.dirt_to_turf?.total_horses || 0,
+      races: sire.surface_change_stats.dirt_to_turf?.races || 0,
+      wins: sire.surface_change_stats.dirt_to_turf?.wins || 0,
+      places_2: sire.surface_change_stats.dirt_to_turf?.places_2 || 0,
+      places_3: sire.surface_change_stats.dirt_to_turf?.places_3 || 0,
+      win_rate: sire.surface_change_stats.dirt_to_turf?.win_rate || 0,
+      quinella_rate: sire.surface_change_stats.dirt_to_turf?.quinella_rate || 0,
+      place_rate: sire.surface_change_stats.dirt_to_turf?.place_rate || 0,
+      win_payback: sire.surface_change_stats.dirt_to_turf?.win_payback || 0,
+      place_payback: sire.surface_change_stats.dirt_to_turf?.place_payback || 0,
+    },
+  ] : [];
+
   // 芝・ダートの得意傾向を計算（複勝率の差から判定）
   const turfStat = sire.surface_stats.find(s => s.surface === '芝');
   const dirtStat = sire.surface_stats.find(s => s.surface === 'ダート');
@@ -633,7 +665,8 @@ export default async function SirePage({
     { id: 'distance-stats', label: '距離別' },
     { id: 'gender-stats', label: '性別' },
     { id: 'interval-stats', label: 'レース間隔' },
-    { id: 'surface-stats', label: '芝・ダート別' },
+    { id: 'surface-change-stats', label: '芝・ダート変わり' },
+    { id: 'surface-stats', label: 'コース区分別' },
     { id: 'track-condition-stats', label: '馬場状態別' },
     { id: 'racecourse-stats', label: '競馬場別' },
     { id: 'course-stats', label: 'コース別' },
@@ -1041,10 +1074,125 @@ export default async function SirePage({
             />
           </section>
 
-          {/* 芝・ダート別データセクション */}
-          <section id="surface-stats" aria-label="芝・ダート別データ">
+          {/* 芝・ダート変わりデータセクション */}
+          {(() => {
+            // 各カラムの最大値を計算
+            const maxRaces = Math.max(...surfaceChangeStatsData.map(d => d.races ?? 0));
+            const maxWins = Math.max(...surfaceChangeStatsData.map(d => d.wins ?? 0));
+            const maxPlaces2 = Math.max(...surfaceChangeStatsData.map(d => d.places_2 ?? 0));
+            const maxPlaces3 = Math.max(...surfaceChangeStatsData.map(d => d.places_3 ?? 0));
+            const maxWinRate = Math.max(...surfaceChangeStatsData.map(d => d.win_rate ?? 0));
+            const maxPlaceRate = Math.max(...surfaceChangeStatsData.map(d => d.place_rate ?? 0));
+            const maxQuinellaRate = Math.max(...surfaceChangeStatsData.map(d => d.quinella_rate ?? 0));
+            const maxWinPayback = Math.max(...surfaceChangeStatsData.map(d => d.win_payback ?? 0));
+            const maxPlacePayback = Math.max(...surfaceChangeStatsData.map(d => d.place_payback ?? 0));
+
+            const isHighlight = (value: number, maxValue: number) => value === maxValue && value > 0;
+
+            return (
+              <section id="surface-change-stats" aria-label="芝・ダート変わりデータ">
+                <div className="section">
+                  <h2 className="section-title">{sire.name}産駒 芝・ダート変わりデータ</h2>
+                  <div className="mobile-table-container">
+                    <div className="mobile-table-scroll">
+                      <table className="mobile-data-table no-rank-column">
+                        <thead>
+                          <tr>
+                            <th className="mobile-sticky-col mobile-col-name mobile-col-name-header mobile-col-name-first">区分</th>
+                            <th className="mobile-scroll-col">出走数</th>
+                            <th className="mobile-scroll-col">1着</th>
+                            <th className="mobile-scroll-col">2着</th>
+                            <th className="mobile-scroll-col">3着</th>
+                            <th className="mobile-scroll-col mobile-col-rate">勝率</th>
+                            <th className="mobile-scroll-col mobile-col-rate">連対率</th>
+                            <th className="mobile-scroll-col mobile-col-rate">複勝率</th>
+                            <th className="mobile-scroll-col mobile-col-payback">単勝回収率</th>
+                            <th className="mobile-scroll-col mobile-col-payback">複勝回収率</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {surfaceChangeStatsData.map((stat, index) => (
+                            <tr key={stat.name} className={index % 2 === 0 ? 'mobile-row-even' : 'mobile-row-odd'}>
+                              <td className="mobile-sticky-col mobile-col-name mobile-sticky-body mobile-name-cell mobile-col-name-first">
+                                <span style={{
+                                  background: '#f0f0f0',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  color: '#333',
+                                  padding: '4px 8px',
+                                  fontSize: '0.75rem',
+                                  fontWeight: '700',
+                                  display: 'inline-block',
+                                  minWidth: '60px',
+                                  textAlign: 'center'
+                                }}>
+                                  {stat.name}
+                                </span>
+                              </td>
+                              <td className="mobile-scroll-col">
+                                <span className={isHighlight(stat.races, maxRaces) ? 'mobile-highlight' : ''}>
+                                  {stat.races}
+                                </span>
+                              </td>
+                              <td className="mobile-scroll-col mobile-col-wins">
+                                <span className={isHighlight(stat.wins, maxWins) ? 'mobile-highlight' : ''}>
+                                  {stat.wins}
+                                </span>
+                              </td>
+                              <td className="mobile-scroll-col">
+                                <span className={isHighlight(stat.places_2, maxPlaces2) ? 'mobile-highlight' : ''}>
+                                  {stat.places_2}
+                                </span>
+                              </td>
+                              <td className="mobile-scroll-col">
+                                <span className={isHighlight(stat.places_3, maxPlaces3) ? 'mobile-highlight' : ''}>
+                                  {stat.places_3}
+                                </span>
+                              </td>
+                              <td className="mobile-scroll-col mobile-col-rate">
+                                <span className={isHighlight(stat.win_rate, maxWinRate) ? 'mobile-highlight' : ''}>
+                                  {stat.win_rate.toFixed(1)}%
+                                </span>
+                              </td>
+                              <td className="mobile-scroll-col mobile-col-rate">
+                                <span className={isHighlight(stat.quinella_rate, maxQuinellaRate) ? 'mobile-highlight' : ''}>
+                                  {stat.quinella_rate.toFixed(1)}%
+                                </span>
+                              </td>
+                              <td className="mobile-scroll-col mobile-col-rate">
+                                <span className={isHighlight(stat.place_rate, maxPlaceRate) ? 'mobile-highlight' : ''}>
+                                  {stat.place_rate.toFixed(1)}%
+                                </span>
+                              </td>
+                              <td className="mobile-scroll-col mobile-col-payback">
+                                <span className={isHighlight(stat.win_payback, maxWinPayback) ? 'mobile-highlight' : ''}>
+                                  {stat.win_payback.toFixed(1)}%
+                                </span>
+                              </td>
+                              <td className="mobile-scroll-col mobile-col-payback">
+                                <span className={isHighlight(stat.place_payback, maxPlacePayback) ? 'mobile-highlight' : ''}>
+                                  {stat.place_payback.toFixed(1)}%
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <p className="note-text" style={{ marginTop: '1rem' }}>
+                    ※芝→ダ：芝デビュー後、初めてダートに挑戦した際の成績<br />
+                    ※ダ→芝：ダートデビュー後、初めて芝に挑戦した際の成績
+                  </p>
+                </div>
+              </section>
+            );
+          })()}
+
+          {/* コース区分別データセクション */}
+          <section id="surface-stats" aria-label="コース区分別データ">
             <SurfaceTable
-              title={`${sire.name}産駒 芝・ダート別データ`}
+              title={`${sire.name}産駒 コース区分別データ`}
               data={surfaceStatsData}
             />
           </section>

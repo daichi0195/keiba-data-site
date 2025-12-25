@@ -771,72 +771,115 @@ export default async function TrainerPage({
     };
   }).filter(group => group.courses.length > 0); // コースがある競馬場のみ
 
-  // 競馬場別サマリーデータを集計
-  const racecourseSummaryData = racecourseOrder.map(racecourse => {
-    const racecourseCourses = trainer.course_stats.filter(c => c.racecourse_en === racecourse.en);
+  // 競馬場別サマリーデータをracecourse_statsから取得し、順番を整理
+  const racecourseSummaryData = racecourseOrder
+    .map(racecourseItem => {
+      // name フィールド(日本語)または racecourse_en フィールドで検索
+      // GCSデータの name には「競馬場」が付いていないため、削除して比較
+      const racecourseNameWithoutSuffix = racecourseItem.ja.replace('競馬場', '');
+      const racecourse = trainer.racecourse_stats?.find(r =>
+        r.racecourse_en === racecourseItem.en || r.name === racecourseNameWithoutSuffix
+      );
+      if (!racecourse) return null;
+      return {
+        name: racecourseNameWithoutSuffix,
+        racecourse_ja: racecourseNameWithoutSuffix,
+        racecourse_en: racecourseItem.en,
+        races: racecourse.races,
+        wins: racecourse.wins,
+        places_2: racecourse.places_2,
+        places_3: racecourse.places_3,
+        win_rate: racecourse.win_rate,
+        quinella_rate: racecourse.quinella_rate,
+        place_rate: racecourse.place_rate,
+        win_payback: racecourse.win_payback,
+        place_payback: racecourse.place_payback,
+      };
+    })
+    .filter((item): item is NonNullable<typeof item> => item !== null);
 
-    if (racecourseCourses.length === 0) return null;
+  // 中央・ローカルの集計行を追加
+  const centralRacecourses = ['tokyo', 'nakayama', 'hanshin', 'kyoto']; // 東京、中山、阪神、京都
+  const centralRacecoursesJa = ['東京', '中山', '阪神', '京都'];
+  const localRacecourses = ['sapporo', 'hakodate', 'fukushima', 'niigata', 'chukyo', 'kokura']; // 札幌、函館、福島、新潟、中京、小倉
+  const localRacecoursesJa = ['札幌', '函館', '福島', '新潟', '中京', '小倉'];
 
-    const totalRaces = racecourseCourses.reduce((sum, c) => sum + c.races, 0);
-    const totalWins = racecourseCourses.reduce((sum, c) => sum + c.wins, 0);
-    const totalPlaces2 = racecourseCourses.reduce((sum, c) => sum + c.places_2, 0);
-    const totalPlaces3 = racecourseCourses.reduce((sum, c) => sum + c.places_3, 0);
+  // 中央競馬場の集計
+  const centralRacecourses_data = trainer.racecourse_stats?.filter(r =>
+    centralRacecourses.includes(r.racecourse_en) || centralRacecoursesJa.includes(r.name)
+  ) || [];
+  const centralData = centralRacecourses_data.length > 0 ? (() => {
+    const totalRaces = centralRacecourses_data.reduce((sum, r) => sum + r.races, 0);
+    const totalWins = centralRacecourses_data.reduce((sum, r) => sum + r.wins, 0);
+    const totalPlaces2 = centralRacecourses_data.reduce((sum, r) => sum + r.places_2, 0);
+    const totalPlaces3 = centralRacecourses_data.reduce((sum, r) => sum + r.places_3, 0);
 
     const winRate = totalRaces > 0 ? (totalWins / totalRaces) * 100 : 0;
     const quinellaRate = totalRaces > 0 ? ((totalWins + totalPlaces2) / totalRaces) * 100 : 0;
     const placeRate = totalRaces > 0 ? ((totalWins + totalPlaces2 + totalPlaces3) / totalRaces) * 100 : 0;
 
-    // 回収率は各コースの回収率を出走数で加重平均
     const winPayback = totalRaces > 0
-      ? racecourseCourses.reduce((sum, c) => sum + (c.win_payback * c.races), 0) / totalRaces
+      ? centralRacecourses_data.reduce((sum, r) => sum + (r.win_payback * r.races), 0) / totalRaces
       : 0;
     const placePayback = totalRaces > 0
-      ? racecourseCourses.reduce((sum, c) => sum + (c.place_payback * c.races), 0) / totalRaces
+      ? centralRacecourses_data.reduce((sum, r) => sum + (r.place_payback * r.races), 0) / totalRaces
       : 0;
 
     return {
-      name: racecourse.ja.replace('競馬場', ''),
+      name: '中央',
       races: totalRaces,
       wins: totalWins,
       places_2: totalPlaces2,
       places_3: totalPlaces3,
-      win_rate: winRate,
-      quinella_rate: quinellaRate,
-      place_rate: placeRate,
-      win_payback: winPayback,
-      place_payback: placePayback,
+      win_rate: parseFloat(winRate.toFixed(1)),
+      quinella_rate: parseFloat(quinellaRate.toFixed(1)),
+      place_rate: parseFloat(placeRate.toFixed(1)),
+      win_payback: parseFloat(winPayback.toFixed(1)),
+      place_payback: parseFloat(placePayback.toFixed(1)),
     };
-  }).filter(item => item !== null);
+  })() : null;
 
-  // 中央・ローカルの集計行を追加（モックデータ）
-  const centralData = {
-    name: '中央',
-    races: 1850,
-    wins: 345,
-    places_2: 290,
-    places_3: 235,
-    win_rate: 18.6,
-    quinella_rate: 34.3,
-    place_rate: 47.0,
-    win_payback: 78.5,
-    place_payback: 82.1,
-  };
+  // ローカル競馬場の集計
+  const localRacecourses_data = trainer.racecourse_stats?.filter(r =>
+    localRacecourses.includes(r.racecourse_en) || localRacecoursesJa.includes(r.name)
+  ) || [];
+  const localData = localRacecourses_data.length > 0 ? (() => {
+    const totalRaces = localRacecourses_data.reduce((sum, r) => sum + r.races, 0);
+    const totalWins = localRacecourses_data.reduce((sum, r) => sum + r.wins, 0);
+    const totalPlaces2 = localRacecourses_data.reduce((sum, r) => sum + r.places_2, 0);
+    const totalPlaces3 = localRacecourses_data.reduce((sum, r) => sum + r.places_3, 0);
 
-  const localData = {
-    name: 'ローカル',
-    races: 639,
-    wins: 108,
-    places_2: 92,
-    places_3: 77,
-    win_rate: 16.9,
-    quinella_rate: 31.3,
-    place_rate: 43.3,
-    win_payback: 72.8,
-    place_payback: 76.5,
-  };
+    const winRate = totalRaces > 0 ? (totalWins / totalRaces) * 100 : 0;
+    const quinellaRate = totalRaces > 0 ? ((totalWins + totalPlaces2) / totalRaces) * 100 : 0;
+    const placeRate = totalRaces > 0 ? ((totalWins + totalPlaces2 + totalPlaces3) / totalRaces) * 100 : 0;
+
+    const winPayback = totalRaces > 0
+      ? localRacecourses_data.reduce((sum, r) => sum + (r.win_payback * r.races), 0) / totalRaces
+      : 0;
+    const placePayback = totalRaces > 0
+      ? localRacecourses_data.reduce((sum, r) => sum + (r.place_payback * r.races), 0) / totalRaces
+      : 0;
+
+    return {
+      name: 'ローカル',
+      races: totalRaces,
+      wins: totalWins,
+      places_2: totalPlaces2,
+      places_3: totalPlaces3,
+      win_rate: parseFloat(winRate.toFixed(1)),
+      quinella_rate: parseFloat(quinellaRate.toFixed(1)),
+      place_rate: parseFloat(placeRate.toFixed(1)),
+      win_payback: parseFloat(winPayback.toFixed(1)),
+      place_payback: parseFloat(placePayback.toFixed(1)),
+    };
+  })() : null;
 
   // 競馬場データの最後に中央・ローカルを追加
-  const racecourseSummaryDataWithTotals = [...racecourseSummaryData, centralData, localData];
+  const racecourseSummaryDataWithTotals = [
+    ...racecourseSummaryData,
+    ...(centralData ? [centralData] : []),
+    ...(localData ? [localData] : [])
+  ];
 
   // ナビゲーションアイテム
   const navigationItems = [
@@ -848,7 +891,7 @@ export default async function TrainerPage({
     { id: 'distance-stats', label: '距離別' },
     { id: 'gender-stats', label: '性別' },
     { id: 'interval-stats', label: 'レース間隔' },
-    { id: 'surface-stats', label: '芝・ダート別' },
+    { id: 'surface-stats', label: 'コース区分別' },
     { id: 'racecourse-stats', label: '競馬場別' },
     { id: 'course-stats', label: 'コース別' },
     { id: 'jockey-stats', label: '騎手別' },
@@ -1115,10 +1158,10 @@ export default async function TrainerPage({
             />
           </section>
 
-          {/* 芝・ダート別データセクション */}
-          <section id="surface-stats" aria-label="芝・ダート別データ">
+          {/* コース区分別データセクション */}
+          <section id="surface-stats" aria-label="コース区分別データ">
             <SurfaceTable
-              title={`${trainer.name}調教師 芝・ダート別データ`}
+              title={`${trainer.name}調教師 コース区分別データ`}
               data={surfaceStatsData}
             />
           </section>

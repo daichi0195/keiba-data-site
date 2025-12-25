@@ -1,4 +1,4 @@
-/* 芝・ダート別テーブル専用スタイル */
+/* 馬齢別テーブル専用スタイル */
 
 .tableContainer {
     background: white;
@@ -46,8 +46,8 @@
     border-right: none;
   }
 
-  /* 芝/ダート列（1列目）固定 */
-  .surfaceCol {
+  /* 馬齢列（1列目）固定 */
+  .ageCol {
     position: sticky;
     left: 0;
     width: 80px;
@@ -60,31 +60,31 @@
     position: relative;
   }
 
-  /* ヘッダーの芝/ダート列 */
-  .table thead .surfaceCol {
+  /* ヘッダーの馬齢列 */
+  .table thead .ageCol {
     position: sticky;
     left: 0;
     background: #ffffff !important;
     z-index: 21 !important;
   }
 
-  /* ボディの芝/ダート列 */
-  .table tbody .surfaceCol {
+  /* ボディの馬齢列 */
+  .table tbody .ageCol {
     position: sticky;
     left: 0;
     z-index: 11 !important;
   }
 
-  .table tbody .rowEven .surfaceCol {
+  .table tbody .rowEven .ageCol {
     background: #fafbfa !important;
   }
 
-  .table tbody .rowOdd .surfaceCol {
+  .table tbody .rowOdd .ageCol {
     background: #fff !important;
   }
 
   /* スクロール時も枠線を維持 */
-  .surfaceCol::after {
+  .ageCol::after {
     content: '';
     position: absolute;
     top: 0;
@@ -94,11 +94,11 @@
     background: #000;
   }
 
-  .table thead .surfaceCol::after {
+  .table thead .ageCol::after {
     z-index: 22;
   }
 
-  .table tbody .surfaceCol::after {
+  .table tbody .ageCol::after {
     z-index: 12;
   }
 
@@ -146,48 +146,12 @@
     background: #f0fdf4 !important;
   }
 
-  .table tbody tr:hover .surfaceCol {
+  .table tbody tr:hover .ageCol {
     background: #f0fdf4 !important;
   }
 
-  /* 芝バッジ（TOPページの配色に合わせる） */
-  .turfBadge {
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 4px;
-    font-weight: 700;
-    font-size: 13px;
-    background: #e2f7eb;
-    border: 1px solid #bbe7d3;
-    color: #0c532a;
-  }
-
-  /* ダートバッジ（TOPページの配色に合わせる） */
-  .dirtBadge {
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 4px;
-    font-weight: 700;
-    font-size: 13px;
-    background: #fde9d7;
-    border: 1px solid #ffd7ae;
-    color: #633d1e;
-  }
-
-  /* 障害バッジ（TOPページの配色に合わせる） */
-  .obstacleBadge {
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 4px;
-    font-weight: 700;
-    font-size: 13px;
-    background: #f2f2f2;
-    border: 1px solid #c0c0c0;
-    color: #4a4a4a;
-  }
-
-  /* その他のバッジ */
-  .surfaceBadge {
+  /* 馬齢バッジ */
+  .ageBadge {
     display: inline-block;
     padding: 4px 12px;
     border-radius: 4px;
@@ -226,7 +190,7 @@
       box-sizing: border-box !important;
     }
 
-    /* 第1列：芝/ダート - 80px */
+    /* 第1列：馬齢 - 80px */
     .table th:nth-child(1),
     .table td:nth-child(1) {
       width: 80px !important;
@@ -309,10 +273,7 @@
       max-width: 100px !important;
     }
 
-    .turfBadge,
-    .dirtBadge,
-    .obstacleBadge,
-    .surfaceBadge {
+    .ageBadge {
       font-size: 12px;
       padding: 3px 8px;
     }

@@ -1,12 +1,12 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import DataTable from '@/components/DataTable';
+import { getSireDataFromGCS } from '@/lib/getSireDataFromGCS';
 import HeaderMenu from '@/components/HeaderMenu';
 import BottomNav from '@/components/BottomNav';
 import JockeyLeadingChart from '@/components/JockeyLeadingChart';
 import YearlyTable from '@/components/YearlyTable';
 import ClassTable from '@/components/ClassTable';
-import PopularityTable from '@/components/PopularityTable';
 import RunningStyleTable from '@/components/RunningStyleTable';
 import GateTable from '@/components/GateTable';
 import DistanceTable from '@/components/DistanceTable';
@@ -15,124 +15,19 @@ import TrackConditionTable from '@/components/TrackConditionTable';
 import RacecourseTable from '@/components/RacecourseTable';
 import RacecourseCourseTable from '@/components/RacecourseCourseTable';
 import GenderTable from '@/components/GenderTable';
+import AgeTable from '@/components/AgeTable';
 import BarChartAnimation from '@/components/BarChartAnimation';
 import VolatilityExplanation from '@/components/VolatilityExplanation';
 import GatePositionExplanation from '@/components/GatePositionExplanation';
 import RunningStyleExplanation from '@/components/RunningStyleExplanation';
 import DistanceTrendExplanation from '@/components/DistanceTrendExplanation';
+import AgeTrendExplanation from '@/components/AgeTrendExplanation';
+import TurfConditionExplanation from '@/components/TurfConditionExplanation';
 import JockeyTrainerHighlights from '@/components/JockeyTrainerHighlights';
 
-export default function SireTestPage() {
-  // テスト用のモックデータ
-  const sire = {
-    id: '1',
-    name: 'ディープインパクト',
-    name_en: 'Deep Impact',
-    birth_year: 2002,
-    total_stats: {
-      races: 15234,
-      wins: 2456,
-      places_2: 2103,
-      places_3: 1876,
-      win_rate: 16.1,
-      place_rate: 42.0,
-      quinella_rate: 29.9,
-    },
-    data_period: '2022-01-01〜2024-12-31（直近3年間）',
-    last_updated: '2024-12-24',
-    total_races: 15234,
-    yearly_leading: [
-      { year: 2022, wins: 850, ranking: 1 },
-      { year: 2023, wins: 820, ranking: 1 },
-      { year: 2024, wins: 786, ranking: 1 },
-    ],
-    yearly_stats: [
-      { year: 2024, races: 5124, wins: 786, places_2: 701, places_3: 625, win_rate: 15.3, place_rate: 41.1, quinella_rate: 29.0, win_payback: 0, place_payback: 0 },
-      { year: 2023, races: 5056, wins: 820, places_2: 702, places_3: 626, win_rate: 16.2, place_rate: 42.3, quinella_rate: 30.1, win_payback: 0, place_payback: 0 },
-      { year: 2022, races: 5054, wins: 850, places_2: 700, places_3: 625, win_rate: 16.8, place_rate: 42.6, quinella_rate: 30.7, win_payback: 0, place_payback: 0 },
-    ],
-    distance_stats: [
-      { category: '短距離', races: 3456, wins: 568, places_2: 485, places_3: 432, win_rate: 16.4, place_rate: 42.9, quinella_rate: 30.5, win_payback: 98, place_payback: 95 },
-      { category: 'マイル', races: 4567, wins: 745, places_2: 638, places_3: 568, win_rate: 16.3, place_rate: 42.7, quinella_rate: 30.3, win_payback: 97, place_payback: 94 },
-      { category: '中距離', races: 5678, wins: 912, places_2: 785, places_3: 698, win_rate: 16.1, place_rate: 42.1, quinella_rate: 29.9, win_payback: 96, place_payback: 93 },
-      { category: '長距離', races: 1533, wins: 231, places_2: 195, places_3: 178, win_rate: 15.1, place_rate: 39.4, quinella_rate: 27.8, win_payback: 94, place_payback: 92 },
-    ],
-    surface_stats: [
-      { surface: '芝', races: 10234, wins: 1868, places_2: 1625, places_3: 1456, win_rate: 18.3, place_rate: 48.1, quinella_rate: 34.1, win_payback: 99, place_payback: 96 },
-      { surface: 'ダート', races: 5000, wins: 588, places_2: 478, places_3: 420, win_rate: 11.8, place_rate: 29.7, quinella_rate: 21.3, win_payback: 89, place_payback: 87 },
-    ],
-    popularity_stats: {
-      fav1: { races: 2456, wins: 1235, places_2: 568, places_3: 324, win_rate: 50.3, quinella_rate: 73.4, place_rate: 86.6, win_payback: 152, place_payback: 135 },
-      fav2: { races: 2345, wins: 568, places_2: 512, places_3: 445, win_rate: 24.2, quinella_rate: 46.1, place_rate: 65.1, win_payback: 125, place_payback: 112 },
-      fav3: { races: 2234, wins: 345, places_2: 398, places_3: 387, win_rate: 15.4, quinella_rate: 33.3, place_rate: 50.6, win_payback: 98, place_payback: 95 },
-      fav4: { races: 2123, wins: 198, places_2: 268, places_3: 312, win_rate: 9.3, quinella_rate: 21.9, place_rate: 36.6, win_payback: 82, place_payback: 85 },
-      fav5: { races: 2012, wins: 78, places_2: 198, places_3: 268, win_rate: 3.9, quinella_rate: 13.7, place_rate: 27.0, win_payback: 65, place_payback: 72 },
-      fav6to9: { races: 3456, wins: 32, places_2: 125, places_3: 298, win_rate: 0.9, quinella_rate: 4.5, place_rate: 13.2, win_payback: 45, place_payback: 58 },
-      fav10plus: { races: 608, wins: 0, places_2: 34, places_3: 42, win_rate: 0.0, quinella_rate: 5.6, place_rate: 12.5, win_payback: 0, place_payback: 42 },
-    },
-    running_style_stats: [
-      { style: 'escape', style_label: '逃げ', races: 2345, wins: 456, places_2: 385, places_3: 342, win_rate: 19.4, place_rate: 50.4, quinella_rate: 35.9, win_payback: 102, place_payback: 98 },
-      { style: 'lead', style_label: '先行', races: 5678, wins: 985, places_2: 845, places_3: 756, win_rate: 17.3, place_rate: 45.5, quinella_rate: 32.2, win_payback: 99, place_payback: 96 },
-      { style: 'pursue', style_label: '差し', races: 5234, wins: 768, places_2: 658, places_3: 589, win_rate: 14.7, place_rate: 38.5, quinella_rate: 27.3, win_payback: 94, place_payback: 92 },
-      { style: 'close', style_label: '追込', races: 1977, wins: 247, places_2: 215, places_3: 189, win_rate: 12.5, place_rate: 32.9, quinella_rate: 23.4, win_payback: 89, place_payback: 88 },
-    ],
-    gate_stats: [
-      { gate: 1, color: '#FFFFFF', races: 1568, wins: 256, places_2: 225, places_3: 198, win_rate: 16.3, place_rate: 43.3, quinella_rate: 30.7, win_payback: 98, place_payback: 95 },
-      { gate: 2, color: '#000000', races: 1587, wins: 268, places_2: 232, places_3: 203, win_rate: 16.9, place_rate: 44.3, quinella_rate: 31.5, win_payback: 99, place_payback: 96 },
-      { gate: 3, color: '#FF0000', races: 1598, wins: 271, places_2: 235, places_3: 206, win_rate: 17.0, place_rate: 44.6, quinella_rate: 31.7, win_payback: 100, place_payback: 97 },
-      { gate: 4, color: '#0000FF', races: 1576, wins: 253, places_2: 221, places_3: 194, win_rate: 16.0, place_rate: 42.4, quinella_rate: 30.1, win_payback: 97, place_payback: 94 },
-      { gate: 5, color: '#FFFF00', races: 1543, wins: 245, places_2: 215, places_3: 189, win_rate: 15.9, place_rate: 42.1, quinella_rate: 29.8, win_payback: 96, place_payback: 93 },
-      { gate: 6, color: '#00FF00', races: 1534, wins: 238, places_2: 208, places_3: 183, win_rate: 15.5, place_rate: 41.0, quinella_rate: 29.1, win_payback: 95, place_payback: 92 },
-      { gate: 7, color: '#FFA500', races: 1512, wins: 232, places_2: 203, places_3: 178, win_rate: 15.3, place_rate: 40.5, quinella_rate: 28.8, win_payback: 94, place_payback: 91 },
-      { gate: 8, color: '#FFC0CB', races: 1482, wins: 225, places_2: 196, places_3: 172, win_rate: 15.2, place_rate: 40.0, quinella_rate: 28.4, win_payback: 93, place_payback: 90 },
-    ],
-    course_stats: [
-      { rank: 1, name: '東京・芝1600m', racecourse: '東京競馬場', racecourse_en: 'tokyo', surface: '芝', surface_en: 'turf', distance: 1600, races: 456, wins: 98, places_2: 85, places_3: 76, win_rate: 21.5, place_rate: 56.8, quinella_rate: 40.1, win_payback: 105, place_payback: 102 },
-      { rank: 2, name: '中山・芝1600m', racecourse: '中山競馬場', racecourse_en: 'nakayama', surface: '芝', surface_en: 'turf', distance: 1600, races: 423, wins: 89, places_2: 78, places_3: 69, win_rate: 21.0, place_rate: 55.8, quinella_rate: 39.5, win_payback: 104, place_payback: 101 },
-      { rank: 3, name: '阪神・芝2000m', racecourse: '阪神競馬場', racecourse_en: 'hanshin', surface: '芝', surface_en: 'turf', distance: 2000, races: 398, wins: 82, places_2: 71, places_3: 63, win_rate: 20.6, place_rate: 54.3, quinella_rate: 38.4, win_payback: 103, place_payback: 100 },
-    ],
-    trainer_stats: [
-      { rank: 1, name: '藤沢和雄', races: 568, wins: 125, places_2: 98, places_3: 85, win_rate: 22.0, place_rate: 54.2, quinella_rate: 39.3, win_payback: 108, place_payback: 104 },
-      { rank: 2, name: '友道康夫', races: 523, wins: 112, places_2: 89, places_3: 78, win_rate: 21.4, place_rate: 53.3, quinella_rate: 38.4, win_payback: 106, place_payback: 103 },
-      { rank: 3, name: '池江泰寿', races: 498, wins: 105, places_2: 84, places_3: 73, win_rate: 21.1, place_rate: 52.6, quinella_rate: 38.0, win_payback: 105, place_payback: 102 },
-    ],
-    jockey_stats: [
-      { rank: 1, name: '武豊', races: 623, wins: 138, places_2: 112, places_3: 98, win_rate: 22.1, place_rate: 55.9, quinella_rate: 40.1, win_payback: 109, place_payback: 105 },
-      { rank: 2, name: '福永祐一', races: 578, wins: 125, places_2: 102, places_3: 89, win_rate: 21.6, place_rate: 54.7, quinella_rate: 39.3, win_payback: 107, place_payback: 104 },
-      { rank: 3, name: 'ルメール', races: 545, wins: 118, places_2: 96, places_3: 84, win_rate: 21.7, place_rate: 54.7, quinella_rate: 39.3, win_payback: 107, place_payback: 104 },
-    ],
-    track_condition_stats: [
-      { surface: '芝', condition: 'good', condition_label: '良', races: 7234, wins: 1345, places_2: 1168, places_3: 1045, win_rate: 18.6, place_rate: 49.2, quinella_rate: 34.7, win_payback: 100, place_payback: 97 },
-      { surface: '芝', condition: 'yielding', condition_label: '稍重', races: 1568, wins: 268, places_2: 232, places_3: 203, win_rate: 17.1, place_rate: 44.8, quinella_rate: 31.9, win_payback: 96, place_payback: 94 },
-      { surface: '芝', condition: 'soft', condition_label: '重', races: 897, wins: 156, places_2: 135, places_3: 118, win_rate: 17.4, place_rate: 45.6, quinella_rate: 32.4, win_payback: 97, place_payback: 95 },
-      { surface: '芝', condition: 'heavy', condition_label: '不良', races: 535, wins: 99, places_2: 90, places_3: 90, win_rate: 18.5, place_rate: 52.1, quinella_rate: 35.3, win_payback: 101, place_payback: 99 },
-      { surface: 'ダート', condition: 'good', condition_label: '良', races: 3234, wins: 385, places_2: 312, places_3: 273, win_rate: 11.9, place_rate: 30.0, quinella_rate: 21.6, win_payback: 89, place_payback: 87 },
-      { surface: 'ダート', condition: 'yielding', condition_label: '稍重', races: 856, wins: 98, places_2: 79, places_3: 69, win_rate: 11.4, place_rate: 28.7, quinella_rate: 20.7, win_payback: 87, place_payback: 86 },
-      { surface: 'ダート', condition: 'soft', condition_label: '重', races: 612, wins: 71, places_2: 58, places_3: 50, win_rate: 11.6, place_rate: 29.2, quinella_rate: 21.1, win_payback: 88, place_payback: 86 },
-      { surface: 'ダート', condition: 'heavy', condition_label: '不良', races: 298, wins: 34, places_2: 29, places_3: 28, win_rate: 11.4, place_rate: 30.5, quinella_rate: 21.1, win_payback: 88, place_payback: 87 },
-    ],
-    class_stats: [
-      { rank: 1, class_name: '新馬', races: 2845, wins: 568, places_2: 485, places_3: 432, win_rate: 20.0, place_rate: 52.2, quinella_rate: 37.0, win_payback: 102, place_payback: 99 },
-      { rank: 2, class_name: '未勝利', races: 4567, wins: 756, places_2: 645, places_3: 574, win_rate: 16.6, place_rate: 43.2, quinella_rate: 30.7, win_payback: 98, place_payback: 95 },
-      { rank: 3, class_name: '1勝', races: 3456, wins: 512, places_2: 438, places_3: 389, win_rate: 14.8, place_rate: 38.7, quinella_rate: 27.5, win_payback: 94, place_payback: 92 },
-      { rank: 4, class_name: '2勝', races: 2234, wins: 325, places_2: 278, places_3: 247, win_rate: 14.5, place_rate: 38.1, quinella_rate: 27.0, win_payback: 93, place_payback: 91 },
-      { rank: 5, class_name: '3勝', races: 1456, wins: 198, places_2: 169, places_3: 150, win_rate: 13.6, place_rate: 35.5, quinella_rate: 25.2, win_payback: 91, place_payback: 89 },
-      { rank: 6, class_name: 'オープン', races: 676, wins: 97, places_2: 88, places_3: 84, win_rate: 14.3, place_rate: 39.8, quinella_rate: 27.4, win_payback: 93, place_payback: 92 },
-    ],
-    gender_stats: [
-      { name: '牡馬', races: 8456, wins: 1368, places_2: 1225, places_3: 1085, win_rate: 16.2, place_rate: 42.6, quinella_rate: 30.7, win_payback: 98, place_payback: 95 },
-      { name: '牝馬', races: 6778, wins: 1088, places_2: 878, places_3: 791, win_rate: 16.0, place_rate: 40.8, quinella_rate: 29.0, win_payback: 96, place_payback: 92 },
-    ],
-    characteristics: {
-      volatility: 2,
-      trifecta_avg_payback_rank: 35,
-      total_courses: 120,
-      trifecta_median_payback: 58.3,
-      trifecta_all_median_payback: 58.3,
-      gate_position: 0,
-      distance_trend: 1,
-    },
-  };
+export default async function SireTestPage() {
+  // GCSからドゥラメンテのデータを取得
+  const sire = await getSireDataFromGCS('ドゥラメンテ');
 
   // 現在の年度を取得
   const currentYear = new Date().getFullYear();
@@ -206,7 +101,7 @@ export default function SireTestPage() {
     place_rate: stat.races > 0 ? ((stat.wins + stat.places_2 + stat.places_3) / stat.races) * 100 : 0,
   }));
 
-  // 芝・ダート別データをテーブル形式に変換（順位なし）
+  // 芝・ダート別データをテーブル形式に変換（順位なし、芝→ダート→障害の順）
   const surfaceStatsData = sire.surface_stats.map((stat) => ({
     name: stat.surface,
     races: stat.races,
@@ -218,7 +113,42 @@ export default function SireTestPage() {
     place_rate: stat.place_rate,
     win_payback: stat.win_payback,
     place_payback: stat.place_payback,
-  }));
+  })).sort((a, b) => {
+    const order = { '芝': 1, 'ダート': 2, '障害': 3 };
+    return (order[a.name as keyof typeof order] || 99) - (order[b.name as keyof typeof order] || 99);
+  });
+
+  // 芝・ダート変わりデータ（GCSから取得、存在しない場合は空配列）
+  const surfaceChangeStatsData = sire.surface_change_stats ? [
+    {
+      name: '芝→ダ',
+      description: '芝デビュー後、初ダート時の成績',
+      total_horses: sire.surface_change_stats.turf_to_dirt?.total_horses || 0,
+      races: sire.surface_change_stats.turf_to_dirt?.races || 0,
+      wins: sire.surface_change_stats.turf_to_dirt?.wins || 0,
+      places_2: sire.surface_change_stats.turf_to_dirt?.places_2 || 0,
+      places_3: sire.surface_change_stats.turf_to_dirt?.places_3 || 0,
+      win_rate: sire.surface_change_stats.turf_to_dirt?.win_rate || 0,
+      quinella_rate: sire.surface_change_stats.turf_to_dirt?.quinella_rate || 0,
+      place_rate: sire.surface_change_stats.turf_to_dirt?.place_rate || 0,
+      win_payback: sire.surface_change_stats.turf_to_dirt?.win_payback || 0,
+      place_payback: sire.surface_change_stats.turf_to_dirt?.place_payback || 0,
+    },
+    {
+      name: 'ダ→芝',
+      description: 'ダートデビュー後、初芝時の成績',
+      total_horses: sire.surface_change_stats.dirt_to_turf?.total_horses || 0,
+      races: sire.surface_change_stats.dirt_to_turf?.races || 0,
+      wins: sire.surface_change_stats.dirt_to_turf?.wins || 0,
+      places_2: sire.surface_change_stats.dirt_to_turf?.places_2 || 0,
+      places_3: sire.surface_change_stats.dirt_to_turf?.places_3 || 0,
+      win_rate: sire.surface_change_stats.dirt_to_turf?.win_rate || 0,
+      quinella_rate: sire.surface_change_stats.dirt_to_turf?.quinella_rate || 0,
+      place_rate: sire.surface_change_stats.dirt_to_turf?.place_rate || 0,
+      win_payback: sire.surface_change_stats.dirt_to_turf?.win_payback || 0,
+      place_payback: sire.surface_change_stats.dirt_to_turf?.place_payback || 0,
+    },
+  ] : [];
 
   // 芝・ダートの得意傾向を計算（複勝率の差から判定）
   const turfStat = sire.surface_stats.find(s => s.surface === '芝');
@@ -226,10 +156,10 @@ export default function SireTestPage() {
   let surfaceTrendPosition = 3; // デフォルトは互角
   if (turfStat && dirtStat) {
     const diff = turfStat.place_rate - dirtStat.place_rate;
-    if (diff >= 5) surfaceTrendPosition = 5; // 芝が得意
-    else if (diff >= 2) surfaceTrendPosition = 4; // やや芝が得意
-    else if (diff <= -5) surfaceTrendPosition = 1; // ダートが得意
-    else if (diff <= -2) surfaceTrendPosition = 2; // ややダートが得意
+    if (diff >= 5) surfaceTrendPosition = 1; // 芝が得意（左端）
+    else if (diff >= 2) surfaceTrendPosition = 2; // やや芝が得意
+    else if (diff <= -5) surfaceTrendPosition = 5; // ダートが得意（右端）
+    else if (diff <= -2) surfaceTrendPosition = 4; // ややダートが得意
     else surfaceTrendPosition = 3; // 互角
   }
 
@@ -291,6 +221,89 @@ export default function SireTestPage() {
     else distanceTrendPosition = 3; // 互角
   }
 
+  // 馬齢別傾向を計算（2-3歳 vs 5歳以上の複勝率差から判定）
+  const youngAges = sire.age_stats.filter(a => a.age === '2歳' || a.age === '3歳');
+  const oldAges = sire.age_stats.filter(a => a.age === '5歳' || a.age === '6歳-');
+
+  let ageTrendPosition = 3; // デフォルトは互角
+  if (youngAges.length > 0 && oldAges.length > 0) {
+    // 加重平均で複勝率を計算（出走数で重み付け）
+    const youngTotalRaces = youngAges.reduce((sum, a) => sum + a.races, 0);
+    const youngWeightedPlaceRate = youngAges.reduce((sum, a) =>
+      sum + (a.place_rate * a.races), 0
+    ) / youngTotalRaces;
+
+    const oldTotalRaces = oldAges.reduce((sum, a) => sum + a.races, 0);
+    const oldWeightedPlaceRate = oldAges.reduce((sum, a) =>
+      sum + (a.place_rate * a.races), 0
+    ) / oldTotalRaces;
+
+    const diff = youngWeightedPlaceRate - oldWeightedPlaceRate;
+    if (diff >= 5) ageTrendPosition = 1; // 早熟型
+    else if (diff >= 2) ageTrendPosition = 2; // やや早熟型
+    else if (diff <= -5) ageTrendPosition = 5; // 晩成型
+    else if (diff <= -2) ageTrendPosition = 4; // やや晩成型
+    else ageTrendPosition = 3; // 互角
+  }
+
+  // 芝馬場状態別傾向を計算（良 vs 重・不良の複勝率差から判定）
+  const turfGoodConditions = sire.track_condition_stats.filter(s =>
+    s.surface === '芝' && s.condition === 'good'
+  );
+  const turfBadConditions = sire.track_condition_stats.filter(s =>
+    s.surface === '芝' && (s.condition === 'soft' || s.condition === 'heavy')
+  );
+
+  let turfConditionTrendPosition = 3; // デフォルトは互角
+  if (turfGoodConditions.length > 0 && turfBadConditions.length > 0) {
+    // 加重平均で複勝率を計算（出走数で重み付け）
+    const goodTotalRaces = turfGoodConditions.reduce((sum, s) => sum + s.races, 0);
+    const goodWeightedPlaceRate = turfGoodConditions.reduce((sum, s) =>
+      sum + (s.place_rate * s.races), 0
+    ) / goodTotalRaces;
+
+    const badTotalRaces = turfBadConditions.reduce((sum, s) => sum + s.races, 0);
+    const badWeightedPlaceRate = turfBadConditions.reduce((sum, s) =>
+      sum + (s.place_rate * s.races), 0
+    ) / badTotalRaces;
+
+    const diff = goodWeightedPlaceRate - badWeightedPlaceRate;
+    if (diff >= 5) turfConditionTrendPosition = 1; // 良馬場が得意
+    else if (diff >= 2) turfConditionTrendPosition = 2; // やや良馬場が得意
+    else if (diff <= -5) turfConditionTrendPosition = 5; // 重馬場が得意
+    else if (diff <= -2) turfConditionTrendPosition = 4; // やや重馬場が得意
+    else turfConditionTrendPosition = 3; // 互角
+  }
+
+  // ダート馬場状態別傾向を計算（良 vs 重・不良の複勝率差から判定）
+  const dirtGoodConditions = sire.track_condition_stats.filter(s =>
+    s.surface === 'ダート' && s.condition === 'good'
+  );
+  const dirtBadConditions = sire.track_condition_stats.filter(s =>
+    s.surface === 'ダート' && (s.condition === 'soft' || s.condition === 'heavy')
+  );
+
+  let dirtConditionTrendPosition = 3; // デフォルトは互角
+  if (dirtGoodConditions.length > 0 && dirtBadConditions.length > 0) {
+    // 加重平均で複勝率を計算（出走数で重み付け）
+    const goodTotalRaces = dirtGoodConditions.reduce((sum, s) => sum + s.races, 0);
+    const goodWeightedPlaceRate = dirtGoodConditions.reduce((sum, s) =>
+      sum + (s.place_rate * s.races), 0
+    ) / goodTotalRaces;
+
+    const badTotalRaces = dirtBadConditions.reduce((sum, s) => sum + s.races, 0);
+    const badWeightedPlaceRate = dirtBadConditions.reduce((sum, s) =>
+      sum + (s.place_rate * s.races), 0
+    ) / badTotalRaces;
+
+    const diff = goodWeightedPlaceRate - badWeightedPlaceRate;
+    if (diff >= 5) dirtConditionTrendPosition = 1; // 良馬場が得意
+    else if (diff >= 2) dirtConditionTrendPosition = 2; // やや良馬場が得意
+    else if (diff <= -5) dirtConditionTrendPosition = 5; // 重馬場が得意
+    else if (diff <= -2) dirtConditionTrendPosition = 4; // やや重馬場が得意
+    else dirtConditionTrendPosition = 3; // 互角
+  }
+
   // 馬場状態別データをテーブル形式に変換（順位なし）
   const trackConditionStatsData = sire.track_condition_stats.map((stat) => {
     // 馬場状態ラベルを短縮
@@ -298,9 +311,14 @@ export default function SireTestPage() {
     if (shortLabel === '稍重') shortLabel = '稍';
     if (shortLabel === '不良') shortLabel = '不';
 
+    // 馬場種別も短縮
+    let shortSurface = stat.surface;
+    if (shortSurface === 'ダート') shortSurface = 'ダ';
+
     return {
-      name: `${stat.surface}・${shortLabel}`,
-      surface: stat.surface,
+      name: `${shortSurface}・${shortLabel}`,
+      surface: shortSurface,
+      condition: stat.condition,
       condition_label: shortLabel,
       races: stat.races,
       wins: stat.wins,
@@ -312,6 +330,15 @@ export default function SireTestPage() {
       win_payback: stat.win_payback,
       place_payback: stat.place_payback,
     };
+  }).sort((a, b) => {
+    // 芝→ダート→障害の順
+    const surfaceOrder = { '芝': 1, 'ダ': 2, '障': 3 };
+    const surfaceDiff = (surfaceOrder[a.surface as keyof typeof surfaceOrder] || 99) - (surfaceOrder[b.surface as keyof typeof surfaceOrder] || 99);
+    if (surfaceDiff !== 0) return surfaceDiff;
+
+    // 各馬場種別内で良→稍→重→不の順
+    const conditionOrder = { 'good': 1, 'yielding': 2, 'soft': 3, 'heavy': 4 };
+    return (conditionOrder[a.condition as keyof typeof conditionOrder] || 99) - (conditionOrder[b.condition as keyof typeof conditionOrder] || 99);
   });
 
   // クラス別データをテーブル形式に変換（順位なし）
@@ -371,72 +398,176 @@ export default function SireTestPage() {
     };
   }).filter(group => group.courses.length > 0); // コースがある競馬場のみ
 
-  // 競馬場別サマリーデータを集計
-  const racecourseSummaryData = racecourseOrder.map(racecourse => {
-    const racecourseCourses = sire.course_stats.filter(c => c.racecourse_en === racecourse.en);
+  // 競馬場別サマリーデータをracecourse_statsから取得し、順番を整理
+  const racecourseSummaryData = racecourseOrder
+    .map(racecourseItem => {
+      const racecourse = sire.racecourse_stats.find(r => r.racecourse_en === racecourseItem.en);
+      if (!racecourse) return null;
+      return {
+        name: racecourse.name,
+        racecourse_ja: racecourse.racecourse_ja,
+        racecourse_en: racecourse.racecourse_en,
+        races: racecourse.races,
+        wins: racecourse.wins,
+        places_2: racecourse.places_2,
+        places_3: racecourse.places_3,
+        win_rate: racecourse.win_rate,
+        quinella_rate: racecourse.quinella_rate,
+        place_rate: racecourse.place_rate,
+        win_payback: racecourse.win_payback,
+        place_payback: racecourse.place_payback,
+      };
+    })
+    .filter((item): item is NonNullable<typeof item> => item !== null);
 
-    if (racecourseCourses.length === 0) return null;
+  // 右回り・左回り競馬場の定義
+  const rightTurnRacecourses = ['tokyo', 'niigata', 'chukyo', 'kokura']; // 東京、新潟、中京、小倉
+  const leftTurnRacecourses = ['sapporo', 'hakodate', 'fukushima', 'nakayama', 'hanshin', 'kyoto']; // 札幌、函館、福島、中山、阪神、京都
 
-    const totalRaces = racecourseCourses.reduce((sum, c) => sum + c.races, 0);
-    const totalWins = racecourseCourses.reduce((sum, c) => sum + c.wins, 0);
-    const totalPlaces2 = racecourseCourses.reduce((sum, c) => sum + c.places_2, 0);
-    const totalPlaces3 = racecourseCourses.reduce((sum, c) => sum + c.places_3, 0);
+  // 右回り競馬場の集計
+  const rightTurnRacecourses_data = sire.racecourse_stats.filter(r => rightTurnRacecourses.includes(r.racecourse_en));
+  const rightTurnData = rightTurnRacecourses_data.length > 0 ? (() => {
+    const totalRaces = rightTurnRacecourses_data.reduce((sum, r) => sum + r.races, 0);
+    const totalWins = rightTurnRacecourses_data.reduce((sum, r) => sum + r.wins, 0);
+    const totalPlaces2 = rightTurnRacecourses_data.reduce((sum, r) => sum + r.places_2, 0);
+    const totalPlaces3 = rightTurnRacecourses_data.reduce((sum, r) => sum + r.places_3, 0);
 
     const winRate = totalRaces > 0 ? (totalWins / totalRaces) * 100 : 0;
     const quinellaRate = totalRaces > 0 ? ((totalWins + totalPlaces2) / totalRaces) * 100 : 0;
     const placeRate = totalRaces > 0 ? ((totalWins + totalPlaces2 + totalPlaces3) / totalRaces) * 100 : 0;
 
-    // 回収率は各コースの回収率を出走数で加重平均
     const winPayback = totalRaces > 0
-      ? racecourseCourses.reduce((sum, c) => sum + (c.win_payback * c.races), 0) / totalRaces
+      ? rightTurnRacecourses_data.reduce((sum, r) => sum + (r.win_payback * r.races), 0) / totalRaces
       : 0;
     const placePayback = totalRaces > 0
-      ? racecourseCourses.reduce((sum, c) => sum + (c.place_payback * c.races), 0) / totalRaces
+      ? rightTurnRacecourses_data.reduce((sum, r) => sum + (r.place_payback * r.races), 0) / totalRaces
       : 0;
 
     return {
-      name: racecourse.ja.replace('競馬場', ''),
+      name: '右回り',
       races: totalRaces,
       wins: totalWins,
       places_2: totalPlaces2,
       places_3: totalPlaces3,
-      win_rate: winRate,
-      quinella_rate: quinellaRate,
-      place_rate: placeRate,
-      win_payback: winPayback,
-      place_payback: placePayback,
+      win_rate: parseFloat(winRate.toFixed(1)),
+      quinella_rate: parseFloat(quinellaRate.toFixed(1)),
+      place_rate: parseFloat(placeRate.toFixed(1)),
+      win_payback: parseFloat(winPayback.toFixed(1)),
+      place_payback: parseFloat(placePayback.toFixed(1)),
     };
-  }).filter(item => item !== null);
+  })() : null;
 
-  // 中央・ローカルの集計行を追加（モックデータ）
-  const centralData = {
-    name: '中央',
-    races: 1850,
-    wins: 345,
-    places_2: 290,
-    places_3: 235,
-    win_rate: 18.6,
-    quinella_rate: 34.3,
-    place_rate: 47.0,
-    win_payback: 78.5,
-    place_payback: 82.1,
-  };
+  // 左回り競馬場の集計
+  const leftTurnRacecourses_data = sire.racecourse_stats.filter(r => leftTurnRacecourses.includes(r.racecourse_en));
+  const leftTurnData = leftTurnRacecourses_data.length > 0 ? (() => {
+    const totalRaces = leftTurnRacecourses_data.reduce((sum, r) => sum + r.races, 0);
+    const totalWins = leftTurnRacecourses_data.reduce((sum, r) => sum + r.wins, 0);
+    const totalPlaces2 = leftTurnRacecourses_data.reduce((sum, r) => sum + r.places_2, 0);
+    const totalPlaces3 = leftTurnRacecourses_data.reduce((sum, r) => sum + r.places_3, 0);
 
-  const localData = {
-    name: 'ローカル',
-    races: 639,
-    wins: 108,
-    places_2: 92,
-    places_3: 77,
-    win_rate: 16.9,
-    quinella_rate: 31.3,
-    place_rate: 43.3,
-    win_payback: 72.8,
-    place_payback: 76.5,
-  };
+    const winRate = totalRaces > 0 ? (totalWins / totalRaces) * 100 : 0;
+    const quinellaRate = totalRaces > 0 ? ((totalWins + totalPlaces2) / totalRaces) * 100 : 0;
+    const placeRate = totalRaces > 0 ? ((totalWins + totalPlaces2 + totalPlaces3) / totalRaces) * 100 : 0;
 
-  // 競馬場データの最後に中央・ローカルを追加
-  const racecourseSummaryDataWithTotals = [...racecourseSummaryData, centralData, localData];
+    const winPayback = totalRaces > 0
+      ? leftTurnRacecourses_data.reduce((sum, r) => sum + (r.win_payback * r.races), 0) / totalRaces
+      : 0;
+    const placePayback = totalRaces > 0
+      ? leftTurnRacecourses_data.reduce((sum, r) => sum + (r.place_payback * r.races), 0) / totalRaces
+      : 0;
+
+    return {
+      name: '左回り',
+      races: totalRaces,
+      wins: totalWins,
+      places_2: totalPlaces2,
+      places_3: totalPlaces3,
+      win_rate: parseFloat(winRate.toFixed(1)),
+      quinella_rate: parseFloat(quinellaRate.toFixed(1)),
+      place_rate: parseFloat(placeRate.toFixed(1)),
+      win_payback: parseFloat(winPayback.toFixed(1)),
+      place_payback: parseFloat(placePayback.toFixed(1)),
+    };
+  })() : null;
+
+  // 中央・ローカルの集計行を追加
+  const centralRacecourses = ['tokyo', 'nakayama', 'hanshin', 'kyoto']; // 東京、中山、阪神、京都
+  const localRacecourses = ['sapporo', 'hakodate', 'fukushima', 'niigata', 'chukyo', 'kokura']; // 札幌、函館、福島、新潟、中京、小倉
+
+  // 中央競馬場の集計
+  const centralRacecourses_data = sire.racecourse_stats.filter(r => centralRacecourses.includes(r.racecourse_en));
+  const centralData = centralRacecourses_data.length > 0 ? (() => {
+    const totalRaces = centralRacecourses_data.reduce((sum, r) => sum + r.races, 0);
+    const totalWins = centralRacecourses_data.reduce((sum, r) => sum + r.wins, 0);
+    const totalPlaces2 = centralRacecourses_data.reduce((sum, r) => sum + r.places_2, 0);
+    const totalPlaces3 = centralRacecourses_data.reduce((sum, r) => sum + r.places_3, 0);
+
+    const winRate = totalRaces > 0 ? (totalWins / totalRaces) * 100 : 0;
+    const quinellaRate = totalRaces > 0 ? ((totalWins + totalPlaces2) / totalRaces) * 100 : 0;
+    const placeRate = totalRaces > 0 ? ((totalWins + totalPlaces2 + totalPlaces3) / totalRaces) * 100 : 0;
+
+    const winPayback = totalRaces > 0
+      ? centralRacecourses_data.reduce((sum, r) => sum + (r.win_payback * r.races), 0) / totalRaces
+      : 0;
+    const placePayback = totalRaces > 0
+      ? centralRacecourses_data.reduce((sum, r) => sum + (r.place_payback * r.races), 0) / totalRaces
+      : 0;
+
+    return {
+      name: '中央',
+      races: totalRaces,
+      wins: totalWins,
+      places_2: totalPlaces2,
+      places_3: totalPlaces3,
+      win_rate: parseFloat(winRate.toFixed(1)),
+      quinella_rate: parseFloat(quinellaRate.toFixed(1)),
+      place_rate: parseFloat(placeRate.toFixed(1)),
+      win_payback: parseFloat(winPayback.toFixed(1)),
+      place_payback: parseFloat(placePayback.toFixed(1)),
+    };
+  })() : null;
+
+  // ローカル競馬場の集計
+  const localRacecourses_data = sire.racecourse_stats.filter(r => localRacecourses.includes(r.racecourse_en));
+  const localData = localRacecourses_data.length > 0 ? (() => {
+    const totalRaces = localRacecourses_data.reduce((sum, r) => sum + r.races, 0);
+    const totalWins = localRacecourses_data.reduce((sum, r) => sum + r.wins, 0);
+    const totalPlaces2 = localRacecourses_data.reduce((sum, r) => sum + r.places_2, 0);
+    const totalPlaces3 = localRacecourses_data.reduce((sum, r) => sum + r.places_3, 0);
+
+    const winRate = totalRaces > 0 ? (totalWins / totalRaces) * 100 : 0;
+    const quinellaRate = totalRaces > 0 ? ((totalWins + totalPlaces2) / totalRaces) * 100 : 0;
+    const placeRate = totalRaces > 0 ? ((totalWins + totalPlaces2 + totalPlaces3) / totalRaces) * 100 : 0;
+
+    const winPayback = totalRaces > 0
+      ? localRacecourses_data.reduce((sum, r) => sum + (r.win_payback * r.races), 0) / totalRaces
+      : 0;
+    const placePayback = totalRaces > 0
+      ? localRacecourses_data.reduce((sum, r) => sum + (r.place_payback * r.races), 0) / totalRaces
+      : 0;
+
+    return {
+      name: 'ローカル',
+      races: totalRaces,
+      wins: totalWins,
+      places_2: totalPlaces2,
+      places_3: totalPlaces3,
+      win_rate: parseFloat(winRate.toFixed(1)),
+      quinella_rate: parseFloat(quinellaRate.toFixed(1)),
+      place_rate: parseFloat(placeRate.toFixed(1)),
+      win_payback: parseFloat(winPayback.toFixed(1)),
+      place_payback: parseFloat(placePayback.toFixed(1)),
+    };
+  })() : null;
+
+  // 競馬場データの最後に右回り・左回り・中央・ローカルを追加
+  const racecourseSummaryDataWithTotals = [
+    ...racecourseSummaryData,
+    ...(rightTurnData ? [rightTurnData] : []),
+    ...(leftTurnData ? [leftTurnData] : []),
+    ...(centralData ? [centralData] : []),
+    ...(localData ? [localData] : [])
+  ];
 
   // ナビゲーションアイテム
   const navigationItems = [
@@ -444,17 +575,17 @@ export default function SireTestPage() {
     { id: 'characteristics', label: '特徴' },
     { id: 'highlights-section', label: '注目ポイント' },
     { id: 'class-stats', label: 'クラス別' },
-    { id: 'popularity-stats', label: '人気別' },
     { id: 'running-style-stats', label: '脚質別' },
     { id: 'gate-stats', label: '枠順別' },
     { id: 'distance-stats', label: '距離別' },
+    { id: 'age-stats', label: '馬齢別' },
     { id: 'gender-stats', label: '性別' },
     { id: 'surface-stats', label: '芝・ダート別' },
+    { id: 'surface-change-stats', label: '芝・ダート変わり' },
     { id: 'track-condition-stats', label: '馬場状態別' },
     { id: 'racecourse-stats', label: '競馬場別' },
     { id: 'course-stats', label: 'コース別' },
-    { id: 'trainer-stats', label: '調教師別' },
-    { id: 'jockey-stats', label: '騎手別' },
+    { id: 'dam-sire-stats', label: '母父別' },
   ];
 
   return (
@@ -518,36 +649,6 @@ export default function SireTestPage() {
               <div className="characteristics-box">
                 <h2 className="section-title">{sire.name}産駒の特徴</h2>
 
-                {/* 人気時の信頼度 */}
-                <div className="gauge-item">
-                  <div className="gauge-header">
-                    <h3 className="gauge-label">人気時の信頼度</h3>
-                    <VolatilityExplanation pageType="sire" />
-                  </div>
-                  <div className="gauge-track">
-                    <div className="gauge-indicator" style={{ left: `${(sire.characteristics.volatility - 1) * 25}%` }}></div>
-                    <div className="gauge-horse-icon" style={{ left: `${(sire.characteristics.volatility - 1) * 25}%` }}>🏇</div>
-                  </div>
-                  <div className="gauge-labels">
-                    <span>低い</span>
-                    <span>標準</span>
-                    <span>高い</span>
-                  </div>
-                  <div className="gauge-result">
-                    {sire.characteristics.volatility === 1 && '低い'}
-                    {sire.characteristics.volatility === 2 && 'やや低い'}
-                    {sire.characteristics.volatility === 3 && '標準'}
-                    {sire.characteristics.volatility === 4 && 'やや高い'}
-                    {sire.characteristics.volatility === 5 && '高い'}
-                  </div>
-                </div>
-                <p className="note-text">
-                  ※複勝率ランキングは1番人気が10走以上の種牡馬を対象
-                </p>
-
-                {/* 区切り線 */}
-                <div className="section-divider"></div>
-
                 {/* 得意なコース傾向 */}
                 <div className="gauge-item">
                   <div className="gauge-header">
@@ -559,16 +660,16 @@ export default function SireTestPage() {
                     <div className="gauge-horse-icon" style={{ left: `${(surfaceTrendPosition - 1) * 25}%` }}>🏇</div>
                   </div>
                   <div className="gauge-labels">
-                    <span>ダートが得意</span>
-                    <span>差分なし</span>
                     <span>芝が得意</span>
+                    <span>差分なし</span>
+                    <span>ダートが得意</span>
                   </div>
                   <div className="gauge-result">
-                    {surfaceTrendPosition === 1 && 'ダートが得意'}
-                    {surfaceTrendPosition === 2 && 'ややダートが得意'}
+                    {surfaceTrendPosition === 1 && '芝が得意'}
+                    {surfaceTrendPosition === 2 && 'やや芝が得意'}
                     {surfaceTrendPosition === 3 && '差分なし'}
-                    {surfaceTrendPosition === 4 && 'やや芝が得意'}
-                    {surfaceTrendPosition === 5 && '芝が得意'}
+                    {surfaceTrendPosition === 4 && 'ややダートが得意'}
+                    {surfaceTrendPosition === 5 && 'ダートが得意'}
                   </div>
 
                   {/* コース別複勝率グラフ */}
@@ -576,10 +677,11 @@ export default function SireTestPage() {
                     <div className="gate-detail-title">コース別複勝率</div>
                     <div className="gate-chart">
                       {sire.surface_stats
+                        .filter((surface) => surface.surface === '芝' || surface.surface === 'ダート')
                         .sort((a, b) => {
-                          // 芝を先に、ダートを後に
-                          if (a.surface === '芝' && b.surface !== '芝') return -1;
-                          if (a.surface !== '芝' && b.surface === '芝') return 1;
+                          // 芝を左に、ダートを右に
+                          if (a.surface === '芝') return -1;
+                          if (b.surface === '芝') return 1;
                           return 0;
                         })
                         .map((surface) => {
@@ -611,66 +713,6 @@ export default function SireTestPage() {
                         })}
                     </div>
                   </div>
-                </div>
-
-                {/* 区切り線 */}
-                <div className="section-divider"></div>
-
-                {/* 得意な脚質傾向（2分化） */}
-                <div className="gauge-item">
-                  <div className="gauge-header">
-                    <h3 className="gauge-label">得意な脚質傾向</h3>
-                    <RunningStyleExplanation />
-                  </div>
-                  <div className="gauge-track">
-                    <div className="gauge-indicator" style={{ left: `${(runningStyleTrendPosition - 1) * 25}%` }}></div>
-                    <div className="gauge-horse-icon" style={{ left: `${(runningStyleTrendPosition - 1) * 25}%` }}>🏇</div>
-                  </div>
-                  <div className="gauge-labels">
-                    <span>逃げ・先行が得意</span>
-                    <span>差分なし</span>
-                    <span>差し・追込が得意</span>
-                  </div>
-                  <div className="gauge-result">
-                    {runningStyleTrendPosition === 1 && '逃げ・先行が得意'}
-                    {runningStyleTrendPosition === 2 && 'やや逃げ・先行が得意'}
-                    {runningStyleTrendPosition === 3 && '差分なし'}
-                    {runningStyleTrendPosition === 4 && 'やや差し・追込が得意'}
-                    {runningStyleTrendPosition === 5 && '差し・追込が得意'}
-                  </div>
-
-                    {/* 脚質別複勝率グラフ */}
-                    <div className="running-style-place-rate-detail">
-                      <div className="running-style-detail-title">脚質別複勝率</div>
-                      <div className="running-style-chart">
-                        {sire.running_style_stats.map((style) => {
-                          // アイコンマッピング
-                          const styleIcons: { [key: string]: string } = {
-                            'escape': '逃',
-                            'lead': '先',
-                            'pursue': '差',
-                            'close': '追'
-                          };
-
-                          return (
-                            <div key={style.style} className="running-style-chart-item">
-                              <div className="running-style-badge">
-                                {styleIcons[style.style] || style.style_label}
-                              </div>
-                              <div className="running-style-bar-container">
-                                <div
-                                  className="running-style-bar"
-                                  style={{
-                                    width: `${style.place_rate ?? 0}%`
-                                  }}
-                                ></div>
-                              </div>
-                              <div className="running-style-rate">{(style.place_rate ?? 0).toFixed(1)}%</div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
                 </div>
 
                 {/* 区切り線 */}
@@ -730,6 +772,219 @@ export default function SireTestPage() {
                     </div>
                 </div>
 
+                {/* 区切り線 */}
+                <div className="section-divider"></div>
+
+                {/* 馬齢別傾向 */}
+                {sire.age_stats.some((age) => age.races > 0) ? (
+                  <div className="gauge-item">
+                    <div className="gauge-header">
+                      <h3 className="gauge-label">馬齢別傾向</h3>
+                      <AgeTrendExplanation />
+                    </div>
+                    <div className="gauge-track">
+                      <div className="gauge-indicator" style={{ left: `${(ageTrendPosition - 1) * 25}%` }}></div>
+                      <div className="gauge-horse-icon" style={{ left: `${(ageTrendPosition - 1) * 25}%` }}>🏇</div>
+                    </div>
+                    <div className="gauge-labels">
+                      <span>早熟型</span>
+                      <span>差分なし</span>
+                      <span>晩成型</span>
+                    </div>
+                    <div className="gauge-result">
+                      {ageTrendPosition === 1 && '早熟型'}
+                      {ageTrendPosition === 2 && 'やや早熟型'}
+                      {ageTrendPosition === 3 && '差分なし'}
+                      {ageTrendPosition === 4 && 'やや晩成型'}
+                      {ageTrendPosition === 5 && '晩成型'}
+                    </div>
+
+                    {/* 馬齢別複勝率グラフ */}
+                    <div className="gate-place-rate-detail">
+                      <div className="gate-detail-title">馬齢別複勝率</div>
+                      <div className="gate-chart">
+                        {sire.age_stats.map((age) => (
+                          <div key={age.age} className="gate-chart-item">
+                            <div
+                              style={{
+                                background: '#f0f0f0',
+                                border: '1px solid #ddd',
+                                borderRadius: '4px',
+                                color: '#333',
+                                padding: '4px 6px',
+                                fontSize: '0.7rem',
+                                fontWeight: '700',
+                                textAlign: 'center',
+                                minWidth: '40px',
+                                display: 'inline-block'
+                              }}
+                            >
+                              {age.age}
+                            </div>
+                            <div className="gate-bar-container">
+                              <div
+                                className="gate-bar"
+                                style={{
+                                  width: `${age.place_rate}%`
+                                }}
+                              ></div>
+                            </div>
+                            <div className="gate-rate">{age.races > 0 ? `${age.place_rate.toFixed(1)}%` : '-'}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="gauge-item">
+                    <div className="gauge-header">
+                      <h3 className="gauge-label">馬齢別傾向</h3>
+                      <AgeTrendExplanation />
+                    </div>
+                    <div className="gauge-result" style={{ textAlign: 'center', padding: '2rem 0', color: '#999' }}>
+                      データなし
+                    </div>
+                  </div>
+                )}
+
+                {/* 区切り線 */}
+                <div className="section-divider"></div>
+
+                {/* 得意な馬場傾向（芝） */}
+                <div className="gauge-item">
+                  <div className="gauge-header">
+                    <h3 className="gauge-label">得意な馬場傾向 - 芝</h3>
+                    <TurfConditionExplanation />
+                  </div>
+                  <div className="gauge-track">
+                    <div className="gauge-indicator" style={{ left: `${(turfConditionTrendPosition - 1) * 25}%` }}></div>
+                    <div className="gauge-horse-icon" style={{ left: `${(turfConditionTrendPosition - 1) * 25}%` }}>🏇</div>
+                  </div>
+                  <div className="gauge-labels">
+                    <span>良馬場が得意</span>
+                    <span>差分なし</span>
+                    <span>重馬場が得意</span>
+                  </div>
+                  <div className="gauge-result">
+                    {turfConditionTrendPosition === 1 && '良馬場が得意'}
+                    {turfConditionTrendPosition === 2 && 'やや良馬場が得意'}
+                    {turfConditionTrendPosition === 3 && '差分なし'}
+                    {turfConditionTrendPosition === 4 && 'やや重馬場が得意'}
+                    {turfConditionTrendPosition === 5 && '重馬場が得意'}
+                  </div>
+
+                  {/* 馬場状態別複勝率グラフ */}
+                  <div className="gate-place-rate-detail">
+                    <div className="gate-detail-title">馬場状態別複勝率</div>
+                    <div className="gate-chart">
+                      {sire.track_condition_stats
+                        .filter(s => s.surface === '芝')
+                        .sort((a, b) => {
+                          const order = { 'good': 1, 'yielding': 2, 'soft': 3, 'heavy': 4 };
+                          return (order[a.condition as keyof typeof order] || 99) - (order[b.condition as keyof typeof order] || 99);
+                        })
+                        .map((condition) => (
+                          <div key={condition.condition} className="gate-chart-item">
+                            <div
+                              style={{
+                                background: '#f0f0f0',
+                                border: '1px solid #ddd',
+                                borderRadius: '4px',
+                                color: '#333',
+                                padding: '4px 6px',
+                                fontSize: '0.7rem',
+                                fontWeight: '700',
+                                textAlign: 'center',
+                                minWidth: '40px',
+                                display: 'inline-block'
+                              }}
+                            >
+                              {condition.condition_label}
+                            </div>
+                            <div className="gate-bar-container">
+                              <div
+                                className="gate-bar"
+                                style={{
+                                  width: `${condition.place_rate}%`
+                                }}
+                              ></div>
+                            </div>
+                            <div className="gate-rate">{condition.place_rate.toFixed(1)}%</div>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 区切り線 */}
+                <div className="section-divider"></div>
+
+                {/* 得意な馬場傾向（ダート） */}
+                <div className="gauge-item">
+                  <div className="gauge-header">
+                    <h3 className="gauge-label">得意な馬場傾向 - ダート</h3>
+                    <TurfConditionExplanation />
+                  </div>
+                  <div className="gauge-track">
+                    <div className="gauge-indicator" style={{ left: `${(dirtConditionTrendPosition - 1) * 25}%` }}></div>
+                    <div className="gauge-horse-icon" style={{ left: `${(dirtConditionTrendPosition - 1) * 25}%` }}>🏇</div>
+                  </div>
+                  <div className="gauge-labels">
+                    <span>良馬場が得意</span>
+                    <span>差分なし</span>
+                    <span>重馬場が得意</span>
+                  </div>
+                  <div className="gauge-result">
+                    {dirtConditionTrendPosition === 1 && '良馬場が得意'}
+                    {dirtConditionTrendPosition === 2 && 'やや良馬場が得意'}
+                    {dirtConditionTrendPosition === 3 && '差分なし'}
+                    {dirtConditionTrendPosition === 4 && 'やや重馬場が得意'}
+                    {dirtConditionTrendPosition === 5 && '重馬場が得意'}
+                  </div>
+
+                  {/* 馬場状態別複勝率グラフ */}
+                  <div className="gate-place-rate-detail">
+                    <div className="gate-detail-title">馬場状態別複勝率</div>
+                    <div className="gate-chart">
+                      {sire.track_condition_stats
+                        .filter(s => s.surface === 'ダート')
+                        .sort((a, b) => {
+                          const order = { 'good': 1, 'yielding': 2, 'soft': 3, 'heavy': 4 };
+                          return (order[a.condition as keyof typeof order] || 99) - (order[b.condition as keyof typeof order] || 99);
+                        })
+                        .map((condition) => (
+                          <div key={condition.condition} className="gate-chart-item">
+                            <div
+                              style={{
+                                background: '#f0f0f0',
+                                border: '1px solid #ddd',
+                                borderRadius: '4px',
+                                color: '#333',
+                                padding: '4px 6px',
+                                fontSize: '0.7rem',
+                                fontWeight: '700',
+                                textAlign: 'center',
+                                minWidth: '40px',
+                                display: 'inline-block'
+                              }}
+                            >
+                              {condition.condition_label}
+                            </div>
+                            <div className="gate-bar-container">
+                              <div
+                                className="gate-bar"
+                                style={{
+                                  width: `${condition.place_rate}%`
+                                }}
+                              ></div>
+                            </div>
+                            <div className="gate-rate">{condition.place_rate.toFixed(1)}%</div>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                </div>
+
               </div>
             </BarChartAnimation>
           </section>
@@ -744,14 +999,6 @@ export default function SireTestPage() {
             <ClassTable
               title={`${sire.name}産駒 クラス別データ`}
               data={sire.class_stats}
-            />
-          </section>
-
-          {/* 人気別データセクション */}
-          <section id="popularity-stats" aria-label="人気別データ">
-            <PopularityTable
-              title={`${sire.name}産駒 人気別データ`}
-              data={sire.popularity_stats}
             />
           </section>
 
@@ -779,6 +1026,14 @@ export default function SireTestPage() {
             />
           </section>
 
+          {/* 馬齢別データセクション */}
+          <section id="age-stats" aria-label="馬齢別データ">
+            <AgeTable
+              title={`${sire.name}産駒 馬齢別データ`}
+              data={sire.age_stats}
+            />
+          </section>
+
           {/* 性別データセクション */}
           <section id="gender-stats" aria-label="性別データ">
             <GenderTable
@@ -795,6 +1050,121 @@ export default function SireTestPage() {
             />
           </section>
 
+          {/* 芝・ダート変わりデータセクション */}
+          {surfaceChangeStatsData.length > 0 && (() => {
+            // 各カラムの最大値を計算
+            const maxRaces = Math.max(...surfaceChangeStatsData.map(d => d.races ?? 0));
+            const maxWins = Math.max(...surfaceChangeStatsData.map(d => d.wins ?? 0));
+            const maxPlaces2 = Math.max(...surfaceChangeStatsData.map(d => d.places_2 ?? 0));
+            const maxPlaces3 = Math.max(...surfaceChangeStatsData.map(d => d.places_3 ?? 0));
+            const maxWinRate = Math.max(...surfaceChangeStatsData.map(d => d.win_rate ?? 0));
+            const maxPlaceRate = Math.max(...surfaceChangeStatsData.map(d => d.place_rate ?? 0));
+            const maxQuinellaRate = Math.max(...surfaceChangeStatsData.map(d => d.quinella_rate ?? 0));
+            const maxWinPayback = Math.max(...surfaceChangeStatsData.map(d => d.win_payback ?? 0));
+            const maxPlacePayback = Math.max(...surfaceChangeStatsData.map(d => d.place_payback ?? 0));
+
+            const isHighlight = (value: number, maxValue: number) => value === maxValue && value > 0;
+
+            return (
+              <section id="surface-change-stats" aria-label="芝・ダート変わりデータ">
+                <div className="section">
+                  <h2 className="section-title">{sire.name}産駒 芝・ダート変わりデータ</h2>
+                  <div className="mobile-table-container">
+                    <div className="mobile-table-scroll">
+                      <table className="mobile-data-table no-rank-column">
+                        <thead>
+                          <tr>
+                            <th className="mobile-sticky-col mobile-col-name mobile-col-name-header mobile-col-name-first">区分</th>
+                            <th className="mobile-scroll-col">出走数</th>
+                            <th className="mobile-scroll-col">1着</th>
+                            <th className="mobile-scroll-col">2着</th>
+                            <th className="mobile-scroll-col">3着</th>
+                            <th className="mobile-scroll-col mobile-col-rate">勝率</th>
+                            <th className="mobile-scroll-col mobile-col-rate">連対率</th>
+                            <th className="mobile-scroll-col mobile-col-rate">複勝率</th>
+                            <th className="mobile-scroll-col mobile-col-payback">単勝回収率</th>
+                            <th className="mobile-scroll-col mobile-col-payback">複勝回収率</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {surfaceChangeStatsData.map((stat, index) => (
+                            <tr key={stat.name} className={index % 2 === 0 ? 'mobile-row-even' : 'mobile-row-odd'}>
+                              <td className="mobile-sticky-col mobile-col-name mobile-sticky-body mobile-name-cell mobile-col-name-first">
+                                <span style={{
+                                  background: '#f0f0f0',
+                                  border: '1px solid #ddd',
+                                  borderRadius: '4px',
+                                  color: '#333',
+                                  padding: '4px 8px',
+                                  fontSize: '0.75rem',
+                                  fontWeight: '700',
+                                  display: 'inline-block',
+                                  minWidth: '60px',
+                                  textAlign: 'center'
+                                }}>
+                                  {stat.name}
+                                </span>
+                              </td>
+                              <td className="mobile-scroll-col">
+                                <span className={isHighlight(stat.races, maxRaces) ? 'mobile-highlight' : ''}>
+                                  {stat.races}
+                                </span>
+                              </td>
+                              <td className="mobile-scroll-col mobile-col-wins">
+                                <span className={isHighlight(stat.wins, maxWins) ? 'mobile-highlight' : ''}>
+                                  {stat.wins}
+                                </span>
+                              </td>
+                              <td className="mobile-scroll-col">
+                                <span className={isHighlight(stat.places_2, maxPlaces2) ? 'mobile-highlight' : ''}>
+                                  {stat.places_2}
+                                </span>
+                              </td>
+                              <td className="mobile-scroll-col">
+                                <span className={isHighlight(stat.places_3, maxPlaces3) ? 'mobile-highlight' : ''}>
+                                  {stat.places_3}
+                                </span>
+                              </td>
+                              <td className="mobile-scroll-col mobile-col-rate">
+                                <span className={isHighlight(stat.win_rate, maxWinRate) ? 'mobile-highlight' : ''}>
+                                  {stat.win_rate.toFixed(1)}%
+                                </span>
+                              </td>
+                              <td className="mobile-scroll-col mobile-col-rate">
+                                <span className={isHighlight(stat.quinella_rate, maxQuinellaRate) ? 'mobile-highlight' : ''}>
+                                  {stat.quinella_rate.toFixed(1)}%
+                                </span>
+                              </td>
+                              <td className="mobile-scroll-col mobile-col-rate">
+                                <span className={isHighlight(stat.place_rate, maxPlaceRate) ? 'mobile-highlight' : ''}>
+                                  {stat.place_rate.toFixed(1)}%
+                                </span>
+                              </td>
+                              <td className="mobile-scroll-col mobile-col-payback">
+                                <span className={isHighlight(stat.win_payback, maxWinPayback) ? 'mobile-highlight' : ''}>
+                                  {stat.win_payback.toFixed(1)}%
+                                </span>
+                              </td>
+                              <td className="mobile-scroll-col mobile-col-payback">
+                                <span className={isHighlight(stat.place_payback, maxPlacePayback) ? 'mobile-highlight' : ''}>
+                                  {stat.place_payback.toFixed(1)}%
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <p className="note-text" style={{ marginTop: '1rem' }}>
+                    ※芝→ダ：芝デビュー後、初めてダートに挑戦した際の成績<br />
+                    ※ダ→芝：ダートデビュー後、初めて芝に挑戦した際の成績
+                  </p>
+                </div>
+              </section>
+            );
+          })()}
+
           {/* 馬場状態別データセクション */}
           <section id="track-condition-stats" aria-label="馬場状態別データ">
             <TrackConditionTable
@@ -803,40 +1173,29 @@ export default function SireTestPage() {
             />
           </section>
 
-          {/* 競馬場別成績セクション */}
-          <section id="racecourse-stats" aria-label="競馬場別成績">
+          {/* 競馬場別データセクション */}
+          <section id="racecourse-stats" aria-label="競馬場別データ">
             <RacecourseTable
-              title={`${sire.name}産駒 競馬場別成績`}
+              title={`${sire.name}産駒 競馬場別データ`}
               data={racecourseSummaryDataWithTotals}
             />
           </section>
 
-          {/* コース別成績 */}
-          <section id="course-stats" aria-label="コース別成績">
+          {/* コース別データ */}
+          <section id="course-stats" aria-label="コース別データ">
             <RacecourseCourseTable
-              title={`${sire.name}産駒 コース別成績`}
+              title={`${sire.name}産駒 コース別データ`}
               data={coursesByRacecourse}
             />
           </section>
 
-          {/* 調教師別データセクション */}
-          <section id="trainer-stats" aria-label="調教師別データ">
+          {/* 母父別データセクション */}
+          <section id="dam-sire-stats" aria-label="母父別データ">
             <DataTable
-              title={`${sire.name}産駒 調教師別データ`}
-              data={sire.trainer_stats}
+              title={`${sire.name}産駒 母父別データ`}
+              data={sire.dam_sire_stats}
               initialShow={10}
-              nameLabel="調教師"
-              note="※現役調教師のみ"
-            />
-          </section>
-
-          {/* 騎手別データセクション */}
-          <section id="jockey-stats" aria-label="騎手別データ">
-            <DataTable
-              title={`${sire.name}産駒 騎手別データ`}
-              data={sire.jockey_stats}
-              initialShow={10}
-              nameLabel="騎手"
+              nameLabel="母父"
             />
           </section>
         </article>

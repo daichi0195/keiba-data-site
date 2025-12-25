@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import styles from './SurfaceTable.module.css';
+import styles from './AgeTable.module.css';
 
-type SurfaceRow = {
-  name: string;
+type AgeRow = {
+  age: string;
   races: number;
   wins: number;
   places_2: number;
@@ -18,10 +18,10 @@ type SurfaceRow = {
 
 type Props = {
   title: string;
-  data: SurfaceRow[];
+  data: AgeRow[];
 };
 
-export default function SurfaceTable({ title, data }: Props) {
+export default function AgeTable({ title, data }: Props) {
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -52,18 +52,6 @@ export default function SurfaceTable({ title, data }: Props) {
 
   const isHighlight = (value: number, maxValue: number) => value === maxValue;
 
-  // 芝・ダート・障害のバッジスタイルを取得
-  const getSurfaceBadgeStyle = (surface: string) => {
-    if (surface === '芝') {
-      return styles.turfBadge;
-    } else if (surface === 'ダート') {
-      return styles.dirtBadge;
-    } else if (surface === '障害') {
-      return styles.obstacleBadge;
-    }
-    return styles.surfaceBadge;
-  };
-
   return (
     <div className="section">
       <h2 className="section-title">{title}</h2>
@@ -73,8 +61,8 @@ export default function SurfaceTable({ title, data }: Props) {
           <table className={styles.table}>
             <thead>
               <tr>
-                <th className={styles.surfaceCol}>
-                  コース区分
+                <th className={styles.ageCol}>
+                  馬齢
                 </th>
                 <th className={styles.scrollCol}>出走数</th>
                 <th className={styles.scrollCol}>1着</th>
@@ -90,12 +78,12 @@ export default function SurfaceTable({ title, data }: Props) {
             <tbody>
               {data.map((row, index) => (
                 <tr
-                  key={row.name}
+                  key={row.age}
                   className={index % 2 === 0 ? styles.rowEven : styles.rowOdd}
                 >
-                  <td className={styles.surfaceCol}>
-                    <span className={getSurfaceBadgeStyle(row.name)}>
-                      {row.name}
+                  <td className={styles.ageCol}>
+                    <span className={styles.ageBadge}>
+                      {row.age}
                     </span>
                   </td>
                   <td className={styles.scrollCol}>

@@ -159,8 +159,13 @@
     background: #f0f0f0;
   }
 
-  /* 中央・ローカル集計行（区切り線のみ） */
+  /* 中央・ローカル・右回り・左回り集計行 */
   .summaryRow {
+    /* 区切り線なし（デフォルト） */
+  }
+
+  /* 最初の集計行（中央・右回り）のみ区切り線を表示 */
+  .firstSummaryRow {
     border-top: 2px solid #ddd !important;
   }
 
