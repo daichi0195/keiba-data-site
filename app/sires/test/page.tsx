@@ -25,6 +25,9 @@ import AgeTrendExplanation from '@/components/AgeTrendExplanation';
 import TurfConditionExplanation from '@/components/TurfConditionExplanation';
 import JockeyTrainerHighlights from '@/components/JockeyTrainerHighlights';
 
+// 動的レンダリングを強制（GCSアクセスのため）
+export const dynamic = 'force-dynamic';
+
 export default async function SireTestPage() {
   // GCSからドゥラメンテのデータを取得
   const sire = await getSireDataFromGCS('ドゥラメンテ');
