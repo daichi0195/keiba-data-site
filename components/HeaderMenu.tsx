@@ -6,103 +6,13 @@ import styles from './HeaderMenu.module.css';
 import { getCoursesByRacecourse, getCourseUrl, getCourseDisplayName } from '@/lib/courses';
 import { ALL_JOCKEYS, type JockeyInfo } from '@/lib/jockeys';
 import { ALL_TRAINERS, type TrainerInfo } from '@/lib/trainers';
+import { ALL_SIRES, type SireInfo } from '@/lib/sires';
 
 const racecoursesData = getCoursesByRacecourse().map(group => ({
   name: group.racecourse_ja,
   nameEn: group.racecourse,
   courses: group.courses
 }));
-
-// 種牡馬データ（五十音順）
-const siresData = [
-  {
-    kana: 'あ行',
-    sires: [
-      { name: 'アイルハヴアナザー', nameEn: 'ill-have-another' },
-      { name: 'アドマイヤムーン', nameEn: 'admire-moon' },
-      { name: 'アメリカンペイトリオット', nameEn: 'american-patriot' },
-      { name: 'エイシンフラッシュ', nameEn: 'a-shin-flash' },
-      { name: 'エスポワールシチー', nameEn: 'espoir-city' },
-      { name: 'エピファネイア', nameEn: 'epiphaneia' },
-      { name: 'オルフェーヴル', nameEn: 'orfevre' },
-    ],
-  },
-  {
-    kana: 'か行',
-    sires: [
-      { name: 'カレンブラックヒル', nameEn: 'curren-black-hill' },
-      { name: 'キタサンブラック', nameEn: 'kitasan-black' },
-      { name: 'キズナ', nameEn: 'kizuna' },
-      { name: 'キングカメハメハ', nameEn: 'king-kamehameha' },
-      { name: 'ゴールドシップ', nameEn: 'gold-ship' },
-    ],
-  },
-  {
-    kana: 'さ行',
-    sires: [
-      { name: 'サトノアラジン', nameEn: 'satono-aladdin' },
-      { name: 'サトノクラウン', nameEn: 'satono-crown' },
-      { name: 'サトノダイヤモンド', nameEn: 'satono-diamond' },
-      { name: 'シルバーステート', nameEn: 'silver-state' },
-      { name: 'ジャスタウェイ', nameEn: 'just-a-way' },
-    ],
-  },
-  {
-    kana: 'た行',
-    sires: [
-      { name: 'ダイワメジャー', nameEn: 'daiwa-major' },
-      { name: 'タートルボウル', nameEn: 'turtle-bowl' },
-      { name: 'ディープインパクト', nameEn: 'deep-impact' },
-      { name: 'ドゥラメンテ', nameEn: 'duramente' },
-    ],
-  },
-  {
-    kana: 'な行',
-    sires: [
-      { name: 'ナカヤマフェスタ', nameEn: 'nakayama-festa' },
-      { name: 'ノヴェリスト', nameEn: 'novellist' },
-    ],
-  },
-  {
-    kana: 'は行',
-    sires: [
-      { name: 'ハーツクライ', nameEn: 'hearts-cry' },
-      { name: 'ハービンジャー', nameEn: 'harbinger' },
-      { name: 'ビッグアーサー', nameEn: 'big-arthur' },
-      { name: 'フェノーメノ', nameEn: 'fenomeno' },
-    ],
-  },
-  {
-    kana: 'ま行',
-    sires: [
-      { name: 'マインドユアビスケッツ', nameEn: 'mind-your-biscuits' },
-      { name: 'マクフィ', nameEn: 'makfi' },
-      { name: 'ミッキーアイル', nameEn: 'mickey-isle' },
-      { name: 'モーリス', nameEn: 'maurice' },
-    ],
-  },
-  {
-    kana: 'や行',
-    sires: [
-      { name: 'ヨハネスブルグ', nameEn: 'johannesburg' },
-    ],
-  },
-  {
-    kana: 'ら行',
-    sires: [
-      { name: 'リアルインパクト', nameEn: 'real-impact' },
-      { name: 'リオンディーズ', nameEn: 'rio-de-la-plata' },
-      { name: 'ルーラーシップ', nameEn: 'rulership' },
-      { name: 'ロードカナロア', nameEn: 'lord-kanaloa' },
-    ],
-  },
-  {
-    kana: 'わ行',
-    sires: [
-      { name: 'ワールドエース', nameEn: 'world-ace' },
-    ],
-  },
-];
 
 // 騎手データを五十音順にグループ化
 const getKanaGroup = (kana: string): string => {
@@ -178,6 +88,30 @@ const trainersData = (() => {
     .map(kana => ({
       kana,
       trainers: grouped[kana].sort((a, b) => a.kana.localeCompare(b.kana, 'ja'))
+    }));
+})();
+
+// 種牡馬データを五十音順にグループ化
+const siresData = (() => {
+  const grouped: Record<string, SireInfo[]> = {};
+
+  ALL_SIRES.forEach(sire => {
+    // カタカナの種牡馬名から50音グループを判定
+    const group = getKanaGroup(sire.name);
+    if (!grouped[group]) {
+      grouped[group] = [];
+    }
+    grouped[group].push(sire);
+  });
+
+  // 五十音順に並び替え
+  const kanaOrder = ['あ行', 'か行', 'さ行', 'た行', 'な行', 'は行', 'ま行', 'や行', 'ら行', 'わ行', 'その他'];
+
+  return kanaOrder
+    .filter(kana => grouped[kana])
+    .map(kana => ({
+      kana,
+      sires: grouped[kana].sort((a, b) => a.name.localeCompare(b.name, 'ja'))
     }));
 })();
 
@@ -553,8 +487,8 @@ export default function HeaderMenu() {
                       <div className={styles.dataCardGrid}>
                         {group.sires.map((sire) => (
                           <Link
-                            key={sire.nameEn}
-                            href={`/sires/${sire.nameEn}`}
+                            key={sire.id}
+                            href={`/sires/${sire.id}`}
                             className={styles.dataCard}
                             onClick={closeMenu}
                           >
