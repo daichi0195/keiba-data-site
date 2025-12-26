@@ -1018,7 +1018,7 @@ export default async function TrainerPage({
                   <div className="gate-place-rate-detail">
                     <div className="gate-detail-title">コース別複勝率</div>
                     <div className="gate-chart">
-                      {trainer.surface_stats.map((surface) => {
+                      {trainer.surface_stats.filter(surface => surface.surface !== '障害').map((surface) => {
                         const isTurf = surface.surface === '芝';
                         const displayLabel = isTurf ? '芝' : 'ダ';
                         return (
