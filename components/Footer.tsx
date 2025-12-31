@@ -7,7 +7,7 @@ export default function Footer() {
       <div className={styles.footerContent}>
         <div className={styles.siteName}>
           <h2>競馬データ.com</h2>
-          <p className={styles.tagline}>競馬の予想にさらなるワクワクを</p>
+          <p className={styles.tagline}>競馬予想にさらなるワクワクを</p>
         </div>
 
         <ul className={styles.footerLinks}>

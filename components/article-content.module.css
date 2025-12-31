@@ -1,0 +1,59 @@
+/* 記事内セクション */
+.section {
+  margin-bottom: 2.5rem;
+}
+
+/* 記事内見出し（H2） */
+.heading {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1db854;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+/* 記事内テキスト */
+.text {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: #334155;
+  margin-bottom: 1rem;
+}
+
+/* 記事内リスト */
+.list {
+  margin-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.list li {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: #334155;
+  margin-bottom: 0.5rem;
+  list-style-type: disc;
+}
+
+/* 記事内リンク */
+.link {
+  color: #2563eb;
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+.link:hover {
+  color: #1d4ed8;
+}
+
+/* レスポンシブ */
+@media (max-width: 768px) {
+  .heading {
+    font-size: 1.25rem;
+  }
+
+  .text,
+  .list li {
+    font-size: 0.95rem;
+  }
+}
