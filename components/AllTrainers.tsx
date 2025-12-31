@@ -101,7 +101,7 @@ export default function AllTrainers() {
             className={`${styles.accordionItem} fade-in-card fade-in-stagger-${(index % 10) + 1}`}
           >
             <button
-              className={styles.accordionTrigger}
+              className={`${styles.accordionTrigger} ${expandedKana[group.kana] ? styles.expanded : ''}`}
               onClick={() => toggleKana(group.kana)}
             >
               <span className={styles.accordionIcon}>

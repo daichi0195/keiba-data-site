@@ -33,14 +33,18 @@
   border: none;
   font-size: 14px;
   font-weight: 700;
-  color: #2d3748;
+  color: #0f172a;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
   text-align: left;
 }
 
 .accordionTrigger:hover {
-  background: #ffffff;
+  color: #1db854;
+}
+
+.accordionTrigger.expanded {
+  color: #1db854;
 }
 
 .accordionIcon {
