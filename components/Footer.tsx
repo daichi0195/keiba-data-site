@@ -12,18 +12,13 @@ export default function Footer() {
 
         <ul className={styles.footerLinks}>
           <li>
-            <Link href="/terms" className={styles.footerLink}>
-              利用規約
-            </Link>
-          </li>
-          <li>
             <Link href="/privacy" className={styles.footerLink}>
               プライバシーポリシー
             </Link>
           </li>
           <li>
-            <Link href="/disclaimer" className={styles.footerLink}>
-              免責事項
+            <Link href="/contact" className={styles.footerLink}>
+              お問い合わせ
             </Link>
           </li>
         </ul>
