@@ -3,107 +3,51 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import styles from './AllSires.module.css';
-
-interface Sire {
-  name: string;
-  nameEn: string;
-}
+import { ALL_SIRES, type SireInfo } from '@/lib/sires';
 
 interface SireGroup {
   kana: string;
-  sires: Sire[];
+  sires: SireInfo[];
 }
 
-// モックデータ（五十音順）
-const siresData: SireGroup[] = [
-  {
-    kana: 'あ行',
-    sires: [
-      { name: 'アイルハヴアナザー', nameEn: 'ill-have-another' },
-      { name: 'アドマイヤムーン', nameEn: 'admire-moon' },
-      { name: 'アメリカンペイトリオット', nameEn: 'american-patriot' },
-      { name: 'エイシンフラッシュ', nameEn: 'a-shin-flash' },
-      { name: 'エスポワールシチー', nameEn: 'espoir-city' },
-      { name: 'エピファネイア', nameEn: 'epiphaneia' },
-      { name: 'オルフェーヴル', nameEn: 'orfevre' },
-    ],
-  },
-  {
-    kana: 'か行',
-    sires: [
-      { name: 'カレンブラックヒル', nameEn: 'curren-black-hill' },
-      { name: 'キタサンブラック', nameEn: 'kitasan-black' },
-      { name: 'キズナ', nameEn: 'kizuna' },
-      { name: 'キングカメハメハ', nameEn: 'king-kamehameha' },
-      { name: 'ゴールドシップ', nameEn: 'gold-ship' },
-    ],
-  },
-  {
-    kana: 'さ行',
-    sires: [
-      { name: 'サトノアラジン', nameEn: 'satono-aladdin' },
-      { name: 'サトノクラウン', nameEn: 'satono-crown' },
-      { name: 'サトノダイヤモンド', nameEn: 'satono-diamond' },
-      { name: 'シルバーステート', nameEn: 'silver-state' },
-      { name: 'ジャスタウェイ', nameEn: 'just-a-way' },
-    ],
-  },
-  {
-    kana: 'た行',
-    sires: [
-      { name: 'ダイワメジャー', nameEn: 'daiwa-major' },
-      { name: 'タートルボウル', nameEn: 'turtle-bowl' },
-      { name: 'ディープインパクト', nameEn: 'deep-impact' },
-      { name: 'ドゥラメンテ', nameEn: 'duramente' },
-    ],
-  },
-  {
-    kana: 'な行',
-    sires: [
-      { name: 'ナカヤマフェスタ', nameEn: 'nakayama-festa' },
-      { name: 'ノヴェリスト', nameEn: 'novellist' },
-    ],
-  },
-  {
-    kana: 'は行',
-    sires: [
-      { name: 'ハーツクライ', nameEn: 'hearts-cry' },
-      { name: 'ハービンジャー', nameEn: 'harbinger' },
-      { name: 'ビッグアーサー', nameEn: 'big-arthur' },
-      { name: 'フェノーメノ', nameEn: 'fenomeno' },
-    ],
-  },
-  {
-    kana: 'ま行',
-    sires: [
-      { name: 'マインドユアビスケッツ', nameEn: 'mind-your-biscuits' },
-      { name: 'マクフィ', nameEn: 'makfi' },
-      { name: 'ミッキーアイル', nameEn: 'mickey-isle' },
-      { name: 'モーリス', nameEn: 'maurice' },
-    ],
-  },
-  {
-    kana: 'や行',
-    sires: [
-      { name: 'ヨハネスブルグ', nameEn: 'johannesburg' },
-    ],
-  },
-  {
-    kana: 'ら行',
-    sires: [
-      { name: 'リアルインパクト', nameEn: 'real-impact' },
-      { name: 'リオンディーズ', nameEn: 'rio-de-la-plata' },
-      { name: 'ルーラーシップ', nameEn: 'rulership' },
-      { name: 'ロードカナロア', nameEn: 'lord-kanaloa' },
-    ],
-  },
-  {
-    kana: 'わ行',
-    sires: [
-      { name: 'ワールドエース', nameEn: 'world-ace' },
-    ],
-  },
-];
+// 五十音順グループ化関数（HeaderMenuと同じロジック）
+const getKanaGroup = (name: string): string => {
+  if (!name) return 'その他';
+  const first = name.charAt(0);
+  if (/[あいうえおアイウエオ]/.test(first)) return 'あ行';
+  if (/[かきくけこがぎぐげごカキクケコガギグゲゴ]/.test(first)) return 'か行';
+  if (/[さしすせそざじずぜぞサシスセソザジズゼゾ]/.test(first)) return 'さ行';
+  if (/[たちつてとだぢづでどタチツテトダヂヅデド]/.test(first)) return 'た行';
+  if (/[なにぬねのナニヌネノ]/.test(first)) return 'な行';
+  if (/[はひふへほばびぶべぼぱぴぷぺぽハヒフヘホバビブベボパピプペポ]/.test(first)) return 'は行';
+  if (/[まみむめもマミムメモ]/.test(first)) return 'ま行';
+  if (/[やゆよヤユヨ]/.test(first)) return 'や行';
+  if (/[らりるれろラリルレロ]/.test(first)) return 'ら行';
+  if (/[わをんワヲン]/.test(first)) return 'わ行';
+  return 'その他';
+};
+
+// 種牡馬データを五十音順にグループ化
+const siresData = (() => {
+  const grouped: Record<string, SireInfo[]> = {};
+
+  ALL_SIRES.forEach(sire => {
+    const group = getKanaGroup(sire.name);
+    if (!grouped[group]) {
+      grouped[group] = [];
+    }
+    grouped[group].push(sire);
+  });
+
+  const kanaOrder = ['あ行', 'か行', 'さ行', 'た行', 'な行', 'は行', 'ま行', 'や行', 'ら行', 'わ行', 'その他'];
+
+  return kanaOrder
+    .filter(kana => grouped[kana])
+    .map(kana => ({
+      kana,
+      sires: grouped[kana].sort((a, b) => a.name.localeCompare(b.name, 'ja'))
+    }));
+})();
 
 interface ExpandedState {
   [key: string]: boolean;
@@ -168,18 +112,17 @@ export default function AllSires() {
 
             {expandedKana[group.kana] && (
               <div className={styles.accordionContent}>
-                <ul className={styles.sireList}>
+                <div className={styles.dataCardGrid}>
                   {group.sires.map((sire) => (
-                    <li key={sire.nameEn}>
-                      <Link
-                        href={`/sires/${sire.nameEn}`}
-                        className={styles.sireLink}
-                      >
-                        {sire.name}
-                      </Link>
-                    </li>
+                    <Link
+                      key={sire.id}
+                      href={`/sires/${sire.id}`}
+                      className={styles.dataCard}
+                    >
+                      {sire.name}
+                    </Link>
                   ))}
-                </ul>
+                </div>
               </div>
             )}
           </div>

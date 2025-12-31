@@ -3,30 +3,13 @@
 import { useState, useEffect, useRef } from 'react';
 import styles from './JockeyLeading.module.css';
 import AllTrainers from './AllTrainers';
+import { LeadingData } from '@/lib/getLeadingData';
 
-interface TrainerData {
-  rank: number;
-  name: string;
-  wins: number;
-  rides: number;
-  winRate: number;
+interface TrainerLeadingProps {
+  data: LeadingData[];
 }
 
-// モックデータ
-const mockTrainerData: TrainerData[] = [
-  { rank: 1, name: '藤沢和雄', wins: 198, rides: 920, winRate: 21.5 },
-  { rank: 2, name: '友道康夫', wins: 185, rides: 880, winRate: 21.0 },
-  { rank: 3, name: '矢作芳人', wins: 172, rides: 850, winRate: 20.2 },
-  { rank: 4, name: '角居勝彦', wins: 165, rides: 820, winRate: 20.1 },
-  { rank: 5, name: '国枝栄', wins: 158, rides: 780, winRate: 20.3 },
-  { rank: 6, name: '堀宣行', wins: 152, rides: 790, winRate: 19.2 },
-  { rank: 7, name: '池江泰寿', wins: 148, rides: 760, winRate: 19.5 },
-  { rank: 8, name: '須貝尚介', wins: 142, rides: 740, winRate: 19.2 },
-  { rank: 9, name: '音無秀孝', wins: 138, rides: 720, winRate: 19.2 },
-  { rank: 10, name: '中内田充正', wins: 135, rides: 710, winRate: 19.0 },
-];
-
-export default function TrainerLeading() {
+export default function TrainerLeading({ data }: TrainerLeadingProps) {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -52,7 +35,7 @@ export default function TrainerLeading() {
     };
   }, []);
 
-  const maxWins = Math.max(...mockTrainerData.map((t) => t.wins));
+  const maxWins = Math.max(...data.map((t) => t.wins));
 
   // 順位に応じた背景色を返す関数
   const getRankBadgeColor = (rank: number) => {
@@ -69,7 +52,7 @@ export default function TrainerLeading() {
       <div className="gate-place-rate-detail">
         <div className="gate-detail-title">調教師リーディング</div>
         <div className="gate-chart">
-          {mockTrainerData.map((trainer) => (
+          {data.map((trainer) => (
             <div key={trainer.rank} className="gate-chart-item">
               <div
                 className="gate-number-badge"

@@ -8,12 +8,16 @@ import AllVenues from './AllVenues';
 import JockeyLeading from './JockeyLeading';
 import SireLeading from './SireLeading';
 import TrainerLeading from './TrainerLeading';
+import { LeadingData } from '@/lib/getLeadingData';
 
 interface RaceTabsProps {
   onTabChange?: (tab: 'central' | 'local') => void;
+  jockeyLeading: LeadingData[];
+  trainerLeading: LeadingData[];
+  sireLeading: LeadingData[];
 }
 
-export default function RaceTabs({ onTabChange }: RaceTabsProps) {
+export default function RaceTabs({ onTabChange, jockeyLeading, trainerLeading, sireLeading }: RaceTabsProps) {
   const [activeTab, setActiveTab] = useState<'central' | 'local'>('central');
 
   const handleTabClick = (tab: 'central' | 'local') => {
@@ -63,9 +67,9 @@ export default function RaceTabs({ onTabChange }: RaceTabsProps) {
             </section>
 
             <AllVenues />
-            <JockeyLeading />
-            <SireLeading />
-            <TrainerLeading />
+            <JockeyLeading data={jockeyLeading} />
+            <SireLeading data={sireLeading} />
+            <TrainerLeading data={trainerLeading} />
           </div>
         )}
         {activeTab === 'local' && (

@@ -1,5 +1,9 @@
 import { Metadata } from 'next';
 import RaceTabs from '@/components/RaceTabs';
+import { getJockeyLeading, getTrainerLeading, getSireLeading } from '@/lib/getLeadingData';
+
+// ISR: 1日1回（86400秒）再生成
+export const revalidate = 86400;
 
 export const metadata: Metadata = {
   title: '競馬データ.com - 予想に役立つ競馬データの分析サイト',
@@ -14,7 +18,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function HomePage() {
+export default async function HomePage() {
+  // サーバー側でリーディングデータを読み込む
+  const jockeyLeading = await getJockeyLeading();
+  const trainerLeading = await getTrainerLeading();
+  const sireLeading = await getSireLeading();
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
@@ -35,7 +43,11 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
       <div style={{ backgroundColor: '#fbfcfd' }}>
-        <RaceTabs />
+        <RaceTabs
+          jockeyLeading={jockeyLeading}
+          trainerLeading={trainerLeading}
+          sireLeading={sireLeading}
+        />
       </div>
     </>
   );

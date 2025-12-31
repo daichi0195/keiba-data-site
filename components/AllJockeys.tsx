@@ -3,128 +3,51 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import styles from './AllJockeys.module.css';
-
-interface Jockey {
-  name: string;
-  nameEn: string;
-  gender: 'male' | 'female';
-}
+import { ALL_JOCKEYS, type JockeyInfo } from '@/lib/jockeys';
 
 interface JockeyGroup {
   kana: string;
-  jockeys: Jockey[];
+  jockeys: JockeyInfo[];
 }
 
-// モックデータ（五十音順）
-const jockeysData: JockeyGroup[] = [
-  {
-    kana: 'あ行',
-    jockeys: [
-      { name: '秋山真一郎', nameEn: 'akiyama-shinichiro', gender: 'male' },
-      { name: '池添謙一', nameEn: 'ikezoe-kenichi', gender: 'male' },
-      { name: '石橋脩', nameEn: 'ishibashi-osamu', gender: 'male' },
-      { name: '石川裕紀人', nameEn: 'ishikawa-yukito', gender: 'male' },
-      { name: '泉谷楓真', nameEn: 'izumiya-fuuma', gender: 'male' },
-      { name: '岩田康誠', nameEn: 'iwata-yasunari', gender: 'male' },
-      { name: '岩田望来', nameEn: 'iwata-mitsuki', gender: 'male' },
-      { name: '内田博幸', nameEn: 'uchida-hiroyuki', gender: 'male' },
-      { name: '大野拓弥', nameEn: 'oono-takuya', gender: 'male' },
-      { name: '荻野極', nameEn: 'ogino-kiwamu', gender: 'male' },
-    ],
-  },
-  {
-    kana: 'か行',
-    jockeys: [
-      { name: '角田大河', nameEn: 'kakuda-taiga', gender: 'male' },
-      { name: '勝浦正樹', nameEn: 'katsuura-masaki', gender: 'male' },
-      { name: '川田将雅', nameEn: 'kawata-masayoshi', gender: 'male' },
-      { name: '菊沢一樹', nameEn: 'kikuzawa-kazuki', gender: 'male' },
-      { name: '北村友一', nameEn: 'kitamura-yuichi', gender: 'male' },
-      { name: '国分恭介', nameEn: 'kokubun-kyosuke', gender: 'male' },
-      { name: '国分優作', nameEn: 'kokubun-yusaku', gender: 'male' },
-      { name: '小林勝太', nameEn: 'kobayashi-shouta', gender: 'male' },
-      { name: '小林脩斗', nameEn: 'kobayashi-shuuto', gender: 'male' },
-    ],
-  },
-  {
-    kana: 'さ行',
-    jockeys: [
-      { name: '坂井瑠星', nameEn: 'sakai-ryusei', gender: 'male' },
-      { name: '酒井学', nameEn: 'sakai-manabu', gender: 'male' },
-      { name: '柴田大知', nameEn: 'shibata-daichi', gender: 'male' },
-      { name: '島川綾', nameEn: 'shimakawa-ryo', gender: 'male' },
-      { name: '杉原誠人', nameEn: 'sugihara-makoto', gender: 'male' },
-      { name: '菅原明良', nameEn: 'sugawara-akira', gender: 'male' },
-      { name: '鮫島克駿', nameEn: 'sameshima-katsutoshi', gender: 'male' },
-    ],
-  },
-  {
-    kana: 'た行',
-    jockeys: [
-      { name: '武豊', nameEn: 'take-yutaka', gender: 'male' },
-      { name: '田口貫太', nameEn: 'taguchi-kanta', gender: 'male' },
-      { name: '田辺裕信', nameEn: 'tanabe-hironobu', gender: 'male' },
-      { name: '津村明秀', nameEn: 'tsumura-akihide', gender: 'male' },
-      { name: '戸崎圭太', nameEn: 'tosaki-keita', gender: 'male' },
-      { name: '富田暁', nameEn: 'tomita-satoru', gender: 'male' },
-      { name: '藤田菜七子', nameEn: 'fujita-nanako', gender: 'female' },
-    ],
-  },
-  {
-    kana: 'な行',
-    jockeys: [
-      { name: '永野猛蔵', nameEn: 'nagano-takezou', gender: 'male' },
-      { name: '中井裕二', nameEn: 'nakai-yuji', gender: 'male' },
-      { name: '西村淳也', nameEn: 'nishimura-junya', gender: 'male' },
-    ],
-  },
-  {
-    kana: 'は行',
-    jockeys: [
-      { name: '浜中俊', nameEn: 'hamanaka-shun', gender: 'male' },
-      { name: '原優介', nameEn: 'hara-yusuke', gender: 'male' },
-      { name: '藤岡佑介', nameEn: 'fujioka-yusuke', gender: 'male' },
-      { name: '藤岡康太', nameEn: 'fujioka-kouta', gender: 'male' },
-      { name: '古川奈穂', nameEn: 'furukawa-naho', gender: 'female' },
-      { name: '福永祐一', nameEn: 'fukunaga-yuichi', gender: 'male' },
-    ],
-  },
-  {
-    kana: 'ま行',
-    jockeys: [
-      { name: '松岡正海', nameEn: 'matsuoka-masaumi', gender: 'male' },
-      { name: '松山弘平', nameEn: 'matsuyama-kouhei', gender: 'male' },
-      { name: '丸田恭介', nameEn: 'maruta-kyosuke', gender: 'male' },
-      { name: '三浦皇成', nameEn: 'miura-kousei', gender: 'male' },
-      { name: '宮崎北斗', nameEn: 'miyazaki-hokuto', gender: 'male' },
-      { name: '武藤雅', nameEn: 'mutou-miyabi', gender: 'female' },
-    ],
-  },
-  {
-    kana: 'や行',
-    jockeys: [
-      { name: '横山武史', nameEn: 'yokoyama-takeshi', gender: 'male' },
-      { name: '横山和生', nameEn: 'yokoyama-kazuki', gender: 'male' },
-      { name: '横山典弘', nameEn: 'yokoyama-norihiro', gender: 'male' },
-      { name: '吉田隼人', nameEn: 'yoshida-hayato', gender: 'male' },
-    ],
-  },
-  {
-    kana: 'ら行',
-    jockeys: [
-      { name: 'C.ルメール', nameEn: 'lemaire', gender: 'male' },
-      { name: 'M.デムーロ', nameEn: 'demuro', gender: 'male' },
-      { name: 'R.ムーア', nameEn: 'moore', gender: 'male' },
-      { name: '鲁西迪', nameEn: 'russell', gender: 'male' },
-    ],
-  },
-  {
-    kana: 'わ行',
-    jockeys: [
-      { name: '和田竜二', nameEn: 'wada-ryuji', gender: 'male' },
-    ],
-  },
-];
+// 五十音順グループ化関数（HeaderMenuと同じロジック）
+const getKanaGroup = (kana: string): string => {
+  if (!kana) return 'その他';
+  const first = kana.charAt(0);
+  if (/[あいうえおアイウエオ]/.test(first)) return 'あ行';
+  if (/[かきくけこがぎぐげごカキクケコガギグゲゴ]/.test(first)) return 'か行';
+  if (/[さしすせそざじずぜぞサシスセソザジズゼゾ]/.test(first)) return 'さ行';
+  if (/[たちつてとだぢづでどタチツテトダヂヅデド]/.test(first)) return 'た行';
+  if (/[なにぬねのナニヌネノ]/.test(first)) return 'な行';
+  if (/[はひふへほばびぶべぼぱぴぷぺぽハヒフヘホバビブベボパピプペポ]/.test(first)) return 'は行';
+  if (/[まみむめもマミムメモ]/.test(first)) return 'ま行';
+  if (/[やゆよヤユヨ]/.test(first)) return 'や行';
+  if (/[らりるれろラリルレロ]/.test(first)) return 'ら行';
+  if (/[わをんワヲン]/.test(first)) return 'わ行';
+  return 'その他';
+};
+
+// 騎手データを五十音順にグループ化
+const jockeysData = (() => {
+  const grouped: Record<string, JockeyInfo[]> = {};
+
+  ALL_JOCKEYS.forEach(jockey => {
+    const group = getKanaGroup(jockey.kana);
+    if (!grouped[group]) {
+      grouped[group] = [];
+    }
+    grouped[group].push(jockey);
+  });
+
+  const kanaOrder = ['あ行', 'か行', 'さ行', 'た行', 'な行', 'は行', 'ま行', 'や行', 'ら行', 'わ行', 'その他'];
+
+  return kanaOrder
+    .filter(kana => grouped[kana])
+    .map(kana => ({
+      kana,
+      jockeys: grouped[kana].sort((a, b) => a.kana.localeCompare(b.kana, 'ja'))
+    }));
+})();
 
 interface ExpandedState {
   [key: string]: boolean;
@@ -189,19 +112,17 @@ export default function AllJockeys() {
 
             {expandedKana[group.kana] && (
               <div className={styles.accordionContent}>
-                <ul className={styles.jockeyList}>
+                <div className={styles.dataCardGrid}>
                   {group.jockeys.map((jockey) => (
-                    <li key={jockey.nameEn}>
-                      <Link
-                        href={`/jockeys/${jockey.nameEn}`}
-                        className={styles.jockeyLink}
-                        data-gender={jockey.gender}
-                      >
-                        {jockey.name}
-                      </Link>
-                    </li>
+                    <Link
+                      key={jockey.id}
+                      href={`/jockeys/${jockey.id}`}
+                      className={styles.dataCard}
+                    >
+                      {jockey.name}
+                    </Link>
                   ))}
-                </ul>
+                </div>
               </div>
             )}
           </div>

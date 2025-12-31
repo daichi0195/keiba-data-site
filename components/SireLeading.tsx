@@ -3,30 +3,13 @@
 import { useState, useEffect, useRef } from 'react';
 import styles from './SireLeading.module.css';
 import AllSires from './AllSires';
+import { LeadingData } from '@/lib/getLeadingData';
 
-interface SireData {
-  rank: number;
-  name: string;
-  wins: number;
-  rides: number;
-  winRate: number;
+interface SireLeadingProps {
+  data: LeadingData[];
 }
 
-// モックデータ
-const mockSireData: SireData[] = [
-  { rank: 1, name: 'ディープインパクト', wins: 245, rides: 1520, winRate: 16.1 },
-  { rank: 2, name: 'ロードカナロア', wins: 198, rides: 1380, winRate: 14.3 },
-  { rank: 3, name: 'ハーツクライ', wins: 187, rides: 1450, winRate: 12.9 },
-  { rank: 4, name: 'キングカメハメハ', wins: 176, rides: 1290, winRate: 13.6 },
-  { rank: 5, name: 'オルフェーヴル', wins: 165, rides: 1180, winRate: 14.0 },
-  { rank: 6, name: 'ダイワメジャー', wins: 154, rides: 1250, winRate: 12.3 },
-  { rank: 7, name: 'ルーラーシップ', wins: 148, rides: 1100, winRate: 13.5 },
-  { rank: 8, name: 'キズナ', wins: 142, rides: 980, winRate: 14.5 },
-  { rank: 9, name: 'エピファネイア', wins: 136, rides: 920, winRate: 14.8 },
-  { rank: 10, name: 'モーリス', wins: 128, rides: 850, winRate: 15.1 },
-];
-
-export default function SireLeading() {
+export default function SireLeading({ data }: SireLeadingProps) {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -52,7 +35,7 @@ export default function SireLeading() {
     };
   }, []);
 
-  const maxWins = Math.max(...mockSireData.map((s) => s.wins));
+  const maxWins = Math.max(...data.map((s) => s.wins));
 
   // 順位に応じた背景色を返す関数
   const getRankBadgeColor = (rank: number) => {
@@ -70,7 +53,7 @@ export default function SireLeading() {
       <div className="gate-place-rate-detail">
         <div className="gate-detail-title">種牡馬リーディング</div>
         <div className="gate-chart">
-          {mockSireData.map((sire) => (
+          {data.map((sire) => (
             <div key={sire.rank} className="gate-chart-item">
               <div
                 className="gate-number-badge"
