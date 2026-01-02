@@ -2,7 +2,6 @@ import { Metadata } from 'next';
 import ArticleLayout from '@/components/ArticleLayout';
 import SiteAbout from './content/site-about';
 import OperatorInfo from './content/operator-info';
-import Disclaimer from './content/disclaimer';
 import Copyright from './content/copyright';
 import ContactSection from './content/contact-section';
 
@@ -19,7 +18,6 @@ export default function AboutPage() {
     >
       <SiteAbout />
       <OperatorInfo />
-      <Disclaimer />
       <Copyright />
       <ContactSection />
     </ArticleLayout>
