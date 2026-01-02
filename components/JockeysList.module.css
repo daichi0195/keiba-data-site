@@ -4,8 +4,8 @@
 }
 
 .jockeyGrid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   list-style: none;
   padding: 0;
@@ -35,10 +35,6 @@
 
 /* レスポンシブ */
 @media (max-width: 768px) {
-  .jockeyGrid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
   .jockeyLink {
     font-size: 0.8rem;
     padding: 0.5rem;
