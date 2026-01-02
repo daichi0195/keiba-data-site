@@ -9,6 +9,8 @@ For comprehensive project documentation, please refer to:
 - **[ARCHITECTURE.md](./ARCHITECTURE.md)**: システム全体のアーキテクチャ、技術スタック、データフロー、デプロイメント戦略
 - **[COMPONENTS.md](./COMPONENTS.md)**: 全コンポーネントの詳細リファレンス、Props型定義、開発ベストプラクティス
 - **[CLAUDE.md](./CLAUDE.md)** (このファイル): 開発時のクイックリファレンス、コーディング規約、ワークフロー
+- **[AI_WORKFLOW.md](./ai/AI_WORKFLOW.md)**: 競馬予測AIモデル開発ワークフロー、BigQueryベースの処理フロー、特徴量管理 ⚠️ **AI開発時は必読**
+- **[DATA_LEAKAGE_CHECKLIST.md](./ai/DATA_LEAKAGE_CHECKLIST.md)**: 🚨 **特徴量追加時は必ずチェック** データリーケージ防止チェックリスト
 
 ## Quick Start Commands
 

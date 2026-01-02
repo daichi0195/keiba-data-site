@@ -1,0 +1,174 @@
+﻿threshold,total_races,total_cost,total_return,profit,recovery_rate,hit_rate,hits,avg_odds,race_bets
+0.0,3358,335800,261960.0,-73840.0,78.01072066706372,26.503871351995233,890,2.943370786516854,"            race_id   race_date racecourse  ... pred_prob  hit return
+8      202403030101  2024-11-02         福島  ...  0.448833    0    0.0
+29     202403030102  2024-11-02         福島  ...  0.125865    0    0.0
+38     202403030103  2024-11-02         福島  ...  0.318061    0    0.0
+60     202403030104  2024-11-02         福島  ...  0.196385    1  480.0
+66     202403030105  2024-11-02         福島  ...  0.106356    0    0.0
+...             ...         ...        ...  ...       ...  ...    ...
+33876  202510020808  2025-07-20         小倉  ...  0.183345    0    0.0
+33880  202510020809  2025-07-20         小倉  ...  0.261805    1  570.0
+33891  202510020810  2025-07-20         小倉  ...  0.208002    1  480.0
+33905  202510020811  2025-07-20         小倉  ...  0.257642    0    0.0
+33929  202510020812  2025-07-20         小倉  ...  0.292347    0    0.0
+
+[3358 rows x 164 columns]"
+0.1,3196,319600,248510.0,-71090.0,77.75657071339174,26.87734668335419,859,2.893015133876601,"            race_id   race_date racecourse  ... pred_prob  hit return
+8      202403030101  2024-11-02         福島  ...  0.448833    0    0.0
+29     202403030102  2024-11-02         福島  ...  0.125865    0    0.0
+38     202403030103  2024-11-02         福島  ...  0.318061    0    0.0
+60     202403030104  2024-11-02         福島  ...  0.196385    1  480.0
+66     202403030105  2024-11-02         福島  ...  0.106356    0    0.0
+...             ...         ...        ...  ...       ...  ...    ...
+33876  202510020808  2025-07-20         小倉  ...  0.183345    0    0.0
+33880  202510020809  2025-07-20         小倉  ...  0.261805    1  570.0
+33891  202510020810  2025-07-20         小倉  ...  0.208002    1  480.0
+33905  202510020811  2025-07-20         小倉  ...  0.257642    0    0.0
+33929  202510020812  2025-07-20         小倉  ...  0.292347    0    0.0
+
+[3196 rows x 164 columns]"
+0.2,1951,195100,148510.0,-46590.0,76.11993849308047,29.47206560738083,575,2.582782608695652,"            race_id   race_date racecourse  ... pred_prob  hit return
+8      202403030101  2024-11-02         福島  ...  0.448833    0    0.0
+38     202403030103  2024-11-02         福島  ...  0.318061    0    0.0
+82     202403030106  2024-11-02         福島  ...  0.212843    0    0.0
+93     202403030107  2024-11-02         福島  ...  0.201069    0    0.0
+173    202403030112  2024-11-02         福島  ...  0.315091    0    0.0
+...             ...         ...        ...  ...       ...  ...    ...
+33860  202510020807  2025-07-20         小倉  ...  0.265392    0    0.0
+33880  202510020809  2025-07-20         小倉  ...  0.261805    1  570.0
+33891  202510020810  2025-07-20         小倉  ...  0.208002    1  480.0
+33905  202510020811  2025-07-20         小倉  ...  0.257642    0    0.0
+33929  202510020812  2025-07-20         小倉  ...  0.292347    0    0.0
+
+[1951 rows x 164 columns]"
+0.3,739,73900,60770.0,-13130.0,82.23274695534506,35.182679296346414,260,2.3373076923076925,"            race_id   race_date racecourse  ... pred_prob  hit return
+8      202403030101  2024-11-02         福島  ...  0.448833    0    0.0
+38     202403030103  2024-11-02         福島  ...  0.318061    0    0.0
+173    202403030112  2024-11-02         福島  ...  0.315091    0    0.0
+969    202403030307  2024-11-09         福島  ...  0.434610    1  280.0
+999    202403030309  2024-11-09         福島  ...  0.366818    0    0.0
+...             ...         ...        ...  ...       ...  ...    ...
+32880  202510020603  2025-07-13         小倉  ...  0.336553    0    0.0
+32975  202510020610  2025-07-13         小倉  ...  0.484168    0    0.0
+33338  202510020702  2025-07-19         小倉  ...  0.496747    0    0.0
+33393  202510020706  2025-07-19         小倉  ...  0.325649    0    0.0
+33811  202510020803  2025-07-20         小倉  ...  0.361521    0    0.0
+
+[739 rows x 164 columns]"
+0.4,209,20900,19470.0,-1430.0,93.15789473684211,41.62679425837321,87,2.2379310344827585,"            race_id   race_date racecourse  ... pred_prob  hit return
+8      202403030101  2024-11-02         福島  ...  0.448833    0    0.0
+969    202403030307  2024-11-09         福島  ...  0.434610    1  280.0
+2322   202403030601  2024-11-17         福島  ...  0.419849    0    0.0
+1086   202405050303  2024-11-09         東京  ...  0.498790    0    0.0
+1107   202405050304  2024-11-09         東京  ...  0.423946    1  240.0
+...             ...         ...        ...  ...       ...  ...    ...
+31597  202510020308  2025-07-05         小倉  ...  0.427142    1  300.0
+31620  202510020310  2025-07-05         小倉  ...  0.581077    1  120.0
+32041  202510020409  2025-07-06         小倉  ...  0.434477    0    0.0
+32975  202510020610  2025-07-13         小倉  ...  0.484168    0    0.0
+33338  202510020702  2025-07-19         小倉  ...  0.496747    0    0.0
+
+[209 rows x 164 columns]"
+0.45,109,10900,9330.0,-1570.0,85.59633027522936,44.03669724770643,48,1.9437499999999999,"            race_id   race_date racecourse  ... pred_prob  hit return
+1086   202405050303  2024-11-09         東京  ...  0.498790    0    0.0
+1191   202405050311  2024-11-09         東京  ...  0.524587    1  170.0
+1998   202405050502  2024-11-16         東京  ...  0.543643    1  370.0
+2094   202405050509  2024-11-16         東京  ...  0.643628    1  230.0
+2834   202405050701  2024-11-23         東京  ...  0.457823    0    0.0
+...             ...         ...        ...  ...       ...  ...    ...
+41931  202509040808  2025-09-27         阪神  ...  0.569700    0    0.0
+11461  202510010310  2025-02-01         小倉  ...  0.504970    1  140.0
+31620  202510020310  2025-07-05         小倉  ...  0.581077    1  120.0
+32975  202510020610  2025-07-13         小倉  ...  0.484168    0    0.0
+33338  202510020702  2025-07-19         小倉  ...  0.496747    0    0.0
+
+[109 rows x 164 columns]"
+0.5,41,4100,4170.0,70.0,101.70731707317073,51.21951219512195,21,1.9857142857142858,"            race_id   race_date racecourse  ... pred_prob  hit return
+1191   202405050311  2024-11-09         東京  ...  0.524587    1  170.0
+1998   202405050502  2024-11-16         東京  ...  0.543643    1  370.0
+2094   202405050509  2024-11-16         東京  ...  0.643628    1  230.0
+3200   202405050804  2024-11-24         東京  ...  0.558282    1  250.0
+3263   202405050809  2024-11-24         東京  ...  0.524257    0    0.0
+5959   202406050603  2024-12-15         中山  ...  0.501831    0    0.0
+6911   202406050807  2024-12-22         中山  ...  0.509599    0    0.0
+2768   202408060608  2024-11-17         京都  ...  0.583604    0    0.0
+2819   202408060612  2024-11-17         京都  ...  0.541438    1  180.0
+3047   202408060703  2024-11-23         京都  ...  0.619917    0    0.0
+3123   202408060711  2024-11-23         京都  ...  0.522230    1  190.0
+3927   202408070108  2024-11-30         京都  ...  0.513949    0    0.0
+6317   202408070604  2024-12-15         京都  ...  0.545496    1  140.0
+33937  202501010101  2025-07-26         札幌  ...  0.528220    0    0.0
+37183  202501010812  2025-08-17         札幌  ...  0.610544    1  310.0
+30780  202502010601  2025-06-29         函館  ...  0.528281    0    0.0
+32606  202502011006  2025-07-13         函館  ...  0.620197    0    0.0
+33491  202502011201  2025-07-20         函館  ...  0.546886    0    0.0
+30491  202503020102  2025-06-28         福島  ...  0.610957    0    0.0
+36357  202504020608  2025-08-10         新潟  ...  0.574488    1  190.0
+12033  202505010303  2025-02-08         東京  ...  0.626012    1  110.0
+44173  202505040608  2025-10-18         東京  ...  0.566713    0    0.0
+45771  202505041001  2025-11-01         東京  ...  0.526137    1  130.0
+45800  202505041003  2025-11-01         東京  ...  0.564371    1  180.0
+46212  202505041112  2025-11-02         東京  ...  0.504263    0    0.0
+10584  202506010903  2025-01-26         中山  ...  0.519711    1  140.0
+41403  202506040703  2025-09-21         中山  ...  0.569043    1  110.0
+8143   202507010204  2025-01-06         中京  ...  0.629750    0    0.0
+8904   202507010407  2025-01-12         中京  ...  0.623588    0    0.0
+37334  202507030801  2025-08-17         中京  ...  0.627880    1  110.0
+37433  202507030809  2025-08-17         中京  ...  0.517979    0    0.0
+38757  202507040306  2025-08-30         中京  ...  0.512548    1  260.0
+43199  202508030307  2025-10-11         京都  ...  0.557368    0    0.0
+45626  202508030901  2025-10-26         京都  ...  0.530481    1  430.0
+45638  202508030903  2025-10-26         京都  ...  0.585150    0    0.0
+40359  202509040303  2025-09-13         阪神  ...  0.595277    1  240.0
+40679  202509040404  2025-09-14         阪神  ...  0.526206    0    0.0
+41024  202509040509  2025-09-15         阪神  ...  0.503748    1  170.0
+41931  202509040808  2025-09-27         阪神  ...  0.569700    0    0.0
+11461  202510010310  2025-02-01         小倉  ...  0.504970    1  140.0
+31620  202510020310  2025-07-05         小倉  ...  0.581077    1  120.0
+
+[41 rows x 164 columns]"
+0.55,20,2000,1850.0,-150.0,92.5,50.0,10,1.85,"            race_id   race_date racecourse  ... pred_prob  hit return
+2094   202405050509  2024-11-16         東京  ...  0.643628    1  230.0
+3200   202405050804  2024-11-24         東京  ...  0.558282    1  250.0
+2768   202408060608  2024-11-17         京都  ...  0.583604    0    0.0
+3047   202408060703  2024-11-23         京都  ...  0.619917    0    0.0
+37183  202501010812  2025-08-17         札幌  ...  0.610544    1  310.0
+32606  202502011006  2025-07-13         函館  ...  0.620197    0    0.0
+30491  202503020102  2025-06-28         福島  ...  0.610957    0    0.0
+36357  202504020608  2025-08-10         新潟  ...  0.574488    1  190.0
+12033  202505010303  2025-02-08         東京  ...  0.626012    1  110.0
+44173  202505040608  2025-10-18         東京  ...  0.566713    0    0.0
+45800  202505041003  2025-11-01         東京  ...  0.564371    1  180.0
+41403  202506040703  2025-09-21         中山  ...  0.569043    1  110.0
+8143   202507010204  2025-01-06         中京  ...  0.629750    0    0.0
+8904   202507010407  2025-01-12         中京  ...  0.623588    0    0.0
+37334  202507030801  2025-08-17         中京  ...  0.627880    1  110.0
+43199  202508030307  2025-10-11         京都  ...  0.557368    0    0.0
+45638  202508030903  2025-10-26         京都  ...  0.585150    0    0.0
+40359  202509040303  2025-09-13         阪神  ...  0.595277    1  240.0
+41931  202509040808  2025-09-27         阪神  ...  0.569700    0    0.0
+31620  202510020310  2025-07-05         小倉  ...  0.581077    1  120.0
+
+[20 rows x 164 columns]"
+0.6,9,900,760.0,-140.0,84.44444444444444,44.44444444444444,4,1.9,"            race_id   race_date racecourse  ... pred_prob  hit return
+2094   202405050509  2024-11-16         東京  ...  0.643628    1  230.0
+3047   202408060703  2024-11-23         京都  ...  0.619917    0    0.0
+37183  202501010812  2025-08-17         札幌  ...  0.610544    1  310.0
+32606  202502011006  2025-07-13         函館  ...  0.620197    0    0.0
+30491  202503020102  2025-06-28         福島  ...  0.610957    0    0.0
+12033  202505010303  2025-02-08         東京  ...  0.626012    1  110.0
+8143   202507010204  2025-01-06         中京  ...  0.629750    0    0.0
+8904   202507010407  2025-01-12         中京  ...  0.623588    0    0.0
+37334  202507030801  2025-08-17         中京  ...  0.627880    1  110.0
+
+[9 rows x 164 columns]"
+0.65,0,0,0.0,0.0,0.0,0.0,0,0.0,"Empty DataFrame
+Columns: [race_id, race_date, racecourse, surface, distance, going, race_class, horse_id, horse_name, finish_position, time, last_3f_time, horse_number, bracket_number, jockey_id, jockey_name, trainer_id, trainer_name, sex, age, jockey_weight, horse_weight, weight_change, popularity, odds, corner_positions, running_style_encoded, time_last1, time_last2, time_last3, time_last4, time_last5, last_3f_time_last1, last_3f_time_last2, last_3f_time_last3, last_3f_time_last4, last_3f_time_last5, finish_position_last1, finish_position_last2, finish_position_last3, finish_position_last4, finish_position_last5, finish_pos_mean_last5, finish_pos_best_last5, running_style_last1, running_style_mode, days_since_last_race, is_jockey_change, jockey_place_rate_surface_distance, jockey_rides_surface_distance, venue_name_last1, distance_last1, surface_last1, track_condition_last1, venue_name_last2, distance_last2, surface_last2, track_condition_last2, venue_name_last3, distance_last3, surface_last3, track_condition_last3, venue_name_last4, distance_last4, surface_last4, track_condition_last4, venue_name_last5, distance_last5, surface_last5, track_condition_last5, time_index_zscore_last1, last3f_index_zscore_last1, time_index_pct_last1, last3f_index_pct_last1, time_index_raw_last1, last3f_index_raw_last1, time_index_zscore_last2, last3f_index_zscore_last2, time_index_pct_last2, last3f_index_pct_last2, time_index_raw_last2, last3f_index_raw_last2, time_index_zscore_last3, last3f_index_zscore_last3, time_index_pct_last3, last3f_index_pct_last3, time_index_raw_last3, last3f_index_raw_last3, time_index_zscore_last4, last3f_index_zscore_last4, time_index_pct_last4, last3f_index_pct_last4, time_index_raw_last4, last3f_index_raw_last4, time_index_zscore_last5, last3f_index_zscore_last5, time_index_pct_last5, last3f_index_pct_last5, time_index_raw_last5, last3f_index_raw_last5, ...]
+Index: []
+
+[0 rows x 164 columns]"
+0.7,0,0,0.0,0.0,0.0,0.0,0,0.0,"Empty DataFrame
+Columns: [race_id, race_date, racecourse, surface, distance, going, race_class, horse_id, horse_name, finish_position, time, last_3f_time, horse_number, bracket_number, jockey_id, jockey_name, trainer_id, trainer_name, sex, age, jockey_weight, horse_weight, weight_change, popularity, odds, corner_positions, running_style_encoded, time_last1, time_last2, time_last3, time_last4, time_last5, last_3f_time_last1, last_3f_time_last2, last_3f_time_last3, last_3f_time_last4, last_3f_time_last5, finish_position_last1, finish_position_last2, finish_position_last3, finish_position_last4, finish_position_last5, finish_pos_mean_last5, finish_pos_best_last5, running_style_last1, running_style_mode, days_since_last_race, is_jockey_change, jockey_place_rate_surface_distance, jockey_rides_surface_distance, venue_name_last1, distance_last1, surface_last1, track_condition_last1, venue_name_last2, distance_last2, surface_last2, track_condition_last2, venue_name_last3, distance_last3, surface_last3, track_condition_last3, venue_name_last4, distance_last4, surface_last4, track_condition_last4, venue_name_last5, distance_last5, surface_last5, track_condition_last5, time_index_zscore_last1, last3f_index_zscore_last1, time_index_pct_last1, last3f_index_pct_last1, time_index_raw_last1, last3f_index_raw_last1, time_index_zscore_last2, last3f_index_zscore_last2, time_index_pct_last2, last3f_index_pct_last2, time_index_raw_last2, last3f_index_raw_last2, time_index_zscore_last3, last3f_index_zscore_last3, time_index_pct_last3, last3f_index_pct_last3, time_index_raw_last3, last3f_index_raw_last3, time_index_zscore_last4, last3f_index_zscore_last4, time_index_pct_last4, last3f_index_pct_last4, time_index_raw_last4, last3f_index_raw_last4, time_index_zscore_last5, last3f_index_zscore_last5, time_index_pct_last5, last3f_index_pct_last5, time_index_raw_last5, last3f_index_raw_last5, ...]
+Index: []
+
+[0 rows x 164 columns]"

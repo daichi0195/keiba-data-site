@@ -1,0 +1,4 @@
+﻿pattern,features,jockey_features,auc_test,hit_rate_all,recovery_rate_all,bet_count_all,hit_rate_050,recovery_rate_050,bet_count_050,profit_all,profit_050
+A: 複勝率のみ（現行）,33,place_rate,0.7663,26.5,78.01,3358,51.22,101.71,41,-73840,70
+B: 勝率のみ,31,win_rate,0.7258,25.19,89.48,3358,100.0,310.0,1,-35320,210
+C: 複勝率+勝率,32,place_rate + win_rate,0.724,24.96,90.18,3358,0.0,0.0,0,-32960,0
