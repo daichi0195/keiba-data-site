@@ -22,7 +22,7 @@ const getKanaGroup = (kana: string): string => {
   const first = kana.charAt(0);
 
   // あ行
-  if (/[あいうえおアイウエオ]/.test(first)) return 'あ行';
+  if (/[あいうえおアイウエオヴ]/.test(first)) return 'あ行';
   // か行
   if (/[かきくけこがぎぐげごカキクケコガギグゲゴ]/.test(first)) return 'か行';
   // さ行

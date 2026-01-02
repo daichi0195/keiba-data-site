@@ -14,7 +14,7 @@ interface SireGroup {
 const getKanaGroup = (name: string): string => {
   if (!name) return 'その他';
   const first = name.charAt(0);
-  if (/[あいうえおアイウエオ]/.test(first)) return 'ア行';
+  if (/[あいうえおアイウエオヴ]/.test(first)) return 'ア行';
   if (/[かきくけこがぎぐげごカキクケコガギグゲゴ]/.test(first)) return 'カ行';
   if (/[さしすせそざじずぜぞサシスセソザジズゼゾ]/.test(first)) return 'サ行';
   if (/[たちつてとだぢづでどタチツテトダヂヅデド]/.test(first)) return 'タ行';

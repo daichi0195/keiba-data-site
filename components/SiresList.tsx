@@ -5,7 +5,7 @@ import { ALL_SIRES } from '@/lib/sires';
 
 // 五十音グループ定義（カタカナ対応）
 const KANA_GROUPS = [
-  { id: 'a-gyo', label: 'ア行', pattern: /^[アイウエオァィゥェォ]/ },
+  { id: 'a-gyo', label: 'ア行', pattern: /^[アイウエオァィゥェォヴ]/ },
   { id: 'ka-gyo', label: 'カ行', pattern: /^[カキクケコガギグゲゴヵヶ]/ },
   { id: 'sa-gyo', label: 'サ行', pattern: /^[サシスセソザジズゼゾ]/ },
   { id: 'ta-gyo', label: 'タ行', pattern: /^[タチツテトダヂヅデド]/ },
