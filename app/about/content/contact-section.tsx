@@ -7,7 +7,7 @@ export default function ContactSection() {
       <p className={styles.text}>
         当サイトに関するご意見・ご要望は、
         <a href="/contact" className={styles.link}>お問い合わせページ</a>
-        よりご連絡ください。
+        よりお気軽にご連絡ください！
       </p>
     </section>
   );

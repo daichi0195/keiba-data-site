@@ -6,7 +6,7 @@ export default function RacingHistory() {
       <h2 className={styles.heading}>競馬歴について</h2>
       <p className={styles.text}>
         2020年のアイビスサマーダッシュが競馬デビューです！<br />
-        ジョーカナチャンで馬券を取って以来、菱田騎手を応援しています📣
+        ジョーカナチャンで馬券を取らせてもらったので、この時以来菱田騎手を応援しています📣
       </p>
       <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', maxWidth: '100%', margin: '1rem 0' }}>
         <iframe
@@ -29,9 +29,6 @@ export default function RacingHistory() {
           allowFullScreen
         />
       </div>
-      <p className={styles.text}>
-
-      </p>
     </section>
   );
 }
