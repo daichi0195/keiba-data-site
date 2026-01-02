@@ -1,0 +1,42 @@
+.sireList {
+  display: flex;
+  flex-direction: column;
+}
+
+.sireGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sireLink {
+  display: block;
+  padding: 0.625rem;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  transition: all 0.2s ease;
+  border: 1px solid #1db854;
+  background: #fff;
+  color: #2d3748;
+  text-align: center;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.sireLink:hover {
+  box-shadow: 0 2px 8px rgba(29, 184, 84, 0.15);
+  border-color: #1a9f47;
+}
+
+/* レスポンシブ */
+@media (max-width: 768px) {
+  .sireLink {
+    font-size: 0.8rem;
+    padding: 0.5rem;
+  }
+}
