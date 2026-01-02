@@ -6,14 +6,14 @@ import Copyright from './content/copyright';
 import ContactSection from './content/contact-section';
 
 export const metadata: Metadata = {
-  title: 'このサイトについて | 競馬データ.com',
+  title: 'サイト情報・運営者情報 | 競馬データ.com',
   description: '競馬データ.comの運営者情報・サイトについてのページです。',
 };
 
 export default function AboutPage() {
   return (
     <ArticleLayout
-      title="このサイトについて"
+      title="サイト情報・運営者情報"
       showDateIcon={false}
     >
       <SiteAbout />
