@@ -661,7 +661,7 @@ export default async function CoursePage({ params }: Props) {
       {
         '@type': 'ListItem',
         position: 2,
-        name: 'コース',
+        name: 'コース一覧',
         item: `${baseUrl}/courses`,
       },
       {
@@ -1099,7 +1099,7 @@ export default async function CoursePage({ params }: Props) {
         <ol style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
           <li><Link href="/">ホーム</Link></li>
           <li aria-hidden="true">&gt;</li>
-          <li><Link href="/courses">コース</Link></li>
+          <li><Link href="/courses">コース一覧</Link></li>
           <li aria-hidden="true">&gt;</li>
           <li aria-current="page">{course_info.racecourse} {course_info.surface}{course_info.distance}m</li>
         </ol>
