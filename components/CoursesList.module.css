@@ -1,0 +1,111 @@
+.venueList {
+  display: flex;
+  flex-direction: column;
+}
+
+.venueContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.surfaceGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.courseList {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  grid-auto-flow: dense;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.courseLink {
+  display: block;
+  width: 100%;
+  padding: 6px 12px;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: 1px solid;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.variantGroup {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  grid-column: span 2;
+}
+
+.variantGroup .courseLink {
+  flex: 1;
+}
+
+/* 芝コースのスタイル */
+.turfGroup .surfaceLabel {
+  color: #0d5c2f;
+}
+
+.turfLink {
+  background: #e2f7eb;
+  border-color: #bbe7d3;
+  color: #0c532a;
+}
+
+.turfLink:hover {
+  background: #d4f1e1;
+  border-color: #1db854;
+}
+
+/* ダートコースのスタイル */
+.dirtGroup .surfaceLabel {
+  color: #6b4423;
+}
+
+.dirtLink {
+  background: #fde9d7;
+  border-color: #ffd7ae;
+  color: #633d1e;
+}
+
+.dirtLink:hover {
+  background: #fcdfc5;
+  border-color: #a67c52;
+}
+
+/* 障害コースのスタイル */
+.steeplechaseGroup .surfaceLabel {
+  color: #4a4a4a;
+}
+
+.steeplechaseLink {
+  background: #f2f2f2;
+  border-color: #c0c0c0;
+  color: #4a4a4a;
+}
+
+.steeplechaseLink:hover {
+  background: #e0e0e0;
+  border-color: #9a9a9a;
+}
+
+/* レスポンシブ */
+@media (max-width: 768px) {
+  .courseList {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .courseLink {
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+}

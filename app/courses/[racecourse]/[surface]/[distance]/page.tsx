@@ -661,13 +661,13 @@ export default async function CoursePage({ params }: Props) {
       {
         '@type': 'ListItem',
         position: 2,
-        name: `${racecourseJa}競馬場`,
-        item: `${baseUrl}/courses/${resolvedParams.racecourse}`,
+        name: 'コース',
+        item: `${baseUrl}/courses`,
       },
       {
         '@type': 'ListItem',
         position: 3,
-        name: `${surfaceJa}${distanceDisplay}m${trackVariantLabel}`,
+        name: `${racecourseJa}競馬場 ${surfaceJa}${distanceDisplay}m${trackVariantLabel}`,
         item: `${baseUrl}/courses/${resolvedParams.racecourse}/${resolvedParams.surface}/${resolvedParams.distance}`,
       },
     ],
@@ -1101,9 +1101,7 @@ export default async function CoursePage({ params }: Props) {
           <li aria-hidden="true">&gt;</li>
           <li><Link href="/courses">コース</Link></li>
           <li aria-hidden="true">&gt;</li>
-          <li><Link href={`/courses/${resolvedParams.racecourse}`}>{course_info.racecourse}</Link></li>
-          <li aria-hidden="true">&gt;</li>
-          <li aria-current="page">{course_info.surface} {course_info.distance}m</li>
+          <li aria-current="page">{course_info.racecourse} {course_info.surface}{course_info.distance}m</li>
         </ol>
       </nav>
     </>
