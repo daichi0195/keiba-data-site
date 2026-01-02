@@ -95,9 +95,25 @@ const trainersData = (() => {
 const siresData = (() => {
   const grouped: Record<string, SireInfo[]> = {};
 
+  // ひらがな→カタカナ変換マップ
+  const kanaToKatakana: Record<string, string> = {
+    'あ行': 'ア行',
+    'か行': 'カ行',
+    'さ行': 'サ行',
+    'た行': 'タ行',
+    'な行': 'ナ行',
+    'は行': 'ハ行',
+    'ま行': 'マ行',
+    'や行': 'ヤ行',
+    'ら行': 'ラ行',
+    'わ行': 'ワ行',
+    'その他': 'その他'
+  };
+
   ALL_SIRES.forEach(sire => {
     // カタカナの種牡馬名から50音グループを判定
-    const group = getKanaGroup(sire.name);
+    const hiraganaGroup = getKanaGroup(sire.name);
+    const group = kanaToKatakana[hiraganaGroup] || hiraganaGroup;
     if (!grouped[group]) {
       grouped[group] = [];
     }
@@ -105,7 +121,7 @@ const siresData = (() => {
   });
 
   // 五十音順に並び替え
-  const kanaOrder = ['あ行', 'か行', 'さ行', 'た行', 'な行', 'は行', 'ま行', 'や行', 'ら行', 'わ行', 'その他'];
+  const kanaOrder = ['ア行', 'カ行', 'サ行', 'タ行', 'ナ行', 'ハ行', 'マ行', 'ヤ行', 'ラ行', 'ワ行', 'その他'];
 
   return kanaOrder
     .filter(kana => grouped[kana])
