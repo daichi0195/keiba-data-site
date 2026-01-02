@@ -2,6 +2,7 @@ import { MetadataRoute } from 'next';
 import { ALL_COURSES } from '@/lib/courses';
 import { ALL_JOCKEYS } from '@/lib/jockeys';
 import { ALL_TRAINERS } from '@/lib/trainers';
+import { ALL_SIRES } from '@/lib/sires';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   // ベースURL
@@ -51,5 +52,35 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...homeEntry, ...courseEntries, ...jockeyEntries, ...trainerEntries];
+  // 種牡馬ページ
+  const sireEntries: MetadataRoute.Sitemap = ALL_SIRES.map(sire => ({
+    url: `${baseUrl}/sires/${sire.id}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.7,
+  }));
+
+  // 静的ページ
+  const staticEntries: MetadataRoute.Sitemap = [
+    {
+      url: `${baseUrl}/courses`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/privacy`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.3,
+    },
+    {
+      url: `${baseUrl}/contact`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.5,
+    },
+  ];
+
+  return [...homeEntry, ...staticEntries, ...courseEntries, ...jockeyEntries, ...trainerEntries, ...sireEntries];
 }
