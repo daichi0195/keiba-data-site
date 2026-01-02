@@ -111,6 +111,11 @@ header {
   color: var(--primary-green);
 }
 
+.breadcrumb-footer [aria-current="page"] {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
 /* メインコンテンツ */
 main {
   max-width: 1200px;
