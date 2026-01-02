@@ -6,7 +6,7 @@ import styles from '@/components/article-content.module.css';
 
 export const metadata: Metadata = {
   title: '種牡馬別データ一覧｜種牡馬の成績・特徴がまるわかり！- 競馬データ.com',
-  description: '種牡馬の成績や特徴がまるわかり！豊富な統計データをどこよりもみやすく！',
+  description: '種牡馬の成績や特徴がまるわかり！豊富な統計データで予想をサポート。',
 };
 
 export default function SiresPage() {
