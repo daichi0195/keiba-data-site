@@ -13,7 +13,7 @@ export default function Footer() {
         <ul className={styles.footerLinks}>
           <li>
             <Link href="/about" className={styles.footerLink}>
-              このサイトについて
+              サイト情報・運営者情報
             </Link>
           </li>
           <li>
