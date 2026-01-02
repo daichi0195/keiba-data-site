@@ -5,8 +5,8 @@ import BottomNav from '@/components/BottomNav';
 import styles from '@/components/article-content.module.css';
 
 export const metadata: Metadata = {
-  title: '調教師一覧 | 競馬データ.com',
-  description: '過去3年間に30レース以上出走している現役中央調教師の一覧。あいうえお順に並べて表示しています。',
+  title: '調教師別データ一覧｜調教師の成績・特徴がまるわかり！- 競馬データ.com',
+  description: '調教師の成績や特徴がまるわかり！豊富な統計データをどこよりもみやすく！',
 };
 
 export default function TrainersPage() {

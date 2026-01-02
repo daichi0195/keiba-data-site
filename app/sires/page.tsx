@@ -5,8 +5,8 @@ import BottomNav from '@/components/BottomNav';
 import styles from '@/components/article-content.module.css';
 
 export const metadata: Metadata = {
-  title: '種牡馬一覧 | 競馬データ.com',
-  description: '過去3年間に産駒が出走している主要種牡馬の一覧。あいうえお順に並べて表示しています。',
+  title: '種牡馬別データ一覧｜種牡馬の成績・特徴がまるわかり！- 競馬データ.com',
+  description: '種牡馬の成績や特徴がまるわかり！豊富な統計データをどこよりもみやすく！',
 };
 
 export default function SiresPage() {

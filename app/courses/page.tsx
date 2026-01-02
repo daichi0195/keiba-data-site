@@ -5,8 +5,8 @@ import BottomNav from '@/components/BottomNav';
 import styles from '@/components/article-content.module.css';
 
 export const metadata: Metadata = {
-  title: 'コース別データ一覧 | 競馬データ.com',
-  description: '全国の中央競馬場（中山・東京・阪神・京都など）のコース別データ一覧。芝・ダート・障害、各距離ごとの詳細なデータを確認できます。',
+  title: 'コース別データ一覧｜コースの成績・特徴がまるわかり！- 競馬データ.com',
+  description: 'コースの成績や特徴がまるわかり！豊富な統計データをどこよりもみやすく！',
 };
 
 export default function CoursesPage() {

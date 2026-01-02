@@ -5,8 +5,8 @@ import BottomNav from '@/components/BottomNav';
 import styles from '@/components/article-content.module.css';
 
 export const metadata: Metadata = {
-  title: '騎手一覧 | 競馬データ.com',
-  description: '過去3年間に30レース以上出走している現役中央騎手の一覧。あいうえお順に並べて表示しています。',
+  title: '騎手別データ一覧｜騎手の成績・特徴がまるわかり！- 競馬データ.com',
+  description: '騎手の成績や特徴がまるわかり！豊富な統計データをどこよりもみやすく！',
 };
 
 export default function JockeysPage() {
