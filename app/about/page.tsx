@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import ArticleLayout from '@/components/ArticleLayout';
 import SiteAbout from './content/site-about';
 import OperatorInfo from './content/operator-info';
+import RacingHistory from './content/racing-history';
 import Copyright from './content/copyright';
 import ContactSection from './content/contact-section';
 
@@ -18,6 +19,7 @@ export default function AboutPage() {
     >
       <SiteAbout />
       <OperatorInfo />
+      <RacingHistory />
       <Copyright />
       <ContactSection />
     </ArticleLayout>

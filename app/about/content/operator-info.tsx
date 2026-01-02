@@ -3,15 +3,12 @@ import styles from '@/components/article-content.module.css';
 export default function OperatorInfo() {
   return (
     <section className={styles.section}>
-      <h2 className={styles.heading}>運営者情報</h2>
+      <h2 className={styles.heading}>運営者について</h2>
       <p className={styles.text}>
-        <strong>サイト名：</strong>競馬データ.com
+        田舎に住んでいる競馬好きの27歳🐴
       </p>
       <p className={styles.text}>
-        <strong>URL：</strong>https://www.keibadata.com
-      </p>
-      <p className={styles.text}>
-        <strong>運営開始：</strong>2025年1月
+        現在は個人でマーケター（<del>とは名ばかりのなんでも屋</del>）として活動しています。
       </p>
     </section>
   );
