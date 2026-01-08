@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import DataTable from '@/components/DataTable';
-import HeaderMenu from '@/components/HeaderMenu';
 import BottomNav from '@/components/BottomNav';
+import TableOfContents from '@/components/TableOfContents';
 import JockeyLeadingChart from '@/components/JockeyLeadingChart';
 import YearlyTable from '@/components/YearlyTable';
 import ClassTable from '@/components/ClassTable';
@@ -693,7 +693,6 @@ export default async function JockeyPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-      <HeaderMenu />
       <BottomNav items={navigationItems} />
       <main>
         <article>
@@ -1104,6 +1103,8 @@ export default async function JockeyPage({
             />
           </section>
         </article>
+        {/* PC用：右サイドバー目次 */}
+        <TableOfContents items={navigationItems} />
       </main>
 
       {/* パンくず（フッター） */}

@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import RaceTabs from '@/components/RaceTabs';
+import TableOfContents from '@/components/TableOfContents';
 import { getJockeyLeading, getTrainerLeading, getSireLeading } from '@/lib/getLeadingData';
 
 // ISR: 1日1回（86400秒）再生成
@@ -42,13 +43,16 @@ export default async function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
-      <div style={{ backgroundColor: '#fbfcfd' }}>
-        <RaceTabs
-          jockeyLeading={jockeyLeading}
-          trainerLeading={trainerLeading}
-          sireLeading={sireLeading}
-        />
-      </div>
+      <main>
+        <article style={{ backgroundColor: '#fbfcfd' }}>
+          <RaceTabs
+            jockeyLeading={jockeyLeading}
+            trainerLeading={trainerLeading}
+            sireLeading={sireLeading}
+          />
+        </article>
+        <TableOfContents />
+      </main>
     </>
   );
 }

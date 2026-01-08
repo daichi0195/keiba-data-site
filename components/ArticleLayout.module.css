@@ -1,7 +1,7 @@
 /* 記事コンテナ */
 .container {
   background-color: #fbfcfd;
-  padding: 16px 1rem 1rem 1rem;
+  padding: 0;
 }
 
 /* 記事本体 */
@@ -41,6 +41,17 @@
 /* 記事コンテンツエリア */
 .content {
   margin-top: 24px;
+}
+
+/* PC時の3カラムレイアウト対応 */
+@media (min-width: 769px) {
+  .container {
+    grid-column: 2;
+  }
+
+  .article {
+    padding: 32px;
+  }
 }
 
 /* レスポンシブ */

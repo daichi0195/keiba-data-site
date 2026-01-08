@@ -1,9 +1,9 @@
 import { Metadata } from 'next';
 import ArticleLayout from '@/components/ArticleLayout';
+import TableOfContents from '@/components/TableOfContents';
 import SiteAbout from './content/site-about';
 import OperatorInfo from './content/operator-info';
 import RacingHistory from './content/racing-history';
-import Copyright from './content/copyright';
 import ContactSection from './content/contact-section';
 
 export const metadata: Metadata = {
@@ -13,15 +13,17 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <ArticleLayout
-      title="サイト情報・運営者情報"
-      showDateIcon={false}
-    >
-      <SiteAbout />
-      <OperatorInfo />
-      <RacingHistory />
-      <Copyright />
-      <ContactSection />
-    </ArticleLayout>
+    <main>
+      <ArticleLayout
+        title="サイト情報・運営者情報"
+        showDateIcon={false}
+      >
+        <SiteAbout />
+        <OperatorInfo />
+        <RacingHistory />
+        <ContactSection />
+      </ArticleLayout>
+      <TableOfContents />
+    </main>
   );
 }

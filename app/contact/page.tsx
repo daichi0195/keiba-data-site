@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import ArticleLayout from '@/components/ArticleLayout';
+import TableOfContents from '@/components/TableOfContents';
 import styles from '@/components/article-content.module.css';
 
 export const metadata: Metadata = {
@@ -9,10 +10,11 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <ArticleLayout
-      title="お問い合わせ"
-      publishDate="2025年1月1日"
-    >
+    <main>
+      <ArticleLayout
+        title="お問い合わせ"
+        publishDate="2025年1月1日"
+      >
       <section className={styles.section}>
         <h2 className={styles.heading}>お問い合わせについて</h2>
         <p className={styles.text}>
@@ -52,6 +54,8 @@ export default function ContactPage() {
           </a>
         </div>
       </div>
-    </ArticleLayout>
+      </ArticleLayout>
+      <TableOfContents />
+    </main>
   );
 }

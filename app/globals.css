@@ -158,10 +158,12 @@ main {
     margin: 0 auto; /* 中央配置 */
     width: 100%;
     box-sizing: border-box;
+    align-items: start;
   }
 
-  /* 左側スペース（将来的に広告用） */
-  main > article {
+  /* 中央コンテンツエリア（article直接 または ArticleLayoutのdiv.container） */
+  main > article,
+  main > div:first-child {
     grid-column: 2;
     max-width: 650px;
     min-width: 0; /* グリッドオーバーフロー防止 */
@@ -170,6 +172,7 @@ main {
   /* 右側目次 */
   main > aside {
     grid-column: 3;
+    padding-bottom: 2rem;
   }
 
   /* ヘッダーサイズの調整 */

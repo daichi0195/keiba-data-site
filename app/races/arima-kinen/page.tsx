@@ -10,7 +10,6 @@ import VolatilityExplanation from '@/components/VolatilityExplanation';
 import GatePositionExplanation from '@/components/GatePositionExplanation';
 import RunningStyleExplanation from '@/components/RunningStyleExplanation';
 import RunningStyleDefinition from '@/components/RunningStyleDefinition';
-import HeaderMenu from '@/components/HeaderMenu';
 import BottomNav from '@/components/BottomNav';
 import TableOfContents from '@/components/TableOfContents';
 import { getCourseDataFromGCS } from '@/lib/getCourseDataFromGCS';
@@ -495,7 +494,6 @@ export default async function ArimaKinenPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-      <HeaderMenu />
       <BottomNav items={navigationItems} />
       <main>
         <article>

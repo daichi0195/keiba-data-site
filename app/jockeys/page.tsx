@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import ArticleLayout from '@/components/ArticleLayout';
 import JockeysList, { jockeysGroupedByKana } from '@/components/JockeysList';
 import BottomNav from '@/components/BottomNav';
+import TableOfContents from '@/components/TableOfContents';
 import styles from '@/components/article-content.module.css';
 
 export const metadata: Metadata = {
@@ -16,9 +17,9 @@ export default function JockeysPage() {
   }));
 
   return (
-    <>
+    <main>
       <ArticleLayout
-        title="騎手一覧"
+        title="騎手データ一覧"
         showDateIcon={false}
       >
         <p className={styles.text}>
@@ -26,7 +27,8 @@ export default function JockeysPage() {
         </p>
         <JockeysList />
       </ArticleLayout>
+      <TableOfContents items={navigationItems} />
       <BottomNav items={navigationItems} />
-    </>
+    </main>
   );
 }

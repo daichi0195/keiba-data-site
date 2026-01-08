@@ -2,8 +2,8 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import DataTable from '@/components/DataTable';
 import { getSireDataFromGCS } from '@/lib/getSireDataFromGCS';
-import HeaderMenu from '@/components/HeaderMenu';
 import BottomNav from '@/components/BottomNav';
+import TableOfContents from '@/components/TableOfContents';
 import JockeyLeadingChart from '@/components/JockeyLeadingChart';
 import YearlyTable from '@/components/YearlyTable';
 import ClassTable from '@/components/ClassTable';
@@ -623,7 +623,6 @@ export default async function SirePage({
 
   return (
     <>
-      <HeaderMenu />
       <BottomNav items={navigationItems} />
       <main>
         <article>
@@ -1232,6 +1231,8 @@ export default async function SirePage({
             />
           </section>
         </article>
+        {/* PC用：右サイドバー目次 */}
+        <TableOfContents items={navigationItems} />
       </main>
 
       {/* パンくず（フッター） */}

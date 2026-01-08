@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import ArticleLayout from '@/components/ArticleLayout';
 import CoursesList, { racecoursesData } from '@/components/CoursesList';
 import BottomNav from '@/components/BottomNav';
+import TableOfContents from '@/components/TableOfContents';
 import styles from '@/components/article-content.module.css';
 
 export const metadata: Metadata = {
@@ -12,13 +13,13 @@ export const metadata: Metadata = {
 export default function CoursesPage() {
   const navigationItems = racecoursesData.map(racecourse => ({
     id: racecourse.nameEn,
-    label: racecourse.name
+    label: racecourse.fullName
   }));
 
   return (
-    <>
+    <main>
       <ArticleLayout
-        title="コース別データ一覧"
+        title="コースデータ一覧"
         showDateIcon={false}
       >
         <p className={styles.text}>
@@ -26,7 +27,8 @@ export default function CoursesPage() {
         </p>
         <CoursesList />
       </ArticleLayout>
+      <TableOfContents items={navigationItems} />
       <BottomNav items={navigationItems} />
-    </>
+    </main>
   );
 }

@@ -37,6 +37,7 @@
   border: 1px solid;
   text-align: center;
   box-sizing: border-box;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .variantGroup {
@@ -64,6 +65,8 @@
 .turfLink:hover {
   background: #d4f1e1;
   border-color: #1db854;
+  box-shadow: 0 4px 12px rgba(29, 184, 84, 0.25);
+  transform: translateY(-1px);
 }
 
 /* ダートコースのスタイル */
@@ -80,6 +83,8 @@
 .dirtLink:hover {
   background: #fcdfc5;
   border-color: #a67c52;
+  box-shadow: 0 4px 12px rgba(166, 124, 82, 0.25);
+  transform: translateY(-1px);
 }
 
 /* 障害コースのスタイル */
@@ -96,6 +101,8 @@
 .steeplechaseLink:hover {
   background: #e0e0e0;
   border-color: #9a9a9a;
+  box-shadow: 0 4px 12px rgba(74, 74, 74, 0.25);
+  transform: translateY(-1px);
 }
 
 /* レスポンシブ */
