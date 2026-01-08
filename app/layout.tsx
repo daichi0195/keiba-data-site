@@ -88,8 +88,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               <span style={{ display: 'flex', alignItems: 'center', fontSize: '20px', fontWeight: '600' }}>競馬データ.com</span>
             </div>
           </Link>
+          <HeaderMenu />
         </header>
-        <HeaderMenu items={[]} />
         {children}
         <Footer />
       </body>

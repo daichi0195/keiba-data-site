@@ -11,6 +11,13 @@
   pointer-events: none;
 }
 
+/* PC表示時は非表示（右サイドバーの目次を使用） */
+@media (min-width: 769px) {
+  .sectionNav {
+    display: none;
+  }
+}
+
 /* 横スクロール可能なナビゲーションコンテナ */
 .navContainer {
   display: flex;

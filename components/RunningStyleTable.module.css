@@ -193,17 +193,17 @@
     /* 第1列：脚質 - 80px */
     .table th:nth-child(1),
     .table td:nth-child(1) {
+      width: 90px !important;
+      min-width: 90px !important;
+      max-width: 90px !important;
+    }
+
+    /* 第2列：出走数 - 80px */
+    .table th:nth-child(2),
+    .table td:nth-child(2) {
       width: 80px !important;
       min-width: 80px !important;
       max-width: 80px !important;
-    }
-
-    /* 第2列：出走数 - 60px */
-    .table th:nth-child(2),
-    .table td:nth-child(2) {
-      width: 60px !important;
-      min-width: 60px !important;
-      max-width: 60px !important;
     }
 
     /* 第3列：1着 - 50px */
@@ -237,6 +237,8 @@
     .table th:nth-child(6),
     .table td:nth-child(6) {
       width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
       min-width: 80px !important;
       max-width: 80px !important;
     }
@@ -245,6 +247,8 @@
     .table th:nth-child(7),
     .table td:nth-child(7) {
       width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
       min-width: 80px !important;
       max-width: 80px !important;
     }
@@ -253,6 +257,8 @@
     .table th:nth-child(8),
     .table td:nth-child(8) {
       width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
       min-width: 80px !important;
       max-width: 80px !important;
     }
@@ -307,3 +313,75 @@
     font-size: 11px;
     color: #888;
   }
+
+/* PC表示：カラム幅調整 */
+@media (min-width: 769px) {
+  .table th:nth-child(1),
+  .table td:nth-child(1) {
+    width: 90px !important;
+    min-width: 90px !important;
+    max-width: 90px !important;
+  }
+  
+  .table th:nth-child(2),
+  .table td:nth-child(2) {
+    width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
+  }
+  
+  .table th:nth-child(3),
+  .table td:nth-child(3) {
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+  }
+  
+  .table th:nth-child(4),
+  .table td:nth-child(4) {
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+  }
+  
+  .table th:nth-child(5),
+  .table td:nth-child(5) {
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+  }
+  .table th:nth-child(6),
+  .table td:nth-child(6) {
+    width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
+  }
+
+  .table th:nth-child(7),
+  .table td:nth-child(7) {
+    width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
+  }
+
+  .table th:nth-child(8),
+  .table td:nth-child(8) {
+    width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
+  }
+
+  .table th:nth-child(9),
+  .table td:nth-child(9) {
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
+  }
+
+  .table th:nth-child(10),
+  .table td:nth-child(10) {
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
+  }
+}

@@ -39,14 +39,36 @@ header {
   background: #fff;
   padding: 0.75rem 1rem;
   box-shadow: none;
-  position: relative;
-  z-index: 50;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: nowrap;
   gap: 2rem;
-  height: auto;
+  min-height: 60px;
   border-bottom: 1px solid #e2e8f0;
+}
+
+/* PC表示時：ヘッダーのレイアウト調整 */
+@media (min-width: 769px) {
+  header {
+    padding: 0.75rem 2rem;
+    gap: 1.5rem;
+    min-height: 70px;
+  }
+
+  .site-name {
+    font-size: 1.1rem;
+  }
+}
+
+/* SP表示時：HeaderMenuは下部固定メニューとして表示 */
+@media (max-width: 768px) {
+  header {
+    /* SPではHeaderMenuはヘッダー外に表示されるため、flex-wrapは不要 */
+  }
 }
 
 .site-name {
@@ -122,6 +144,226 @@ main {
   margin: 0 auto;
   padding: 1rem;
   padding-bottom: 2rem; /* 下部ナビゲーション分の余白 */
+}
+
+/* PC表示時：中央配置 + 左右サイドバー */
+@media (min-width: 769px) {
+  main {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 700px) 280px;
+    gap: 1.5rem;
+    padding: 1rem;
+    padding-bottom: 2rem;
+    max-width: 1400px;
+    margin: 0 auto; /* 中央配置 */
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* 左側スペース（将来的に広告用） */
+  main > article {
+    grid-column: 2;
+    max-width: 650px;
+    min-width: 0; /* グリッドオーバーフロー防止 */
+  }
+
+  /* 右側目次 */
+  main > aside {
+    grid-column: 3;
+  }
+
+  /* ヘッダーサイズの調整 */
+  .page-header h1 {
+    font-size: 2.25rem;
+  }
+
+  h2.section-title {
+    font-size: 1.75rem;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+  }
+
+  /* page-headerのメタ情報を縦並びに */
+  .course-meta-section {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 0.5rem !important;
+  }
+
+  .course-meta-section .meta-item {
+    flex: none !important;
+    width: 100% !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 0.6rem !important;
+    padding: 1rem !important;
+  }
+
+  /* 対象レース数と最終更新日を2カラムに */
+  .course-meta-section .meta-item:nth-child(2),
+  .course-meta-section .meta-item:nth-child(3) {
+    width: calc(50% - 0.25rem) !important;
+  }
+
+  .course-meta-section .meta-label {
+    flex-shrink: 0;
+    width: auto !important;
+    line-height: 1 !important;
+  }
+
+  .course-meta-section .meta-item span:last-child {
+    flex: 1;
+    line-height: 1 !important;
+  }
+
+  /* 対象レース数と最終更新日はテキストを伸ばさない */
+  .course-meta-section .meta-item:nth-child(2) span:last-child,
+  .course-meta-section .meta-item:nth-child(3) span:last-child {
+    flex: none !important;
+  }
+
+  /* セクション間の余白を統一 */
+  section {
+    margin-bottom: 1rem;
+  }
+
+  /* セクションのメリハリを強化 */
+  .section {
+    padding: 2rem;
+    margin-bottom: 2rem;
+    background: #ffffff;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e8eef5;
+  }
+
+  .section:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  /* 見出しを強調 */
+  .section-title {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 3px solid var(--primary-green);
+    position: relative;
+  }
+
+  .section-title::before {
+    width: 6px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-green-dark) 100%);
+  }
+
+  /* 特性ボックスのスタイル強化 */
+  .characteristics-box {
+    padding: 2rem;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  /* mobile-data-table PC表示時のカラム幅調整 */
+  .mobile-data-table th.mobile-scroll-col:nth-child(3),
+  .mobile-data-table td.mobile-scroll-col:nth-child(3) {
+    width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
+  }
+
+  .mobile-data-table th.mobile-scroll-col:nth-child(4),
+  .mobile-data-table td.mobile-scroll-col:nth-child(4) {
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+  }
+
+  .mobile-data-table th.mobile-scroll-col:nth-child(5),
+  .mobile-data-table td.mobile-scroll-col:nth-child(5) {
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+  }
+
+  .mobile-data-table th.mobile-scroll-col:nth-child(6),
+  .mobile-data-table td.mobile-scroll-col:nth-child(6) {
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+  }
+
+  .mobile-data-table th.mobile-scroll-col:nth-child(10),
+  .mobile-data-table td.mobile-scroll-col:nth-child(10) {
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
+  }
+
+  .mobile-data-table th.mobile-scroll-col:nth-child(11),
+  .mobile-data-table td.mobile-scroll-col:nth-child(11) {
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
+  }
+
+  /* 順位カラムなしの場合 */
+  .mobile-data-table.no-rank-column th.mobile-scroll-col:nth-child(2),
+  .mobile-data-table.no-rank-column td.mobile-scroll-col:nth-child(2) {
+    width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
+  }
+
+  .mobile-data-table.no-rank-column th.mobile-scroll-col:nth-child(3),
+  .mobile-data-table.no-rank-column td.mobile-scroll-col:nth-child(3) {
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+  }
+
+  .mobile-data-table.no-rank-column th.mobile-scroll-col:nth-child(4),
+  .mobile-data-table.no-rank-column td.mobile-scroll-col:nth-child(4) {
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+  }
+
+  .mobile-data-table.no-rank-column th.mobile-scroll-col:nth-child(5),
+  .mobile-data-table.no-rank-column td.mobile-scroll-col:nth-child(5) {
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+  }
+
+  .mobile-data-table.no-rank-column th.mobile-scroll-col:nth-child(9),
+  .mobile-data-table.no-rank-column td.mobile-scroll-col:nth-child(9) {
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
+  }
+
+  .mobile-data-table.no-rank-column th.mobile-scroll-col:nth-child(10),
+  .mobile-data-table.no-rank-column td.mobile-scroll-col:nth-child(10) {
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
+  }
+}
+
+/* 中画面：左右サイドバーを非表示にしてコンテンツを中央配置 */
+@media (min-width: 769px) and (max-width: 1199px) {
+  main {
+    grid-template-columns: 1fr minmax(0, 700px) 1fr;
+  }
+
+  main > article {
+    grid-column: 2;
+  }
+
+  /* 目次を非表示 */
+  main > aside {
+    display: none;
+  }
 }
 
 /* ページヘッダー（コース、騎手など共通） */
@@ -290,7 +532,7 @@ main {
   background: #fff;
   border-radius: 14px;
   padding: 1.25rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
   border: 1px solid var(--border-color);
   transition: all 0.3s ease;
@@ -304,8 +546,8 @@ main {
 #highlights-section > .highlights-box {
   background: #fff;
   border-radius: 14px;
-  padding: 1.25rem;
-  margin-bottom: 1.5rem;
+  padding: 2rem;
+  margin-bottom: 1rem;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
   border: 1px solid var(--border-color) !important;
   transition: all 0.3s ease;
@@ -380,6 +622,10 @@ main {
   font-weight: 700;
   font-size: 12px;
   border: 1px solid;
+  max-width: calc(140px - 24px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .course-badge-good {
@@ -1606,7 +1852,7 @@ details[open] .evaluation-content {
 
 .mobile-col-name {
   left: 35px;
-  min-width: 100px !important;
+  max-width: 140px !important;
   padding-left: 12px !important;
   padding-right: 12px !important;
   border-left: none !important;
@@ -1614,6 +1860,8 @@ details[open] .evaluation-content {
   white-space: nowrap;
   background: #ffffff !important;
   z-index: 20 !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ヘッダーの名前列は中央寄せ */
@@ -1627,6 +1875,48 @@ details[open] .evaluation-content {
 /* ボディの名前列は左寄せ */
 .mobile-name-cell {
   text-align: left !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 名前セル内のリンクやspan要素にも省略を適用 */
+.mobile-name-cell a,
+.mobile-name-cell span {
+  display: inline-block !important;
+  max-width: calc(140px - 24px) !important; /* 140px(最大セル幅) - 24px(左右パディング) */
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  vertical-align: bottom;
+}
+
+/* コースバッジも含めて省略 */
+.mobile-name-cell .course-badge-good,
+.mobile-name-cell .course-badge-bad {
+  max-width: calc(140px - 24px) !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/* 順位カラムなしの場合（80px幅） */
+.mobile-col-name-first.mobile-name-cell a,
+.mobile-col-name-first.mobile-name-cell span {
+  max-width: calc(80px - 24px) !important;
+}
+
+.mobile-col-name-first.mobile-name-cell .course-badge-good,
+.mobile-col-name-first.mobile-name-cell .course-badge-bad {
+  max-width: calc(80px - 24px) !important;
+}
+
+/* コース別表専用（100px幅） */
+.racecourse-course-table .mobile-col-name-first.mobile-name-cell a,
+.racecourse-course-table .mobile-col-name-first.mobile-name-cell span,
+.racecourse-course-table .mobile-col-name-first.mobile-name-cell .course-badge-good,
+.racecourse-course-table .mobile-col-name-first.mobile-name-cell .course-badge-bad {
+  max-width: calc(100px - 24px) !important;
 }
 
 /* スクロール時に名前列を短くする */
@@ -1713,6 +2003,7 @@ details[open] .evaluation-content {
   max-width: 80px !important;
   text-align: center !important;
   border-right: 1px solid #000 !important;
+  overflow: hidden;
 }
 
 /* コース別表専用：コース名列の幅を100pxに設定 */
@@ -1860,6 +2151,48 @@ details[open] .evaluation-content {
   font-weight: 600;
   color: #1a1a1a;
   font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 名前セル内のリンクやspan要素にも省略を適用（全体） */
+.mobile-name-cell a,
+.mobile-name-cell span {
+  display: inline-block !important;
+  max-width: calc(140px - 24px) !important; /* 140px(最大セル幅) - 24px(左右パディング) */
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  vertical-align: bottom;
+}
+
+/* コースバッジも含めて省略（全体） */
+.mobile-name-cell .course-badge-good,
+.mobile-name-cell .course-badge-bad {
+  max-width: calc(140px - 24px) !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/* 順位カラムなしの場合（80px幅）全体 */
+.mobile-col-name-first.mobile-name-cell a,
+.mobile-col-name-first.mobile-name-cell span {
+  max-width: calc(80px - 24px) !important;
+}
+
+.mobile-col-name-first.mobile-name-cell .course-badge-good,
+.mobile-col-name-first.mobile-name-cell .course-badge-bad {
+  max-width: calc(80px - 24px) !important;
+}
+
+/* コース別表専用（100px幅）全体 */
+.racecourse-course-table .mobile-col-name-first.mobile-name-cell a,
+.racecourse-course-table .mobile-col-name-first.mobile-name-cell span,
+.racecourse-course-table .mobile-col-name-first.mobile-name-cell .course-badge-good,
+.racecourse-course-table .mobile-col-name-first.mobile-name-cell .course-badge-bad {
+  max-width: calc(100px - 24px) !important;
 }
 
 /* 勝利数 */
@@ -1916,15 +2249,15 @@ details[open] .evaluation-content {
   }
 
   main {
-    max-width: 1200px;
-    padding: 2rem;
+    max-width: 1400px;
+    padding: 1rem;
   }
 
   .breadcrumb-footer {
     padding-top: 0.75rem;
     padding-bottom: 0.75rem;
-    padding-left: calc(50vw - 600px);
-    padding-right: calc(50vw - 600px);
+    padding-left: calc(50vw - 700px);
+    padding-right: calc(50vw - 700px);
     margin-top: 0;
     margin-bottom: 0;
   }
@@ -1990,12 +2323,14 @@ details[open] .evaluation-content {
 
   .mobile-col-name {
     left: 30px;
-    min-width: 100px !important;
+    max-width: 140px !important;
     padding-left: 8px !important;
     padding-right: 8px !important;
     background: white !important;
     z-index: 20 !important;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .mobile-data-table thead .mobile-col-name-narrow {
@@ -2068,6 +2403,7 @@ details[open] .evaluation-content {
     max-width: 80px !important;
     text-align: center !important;
     border-right: none !important;
+    overflow: hidden;
   }
 
   /* コース別表専用：コース名列の幅を100pxに設定（モバイル） */
@@ -2117,6 +2453,48 @@ details[open] .evaluation-content {
 
   .mobile-name-cell {
     font-size: 13px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* モバイル：名前セル内のリンクやspan要素にも省略を適用 */
+  .mobile-name-cell a,
+  .mobile-name-cell span {
+    display: inline-block !important;
+    max-width: calc(140px - 16px) !important; /* 140px(最大セル幅) - 16px(左右パディング8px×2) */
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    vertical-align: bottom;
+  }
+
+  /* モバイル：コースバッジも含めて省略 */
+  .mobile-name-cell .course-badge-good,
+  .mobile-name-cell .course-badge-bad {
+    max-width: calc(140px - 16px) !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  /* モバイル：順位カラムなしの場合（80px幅） */
+  .mobile-col-name-first.mobile-name-cell a,
+  .mobile-col-name-first.mobile-name-cell span {
+    max-width: calc(80px - 16px) !important;
+  }
+
+  .mobile-col-name-first.mobile-name-cell .course-badge-good,
+  .mobile-col-name-first.mobile-name-cell .course-badge-bad {
+    max-width: calc(80px - 16px) !important;
+  }
+
+  /* モバイル：コース別表専用（100px幅） */
+  .racecourse-course-table .mobile-col-name-first.mobile-name-cell a,
+  .racecourse-course-table .mobile-col-name-first.mobile-name-cell span,
+  .racecourse-course-table .mobile-col-name-first.mobile-name-cell .course-badge-good,
+  .racecourse-course-table .mobile-col-name-first.mobile-name-cell .course-badge-bad {
+    max-width: calc(100px - 16px) !important;
   }
 
   /* 第3列：出走数 - 60px */
@@ -2315,7 +2693,7 @@ details[open] .evaluation-content {
 
 /* ===== 見出しは外側装飾で統一 ===== */
 h2.section-title {
-  font-size: 1.75rem;        /* PC */
+  font-size: 1.5rem;        /* PC */
   font-weight: 700;
   color: var(--text-dark);
   margin: 6px 0 16px;
@@ -2421,6 +2799,10 @@ h3.subsection-title:first-of-type {
     display: inline !important;
     margin-left: 0.2rem !important;
     letter-spacing: -0.02em !important;
+  }
+
+  #highlights-section > .highlights-box {
+    padding: 1.25rem;
   }
 }
 

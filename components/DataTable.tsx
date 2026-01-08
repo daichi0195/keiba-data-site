@@ -53,10 +53,7 @@ export default function DataTable({ title, data, initialShow = 10, nameLabel = '
       // スクロール時は3文字に制限
       return name.substring(0, 3);
     }
-    // 非スクロール時は10文字以上なら9文字+「...」
-    if (name.length >= 10) {
-      return name.substring(0, 9) + '...';
-    }
+    // 非スクロール時はCSSのtext-overflow: ellipsisで自動省略
     return name;
   };
   

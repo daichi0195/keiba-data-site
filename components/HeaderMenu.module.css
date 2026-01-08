@@ -1,9 +1,62 @@
 /* ===== HeaderMenu.module.css ===== */
-/* ハンバーガーメニュー専用スタイル */
 
-/* ===== 下部固定メニューバー（4つのボタン） ===== */
-.fixedMenuBar {
-  display: none;
+/* ===== PC用メニュー ===== */
+.pcMenu {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.pcMenuLink {
+  padding: 0.5rem 0.875rem;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #475569;
+  line-height: 1.2;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.pcMenuLink:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 20px;
+  background: #e2e8f0;
+}
+
+.pcMenuLink i {
+  font-size: 0.875rem;
+  color: #475569;
+}
+
+.pcMenuLink:hover {
+  background: var(--bg-light);
+  color: var(--primary-green);
+}
+
+.pcMenuLink:hover i {
+  color: var(--primary-green);
+}
+
+.pcMenuLink:active {
+  background: #e8f9f0;
+}
+
+/* ===== SP用メニュー ===== */
+.spMenu {
+  display: flex;
   position: fixed;
   bottom: 0;
   left: 0;
@@ -23,6 +76,7 @@
 .menuButton {
   flex: 1;
   background: none;
+  text-decoration: none;
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -396,12 +450,31 @@
   border-color: #1a9f47;
 }
 
-/* ===== モバイル（SP） ===== */
-@media (max-width: 768px) {
-  .fixedMenuBar {
-    display: flex;
+/* ===== PC表示（769px以上） ===== */
+@media (min-width: 769px) {
+  /* モーダルをドロップダウン風に */
+  .menuOverlay {
+    display: block;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 999;
   }
 
+  .fullscreenModal {
+    display: flex;
+    position: fixed;
+    top: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 1200px;
+    max-height: 80vh;
+    border-radius: 12px;
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* ===== SP表示（768px以下） ===== */
+@media (max-width: 768px) {
   .menuOverlay {
     display: block;
   }

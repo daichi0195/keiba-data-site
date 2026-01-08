@@ -10,8 +10,8 @@ import VolatilityExplanation from '@/components/VolatilityExplanation';
 import GatePositionExplanation from '@/components/GatePositionExplanation';
 import RunningStyleExplanation from '@/components/RunningStyleExplanation';
 import RunningStyleDefinition from '@/components/RunningStyleDefinition';
-import HeaderMenu from '@/components/HeaderMenu';
 import BottomNav from '@/components/BottomNav';
+import TableOfContents from '@/components/TableOfContents';
 import { getCourseDataFromGCS } from '@/lib/getCourseDataFromGCS';
 import { ALL_COURSES, getCourseUrl, getCourseDisplayName } from '@/lib/courses';
 
@@ -680,7 +680,6 @@ export default async function CoursePage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-      <HeaderMenu />
       <BottomNav items={navigationItems} />
       <main>
         <article>
@@ -874,19 +873,26 @@ export default async function CoursePage({ params }: Props) {
               <div className="running-style-place-rate-detail">
                 <div className="running-style-detail-title">脚質別複勝率</div>
                 <div className="running-style-chart">
-                  {running_style_stats.map((style) => {
-                    // アイコンマッピング
+                  {running_style_stats.map((style, index) => {
+                    // アイコンマッピング（英語と日本語両方に対応）
                     const styleIcons: { [key: string]: string } = {
                       'escape': '逃',
                       'lead': '先',
                       'pursue': '差',
-                      'close': '追'
+                      'close': '追',
+                      '逃げ': '逃',
+                      '先行': '先',
+                      '差し': '差',
+                      '追込': '追'
                     };
 
+                    // style.styleまたはstyle.style_labelから1文字アイコンを取得
+                    const icon = styleIcons[style.style] || styleIcons[style.style_label] || style.style_label?.charAt(0) || '?';
+
                     return (
-                      <div key={style.style} className="running-style-chart-item">
+                      <div key={`${style.style}-${index}`} className="running-style-chart-item">
                         <div className="running-style-badge">
-                          {styleIcons[style.style] || style.style_label}
+                          {icon}
                         </div>
                         <div className="running-style-bar-container">
                           <div
@@ -1092,6 +1098,8 @@ export default async function CoursePage({ params }: Props) {
 </section>
 
         </article>
+        {/* PC用：右サイドバー目次 */}
+        <TableOfContents items={navigationItems} />
       </main>
 
       {/* === パンくず（フルワイド） === */}

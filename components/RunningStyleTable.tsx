@@ -53,10 +53,18 @@ export default function RunningStyleTable({ title, data }: Props) {
   
   const isHighlight = (value: number, maxValue: number) => value === maxValue;
 
+  // 脚質を1文字に変換するマッピング
+  const styleIcons: { [key: string]: string } = {
+    'escape': '逃',
+    'lead': '先',
+    'pursue': '差',
+    'close': '追'
+  };
+
   return (
     <div className="section">
       <h2 className="section-title">{title}</h2>
-      
+
       <div className={styles.tableContainer}>
         <div className={styles.tableScroll} ref={scrollRef}>
           <table className={styles.table}>
@@ -79,12 +87,12 @@ export default function RunningStyleTable({ title, data }: Props) {
             <tbody>
               {data.map((row, index) => (
                 <tr
-                  key={row.style}
+                  key={`${row.style}-${index}`}
                   className={index % 2 === 0 ? styles.rowEven : styles.rowOdd}
                 >
                   <td className={styles.styleCol}>
                     <span className={styles.styleBadge}>
-                      {row.style_label}
+                      {styleIcons[row.style] || row.style_label}
                     </span>
                   </td>
                   <td className={styles.scrollCol}>

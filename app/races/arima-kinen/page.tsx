@@ -12,6 +12,7 @@ import RunningStyleExplanation from '@/components/RunningStyleExplanation';
 import RunningStyleDefinition from '@/components/RunningStyleDefinition';
 import HeaderMenu from '@/components/HeaderMenu';
 import BottomNav from '@/components/BottomNav';
+import TableOfContents from '@/components/TableOfContents';
 import { getCourseDataFromGCS } from '@/lib/getCourseDataFromGCS';
 import { ALL_COURSES, getCourseUrl, getCourseDisplayName } from '@/lib/courses';
 
@@ -354,8 +355,8 @@ const surfaceNames: Record<string, string> = {
 };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const title = '有馬記念の傾向・特徴まとめ｜騎手や血統などのデータをどこよりも見やすく';
-  const description = '有馬記念の傾向や特徴がまるわかり！騎手、血統、枠順、脚質、調教師など、豊富な統計データで予想をサポート。';
+  const title = '有馬記念 過去10年分の成績・傾向まとめ｜騎手や血統などのデータをどこよりも見やすく';
+  const description = '有馬記念の過去10年分の成績・傾向がまるわかり！騎手、血統、枠順、脚質、調教師など、豊富な統計データで予想をサポート。';
   const url = 'https://www.keibadata.com/races/arima-kinen';
 
   return {
@@ -381,33 +382,27 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ArimaKinenPage() {
-  // 有馬記念の固定値（とりあえず中山ダート1800のデータを使用）
-  const resolvedParams = {
-    racecourse: 'nakayama',
-    surface: 'dirt',
-    distance: '1800'
-  };
-
-  // 競馬場名と路面名の取得
+  // 有馬記念の固定値
+  const raceName = '有馬記念';
+  const raceNameEn = 'arima-kinen';
   const racecourseJa = '中山';
-  const surfaceJa = 'ダート';
+  const surfaceJa = '芝';
+  const distanceNum = 2500;
+  const distanceDisplay = '2500';
+  const dataPeriod = '過去10年分';
 
-  // 内回り・外回りの判定
-  const distanceStr = '1800';
-  const distanceNum = 1800;
-  const distanceDisplay = '1800';
-  let trackVariant = '';
-  let trackVariantLabel = '';
-
-  // デフォルトデータ構造（GCSから取得できない場合のフォールバック）
+  // デフォルトデータ構造
   let data: any = {
     course_info: {
+      race_name: raceName,
+      race_name_en: raceNameEn,
       racecourse: racecourseJa + '競馬場',
-      racecourse_en: resolvedParams.racecourse,
+      racecourse_en: 'nakayama',
       surface: surfaceJa,
-      surface_en: resolvedParams.surface,
+      surface_en: 'turf',
       distance: distanceNum,
-      total_races: 0,
+      data_period: dataPeriod,
+      total_races: 10,
       characteristics: {
         volatility: 3,
         gate_position: 3,
@@ -428,148 +423,12 @@ export default async function ArimaKinenPage() {
     running_style_trends: []
   };
 
-  // ===== GCSから全データを取得 =====
-
-  try {
-    // distanceが "-inner" または "-outer" を含む場合は文字列のまま、そうでない場合は数値化
-    const distanceParam = resolvedParams.distance.includes('-inner') || resolvedParams.distance.includes('-outer')
-      ? resolvedParams.distance
-      : parseInt(resolvedParams.distance);
-
-    const gcsData = await getCourseDataFromGCS(
-      resolvedParams.racecourse,
-      resolvedParams.surface,
-      distanceParam
-    );
-
-    // GCSデータで完全上書き
-    data.gate_stats = gcsData.gate_stats || [];
-    data.popularity_stats = gcsData.popularity_stats || {};
-    data.jockey_stats = gcsData.jockey_stats || [];
-    data.trainer_stats = gcsData.trainer_stats || [];
-    data.pedigree_stats = gcsData.pedigree_stats || [];
-    data.dam_sire_stats = gcsData.dam_sire_stats || [];
-    data.running_style_stats = gcsData.running_style_stats || [];
-    data.running_style_trends = gcsData.running_style_trends || [];
-    if (gcsData.characteristics) {
-      if (!data.course_info) {
-        data.course_info = {};
-      }
-      data.course_info.characteristics = gcsData.characteristics;
-
-      // characteristics から ranking フィールドを抽出して course_info.ranking をセット
-      if (gcsData.characteristics.trifecta_median_payback !== undefined) {
-        data.course_info.ranking = {
-          trifecta_avg_payback_rank: gcsData.characteristics.trifecta_avg_payback_rank,
-          trifecta_median_payback: gcsData.characteristics.trifecta_median_payback,
-          trifecta_all_median_payback: gcsData.characteristics.trifecta_all_median_payback,
-          total_courses: gcsData.characteristics.total_courses,
-          // trifecta_avg_payback は元のモックデータから保持
-          trifecta_avg_payback: data.course_info.ranking?.trifecta_avg_payback || 0,
-        };
-      }
-    }
-
-    // gate_position を gate_stats から計算（内枠有利〜外枠有利）
-    if (data.gate_stats && Array.isArray(data.gate_stats) && data.gate_stats.length > 0) {
-      const innerGates = data.gate_stats.filter(g => g.gate >= 1 && g.gate <= 4);
-      const outerGates = data.gate_stats.filter(g => g.gate >= 5 && g.gate <= 8);
-
-      if (innerGates.length > 0 && outerGates.length > 0) {
-        const innerAvgPlaceRate = innerGates.reduce((sum, g) => sum + (g.place_rate || 0), 0) / innerGates.length;
-        const outerAvgPlaceRate = outerGates.reduce((sum, g) => sum + (g.place_rate || 0), 0) / outerGates.length;
-
-        const diff = innerAvgPlaceRate - outerAvgPlaceRate;
-        let gatePosition = 3; // デフォルト: 互角
-
-        if (diff >= 5) gatePosition = 1;         // 内有利
-        else if (diff >= 2) gatePosition = 2;    // やや内有利
-        else if (diff <= -5) gatePosition = 5;   // 外有利
-        else if (diff <= -2) gatePosition = 4;   // やや外有利
-
-        if (!data.course_info) {
-          data.course_info = {};
-        }
-        if (!data.course_info.characteristics) {
-          data.course_info.characteristics = {};
-        }
-        data.course_info.characteristics.gate_position = gatePosition;
-      }
-    }
-
-    // running_style_trend_position を running_style_trends から計算（逃げ・先行有利〜差し・追込有利）
-    if (data.running_style_trends && Array.isArray(data.running_style_trends) && data.running_style_trends.length === 2) {
-      const earlyLead = data.running_style_trends.find(t => t.trend_group === 'early_lead');
-      const comeback = data.running_style_trends.find(t => t.trend_group === 'comeback');
-
-      if (earlyLead && comeback) {
-        const diff = (earlyLead.place_rate || 0) - (comeback.place_rate || 0);
-        let runningStyleTrendPosition = 3; // デフォルト: 互角
-
-        if (diff >= 5) runningStyleTrendPosition = 1;         // 逃げ・先行有利
-        else if (diff >= 2) runningStyleTrendPosition = 2;    // やや逃げ・先行有利
-        else if (diff <= -5) runningStyleTrendPosition = 5;   // 差し・追込有利
-        else if (diff <= -2) runningStyleTrendPosition = 4;   // やや差し・追込有利
-
-        if (!data.course_info) {
-          data.course_info = {};
-        }
-        if (!data.course_info.characteristics) {
-          data.course_info.characteristics = {};
-        }
-        data.course_info.characteristics.running_style_trend_position = runningStyleTrendPosition;
-      }
-    }
-    // Handle both root-level total_races and course_info.total_races
-    if (gcsData.total_races) {
-      if (!data.course_info) {
-        data.course_info = {};
-      }
-      data.course_info.total_races = gcsData.total_races;
-    } else if (gcsData.course_info?.total_races) {
-      if (!data.course_info) {
-        data.course_info = {};
-      }
-      data.course_info.total_races = gcsData.course_info.total_races;
-    }
-    console.log('✅ All data loaded from GCS successfully');
-
-  } catch (error) {
-    console.error('❌ Failed to load data from GCS:', error);
-    // GCSからデータが取得できない場合はエラーページを表示
-    return (
-      <div style={{ padding: '2rem', textAlign: 'center' }}>
-        <h1>データ取得エラー</h1>
-        <p>このコースのデータを取得できませんでした。</p>
-        <p>コース: {racecourseJa}競馬場 {surfaceJa} {distanceNum}m{trackVariant}</p>
-        <p style={{ marginTop: '1rem', fontSize: '0.9rem', color: '#666' }}>
-          エラー詳細: {error instanceof Error ? error.message : String(error)}
-        </p>
-      </div>
-    );
-  }
+  // レース専用のモックデータを使用（後で実データに置き換え予定）
+  // 現時点では構造確認のため、デフォルトデータをそのまま使用
   // ===== ここまで =====
 
   // ビルド時の動的な日付を設定
   const today = new Date();
-
-  // data_period: 前日〜3年前
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
-
-  const threeYearsAgo = new Date(yesterday);
-  threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 3);
-
-  const formatDate = (date: Date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1);
-    const day = String(date.getDate());
-    return `${year}年${month}月${day}日`;
-  };
-
-  const dataPeriod = `直近3年間分（${formatDate(threeYearsAgo)}〜${formatDate(yesterday)}）`;
-
-  // last_updated: ビルド時の日付
   const year = today.getFullYear();
   const month = String(today.getMonth() + 1);
   const day = String(today.getDate());
@@ -586,17 +445,12 @@ export default async function ArimaKinenPage() {
   const top5Jockeys = jockey_stats.slice(0, 5);
   const top5Pedigrees = pedigree_stats.slice(0, 5);
 
-  // 競馬場名の末尾「競馬場」を省いた短縮名（例：中山競馬場 -> 中山）
-  const courseShort =
-    (racecourseNames[resolvedParams.racecourse] ??
-      String(course_info.racecourse || '').replace(/競馬場$/, ''));
-
-  // 「中山芝1800m」のようなSEO用接頭辞
-  const seoPrefix = `${courseShort}${course_info.surface}${distanceDisplay}m${trackVariantLabel}`;
+  // レース名をSEO用接頭辞として使用
+  const seoPrefix = raceName;
 
   // ナビゲーション用のセクションアイテム
   const navigationItems = [
-    { id: 'characteristics-section', label: 'コース特性' },
+    { id: 'characteristics-section', label: 'レース特性' },
     { id: 'highlights-section', label: '注目ポイント' },
     { id: 'popularity-section', label: '人気別' },
     { id: 'gate-section', label: '枠順別' },
@@ -622,14 +476,14 @@ export default async function ArimaKinenPage() {
       {
         '@type': 'ListItem',
         position: 2,
-        name: 'コース一覧',
-        item: `${baseUrl}/courses`,
+        name: 'レース一覧',
+        item: `${baseUrl}/races`,
       },
       {
         '@type': 'ListItem',
         position: 3,
-        name: `${racecourseJa}競馬場 ${surfaceJa}${distanceDisplay}m${trackVariantLabel}`,
-        item: `${baseUrl}/courses/${resolvedParams.racecourse}/${resolvedParams.surface}/${resolvedParams.distance}`,
+        name: raceName,
+        item: `${baseUrl}/races/${raceNameEn}`,
       },
     ],
   };
@@ -645,54 +499,27 @@ export default async function ArimaKinenPage() {
       <BottomNav items={navigationItems} />
       <main>
         <article>
-        {/* レース数が少ない場合の警告 */}
-        {course_info.total_races <= 10 && (
-          <div style={{
-            padding: '1rem 1.5rem',
-            background: '#fff3cd',
-            border: '2px solid #ffc107',
-            borderRadius: '8px',
-            color: '#856404',
-            fontSize: '0.95rem',
-            fontWeight: '600',
-            textAlign: 'center',
-            marginBottom: '1rem'
-          }}>
-            <i className="fa-solid fa-triangle-exclamation" style={{ marginRight: '0.5rem' }}></i>
-            対象レース数が少ないコースです
-          </div>
-        )}
-
         <div className="page-header">
-          <h1>{course_info.racecourse} {course_info.surface}{distanceDisplay}m{trackVariantLabel}</h1>
+          <h1>{raceName} 過去10年分の成績・傾向まとめ</h1>
 
           {/* === データ情報セクション === */}
-          <div className="course-meta-section">
-            <div className="meta-item">
-              <span className="meta-label">データ取得期間</span>
-              <span>
-                直近3年間分
-                <span className="meta-sub-text">
-                  {course_info.data_period.match(/（[^）]+）/)?.[0] || course_info.data_period}
-                </span>
-              </span>
-            </div>
-            <div className="meta-item">
+          <div className="course-meta-section" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridAutoRows: '1fr' }}>
+            <div className="meta-item" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', padding: '1rem', minHeight: '100%' }}>
               <span className="meta-label">対象レース数</span>
               <span>{course_info.total_races}レース</span>
             </div>
-            <div className="meta-item">
+            <div className="meta-item" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', padding: '1rem', minHeight: '100%' }}>
               <span className="meta-label">最終更新日</span>
               <span>{course_info.last_updated}</span>
             </div>
           </div>
         </div>
 
-        {/* === コース特性セクション === */}
-        <section id="characteristics-section" aria-label="コース特性">
+        {/* === レース特性セクション === */}
+        <section id="characteristics-section" aria-label="レース特性">
         <BarChartAnimation>
         <div className="characteristics-box">
-          <h2 className="section-title">コース特性</h2>
+          <h2 className="section-title">レース特性</h2>
 
           {/* 荒れやすさ */}
           <div className="gauge-item">
@@ -835,7 +662,7 @@ export default async function ArimaKinenPage() {
               <div className="running-style-place-rate-detail">
                 <div className="running-style-detail-title">脚質別複勝率</div>
                 <div className="running-style-chart">
-                  {running_style_stats.map((style) => {
+                  {running_style_stats.map((style, index) => {
                     // アイコンマッピング
                     const styleIcons: { [key: string]: string } = {
                       'escape': '逃',
@@ -845,7 +672,7 @@ export default async function ArimaKinenPage() {
                     };
 
                     return (
-                      <div key={style.style} className="running-style-chart-item">
+                      <div key={`${style.style}-${index}`} className="running-style-chart-item">
                         <div className="running-style-badge">
                           {styleIcons[style.style] || style.style_label}
                         </div>
@@ -947,112 +774,9 @@ export default async function ArimaKinenPage() {
   />
 </section>
 
-{/* === 他のコースデータ一覧 === */}
-<section id="other-courses-section" className="section" aria-label="他のコースデータ一覧" style={{ marginBottom: '0 !important' }}>
-  <h2 className="section-title" style={{ marginBottom: '1rem' }}>{courseShort}競馬場のコースデータ一覧</h2>
-  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-    {/* 芝コース */}
-    {ALL_COURSES.filter(course => course.racecourse === resolvedParams.racecourse && course.surface === 'turf').length > 0 && (
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
-        {ALL_COURSES
-          .filter(course => course.racecourse === resolvedParams.racecourse && course.surface === 'turf')
-          .sort((a, b) => {
-            if (a.distance !== b.distance) return a.distance - b.distance;
-            const variantOrder = { undefined: 0, inner: 1, outer: 2 };
-            return (variantOrder[a.variant as keyof typeof variantOrder] || 0) - (variantOrder[b.variant as keyof typeof variantOrder] || 0);
-          })
-          .map(course => (
-            <Link key={`${course.surface}-${course.distance}-${course.variant || 'default'}`} href={getCourseUrl(course)} style={{ textDecoration: 'none' }}>
-              <div style={{
-                background: '#e2f7eb',
-                border: '1px solid #bbe7d3',
-                color: '#0c532a',
-                padding: '6px 12px',
-                borderRadius: '4px',
-                textAlign: 'center',
-                fontSize: '13px',
-                fontWeight: '500',
-                transition: 'all 0.2s ease',
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-                boxSizing: 'border-box'
-              }}>
-                {getCourseDisplayName(course)}
-              </div>
-            </Link>
-          ))}
-      </div>
-    )}
-
-    {/* ダートコース */}
-    {ALL_COURSES.filter(course => course.racecourse === resolvedParams.racecourse && course.surface === 'dirt').length > 0 && (
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
-        {ALL_COURSES
-          .filter(course => course.racecourse === resolvedParams.racecourse && course.surface === 'dirt')
-          .sort((a, b) => {
-            if (a.distance !== b.distance) return a.distance - b.distance;
-            const variantOrder = { undefined: 0, inner: 1, outer: 2 };
-            return (variantOrder[a.variant as keyof typeof variantOrder] || 0) - (variantOrder[b.variant as keyof typeof variantOrder] || 0);
-          })
-          .map(course => (
-            <Link key={`${course.surface}-${course.distance}-${course.variant || 'default'}`} href={getCourseUrl(course)} style={{ textDecoration: 'none' }}>
-              <div style={{
-                background: '#fde9d7',
-                border: '1px solid #ffd7ae',
-                color: '#633d1e',
-                padding: '6px 12px',
-                borderRadius: '4px',
-                textAlign: 'center',
-                fontSize: '13px',
-                fontWeight: '500',
-                transition: 'all 0.2s ease',
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-                boxSizing: 'border-box'
-              }}>
-                {getCourseDisplayName(course)}
-              </div>
-            </Link>
-          ))}
-      </div>
-    )}
-
-    {/* 障害コース */}
-    {ALL_COURSES.filter(course => course.racecourse === resolvedParams.racecourse && course.surface === 'steeplechase').length > 0 && (
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
-        {ALL_COURSES
-          .filter(course => course.racecourse === resolvedParams.racecourse && course.surface === 'steeplechase')
-          .sort((a, b) => {
-            if (a.distance !== b.distance) return a.distance - b.distance;
-            const variantOrder = { undefined: 0, inner: 1, outer: 2 };
-            return (variantOrder[a.variant as keyof typeof variantOrder] || 0) - (variantOrder[b.variant as keyof typeof variantOrder] || 0);
-          })
-          .map(course => (
-            <Link key={`${course.surface}-${course.distance}-${course.variant || 'default'}`} href={getCourseUrl(course)} style={{ textDecoration: 'none' }}>
-              <div style={{
-                background: '#f2f2f2',
-                border: '1px solid #c0c0c0',
-                color: '#4a4a4a',
-                padding: '6px 12px',
-                borderRadius: '4px',
-                textAlign: 'center',
-                fontSize: '13px',
-                fontWeight: '500',
-                transition: 'all 0.2s ease',
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-                boxSizing: 'border-box'
-              }}>
-                {getCourseDisplayName(course)}
-              </div>
-            </Link>
-          ))}
-      </div>
-    )}
-  </div>
-</section>
-
         </article>
+        {/* PC用：右サイドバー目次 */}
+        <TableOfContents items={navigationItems} />
       </main>
 
       {/* === パンくず（フルワイド） === */}
@@ -1060,9 +784,9 @@ export default async function ArimaKinenPage() {
         <ol style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
           <li><Link href="/">ホーム</Link></li>
           <li aria-hidden="true">&gt;</li>
-          <li><Link href="/courses">コース一覧</Link></li>
+          <li><Link href="/races">レース一覧</Link></li>
           <li aria-hidden="true">&gt;</li>
-          <li aria-current="page">{course_info.racecourse} {course_info.surface}{course_info.distance}m</li>
+          <li aria-current="page">{raceName}</li>
         </ol>
       </nav>
     </>
