@@ -14,6 +14,9 @@ import BottomNav from '@/components/BottomNav';
 import TableOfContents from '@/components/TableOfContents';
 import { getCourseDataFromGCS } from '@/lib/getCourseDataFromGCS';
 import { ALL_COURSES, getCourseUrl, getCourseDisplayName } from '@/lib/courses';
+import { ALL_JOCKEYS } from '@/lib/jockeys';
+import { ALL_SIRES } from '@/lib/sires';
+import { ALL_TRAINERS } from '@/lib/trainers';
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
@@ -622,6 +625,42 @@ export default async function CoursePage({ params }: Props) {
 
   const { course_info, gate_stats, running_style_stats, running_style_trends, popularity_stats, jockey_stats, pedigree_stats, dam_sire_stats, trainer_stats } = data;
 
+  // 騎手統計にリンクを追加（ページが存在する騎手のみ）
+  const jockeyStatsWithLinks = jockey_stats.map(stat => {
+    const jockey = ALL_JOCKEYS.find(j => j.name === stat.name);
+    return {
+      ...stat,
+      link: jockey ? `/jockeys/${jockey.id}` : undefined
+    };
+  });
+
+  // 種牡馬統計にリンクを追加（ページが存在する種牡馬のみ）
+  const pedigreeStatsWithLinks = pedigree_stats.map(stat => {
+    const sire = ALL_SIRES.find(s => s.name === stat.name);
+    return {
+      ...stat,
+      link: sire ? `/sires/${sire.id}` : undefined
+    };
+  });
+
+  // 調教師統計にリンクを追加（ページが存在する調教師のみ）
+  const trainerStatsWithLinks = trainer_stats.map(stat => {
+    const trainer = ALL_TRAINERS.find(t => t.name === stat.name);
+    return {
+      ...stat,
+      link: trainer ? `/trainers/${trainer.id}` : undefined
+    };
+  });
+
+  // 母父統計にリンクを追加（ページが存在する種牡馬のみ）
+  const damSireStatsWithLinks = dam_sire_stats.map(stat => {
+    const sire = ALL_SIRES.find(s => s.name === stat.name);
+    return {
+      ...stat,
+      link: sire ? `/sires/${sire.id}` : undefined
+    };
+  });
+
   const top5Jockeys = jockey_stats.slice(0, 5);
   const top5Pedigrees = pedigree_stats.slice(0, 5);
 
@@ -952,7 +991,7 @@ export default async function CoursePage({ params }: Props) {
 <section id="jockey-section" aria-label="騎手別データ">
   <DataTable
     title={`${seoPrefix} 騎手別データ`}
-    data={jockey_stats}
+    data={jockeyStatsWithLinks}
     initialShow={10}
     nameLabel="騎手"
     note="最大50件まで表示/引退騎手を除く"
@@ -963,7 +1002,7 @@ export default async function CoursePage({ params }: Props) {
 <section id="bloodline-section" aria-label="血統別（種牡馬）データ">
   <DataTable
     title={`${seoPrefix} 血統別(種牡馬)データ`}
-    data={pedigree_stats}
+    data={pedigreeStatsWithLinks}
     initialShow={10}
     nameLabel="種牡馬"
     note="最大50件まで表示"
@@ -974,7 +1013,7 @@ export default async function CoursePage({ params }: Props) {
 <section id="dam-sire-section" aria-label="血統別（母父）データ">
   <DataTable
     title={`${seoPrefix} 血統別(母父)データ`}
-    data={dam_sire_stats}
+    data={damSireStatsWithLinks}
     initialShow={10}
     nameLabel="母父"
     note="最大50件まで表示"
@@ -985,7 +1024,7 @@ export default async function CoursePage({ params }: Props) {
 <section id="trainer-section" aria-label="調教師別データ">
   <DataTable
     title={`${seoPrefix} 調教師別データ`}
-    data={trainer_stats}
+    data={trainerStatsWithLinks}
     initialShow={10}
     nameLabel="調教師"
     note="最大50件まで表示/引退調教師を除く"
@@ -993,7 +1032,7 @@ export default async function CoursePage({ params }: Props) {
 </section>
 
 {/* === 他のコースデータ一覧 === */}
-<section id="other-courses-section" className="section" aria-label="他のコースデータ一覧" style={{ marginBottom: '0 !important' }}>
+<section id="other-courses-section" className="section" aria-label="他のコースデータ一覧" style={{ margin: 0 }}>
   <h2 className="section-title" style={{ marginBottom: '1rem' }}>{courseShort}競馬場のコースデータ一覧</h2>
   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
     {/* 芝コース */}

@@ -47,14 +47,58 @@ export default function DataTable({ title, data, initialShow = 10, nameLabel = '
     return num.toLocaleString('ja-JP');
   };
 
+  // Canvas APIで文字列の描画幅を測定する関数
+  const measureTextWidth = (text: string, font: string = '600 13px "Hiragino Kaku Gothic ProN", Meiryo, sans-serif'): number => {
+    // サーバー側では推定値を返す（Hydrationエラー回避）
+    if (typeof window === 'undefined') {
+      // 日本語（全角）は約13px、英数字（半角）は約7.5pxと仮定
+      let width = 0;
+      for (let i = 0; i < text.length; i++) {
+        const char = text.charAt(i);
+        // 全角文字かどうかを判定
+        if (char.match(/[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf]/)) {
+          width += 13; // 日本語（全角）
+        } else {
+          width += 7.5; // 英数字（半角）
+        }
+      }
+      return width;
+    }
+
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    if (!context) return 0;
+
+    context.font = font;
+    const metrics = context.measureText(text);
+    return metrics.width;
+  };
+
   // 名前を制限する関数
   const truncateName = (name: string, isNarrow: boolean) => {
     if (isNarrow) {
-      // スクロール時は3文字に制限
+      // スクロール時は3文字だけ表示（...なし）
       return name.substring(0, 3);
     }
-    // 非スクロール時はCSSのtext-overflow: ellipsisで自動省略
-    return name;
+
+    // 非スクロール時：幅ベースで判定（120px = 140px - 20px padding相当）
+    const maxWidth = 120;
+    const textWidth = measureTextWidth(name);
+
+    if (textWidth <= maxWidth) {
+      return name;
+    }
+
+    // 幅を超える場合、1文字ずつ削って「...」を追加
+    const ellipsisWidth = measureTextWidth('...');
+    const availableWidth = maxWidth - ellipsisWidth;
+
+    let truncated = name;
+    while (measureTextWidth(truncated) > availableWidth && truncated.length > 0) {
+      truncated = truncated.slice(0, -1);
+    }
+
+    return truncated + '...';
   };
   
   // スクロール検知
@@ -218,13 +262,18 @@ export default function DataTable({ title, data, initialShow = 10, nameLabel = '
                       // リンク付き表示
                       if (row.link) {
                         return (
-                          <Link href={row.link} style={{ color: '#2563eb', textDecoration: 'underline' }}>
+                          <Link
+                            href={row.link}
+                            className={isScrolled ? 'no-ellipsis-link' : ''}
+                            style={{ color: '#2563eb', textDecoration: 'underline' }}
+                          >
                             {displayName}
                           </Link>
                         );
                       }
 
-                      return displayName;
+                      // プレーンテキストもspanでラップして省略記号を適用
+                      return <span>{displayName}</span>;
                     })()}
                   </td>
                   

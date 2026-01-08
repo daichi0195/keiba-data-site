@@ -1864,7 +1864,6 @@ details[open] .evaluation-content {
   background: #ffffff !important;
   z-index: 20 !important;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 /* ヘッダーの名前列は中央寄せ */
@@ -1879,7 +1878,6 @@ details[open] .evaluation-content {
 .mobile-name-cell {
   text-align: left !important;
   overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
@@ -1889,17 +1887,41 @@ details[open] .evaluation-content {
   display: inline-block !important;
   max-width: calc(140px - 24px) !important; /* 140px(最大セル幅) - 24px(左右パディング) */
   overflow: hidden !important;
-  text-overflow: ellipsis !important;
   white-space: nowrap !important;
   vertical-align: bottom;
+}
+
+/* スクロール時（narrow）はJavaScriptで...を追加するので、CSSの省略記号は無効化 */
+.mobile-data-table tbody .mobile-col-name-narrow.mobile-name-cell,
+.mobile-data-table tbody .mobile-sticky-body.mobile-col-name-narrow.mobile-name-cell,
+td.mobile-col-name-narrow.mobile-name-cell {
+  text-overflow: clip !important;
+  overflow: visible !important;
+}
+
+.mobile-data-table tbody .mobile-col-name-narrow a,
+.mobile-data-table tbody .mobile-col-name-narrow span,
+td.mobile-col-name-narrow a,
+td.mobile-col-name-narrow span {
+  text-overflow: clip !important;
+  overflow: visible !important;
+  max-width: none !important;
+}
+
+/* スクロール時のリンク要素専用：省略記号を完全に無効化 */
+a.no-ellipsis-link,
+a.no-ellipsis-link * {
+  text-overflow: clip !important;
+  overflow: visible !important;
+  max-width: none !important;
+  white-space: nowrap !important;
 }
 
 /* コースバッジも含めて省略 */
 .mobile-name-cell .course-badge-good,
 .mobile-name-cell .course-badge-bad {
-  max-width: calc(140px - 24px) !important;
+  max-width: calc(140px - 12px) !important;
   overflow: hidden !important;
-  text-overflow: ellipsis !important;
   white-space: nowrap !important;
 }
 
@@ -2155,7 +2177,6 @@ details[open] .evaluation-content {
   color: #1a1a1a;
   font-size: 13px;
   overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
@@ -2165,7 +2186,6 @@ details[open] .evaluation-content {
   display: inline-block !important;
   max-width: calc(140px - 24px) !important; /* 140px(最大セル幅) - 24px(左右パディング) */
   overflow: hidden !important;
-  text-overflow: ellipsis !important;
   white-space: nowrap !important;
   vertical-align: bottom;
 }
@@ -2175,7 +2195,6 @@ details[open] .evaluation-content {
 .mobile-name-cell .course-badge-bad {
   max-width: calc(140px - 24px) !important;
   overflow: hidden !important;
-  text-overflow: ellipsis !important;
   white-space: nowrap !important;
 }
 
@@ -2333,7 +2352,6 @@ details[open] .evaluation-content {
     z-index: 20 !important;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
   }
 
   .mobile-data-table thead .mobile-col-name-narrow {
@@ -2457,7 +2475,6 @@ details[open] .evaluation-content {
   .mobile-name-cell {
     font-size: 13px;
     overflow: hidden;
-    text-overflow: ellipsis;
     white-space: nowrap;
   }
 
@@ -2465,11 +2482,36 @@ details[open] .evaluation-content {
   .mobile-name-cell a,
   .mobile-name-cell span {
     display: inline-block !important;
-    max-width: calc(140px - 16px) !important; /* 140px(最大セル幅) - 16px(左右パディング8px×2) */
+    max-width: calc(140px - 16px) !important; /* 140px(最大セル幅) - 16px(左右パディング) */
     overflow: hidden !important;
-    text-overflow: ellipsis !important;
     white-space: nowrap !important;
     vertical-align: bottom;
+  }
+
+  /* モバイル：スクロール時（narrow）はJavaScriptで...を追加するので、CSSの省略記号は無効化 */
+  .mobile-data-table tbody .mobile-col-name-narrow.mobile-name-cell,
+  .mobile-data-table tbody .mobile-sticky-body.mobile-col-name-narrow.mobile-name-cell,
+  td.mobile-col-name-narrow.mobile-name-cell {
+    text-overflow: clip !important;
+    overflow: visible !important;
+  }
+
+  .mobile-data-table tbody .mobile-col-name-narrow a,
+  .mobile-data-table tbody .mobile-col-name-narrow span,
+  td.mobile-col-name-narrow a,
+  td.mobile-col-name-narrow span {
+    text-overflow: clip !important;
+    overflow: visible !important;
+    max-width: none !important;
+  }
+
+  /* モバイル：スクロール時のリンク要素専用：省略記号を完全に無効化 */
+  a.no-ellipsis-link,
+  a.no-ellipsis-link * {
+    text-overflow: clip !important;
+    overflow: visible !important;
+    max-width: none !important;
+    white-space: nowrap !important;
   }
 
   /* モバイル：コースバッジも含めて省略 */
@@ -2477,7 +2519,6 @@ details[open] .evaluation-content {
   .mobile-name-cell .course-badge-bad {
     max-width: calc(140px - 16px) !important;
     overflow: hidden !important;
-    text-overflow: ellipsis !important;
     white-space: nowrap !important;
   }
 
