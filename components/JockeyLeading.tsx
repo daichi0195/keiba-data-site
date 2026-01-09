@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import styles from './JockeyLeading.module.css';
 import AllJockeys from './AllJockeys';
 import { LeadingData } from '@/lib/getLeadingData';
@@ -60,7 +61,7 @@ export default function JockeyLeading({ data }: JockeyLeadingProps) {
               >
                 {jockey.rank}
               </div>
-              <div className={styles.name}>{jockey.name}</div>
+              <Link href={`/jockeys/${jockey.id}`} className={styles.nameLink}>{jockey.name}</Link>
               <div className="gate-bar-container" style={{ background: 'transparent', boxShadow: 'none' }}>
                 <div
                   className={`gate-bar ${isVisible ? 'visible' : ''}`}

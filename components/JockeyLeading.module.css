@@ -61,6 +61,18 @@
   color: #2d3748;
 }
 
+.nameLink {
+  min-width: 80px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.nameLink:hover {
+  color: #1d4ed8;
+}
+
 .barContainer {
   flex: 1;
   height: 18px;

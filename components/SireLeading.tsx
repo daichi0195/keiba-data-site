@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import styles from './SireLeading.module.css';
 import AllSires from './AllSires';
 import { LeadingData } from '@/lib/getLeadingData';
@@ -61,7 +62,7 @@ export default function SireLeading({ data }: SireLeadingProps) {
               >
                 {sire.rank}
               </div>
-              <div className={styles.name}>
+              <Link href={`/sires/${sire.id}`} className={styles.nameLink}>
                 {sire.name.length > 6 ? (
                   <>
                     {sire.name.slice(0, 6)}
@@ -70,7 +71,7 @@ export default function SireLeading({ data }: SireLeadingProps) {
                 ) : (
                   sire.name
                 )}
-              </div>
+              </Link>
               <div className="gate-bar-container" style={{ background: 'transparent', boxShadow: 'none' }}>
                 <div
                   className={`gate-bar ${isVisible ? 'visible' : ''}`}
