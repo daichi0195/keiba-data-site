@@ -847,7 +847,7 @@ export default async function SirePage({
                                 }}
                               ></div>
                             </div>
-                            <div className="gate-rate">{distance.races > 0 ? `${distance.place_rate.toFixed(1)}%` : '-'}</div>
+                            <div className="gate-rate" style={{ textAlign: distance.races > 0 ? 'right' : 'center' }}>{distance.races > 0 ? `${distance.place_rate.toFixed(1)}%` : '-'}</div>
                           </div>
                         ))}
                       </div>
@@ -910,7 +910,7 @@ export default async function SirePage({
                                 }}
                               ></div>
                             </div>
-                            <div className="gate-rate">{condition.races > 0 ? `${condition.place_rate.toFixed(1)}%` : '-'}</div>
+                            <div className="gate-rate" style={{ textAlign: condition.races > 0 ? 'right' : 'center' }}>{condition.races > 0 ? `${condition.place_rate.toFixed(1)}%` : '-'}</div>
                           </div>
                         ))}
                     </div>
@@ -973,7 +973,7 @@ export default async function SirePage({
                                 }}
                               ></div>
                             </div>
-                            <div className="gate-rate">{condition.races > 0 ? `${condition.place_rate.toFixed(1)}%` : '-'}</div>
+                            <div className="gate-rate" style={{ textAlign: condition.races > 0 ? 'right' : 'center' }}>{condition.races > 0 ? `${condition.place_rate.toFixed(1)}%` : '-'}</div>
                           </div>
                         ))}
                     </div>

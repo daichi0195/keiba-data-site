@@ -1353,7 +1353,7 @@ details[open] .evaluation-content {
   font-weight: 700;
   color: var(--text-dark);
   min-width: 48px;
-  text-align: center;
+  text-align: right;
 }
 
 /* 脚質別複勝率グラフ */
