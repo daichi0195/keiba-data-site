@@ -4,7 +4,7 @@ Allow: /
 Allow: /courses/
 Allow: /sitemap.xml
 
-Disallow: /.next/
+# API routesのみブロック（静的アセットは許可）
 Disallow: /api/
 
 Sitemap: https://www.keibadata.com/sitemap.xml
