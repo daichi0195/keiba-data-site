@@ -62,7 +62,7 @@ export default function HorseWeightTable({ title, data }: Props) {
             <thead>
               <tr>
                 <th className={styles.weightCol}>
-                  馬体重
+                  馬体重(kg)
                 </th>
                 <th className={styles.scrollCol}>出走数</th>
                 <th className={styles.scrollCol}>1着</th>
@@ -83,7 +83,7 @@ export default function HorseWeightTable({ title, data }: Props) {
                 >
                   <td className={styles.weightCol}>
                     <span className={styles.weightBadge}>
-                      {row.weight_category}
+                      {row.weight_category.replace('kg', '')}
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
