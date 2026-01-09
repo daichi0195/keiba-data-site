@@ -516,8 +516,22 @@ export default async function SirePage({
   const allGenders = ['牡馬', '牝馬', 'セン馬'];
   const genderStatsData = allGenders.map(gender => {
     const existingData = sire.gender_stats.find(stat => stat.gender === gender);
-    return existingData || {
-      gender,
+    if (existingData) {
+      return {
+        name: existingData.gender,
+        races: existingData.races,
+        wins: existingData.wins,
+        places_2: existingData.places_2,
+        places_3: existingData.places_3,
+        win_rate: existingData.win_rate,
+        place_rate: existingData.place_rate,
+        quinella_rate: existingData.quinella_rate,
+        win_payback: existingData.win_payback,
+        place_payback: existingData.place_payback,
+      };
+    }
+    return {
+      name: gender,
       races: 0,
       wins: 0,
       places_2: 0,
