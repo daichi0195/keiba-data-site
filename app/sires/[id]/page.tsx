@@ -536,7 +536,18 @@ export default async function SirePage({
   });
 
   // 馬体重別データ（全カテゴリを表示）
-  const allWeightCategories = ['420kg以下', '421-440kg', '441-460kg', '461-480kg', '481-500kg', '501kg以上'];
+  const allWeightCategories = [
+    '380kg以下',
+    '381-400kg',
+    '401-420kg',
+    '421-440kg',
+    '441-460kg',
+    '461-480kg',
+    '481-500kg',
+    '501-520kg',
+    '521-540kg',
+    '541kg以上'
+  ];
   const horseWeightStatsData = allWeightCategories.map(category => {
     const existingData = sire.horse_weight_stats?.find(stat => stat.weight_category === category);
     return existingData || {

@@ -674,12 +674,16 @@ def get_horse_weight_stats(client):
     query = f"""
     SELECT
       CASE
-        WHEN rr.weight <= 420 THEN '420kg以下'
+        WHEN rr.weight <= 380 THEN '380kg以下'
+        WHEN rr.weight BETWEEN 381 AND 400 THEN '381-400kg'
+        WHEN rr.weight BETWEEN 401 AND 420 THEN '401-420kg'
         WHEN rr.weight BETWEEN 421 AND 440 THEN '421-440kg'
         WHEN rr.weight BETWEEN 441 AND 460 THEN '441-460kg'
         WHEN rr.weight BETWEEN 461 AND 480 THEN '461-480kg'
         WHEN rr.weight BETWEEN 481 AND 500 THEN '481-500kg'
-        WHEN rr.weight >= 501 THEN '501kg以上'
+        WHEN rr.weight BETWEEN 501 AND 520 THEN '501-520kg'
+        WHEN rr.weight BETWEEN 521 AND 540 THEN '521-540kg'
+        WHEN rr.weight >= 541 THEN '541kg以上'
       END as weight_category,
       COUNT(*) as races,
       SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
@@ -702,12 +706,16 @@ def get_horse_weight_stats(client):
     GROUP BY weight_category
     ORDER BY
       CASE weight_category
-        WHEN '420kg以下' THEN 1
-        WHEN '421-440kg' THEN 2
-        WHEN '441-460kg' THEN 3
-        WHEN '461-480kg' THEN 4
-        WHEN '481-500kg' THEN 5
-        WHEN '501kg以上' THEN 6
+        WHEN '380kg以下' THEN 1
+        WHEN '381-400kg' THEN 2
+        WHEN '401-420kg' THEN 3
+        WHEN '421-440kg' THEN 4
+        WHEN '441-460kg' THEN 5
+        WHEN '461-480kg' THEN 6
+        WHEN '481-500kg' THEN 7
+        WHEN '501-520kg' THEN 8
+        WHEN '521-540kg' THEN 9
+        WHEN '541kg以上' THEN 10
       END
     """
 
