@@ -125,13 +125,32 @@ export default async function SirePage({
     place_payback: number;
   }>);
 
-  // 勝率・連対率・複勝率を再計算
-  const distanceStatsData = distanceStatsRaw.map(stat => ({
-    ...stat,
-    win_rate: stat.races > 0 ? (stat.wins / stat.races) * 100 : 0,
-    quinella_rate: stat.races > 0 ? ((stat.wins + stat.places_2) / stat.races) * 100 : 0,
-    place_rate: stat.races > 0 ? ((stat.wins + stat.places_2 + stat.places_3) / stat.races) * 100 : 0,
-  }));
+  // 勝率・連対率・複勝率を再計算（全距離カテゴリを表示）
+  const allDistanceCategories = ['短距離', 'マイル', '中距離', '長距離'];
+  const distanceStatsData = allDistanceCategories.map(category => {
+    const existingData = distanceStatsRaw.find(stat => stat.name === category);
+    if (existingData) {
+      return {
+        ...existingData,
+        win_rate: existingData.races > 0 ? (existingData.wins / existingData.races) * 100 : 0,
+        quinella_rate: existingData.races > 0 ? ((existingData.wins + existingData.places_2) / existingData.races) * 100 : 0,
+        place_rate: existingData.races > 0 ? ((existingData.wins + existingData.places_2 + existingData.places_3) / existingData.races) * 100 : 0,
+      };
+    } else {
+      return {
+        name: category,
+        races: 0,
+        wins: 0,
+        places_2: 0,
+        places_3: 0,
+        win_rate: 0,
+        quinella_rate: 0,
+        place_rate: 0,
+        win_payback: 0,
+        place_payback: 0,
+      };
+    }
+  });
 
   // 母父統計にリンクを追加（ページが存在する種牡馬のみ）
   const damSireStatsWithLinks = sire.dam_sire_stats.map(stat => {
@@ -190,6 +209,54 @@ export default async function SirePage({
       place_payback: sire.surface_change_stats.dirt_to_turf?.place_payback || 0,
     },
   ] : [];
+
+  // 馬場状態別データ（全カテゴリを表示）
+  const allTrackConditions = [
+    { condition: 'good', condition_label: '良' },
+    { condition: 'yielding', condition_label: '稍重' },
+    { condition: 'soft', condition_label: '重' },
+    { condition: 'heavy', condition_label: '不良' }
+  ];
+
+  const turfConditionStatsData = allTrackConditions.map(({ condition, condition_label }) => {
+    const existingData = sire.track_condition_stats.find(
+      s => s.surface === '芝' && s.condition === condition
+    );
+    return existingData || {
+      surface: '芝',
+      condition,
+      condition_label,
+      races: 0,
+      wins: 0,
+      places_2: 0,
+      places_3: 0,
+      win_rate: 0,
+      place_rate: 0,
+      quinella_rate: 0,
+      win_payback: 0,
+      place_payback: 0,
+    };
+  });
+
+  const dirtConditionStatsData = allTrackConditions.map(({ condition, condition_label }) => {
+    const existingData = sire.track_condition_stats.find(
+      s => s.surface === 'ダート' && s.condition === condition
+    );
+    return existingData || {
+      surface: 'ダート',
+      condition,
+      condition_label,
+      races: 0,
+      wins: 0,
+      places_2: 0,
+      places_3: 0,
+      win_rate: 0,
+      place_rate: 0,
+      quinella_rate: 0,
+      win_payback: 0,
+      place_payback: 0,
+    };
+  });
 
   // 芝・ダートの得意傾向を計算（複勝率の差から判定）
   const turfStat = sire.surface_stats.find(s => s.surface === '芝');
@@ -817,13 +884,7 @@ export default async function SirePage({
                   <div className="gate-place-rate-detail">
                     <div className="gate-detail-title">馬場状態別複勝率</div>
                     <div className="gate-chart">
-                      {sire.track_condition_stats
-                        .filter(s => s.surface === '芝')
-                        .sort((a, b) => {
-                          const order = { 'good': 1, 'yielding': 2, 'soft': 3, 'heavy': 4 };
-                          return (order[a.condition as keyof typeof order] || 99) - (order[b.condition as keyof typeof order] || 99);
-                        })
-                        .map((condition) => (
+                      {turfConditionStatsData.map((condition) => (
                           <div key={condition.condition} className="gate-chart-item">
                             <div
                               style={{
@@ -886,13 +947,7 @@ export default async function SirePage({
                   <div className="gate-place-rate-detail">
                     <div className="gate-detail-title">馬場状態別複勝率</div>
                     <div className="gate-chart">
-                      {sire.track_condition_stats
-                        .filter(s => s.surface === 'ダート')
-                        .sort((a, b) => {
-                          const order = { 'good': 1, 'yielding': 2, 'soft': 3, 'heavy': 4 };
-                          return (order[a.condition as keyof typeof order] || 99) - (order[b.condition as keyof typeof order] || 99);
-                        })
-                        .map((condition) => (
+                      {dirtConditionStatsData.map((condition) => (
                           <div key={condition.condition} className="gate-chart-item">
                             <div
                               style={{
