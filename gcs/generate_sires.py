@@ -669,6 +669,56 @@ def get_age_stats(client):
         raise
 
 
+def get_horse_weight_stats(client):
+    """馬体重別成績を取得（過去3年間）"""
+    query = f"""
+    SELECT
+      CASE
+        WHEN rr.weight <= 420 THEN '420kg以下'
+        WHEN rr.weight BETWEEN 421 AND 440 THEN '421-440kg'
+        WHEN rr.weight BETWEEN 441 AND 460 THEN '441-460kg'
+        WHEN rr.weight BETWEEN 461 AND 480 THEN '461-480kg'
+        WHEN rr.weight BETWEEN 481 AND 500 THEN '481-500kg'
+        WHEN rr.weight >= 501 THEN '501kg以上'
+      END as weight_category,
+      COUNT(*) as races,
+      SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
+      SUM(CASE WHEN rr.finish_position = 2 THEN 1 ELSE 0 END) as places_2,
+      SUM(CASE WHEN rr.finish_position = 3 THEN 1 ELSE 0 END) as places_3,
+      ROUND(AVG(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) as win_rate,
+      ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
+      ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
+    FROM
+      `{DATASET}.race_master` rm
+      JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
+      JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
+    WHERE
+      h.father = '{SIRE_NAME}'
+      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+      AND rr.weight IS NOT NULL
+      AND rr.weight > 0
+    GROUP BY weight_category
+    ORDER BY
+      CASE weight_category
+        WHEN '420kg以下' THEN 1
+        WHEN '421-440kg' THEN 2
+        WHEN '441-460kg' THEN 3
+        WHEN '461-480kg' THEN 4
+        WHEN '481-500kg' THEN 5
+        WHEN '501kg以上' THEN 6
+      END
+    """
+
+    try:
+        results = client.query(query).result()
+        return [dict(row) for row in results]
+    except Exception as e:
+        print(f"   ⚠️  Error fetching horse weight stats: {str(e)}", file=sys.stderr)
+        raise
+
+
 def get_dam_sire_stats(client):
     """母父別成績を取得（過去3年間、上位50頭）"""
     query = f"""
@@ -988,69 +1038,73 @@ def process_sire(bq_client, storage_client, sire_id, sire_name):
 
     try:
         # 基本情報取得
-        print("  [1/17] Fetching basic info...")
+        print("  [1/18] Fetching basic info...")
         basic_info = get_sire_basic_info(bq_client)
         if not basic_info:
             print(f"  ⚠️  Sire not found: {sire_name}")
             return False
 
         # 総合成績取得
-        print("  [2/17] Fetching total stats...")
+        print("  [2/18] Fetching total stats...")
         total_stats = get_total_stats(bq_client)
 
         # 年度別成績取得
-        print("  [3/17] Fetching yearly stats...")
+        print("  [3/18] Fetching yearly stats...")
         yearly_stats = get_yearly_stats(bq_client)
 
-        print("  [4/17] Fetching yearly leading...")
+        print("  [4/18] Fetching yearly leading...")
         yearly_leading = get_yearly_leading(bq_client)
 
         # 距離別成績取得
-        print("  [5/17] Fetching distance stats...")
+        print("  [5/18] Fetching distance stats...")
         distance_stats = get_distance_stats(bq_client)
 
         # 芝・ダート別成績取得
-        print("  [6/17] Fetching surface stats...")
+        print("  [6/18] Fetching surface stats...")
         surface_stats = get_surface_stats(bq_client)
 
         # 脚質別成績取得
-        print("  [7/17] Fetching running style stats...")
+        print("  [7/18] Fetching running style stats...")
         running_style_stats = get_running_style_stats(bq_client)
 
         # 枠順別成績取得
-        print("  [8/17] Fetching gate stats...")
+        print("  [8/18] Fetching gate stats...")
         gate_stats = get_gate_stats(bq_client)
 
         # 馬場状態別成績取得
-        print("  [9/17] Fetching track condition stats...")
+        print("  [9/18] Fetching track condition stats...")
         track_condition_stats = get_track_condition_stats(bq_client)
 
         # クラス別成績取得
-        print("  [10/17] Fetching class stats...")
+        print("  [10/18] Fetching class stats...")
         class_stats = get_class_stats(bq_client)
 
         # 性別成績取得
-        print("  [11/17] Fetching gender stats...")
+        print("  [11/18] Fetching gender stats...")
         gender_stats = get_gender_stats(bq_client)
 
         # 馬齢別成績取得
-        print("  [12/17] Fetching age stats...")
+        print("  [12/18] Fetching age stats...")
         age_stats = get_age_stats(bq_client)
 
+        # 馬体重別成績取得
+        print("  [13/18] Fetching horse weight stats...")
+        horse_weight_stats = get_horse_weight_stats(bq_client)
+
         # 母父別成績取得
-        print("  [13/17] Fetching dam sire stats...")
+        print("  [14/18] Fetching dam sire stats...")
         dam_sire_stats = get_dam_sire_stats(bq_client)
 
         # 競馬場別成績取得
-        print("  [14/17] Fetching racecourse stats...")
+        print("  [15/18] Fetching racecourse stats...")
         racecourse_stats = get_racecourse_stats(bq_client)
 
         # コース別成績取得
-        print("  [15/17] Fetching course stats...")
+        print("  [16/18] Fetching course stats...")
         course_stats = get_course_stats(bq_client)
 
         # 芝・ダート変わりデータ取得
-        print("  [16/17] Fetching surface change stats...")
+        print("  [17/18] Fetching surface change stats...")
         surface_change_stats = get_surface_change_stats(bq_client)
 
         # データ期間の計算
@@ -1081,6 +1135,7 @@ def process_sire(bq_client, storage_client, sire_id, sire_name):
             "class_stats": class_stats,
             "gender_stats": gender_stats,
             "age_stats": age_stats,
+            "horse_weight_stats": horse_weight_stats,
             "dam_sire_stats": dam_sire_stats,
             "racecourse_stats": racecourse_stats,
             "course_stats": course_stats,
@@ -1097,7 +1152,7 @@ def process_sire(bq_client, storage_client, sire_id, sire_name):
         }
 
         # GCSにアップロード
-        print("  [17/17] Uploading to GCS...")
+        print("  [18/18] Uploading to GCS...")
         bucket = storage_client.bucket(BUCKET_NAME)
 
         # ID番号を5桁のゼロパディング形式に変換（調教師・騎手と同じ形式）

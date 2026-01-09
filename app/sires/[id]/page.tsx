@@ -16,6 +16,7 @@ import RacecourseTable from '@/components/RacecourseTable';
 import RacecourseCourseTable from '@/components/RacecourseCourseTable';
 import GenderTable from '@/components/GenderTable';
 import AgeTable from '@/components/AgeTable';
+import HorseWeightTable from '@/components/HorseWeightTable';
 import BarChartAnimation from '@/components/BarChartAnimation';
 import VolatilityExplanation from '@/components/VolatilityExplanation';
 import GatePositionExplanation from '@/components/GatePositionExplanation';
@@ -522,6 +523,24 @@ export default async function SirePage({
     const existingData = sire.age_stats.find(stat => stat.age === age);
     return existingData || {
       age,
+      races: 0,
+      wins: 0,
+      places_2: 0,
+      places_3: 0,
+      win_rate: 0,
+      place_rate: 0,
+      quinella_rate: 0,
+      win_payback: 0,
+      place_payback: 0,
+    };
+  });
+
+  // 馬体重別データ（全カテゴリを表示）
+  const allWeightCategories = ['420kg以下', '421-440kg', '441-460kg', '461-480kg', '481-500kg', '501kg以上'];
+  const horseWeightStatsData = allWeightCategories.map(category => {
+    const existingData = sire.horse_weight_stats?.find(stat => stat.weight_category === category);
+    return existingData || {
+      weight_category: category,
       races: 0,
       wins: 0,
       places_2: 0,
@@ -1172,6 +1191,14 @@ export default async function SirePage({
             <AgeTable
               title={`${sire.name}産駒 馬齢別データ`}
               data={ageStatsData}
+            />
+          </section>
+
+          {/* 馬体重別データセクション */}
+          <section id="horse-weight-stats" aria-label="馬体重別データ">
+            <HorseWeightTable
+              title={`${sire.name}産駒 馬体重別データ`}
+              data={horseWeightStatsData}
             />
           </section>
 
