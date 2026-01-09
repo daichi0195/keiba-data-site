@@ -81,11 +81,13 @@
   background: #fff;
   color: #2d3748;
   white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .dataCard:hover {
-  box-shadow: 0 2px 8px rgba(29, 184, 84, 0.15);
+  box-shadow: 0 4px 12px rgba(29, 184, 84, 0.25);
   border-color: #1a9f47;
+  transform: translateY(-1px);
 }
 
 /* レスポンシブ */
