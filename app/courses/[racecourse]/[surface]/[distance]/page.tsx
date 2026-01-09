@@ -344,7 +344,9 @@ const mockData = {
           { rank: 18, name: '松永幹夫', races: 38, wins: 6, places_2: 4, places_3: 3, win_rate: 15.8, quinella_rate: 26.3, place_rate: 34.2, win_payback: 78, place_payback: 73 },
           { rank: 19, name: '加藤征弘', races: 37, wins: 5, places_2: 4, places_3: 3, win_rate: 13.5, quinella_rate: 24.3, place_rate: 32.4, win_payback: 77, place_payback: 72 },
           { rank: 20, name: '松田国英', races: 36, wins: 5, places_2: 4, places_3: 2, win_rate: 13.9, quinella_rate: 25.0, place_rate: 30.6, win_payback: 76, place_payback: 71 },
-        ]        
+        ],
+        gender_stats: [],
+        horse_weight_stats: []
       },
     },
   },
@@ -469,7 +471,9 @@ export default async function CoursePage({ params }: Props) {
     pedigree_stats: [],
     dam_sire_stats: [],
     running_style_stats: [],
-    running_style_trends: []
+    running_style_trends: [],
+    gender_stats: [],
+    horse_weight_stats: []
   };
 
   // ===== GCSから全データを取得 =====
@@ -495,6 +499,8 @@ export default async function CoursePage({ params }: Props) {
     data.dam_sire_stats = gcsData.dam_sire_stats || [];
     data.running_style_stats = gcsData.running_style_stats || [];
     data.running_style_trends = gcsData.running_style_trends || [];
+    data.gender_stats = gcsData.gender_stats || [];
+    data.horse_weight_stats = gcsData.horse_weight_stats || [];
     if (gcsData.characteristics) {
       if (!data.course_info) {
         data.course_info = {};
@@ -625,7 +631,7 @@ export default async function CoursePage({ params }: Props) {
   data.course_info.data_period = dataPeriod;
   data.course_info.last_updated = formattedDate;
 
-  const { course_info, gate_stats, running_style_stats, running_style_trends, popularity_stats, jockey_stats, pedigree_stats, dam_sire_stats, trainer_stats } = data;
+  const { course_info, gate_stats, running_style_stats, running_style_trends, popularity_stats, jockey_stats, pedigree_stats, dam_sire_stats, trainer_stats, gender_stats, horse_weight_stats } = data;
 
   // 騎手統計にリンクを追加（ページが存在する騎手のみ）
   const jockeyStatsWithLinks = jockey_stats.map(stat => {
@@ -995,7 +1001,7 @@ export default async function CoursePage({ params }: Props) {
 <section id="gender-section" aria-label="性別データ">
   <GenderTable
     title={`${seoPrefix} 性別データ`}
-    data={courseData.gender_stats || []}
+    data={gender_stats}
   />
 </section>
 
@@ -1003,7 +1009,7 @@ export default async function CoursePage({ params }: Props) {
 <section id="horse-weight-section" aria-label="馬体重別データ">
   <HorseWeightTable
     title={`${seoPrefix} 馬体重別データ`}
-    data={courseData.horse_weight_stats || []}
+    data={horse_weight_stats}
   />
 </section>
 
