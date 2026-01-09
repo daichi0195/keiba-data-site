@@ -21,7 +21,6 @@ import VolatilityExplanation from '@/components/VolatilityExplanation';
 import GatePositionExplanation from '@/components/GatePositionExplanation';
 import RunningStyleExplanation from '@/components/RunningStyleExplanation';
 import DistanceTrendExplanation from '@/components/DistanceTrendExplanation';
-import AgeTrendExplanation from '@/components/AgeTrendExplanation';
 import TurfConditionExplanation from '@/components/TurfConditionExplanation';
 import JockeyTrainerHighlights from '@/components/JockeyTrainerHighlights';
 import { ALL_SIRES } from '@/lib/sires';
@@ -261,31 +260,6 @@ export default async function SirePage({
     else if (diff <= -5) distanceTrendPosition = 5; // 長距離が得意
     else if (diff <= -2) distanceTrendPosition = 4; // やや長距離が得意
     else distanceTrendPosition = 3; // 互角
-  }
-
-  // 馬齢別傾向を計算（2-3歳 vs 5歳以上の複勝率差から判定）
-  const youngAges = sire.age_stats.filter(a => a.age === '2歳' || a.age === '3歳');
-  const oldAges = sire.age_stats.filter(a => a.age === '5歳' || a.age === '6歳-');
-
-  let ageTrendPosition = 3; // デフォルトは互角
-  if (youngAges.length > 0 && oldAges.length > 0) {
-    // 加重平均で複勝率を計算（出走数で重み付け）
-    const youngTotalRaces = youngAges.reduce((sum, a) => sum + a.races, 0);
-    const youngWeightedPlaceRate = youngAges.reduce((sum, a) =>
-      sum + (a.place_rate * a.races), 0
-    ) / youngTotalRaces;
-
-    const oldTotalRaces = oldAges.reduce((sum, a) => sum + a.races, 0);
-    const oldWeightedPlaceRate = oldAges.reduce((sum, a) =>
-      sum + (a.place_rate * a.races), 0
-    ) / oldTotalRaces;
-
-    const diff = youngWeightedPlaceRate - oldWeightedPlaceRate;
-    if (diff >= 5) ageTrendPosition = 1; // 早熟型
-    else if (diff >= 2) ageTrendPosition = 2; // やや早熟型
-    else if (diff <= -5) ageTrendPosition = 5; // 晩成型
-    else if (diff <= -2) ageTrendPosition = 4; // やや晩成型
-    else ageTrendPosition = 3; // 互角
   }
 
   // 芝馬場状態別傾向を計算（良 vs 重・不良の複勝率差から判定）
@@ -812,84 +786,6 @@ export default async function SirePage({
                       </div>
                     </div>
                 </div>
-
-                {/* 区切り線 */}
-                <div className="section-divider"></div>
-
-                {/* 馬齢別傾向 */}
-                {sire.age_stats.some((age) => age.races > 0) ? (
-                  <div className="gauge-item">
-                    <div className="gauge-header">
-                      <h3 className="gauge-label">馬齢別傾向</h3>
-                      <AgeTrendExplanation />
-                    </div>
-                    <div className="gauge-track">
-                      <div className="gauge-indicator" style={{ left: `${(ageTrendPosition - 1) * 25}%` }}></div>
-                      <div className="gauge-horse-icon" style={{ left: `${(ageTrendPosition - 1) * 25}%` }}>🏇</div>
-                    </div>
-                    <div className="gauge-labels">
-                      <span>早熟型</span>
-                      <span>差分なし</span>
-                      <span>晩成型</span>
-                    </div>
-                    <div className="gauge-result">
-                      {ageTrendPosition === 1 && '早熟型'}
-                      {ageTrendPosition === 2 && 'やや早熟型'}
-                      {ageTrendPosition === 3 && '差分なし'}
-                      {ageTrendPosition === 4 && 'やや晩成型'}
-                      {ageTrendPosition === 5 && '晩成型'}
-                    </div>
-
-                    {/* 馬齢別複勝率グラフ */}
-                    <div className="gate-place-rate-detail">
-                      <div className="gate-detail-title">馬齢別複勝率</div>
-                      <div className="gate-chart">
-                        {sire.age_stats.map((age) => (
-                          <div key={age.age} className="gate-chart-item">
-                            <div
-                              style={{
-                                background: '#f0f0f0',
-                                border: '1px solid #ddd',
-                                borderRadius: '4px',
-                                color: '#333',
-                                padding: '4px 6px',
-                                fontSize: '0.7rem',
-                                fontWeight: '700',
-                                textAlign: 'center',
-                                minWidth: '40px',
-                                display: 'inline-block'
-                              }}
-                            >
-                              {age.age}
-                            </div>
-                            <div className="gate-bar-container">
-                              <div
-                                className="gate-bar"
-                                style={{
-                                  width: `${age.place_rate}%`
-                                }}
-                              ></div>
-                            </div>
-                            <div className="gate-rate">{age.races > 0 ? `${age.place_rate.toFixed(1)}%` : '-'}</div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="gauge-item">
-                    <div className="gauge-header">
-                      <h3 className="gauge-label">馬齢別傾向</h3>
-                      <AgeTrendExplanation />
-                    </div>
-                    <div className="gauge-result" style={{ textAlign: 'center', padding: '2rem 0', color: '#999' }}>
-                      データなし
-                    </div>
-                  </div>
-                )}
-
-                {/* 区切り線 */}
-                <div className="section-divider"></div>
 
                 {/* 得意な馬場傾向（芝） */}
                 <div className="gauge-item">
