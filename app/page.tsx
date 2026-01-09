@@ -43,7 +43,7 @@ export default async function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
-      <main>
+      <main style={{ padding: 0 }}>
         <article style={{ backgroundColor: '#fbfcfd' }}>
           <RaceTabs
             jockeyLeading={jockeyLeading}
