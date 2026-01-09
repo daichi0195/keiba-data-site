@@ -178,9 +178,9 @@
   @media (max-width: 768px) {
     .table {
       font-size: 13px;
-      width: 730px !important;
-      min-width: 730px !important;
-      max-width: 730px !important;
+      width: 720px !important;
+      min-width: 720px !important;
+      max-width: 720px !important;
       table-layout: fixed !important;
     }
 
@@ -193,9 +193,9 @@
     /* 第1列：馬齢 - 80px */
     .table th:nth-child(1),
     .table td:nth-child(1) {
-      width: 90px !important;
-      min-width: 90px !important;
-      max-width: 90px !important;
+      width: 80px !important;
+      min-width: 80px !important;
+      max-width: 80px !important;
     }
 
     /* 第2列：出走数 - 60px */
