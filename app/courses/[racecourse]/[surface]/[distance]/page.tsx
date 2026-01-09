@@ -4,6 +4,8 @@ import DataTable from '@/components/DataTable';
 import GateTable from '@/components/GateTable';
 import RunningStyleTable from '@/components/RunningStyleTable';
 import PopularityTable from '@/components/PopularityTable';
+import GenderTable from '@/components/GenderTable';
+import HorseWeightTable from '@/components/HorseWeightTable';
 import HighlightsSection from '@/components/HighlightsSection';
 import BarChartAnimation from '@/components/BarChartAnimation';
 import VolatilityExplanation from '@/components/VolatilityExplanation';
@@ -679,6 +681,8 @@ export default async function CoursePage({ params }: Props) {
     { id: 'popularity-section', label: '人気別' },
     { id: 'gate-section', label: '枠順別' },
     { id: 'running-style-section', label: '脚質別' },
+    { id: 'gender-section', label: '性別' },
+    { id: 'horse-weight-section', label: '馬体重別' },
     { id: 'jockey-section', label: '騎手別' },
     { id: 'bloodline-section', label: '血統別(種牡馬)' },
     { id: 'dam-sire-section', label: '血統別(母父)' },
@@ -984,6 +988,22 @@ export default async function CoursePage({ params }: Props) {
   <RunningStyleTable
     title={`${seoPrefix} 脚質別データ`}
     data={running_style_stats}
+  />
+</section>
+
+{/* === 性別 === */}
+<section id="gender-section" aria-label="性別データ">
+  <GenderTable
+    title={`${seoPrefix} 性別データ`}
+    data={courseData.gender_stats || []}
+  />
+</section>
+
+{/* === 馬体重別 === */}
+<section id="horse-weight-section" aria-label="馬体重別データ">
+  <HorseWeightTable
+    title={`${seoPrefix} 馬体重別データ`}
+    data={courseData.horse_weight_stats || []}
   />
 </section>
 
