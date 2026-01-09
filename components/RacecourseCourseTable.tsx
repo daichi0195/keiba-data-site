@@ -153,7 +153,7 @@ export default function RacecourseCourseTable({ title, data }: Props) {
                       <tbody>
                         {racecourse.courses.map((course, index) => (
                         <tr
-                          key={course.link}
+                          key={`${racecourse.racecourse_en}-${course.link}`}
                           className={index % 2 === 0 ? 'mobile-row-even' : 'mobile-row-odd'}
                         >
                           <td className="mobile-sticky-col mobile-col-name mobile-sticky-body mobile-name-cell mobile-col-name-first">

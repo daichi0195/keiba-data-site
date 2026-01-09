@@ -156,7 +156,7 @@ export default function CourseStatsTable({ title, data }: Props) {
                       <tbody>
                         {racecourse.courses.map((course, index) => (
                           <tr
-                            key={course.link}
+                            key={`${racecourse.racecourse_en}-${course.link}`}
                             className={index % 2 === 0 ? styles.rowEven : styles.rowOdd}
                           >
                             <td className={styles.courseCol} suppressHydrationWarning>
