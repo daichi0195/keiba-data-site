@@ -836,9 +836,9 @@ export default async function SirePage({
     { id: 'running-style-stats', label: '脚質別' },
     { id: 'gate-stats', label: '枠順別' },
     { id: 'distance-stats', label: '距離別' },
+    { id: 'gender-stats', label: '性別' },
     { id: 'age-stats', label: '馬齢別' },
     { id: 'horse-weight-stats', label: '馬体重別' },
-    { id: 'gender-stats', label: '性別' },
     { id: 'surface-stats', label: '芝・ダート別' },
     { id: 'surface-change-stats', label: '芝・ダート変わり' },
     { id: 'track-condition-stats', label: '馬場状態別' },
@@ -1197,6 +1197,14 @@ export default async function SirePage({
             />
           </section>
 
+          {/* 性別データセクション */}
+          <section id="gender-stats" aria-label="性別データ">
+            <GenderTable
+              title={`${sire.name}産駒 性別データ`}
+              data={genderStatsData}
+            />
+          </section>
+
           {/* 馬齢別データセクション */}
           <section id="age-stats" aria-label="馬齢別データ">
             <AgeTable
@@ -1210,14 +1218,6 @@ export default async function SirePage({
             <HorseWeightTable
               title={`${sire.name}産駒 馬体重別データ`}
               data={horseWeightStatsData}
-            />
-          </section>
-
-          {/* 性別データセクション */}
-          <section id="gender-stats" aria-label="性別データ">
-            <GenderTable
-              title={`${sire.name}産駒 性別データ`}
-              data={genderStatsData}
             />
           </section>
 
