@@ -153,12 +153,13 @@
 /* 馬体重バッジ */
 .weightBadge {
   display: inline-block;
-  padding: 4px 8px;
+  padding: 4px 6px;
   border-radius: 4px;
   font-weight: 700;
-  font-size: 13px;
+  font-size: 11px;
   color: #333;
   background: #f0f0f0;
+  white-space: nowrap;
 }
 
 /* ハイライト */
@@ -274,8 +275,8 @@
   }
 
   .weightBadge {
-    font-size: 12px;
-    padding: 3px 6px;
+    font-size: 10px;
+    padding: 3px 4px;
   }
 }
 
