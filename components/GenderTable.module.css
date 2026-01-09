@@ -193,9 +193,9 @@
     /* 第1列：芝/ダート - 80px */
     .table th:nth-child(1),
     .table td:nth-child(1) {
-      width: 90px !important;
-      min-width: 90px !important;
-      max-width: 90px !important;
+      width: 80px !important;
+      min-width: 80px !important;
+      max-width: 80px !important;
     }
 
     /* 第2列：出走数 - 60px */
@@ -297,8 +297,8 @@
   .table th:nth-child(2),
   .table td:nth-child(2) {
     width: 80px !important;
-    min-width: 90px !important;
-    max-width: 90px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
   }
   
   .table th:nth-child(3),

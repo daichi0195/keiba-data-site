@@ -53,12 +53,12 @@ export default function RunningStyleTable({ title, data }: Props) {
   
   const isHighlight = (value: number, maxValue: number) => value === maxValue;
 
-  // 脚質を1文字に変換するマッピング
+  // 脚質の表記マッピング
   const styleIcons: { [key: string]: string } = {
-    'escape': '逃',
-    'lead': '先',
-    'pursue': '差',
-    'close': '追'
+    'escape': '逃げ',
+    'lead': '先行',
+    'pursue': '差し',
+    'close': '追込'
   };
 
   return (

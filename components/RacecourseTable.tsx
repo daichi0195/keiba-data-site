@@ -89,13 +89,14 @@ export default function RacecourseTable({ title, data }: Props) {
               {data.map((row, index) => {
                 const isSummaryRow = row.name === '右回り' || row.name === '左回り' || row.name === '中央' || row.name === 'ローカル';
                 const isFirstSummaryRow = row.name === '中央' || row.name === '右回り';
+                const isLocalRow = row.name === 'ローカル';
                 return (
                 <tr
                   key={row.name}
                   className={`${index % 2 === 0 ? styles.rowEven : styles.rowOdd} ${isSummaryRow ? styles.summaryRow : ''} ${isFirstSummaryRow ? styles.firstSummaryRow : ''}`}
                 >
                   <td className={styles.racecourseCol}>
-                    <span className={styles.racecourseBadge}>
+                    <span className={`${styles.racecourseBadge} ${isLocalRow ? styles.localBadge : ''}`}>
                       {row.name}
                     </span>
                   </td>

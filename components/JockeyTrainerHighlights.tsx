@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import DataTable from '@/components/DataTable';
+import CourseHighlightsTable from '@/components/CourseHighlightsTable';
 
 interface StatItem {
   rank?: number;
@@ -100,28 +100,18 @@ export default function JockeyTrainerHighlights({
         <div className="highlights-content">
           {courseEvaluation.top.length > 0 && (
             <div className="highlight-table">
-              <h3 className="table-title">得意なコース TOP5</h3>
-              <DataTable
-                title=""
+              <CourseHighlightsTable
+                title="得意なコース TOP5"
                 data={courseEvaluation.top}
-                initialShow={5}
-                nameLabel="コース"
-                showRank={false}
-                disableHighlight={true}
               />
             </div>
           )}
 
           {courseEvaluation.bottom.length > 0 && (
             <div className="highlight-table">
-              <h3 className="table-title">苦手なコース TOP5</h3>
-              <DataTable
-                title=""
+              <CourseHighlightsTable
+                title="苦手なコース TOP5"
                 data={courseEvaluation.bottom}
-                initialShow={5}
-                nameLabel="コース"
-                showRank={false}
-                disableHighlight={true}
               />
             </div>
           )}

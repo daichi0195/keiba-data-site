@@ -243,20 +243,20 @@ export default function DataTable({ title, data, initialShow = 10, nameLabel = '
                   )}
 
                   {/* 固定列: 名前 */}
-                  <td className={`mobile-sticky-col mobile-col-name mobile-sticky-body mobile-name-cell ${showRank && isScrolled ? 'mobile-col-name-narrow' : ''} ${!showRank ? 'mobile-col-name-first' : ''}`}>
+                  <td className={`mobile-sticky-col mobile-col-name mobile-sticky-body mobile-name-cell ${showRank && isScrolled ? 'mobile-col-name-narrow' : ''} ${!showRank ? 'mobile-col-name-first' : ''}`} suppressHydrationWarning>
                     {(() => {
                       const gradeBadgeStyle = getGradeBadgeStyle(row.name);
                       const displayName = showRank ? truncateName(row.name, isScrolled) : row.name;
 
                       // グレードバッジ表示
                       if (gradeBadgeStyle) {
-                        return <span style={gradeBadgeStyle}>{displayName}</span>;
+                        return <span style={gradeBadgeStyle} suppressHydrationWarning>{displayName}</span>;
                       }
 
                       // コースバッジ表示
                       if (showCourseBadge) {
                         const badgeClass = courseBadgeType === 'good' ? 'course-badge-good' : 'course-badge-bad';
-                        return <span className={badgeClass}>{displayName}</span>;
+                        return <span className={badgeClass} suppressHydrationWarning>{displayName}</span>;
                       }
 
                       // リンク付き表示
@@ -266,6 +266,7 @@ export default function DataTable({ title, data, initialShow = 10, nameLabel = '
                             href={row.link}
                             className={isScrolled ? 'no-ellipsis-link' : ''}
                             style={{ color: '#2563eb', textDecoration: 'underline' }}
+                            suppressHydrationWarning
                           >
                             {displayName}
                           </Link>
@@ -273,7 +274,7 @@ export default function DataTable({ title, data, initialShow = 10, nameLabel = '
                       }
 
                       // プレーンテキストもspanでラップして省略記号を適用
-                      return <span>{displayName}</span>;
+                      return <span suppressHydrationWarning>{displayName}</span>;
                     })()}
                   </td>
                   

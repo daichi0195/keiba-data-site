@@ -1,0 +1,389 @@
+/* コース別成績テーブル専用スタイル */
+
+.accordionItem {
+  margin-bottom: 0.5rem;
+}
+
+.accordionHeader {
+  width: 100%;
+  padding: 0.75rem 0 0 0;
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  text-align: left;
+}
+
+.accordionIcon {
+  color: #7F8996;
+  font-size: 0.875rem;
+  min-width: 1rem;
+}
+
+.accordionHeader[aria-expanded="true"] .racecourseName {
+  color: #21B854;
+}
+
+.racecourseName {
+  flex: 1;
+}
+
+.accordionContent {
+  margin-top: 1rem;
+}
+
+.tableContainer {
+  background: white;
+  overflow: hidden;
+  border-top: 2px solid #000;
+  border-bottom: 1px solid #ddd;
+}
+
+.tableScroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 400px;
+}
+
+/* ヘッダー */
+.table thead {
+  background: #fff;
+  border-bottom: 2px solid #000;
+}
+
+.table th {
+  padding: 12px 8px;
+  font-weight: 600;
+  font-size: 13px;
+  color: #000;
+  text-align: center;
+  white-space: nowrap;
+  border-right: 1px solid #ddd;
+  border-bottom: 1px solid #000;
+  background-color: #ffffff !important;
+}
+
+.table th:first-child {
+  border-left: none;
+}
+
+.table th:last-child {
+  border-right: none;
+}
+
+/* コース列（1列目）固定 */
+.courseCol {
+  position: sticky;
+  left: 0;
+  width: 100px;
+  min-width: 100px;
+  text-align: center !important;
+  border-left: none !important;
+  border-right: none !important;
+  background: white !important;
+  z-index: 21 !important;
+  position: relative;
+}
+
+/* ヘッダーのコース列 */
+.table thead .courseCol {
+  position: sticky;
+  left: 0;
+  background: #ffffff !important;
+  z-index: 21 !important;
+}
+
+/* ボディのコース列 */
+.table tbody .courseCol {
+  position: sticky;
+  left: 0;
+  z-index: 11 !important;
+}
+
+.table tbody .rowEven .courseCol {
+  background: #fafbfa !important;
+}
+
+.table tbody .rowOdd .courseCol {
+  background: #fff !important;
+}
+
+/* スクロール時も枠線を維持 */
+.courseCol::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1px;
+  height: 100%;
+  background: #000;
+}
+
+.table thead .courseCol::after {
+  z-index: 22;
+}
+
+.table tbody .courseCol::after {
+  z-index: 12;
+}
+
+/* スクロール列 */
+.scrollCol {
+  padding: 8px 8px;
+  text-align: center;
+  width: 80px;
+  min-width: 80px;
+  border-right: 1px solid #ddd;
+}
+
+.scrollCol:last-child {
+  border-right: none;
+}
+
+/* 行のスタイル */
+.table tbody tr {
+  transition: background-color 0.2s ease;
+  height: 45px;
+}
+
+.table tbody td {
+  border-top: 1px solid #f0f0f0;
+  height: 45px;
+  padding: 8px 8px;
+  font-size: 13px;
+  color: #000;
+  vertical-align: middle;
+}
+
+.table tbody tr:first-child td {
+  border-top: none;
+}
+
+.rowEven {
+  background: #fafbfa;
+}
+
+.rowOdd {
+  background: #fff;
+}
+
+.table tbody tr:hover {
+  background: #f0fdf4 !important;
+}
+
+.table tbody tr:hover .courseCol {
+  background: #f0fdf4 !important;
+}
+
+/* コースリンク */
+.courseLink {
+  color: #2563eb;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.courseLink:hover {
+  color: #1d4ed8;
+}
+
+/* ハイライト */
+.highlight {
+  background: linear-gradient(135deg, #d1f0e5 0%, #e8f9f0 100%) !important;
+  font-weight: 700 !important;
+  color: var(--primary-green-dark) !important;
+  padding: 0 6px !important;
+  border-radius: 4px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  height: 20px !important;
+  line-height: 1 !important;
+}
+
+/* レスポンシブ */
+@media (max-width: 768px) {
+  .accordionHeader {
+    font-size: 1rem;
+    padding: 0.625rem 0 0 0;
+  }
+
+  .table {
+    font-size: 13px;
+    width: 730px !important;
+    min-width: 730px !important;
+    max-width: 730px !important;
+    table-layout: fixed !important;
+  }
+
+  .table th,
+  .table td {
+    padding: 8px 6px;
+    box-sizing: border-box !important;
+  }
+
+  /* 第1列：コース - 100px */
+  .table th:nth-child(1),
+  .table td:nth-child(1) {
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
+  }
+
+  /* 第2列：出走数 - 60px */
+  .table th:nth-child(2),
+  .table td:nth-child(2) {
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+  }
+
+  /* 第3列：1着 - 50px */
+  .table th:nth-child(3),
+  .table td:nth-child(3) {
+    width: 50px !important;
+    min-width: 50px !important;
+    max-width: 50px !important;
+    padding: 8px 4px !important;
+  }
+
+  /* 第4列：2着 - 50px */
+  .table th:nth-child(4),
+  .table td:nth-child(4) {
+    width: 50px !important;
+    min-width: 50px !important;
+    max-width: 50px !important;
+    padding: 8px 4px !important;
+  }
+
+  /* 第5列：3着 - 50px */
+  .table th:nth-child(5),
+  .table td:nth-child(5) {
+    width: 50px !important;
+    min-width: 50px !important;
+    max-width: 50px !important;
+    padding: 8px 4px !important;
+  }
+
+  /* 第6列：勝率 - 80px */
+  .table th:nth-child(6),
+  .table td:nth-child(6) {
+    width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
+  }
+
+  /* 第7列：連対率 - 80px */
+  .table th:nth-child(7),
+  .table td:nth-child(7) {
+    width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
+  }
+
+  /* 第8列：複勝率 - 80px */
+  .table th:nth-child(8),
+  .table td:nth-child(8) {
+    width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
+  }
+
+  /* 第9列：単勝回収率 - 100px */
+  .table th:nth-child(9),
+  .table td:nth-child(9) {
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
+  }
+
+  /* 第10列：複勝回収率 - 100px */
+  .table th:nth-child(10),
+  .table td:nth-child(10) {
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
+  }
+}
+
+/* PC表示：カラム幅調整 */
+@media (min-width: 769px) {
+  .table th:nth-child(1),
+  .table td:nth-child(1) {
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
+  }
+
+  .table th:nth-child(2),
+  .table td:nth-child(2) {
+    width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
+  }
+
+  .table th:nth-child(3),
+  .table td:nth-child(3) {
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+  }
+
+  .table th:nth-child(4),
+  .table td:nth-child(4) {
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+  }
+
+  .table th:nth-child(5),
+  .table td:nth-child(5) {
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+  }
+
+  .table th:nth-child(6),
+  .table td:nth-child(6) {
+    width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
+  }
+
+  .table th:nth-child(7),
+  .table td:nth-child(7) {
+    width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
+  }
+
+  .table th:nth-child(8),
+  .table td:nth-child(8) {
+    width: 80px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
+  }
+
+  .table th:nth-child(9),
+  .table td:nth-child(9) {
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
+  }
+
+  .table th:nth-child(10),
+  .table td:nth-child(10) {
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 100px !important;
+  }
+}

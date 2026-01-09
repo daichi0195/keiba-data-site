@@ -1670,6 +1670,16 @@ details[open] .evaluation-content {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
+/* owner-stats内のsectionのマージンを0に */
+#owner-stats .section {
+  margin-bottom: 0;
+}
+
+/* owner-statsセクション自体のマージンを0に */
+#owner-stats {
+  margin: 0;
+}
+
 .section-title {
   font-size: 1.3rem;
   margin-top: 0;

@@ -13,7 +13,7 @@ import DistanceTable from '@/components/DistanceTable';
 import SurfaceTable from '@/components/SurfaceTable';
 import TrackConditionTable from '@/components/TrackConditionTable';
 import RacecourseTable from '@/components/RacecourseTable';
-import RacecourseCourseTable from '@/components/RacecourseCourseTable';
+import CourseStatsTable from '@/components/CourseStatsTable';
 import GenderTable from '@/components/GenderTable';
 import BarChartAnimation from '@/components/BarChartAnimation';
 import VolatilityExplanation from '@/components/VolatilityExplanation';
@@ -23,6 +23,7 @@ import DistanceTrendExplanation from '@/components/DistanceTrendExplanation';
 import JockeyTrainerHighlights from '@/components/JockeyTrainerHighlights';
 import { getJockeyDataFromGCS } from '@/lib/getJockeyDataFromGCS';
 import { ALL_JOCKEYS } from '@/lib/jockeys';
+import { ALL_TRAINERS } from '@/lib/trainers';
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
@@ -1076,7 +1077,7 @@ export default async function JockeyPage({
 
           {/* コース別成績 */}
           <section id="course-stats" aria-label="コース別成績">
-            <RacecourseCourseTable
+            <CourseStatsTable
               title={`${jockey.name}騎手 コース別成績`}
               data={coursesByRacecourse}
             />
@@ -1086,7 +1087,13 @@ export default async function JockeyPage({
           <section id="trainer-stats" aria-label="調教師別データ">
             <DataTable
               title={`${jockey.name}騎手 調教師別データ`}
-              data={jockey.trainer_stats}
+              data={jockey.trainer_stats.map(stat => {
+                const trainer = ALL_TRAINERS.find(t => t.name === stat.name);
+                return {
+                  ...stat,
+                  link: trainer ? `/trainers/${trainer.id}` : undefined
+                };
+              })}
               initialShow={10}
               nameLabel="調教師"
               note="※現役調教師のみ"

@@ -129,7 +129,7 @@ export default function ClassTable({ title, data }: Props) {
                       {badgeClass ? (
                         <span className={badgeClass}>{row.class_name}</span>
                       ) : (
-                        <span className={styles.classBadge}>{displayName}</span>
+                        <span className={`${styles.classBadge} ${row.class_name === 'オープン' ? styles.openBadge : ''}`}>{displayName}</span>
                       )}
                     </td>
                     <td className={styles.scrollCol}>

@@ -321,6 +321,11 @@
 
 /* PC表示：カラム幅調整 */
 @media (min-width: 769px) {
+  /* オープンバッジのフォントサイズを小さく */
+  .openBadge {
+    font-size: 12px !important;
+  }
+
   .table th:nth-child(1),
   .table td:nth-child(1) {
     width: 90px !important;
@@ -331,8 +336,8 @@
   .table th:nth-child(2),
   .table td:nth-child(2) {
     width: 80px !important;
-    min-width: 90px !important;
-    max-width: 90px !important;
+    min-width: 80px !important;
+    max-width: 80px !important;
   }
   
   .table th:nth-child(3),
