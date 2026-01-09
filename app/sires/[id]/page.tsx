@@ -537,8 +537,7 @@ export default async function SirePage({
 
   // 馬体重別データ（全カテゴリを表示）
   const allWeightCategories = [
-    '380kg以下',
-    '381-400kg',
+    '400kg以下',
     '401-420kg',
     '421-440kg',
     '441-460kg',
@@ -838,6 +837,7 @@ export default async function SirePage({
     { id: 'gate-stats', label: '枠順別' },
     { id: 'distance-stats', label: '距離別' },
     { id: 'age-stats', label: '馬齢別' },
+    { id: 'horse-weight-stats', label: '馬体重別' },
     { id: 'gender-stats', label: '性別' },
     { id: 'surface-stats', label: '芝・ダート別' },
     { id: 'surface-change-stats', label: '芝・ダート変わり' },
