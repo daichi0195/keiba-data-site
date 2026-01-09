@@ -161,21 +161,33 @@ export default async function SirePage({
     };
   });
 
-  // 芝・ダート別データをテーブル形式に変換（順位なし、芝→ダート→障害の順）
-  const surfaceStatsData = sire.surface_stats.map((stat) => ({
-    name: stat.surface,
-    races: stat.races,
-    wins: stat.wins,
-    places_2: stat.places_2,
-    places_3: stat.places_3,
-    win_rate: stat.win_rate,
-    quinella_rate: stat.quinella_rate,
-    place_rate: stat.place_rate,
-    win_payback: stat.win_payback,
-    place_payback: stat.place_payback,
-  })).sort((a, b) => {
-    const order = { '芝': 1, 'ダート': 2, '障害': 3 };
-    return (order[a.name as keyof typeof order] || 99) - (order[b.name as keyof typeof order] || 99);
+  // 芝・ダート別データをテーブル形式に変換（全カテゴリを表示）
+  const allSurfaces = ['芝', 'ダート', '障害'];
+  const surfaceStatsData = allSurfaces.map(surface => {
+    const existingData = sire.surface_stats.find(stat => stat.surface === surface);
+    return existingData ? {
+      name: existingData.surface,
+      races: existingData.races,
+      wins: existingData.wins,
+      places_2: existingData.places_2,
+      places_3: existingData.places_3,
+      win_rate: existingData.win_rate,
+      quinella_rate: existingData.quinella_rate,
+      place_rate: existingData.place_rate,
+      win_payback: existingData.win_payback,
+      place_payback: existingData.place_payback,
+    } : {
+      name: surface,
+      races: 0,
+      wins: 0,
+      places_2: 0,
+      places_3: 0,
+      win_rate: 0,
+      quinella_rate: 0,
+      place_rate: 0,
+      win_payback: 0,
+      place_payback: 0,
+    };
   });
 
   // 芝・ダート変わりデータ（GCSから取得、存在しない場合は空配列）
@@ -425,18 +437,113 @@ export default async function SirePage({
   });
 
   // クラス別データをテーブル形式に変換（順位なし）
-  const classStatsData = sire.class_stats.map((stat) => ({
-    name: stat.class_name,
-    races: stat.races,
-    wins: stat.wins,
-    places_2: stat.places_2,
-    places_3: stat.places_3,
-    win_rate: stat.win_rate,
-    quinella_rate: stat.quinella_rate,
-    place_rate: stat.place_rate,
-    win_payback: stat.win_payback,
-    place_payback: stat.place_payback,
-  }));
+  // クラス別データ（全クラスを表示）
+  const allClasses = ['新馬', '未勝利', '1勝', '2勝', '3勝', 'オープン', 'G3', 'G2', 'G1'];
+  const classStatsData = allClasses.map(className => {
+    const existingData = sire.class_stats.find(stat => stat.class_name === className);
+    return existingData ? {
+      name: existingData.class_name,
+      races: existingData.races,
+      wins: existingData.wins,
+      places_2: existingData.places_2,
+      places_3: existingData.places_3,
+      win_rate: existingData.win_rate,
+      quinella_rate: existingData.quinella_rate,
+      place_rate: existingData.place_rate,
+      win_payback: existingData.win_payback,
+      place_payback: existingData.place_payback,
+    } : {
+      name: className,
+      races: 0,
+      wins: 0,
+      places_2: 0,
+      places_3: 0,
+      win_rate: 0,
+      quinella_rate: 0,
+      place_rate: 0,
+      win_payback: 0,
+      place_payback: 0,
+    };
+  });
+
+  // 枠順別データ（全枠を表示）
+  const allGates = [1, 2, 3, 4, 5, 6, 7, 8];
+  const gateStatsData = allGates.map(gateNum => {
+    const existingData = sire.gate_stats.find(stat => stat.gate_number === gateNum);
+    return existingData || {
+      gate_number: gateNum,
+      color: ['white', 'black', 'red', 'blue', 'yellow', 'green', 'orange', 'pink'][gateNum - 1],
+      races: 0,
+      wins: 0,
+      places_2: 0,
+      places_3: 0,
+      win_rate: 0,
+      place_rate: 0,
+      quinella_rate: 0,
+      win_payback: 0,
+      place_payback: 0,
+    };
+  });
+
+  // 脚質別データ（全脚質を表示）
+  const allRunningStyles = [
+    { style: 'escape', style_label: '逃げ' },
+    { style: 'lead', style_label: '先行' },
+    { style: 'pursue', style_label: '差し' },
+    { style: 'close', style_label: '追込' }
+  ];
+  const runningStyleStatsData = allRunningStyles.map(({ style, style_label }) => {
+    const existingData = sire.running_style_stats.find(stat => stat.style === style);
+    return existingData || {
+      style,
+      style_label,
+      races: 0,
+      wins: 0,
+      places_2: 0,
+      places_3: 0,
+      win_rate: 0,
+      place_rate: 0,
+      quinella_rate: 0,
+      win_payback: 0,
+      place_payback: 0,
+    };
+  });
+
+  // 馬齢別データ（全馬齢を表示）
+  const allAges = ['2歳', '3歳', '4歳', '5歳', '6歳-'];
+  const ageStatsData = allAges.map(age => {
+    const existingData = sire.age_stats.find(stat => stat.age === age);
+    return existingData || {
+      age,
+      races: 0,
+      wins: 0,
+      places_2: 0,
+      places_3: 0,
+      win_rate: 0,
+      place_rate: 0,
+      quinella_rate: 0,
+      win_payback: 0,
+      place_payback: 0,
+    };
+  });
+
+  // 性別データ（全性別を表示）
+  const allGenders = ['牡馬', '牝馬', 'セン馬'];
+  const genderStatsData = allGenders.map(gender => {
+    const existingData = sire.gender_stats.find(stat => stat.gender === gender);
+    return existingData || {
+      gender,
+      races: 0,
+      wins: 0,
+      places_2: 0,
+      places_3: 0,
+      win_rate: 0,
+      place_rate: 0,
+      quinella_rate: 0,
+      win_payback: 0,
+      place_payback: 0,
+    };
+  });
 
   // DataTableコンポーネント用にデータ整形（linkプロパティを追加）
   // 障害コースを除外
@@ -993,7 +1100,7 @@ export default async function SirePage({
           <section id="class-stats" aria-label="クラス別データ">
             <ClassTable
               title={`${sire.name}産駒 クラス別データ`}
-              data={sire.class_stats}
+              data={classStatsData}
             />
           </section>
 
@@ -1001,7 +1108,7 @@ export default async function SirePage({
           <section id="running-style-stats" aria-label="脚質別データ">
             <RunningStyleTable
               title={`${sire.name}産駒 脚質別データ`}
-              data={sire.running_style_stats}
+              data={runningStyleStatsData}
             />
           </section>
 
@@ -1009,7 +1116,7 @@ export default async function SirePage({
           <section id="gate-stats" aria-label="枠順別データ">
             <GateTable
               title={`${sire.name}産駒 枠順別データ`}
-              data={sire.gate_stats}
+              data={gateStatsData}
             />
           </section>
 
@@ -1025,7 +1132,7 @@ export default async function SirePage({
           <section id="age-stats" aria-label="馬齢別データ">
             <AgeTable
               title={`${sire.name}産駒 馬齢別データ`}
-              data={sire.age_stats}
+              data={ageStatsData}
             />
           </section>
 
@@ -1033,7 +1140,7 @@ export default async function SirePage({
           <section id="gender-stats" aria-label="性別データ">
             <GenderTable
               title={`${sire.name}産駒 性別データ`}
-              data={sire.gender_stats}
+              data={genderStatsData}
             />
           </section>
 
