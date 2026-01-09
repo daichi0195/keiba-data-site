@@ -787,6 +787,9 @@ export default async function SirePage({
                     </div>
                 </div>
 
+                {/* 区切り線 */}
+                <div className="section-divider"></div>
+
                 {/* 得意な馬場傾向（芝） */}
                 <div className="gauge-item">
                   <div className="gauge-header">
