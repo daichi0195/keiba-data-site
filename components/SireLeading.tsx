@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import styles from './SireLeading.module.css';
 import AllSires from './AllSires';
 import { LeadingData } from '@/lib/getLeadingData';
@@ -54,7 +55,7 @@ export default function SireLeading({ data }: SireLeadingProps) {
         <div className="gate-detail-title">種牡馬リーディング</div>
         <div className="gate-chart">
           {data.map((sire) => (
-            <div key={sire.rank} className="gate-chart-item">
+            <Link key={sire.rank} href={`/sires/${sire.id}`} className="gate-chart-item">
               <div
                 className="gate-number-badge"
                 style={{ backgroundColor: getRankBadgeColor(sire.rank), color: '#333333' }}
@@ -78,7 +79,7 @@ export default function SireLeading({ data }: SireLeadingProps) {
                 />
               </div>
               <div className="gate-rate">{sire.wins}勝</div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
