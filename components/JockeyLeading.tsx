@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import Link from 'next/link';
 import styles from './JockeyLeading.module.css';
 import AllJockeys from './AllJockeys';
 import { LeadingData } from '@/lib/getLeadingData';
@@ -54,7 +53,7 @@ export default function JockeyLeading({ data }: JockeyLeadingProps) {
         <div className="gate-detail-title">騎手リーディング</div>
         <div className="gate-chart">
           {data.map((jockey) => (
-            <Link key={jockey.rank} href={`/jockeys/${jockey.id}`} className="gate-chart-item">
+            <div key={jockey.rank} className="gate-chart-item">
               <div
                 className="gate-number-badge"
                 style={{ backgroundColor: getRankBadgeColor(jockey.rank), color: '#333333' }}
@@ -69,7 +68,7 @@ export default function JockeyLeading({ data }: JockeyLeadingProps) {
                 />
               </div>
               <div className="gate-rate">{jockey.wins}勝</div>
-            </Link>
+            </div>
           ))}
 
         </div>
