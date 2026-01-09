@@ -60,7 +60,7 @@ export default function RacecourseTable({ title, data }: Props) {
   const maxWinPayback = Math.max(...racecourseData.map(d => d.win_payback ?? 0));
   const maxPlacePayback = Math.max(...racecourseData.map(d => d.place_payback ?? 0));
 
-  const isHighlight = (value: number, maxValue: number) => value === maxValue;
+  const isHighlight = (value: number, maxValue: number) => value === maxValue && value > 0;
 
   return (
     <div className="section">

@@ -48,7 +48,7 @@ export default function CourseStatsTable({ title, data }: Props) {
     }));
   };
 
-  const isHighlight = (value: number, maxValue: number) => value === maxValue;
+  const isHighlight = (value: number, maxValue: number) => value === maxValue && value > 0;
 
   // 各競馬場ごとの最大値を取得する関数
   const getMaxValues = (courses: CourseData[]) => {

@@ -76,7 +76,7 @@ export default function ClassTable({ title, data }: Props) {
   const maxWinPayback = Math.max(...completeData.map(d => d.win_payback ?? 0));
   const maxPlacePayback = Math.max(...completeData.map(d => d.place_payback ?? 0));
 
-  const isHighlight = (value: number, maxValue: number) => value === maxValue;
+  const isHighlight = (value: number, maxValue: number) => value === maxValue && value > 0;
 
   // グレードバッジのクラス名を取得
   const getGradeBadgeClass = (className: string) => {

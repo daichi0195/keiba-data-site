@@ -139,7 +139,7 @@ export default function DataTable({ title, data, initialShow = 10, nameLabel = '
   const maxPlacePayback = Math.max(...safeData.map(d => d.place_payback ?? 0));
   
   // セルがハイライト対象かチェック
-  const isHighlight = (value: number, maxValue: number) => !disableHighlight && value === maxValue;
+  const isHighlight = (value: number, maxValue: number) => !disableHighlight && value === maxValue && value > 0;
 
   // グレードバッジのスタイルを取得（枠順バッジと同じスタイル）
   const getGradeBadgeStyle = (name: string) => {

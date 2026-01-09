@@ -52,7 +52,7 @@ export default function TrackConditionTable({ title, data }: Props) {
   const maxWinPayback = Math.max(...data.map(d => d.win_payback ?? 0));
   const maxPlacePayback = Math.max(...data.map(d => d.place_payback ?? 0));
 
-  const isHighlight = (value: number, maxValue: number) => value === maxValue;
+  const isHighlight = (value: number, maxValue: number) => value === maxValue && value > 0;
 
   // 馬場状態バッジのクラスを取得（芝/ダートで色分け）
   const getConditionBadgeClass = (surface: string) => {
