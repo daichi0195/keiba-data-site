@@ -470,8 +470,23 @@ export default async function SirePage({
   const allGates = [1, 2, 3, 4, 5, 6, 7, 8];
   const gateStatsData = allGates.map(gateNum => {
     const existingData = sire.gate_stats.find(stat => stat.gate_number === gateNum);
-    return existingData || {
-      gate_number: gateNum,
+    if (existingData) {
+      return {
+        gate: existingData.gate_number,
+        color: existingData.color,
+        races: existingData.races,
+        wins: existingData.wins,
+        places_2: existingData.places_2,
+        places_3: existingData.places_3,
+        win_rate: existingData.win_rate,
+        place_rate: existingData.place_rate,
+        quinella_rate: existingData.quinella_rate,
+        win_payback: existingData.win_payback,
+        place_payback: existingData.place_payback,
+      };
+    }
+    return {
+      gate: gateNum,
       color: ['white', 'black', 'red', 'blue', 'yellow', 'green', 'orange', 'pink'][gateNum - 1],
       races: 0,
       wins: 0,
