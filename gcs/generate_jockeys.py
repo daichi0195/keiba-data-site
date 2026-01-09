@@ -217,13 +217,14 @@ def get_surface_stats(client):
     WHERE
       rr.jockey_id = {JOCKEY_ID}
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
-      AND rm.surface IN ('芝', 'ダート')
+      AND rm.surface IN ('芝', 'ダート', '障害')
     GROUP BY rm.surface
     ORDER BY
       CASE rm.surface
         WHEN '芝' THEN 1
         WHEN 'ダート' THEN 2
-        ELSE 3
+        WHEN '障害' THEN 3
+        ELSE 4
       END
     """
 
@@ -716,6 +717,7 @@ def get_track_condition_stats(client):
     SELECT
       CASE rm.surface
         WHEN 'ダート' THEN 'ダ'
+        WHEN '障害' THEN '障'
         ELSE rm.surface
       END as surface,
       rm.track_condition as condition,
@@ -736,13 +738,14 @@ def get_track_condition_stats(client):
       rr.jockey_id = {JOCKEY_ID}
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
       AND rm.track_condition IS NOT NULL
-      AND rm.surface IN ('芝', 'ダート')
+      AND rm.surface IN ('芝', 'ダート', '障害')
     GROUP BY rm.surface, rm.track_condition
     ORDER BY
       CASE rm.surface
         WHEN '芝' THEN 1
         WHEN 'ダート' THEN 2
-        ELSE 3
+        WHEN '障害' THEN 3
+        ELSE 4
       END,
       CASE rm.track_condition
         WHEN '良' THEN 1

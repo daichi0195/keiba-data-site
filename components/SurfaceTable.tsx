@@ -100,22 +100,22 @@ export default function SurfaceTable({ title, data }: Props) {
                   </td>
                   <td className={styles.scrollCol}>
                     <span className={isHighlight(row.races ?? 0, maxRaces) ? styles.highlight : ''}>
-                      {row.races}
+                      {row.races ?? 0}
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
                     <span className={isHighlight(row.wins ?? 0, maxWins) ? styles.highlight : ''}>
-                      {row.wins}
+                      {row.wins ?? 0}
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
                     <span className={isHighlight(row.places_2 ?? 0, maxPlaces2) ? styles.highlight : ''}>
-                      {row.places_2}
+                      {row.places_2 ?? 0}
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
                     <span className={isHighlight(row.places_3 ?? 0, maxPlaces3) ? styles.highlight : ''}>
-                      {row.places_3}
+                      {row.places_3 ?? 0}
                     </span>
                   </td>
                   <td className={styles.scrollCol}>

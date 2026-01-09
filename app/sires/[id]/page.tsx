@@ -131,14 +131,20 @@ export default async function SirePage({
     const existingData = distanceStatsRaw.find(stat => stat.name === category);
     if (existingData) {
       return {
-        ...existingData,
+        category: existingData.name,
+        races: existingData.races,
+        wins: existingData.wins,
+        places_2: existingData.places_2,
+        places_3: existingData.places_3,
         win_rate: existingData.races > 0 ? (existingData.wins / existingData.races) * 100 : 0,
         quinella_rate: existingData.races > 0 ? ((existingData.wins + existingData.places_2) / existingData.races) * 100 : 0,
         place_rate: existingData.races > 0 ? ((existingData.wins + existingData.places_2 + existingData.places_3) / existingData.races) * 100 : 0,
+        win_payback: existingData.win_payback,
+        place_payback: existingData.place_payback,
       };
     } else {
       return {
-        name: category,
+        category: category,
         races: 0,
         wins: 0,
         places_2: 0,
@@ -399,41 +405,57 @@ export default async function SirePage({
     else dirtConditionTrendPosition = 3; // 互角
   }
 
-  // 馬場状態別データをテーブル形式に変換（順位なし）
-  const trackConditionStatsData = sire.track_condition_stats.map((stat) => {
-    // 馬場状態ラベルを短縮
-    let shortLabel = stat.condition_label;
-    if (shortLabel === '稍重') shortLabel = '稍';
-    if (shortLabel === '不良') shortLabel = '不';
+  // 馬場状態別データをテーブル形式に変換（全ての馬場状態を表示）
+  const trackConditionSurfaces = ['芝', 'ダート', '障害'];
+  const trackConditions = [
+    { condition: 'good', condition_label: '良', short_label: '良' },
+    { condition: 'yielding', condition_label: '稍重', short_label: '稍' },
+    { condition: 'soft', condition_label: '重', short_label: '重' },
+    { condition: 'heavy', condition_label: '不良', short_label: '不' }
+  ];
 
-    // 馬場種別も短縮
-    let shortSurface = stat.surface;
-    if (shortSurface === 'ダート') shortSurface = 'ダ';
+  const trackConditionStatsData = trackConditionSurfaces.flatMap(surface => {
+    return trackConditions.map(({ condition, condition_label, short_label }) => {
+      const existingData = sire.track_condition_stats.find(
+        stat => stat.surface === surface && stat.condition === condition
+      );
 
-    return {
-      name: `${shortSurface}・${shortLabel}`,
-      surface: shortSurface,
-      condition: stat.condition,
-      condition_label: shortLabel,
-      races: stat.races,
-      wins: stat.wins,
-      places_2: stat.places_2,
-      places_3: stat.places_3,
-      win_rate: stat.win_rate,
-      quinella_rate: stat.quinella_rate,
-      place_rate: stat.place_rate,
-      win_payback: stat.win_payback,
-      place_payback: stat.place_payback,
-    };
-  }).sort((a, b) => {
-    // 芝→ダート→障害の順
-    const surfaceOrder = { '芝': 1, 'ダ': 2, '障': 3 };
-    const surfaceDiff = (surfaceOrder[a.surface as keyof typeof surfaceOrder] || 99) - (surfaceOrder[b.surface as keyof typeof surfaceOrder] || 99);
-    if (surfaceDiff !== 0) return surfaceDiff;
+      const shortSurface = surface === 'ダート' ? 'ダ' : surface === '障害' ? '障' : surface;
 
-    // 各馬場種別内で良→稍→重→不の順
-    const conditionOrder = { 'good': 1, 'yielding': 2, 'soft': 3, 'heavy': 4 };
-    return (conditionOrder[a.condition as keyof typeof conditionOrder] || 99) - (conditionOrder[b.condition as keyof typeof conditionOrder] || 99);
+      if (existingData) {
+        return {
+          name: `${shortSurface}・${short_label}`,
+          surface: shortSurface,
+          condition: existingData.condition,
+          condition_label: short_label,
+          races: existingData.races,
+          wins: existingData.wins,
+          places_2: existingData.places_2,
+          places_3: existingData.places_3,
+          win_rate: existingData.win_rate,
+          quinella_rate: existingData.quinella_rate,
+          place_rate: existingData.place_rate,
+          win_payback: existingData.win_payback,
+          place_payback: existingData.place_payback,
+        };
+      } else {
+        return {
+          name: `${shortSurface}・${short_label}`,
+          surface: shortSurface,
+          condition: condition,
+          condition_label: short_label,
+          races: 0,
+          wins: 0,
+          places_2: 0,
+          places_3: 0,
+          win_rate: 0,
+          quinella_rate: 0,
+          place_rate: 0,
+          win_payback: 0,
+          place_payback: 0,
+        };
+      }
+    });
   });
 
   // クラス別データをテーブル形式に変換（順位なし）
@@ -515,10 +537,10 @@ export default async function SirePage({
   // 性別データ（全性別を表示）
   const allGenders = ['牡馬', '牝馬', 'セン馬'];
   const genderStatsData = allGenders.map(gender => {
-    const existingData = sire.gender_stats.find(stat => stat.gender === gender);
+    const existingData = sire.gender_stats.find(stat => stat.name === gender);
     if (existingData) {
       return {
-        name: existingData.gender,
+        name: existingData.name,
         races: existingData.races,
         wins: existingData.wins,
         places_2: existingData.places_2,
@@ -587,13 +609,32 @@ export default async function SirePage({
     };
   }).filter(group => group.courses.length > 0); // コースがある競馬場のみ
 
-  // 競馬場別サマリーデータをracecourse_statsから取得し、順番を整理
+  // 競馬場別サマリーデータをracecourse_statsから取得し、順番を整理（全競馬場を表示）
   const racecourseSummaryData = racecourseOrder
     .map(racecourseItem => {
       const racecourse = sire.racecourse_stats.find(r => r.racecourse_en === racecourseItem.en);
-      if (!racecourse) return null;
+      // 競馬場名から「競馬場」をカット
+      const displayName = racecourseItem.ja.replace('競馬場', '');
+
+      if (!racecourse) {
+        // データがない場合は0で埋める
+        return {
+          name: displayName,
+          racecourse_ja: racecourseItem.ja,
+          racecourse_en: racecourseItem.en,
+          races: 0,
+          wins: 0,
+          places_2: 0,
+          places_3: 0,
+          win_rate: 0,
+          quinella_rate: 0,
+          place_rate: 0,
+          win_payback: 0,
+          place_payback: 0,
+        };
+      }
       return {
-        name: racecourse.name,
+        name: displayName,
         racecourse_ja: racecourse.racecourse_ja,
         racecourse_en: racecourse.racecourse_en,
         races: racecourse.races,
@@ -606,8 +647,7 @@ export default async function SirePage({
         win_payback: racecourse.win_payback,
         place_payback: racecourse.place_payback,
       };
-    })
-    .filter((item): item is NonNullable<typeof item> => item !== null);
+    });
 
   // 右回り・左回り競馬場の定義
   const rightTurnRacecourses = ['tokyo', 'niigata', 'chukyo', 'kokura']; // 東京、新潟、中京、小倉
@@ -934,7 +974,7 @@ export default async function SirePage({
                       <div className="gate-detail-title">距離別複勝率</div>
                       <div className="gate-chart">
                         {distanceStatsData.map((distance) => (
-                          <div key={distance.name} className="gate-chart-item">
+                          <div key={distance.category} className="gate-chart-item">
                             <div
                               className="distance-badge"
                               style={{
@@ -943,7 +983,7 @@ export default async function SirePage({
                                 color: '#333'
                               }}
                             >
-                              {distance.name}
+                              {distance.category}
                             </div>
                             <div className="gate-bar-container">
                               <div
@@ -1123,7 +1163,7 @@ export default async function SirePage({
           <section id="distance-stats" aria-label="距離別データ">
             <DistanceTable
               title={`${sire.name}産駒 距離別データ`}
-              data={sire.distance_stats}
+              data={distanceStatsData}
             />
           </section>
 

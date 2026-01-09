@@ -235,6 +235,7 @@ def get_surface_stats(client):
       CASE
         WHEN rm.surface = '芝' THEN '芝'
         WHEN rm.surface = 'ダート' THEN 'ダート'
+        WHEN rm.surface = '障害' THEN '障害'
         ELSE rm.surface
       END as surface,
       COUNT(*) as races,
@@ -253,7 +254,13 @@ def get_surface_stats(client):
       CAST(rr.trainer_id AS STRING) = CAST({TRAINER_ID} AS STRING)
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
     GROUP BY surface
-    ORDER BY surface
+    ORDER BY
+      CASE surface
+        WHEN '芝' THEN 1
+        WHEN 'ダート' THEN 2
+        WHEN '障害' THEN 3
+        ELSE 4
+      END
     """
 
     try:
@@ -766,13 +773,14 @@ def get_track_condition_stats(client):
       CAST(rr.trainer_id AS STRING) = CAST({TRAINER_ID} AS STRING)
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
       AND rm.track_condition IS NOT NULL
-      AND rm.surface IN ('芝', 'ダート')
+      AND rm.surface IN ('芝', 'ダート', '障害')
     GROUP BY rm.surface, rm.track_condition
     ORDER BY
       CASE rm.surface
         WHEN '芝' THEN 1
         WHEN 'ダート' THEN 2
-        ELSE 3
+        WHEN '障害' THEN 3
+        ELSE 4
       END,
       CASE rm.track_condition
         WHEN '良' THEN 1

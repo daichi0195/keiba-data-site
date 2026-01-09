@@ -316,46 +316,52 @@ export default async function JockeyPage({
     });
   })();
 
-  // 距離別データをテーブル形式に変換（中長距離と長距離をマージ）
-  const distanceStatsRaw = jockey.distance_stats.reduce((acc, stat) => {
-    // 中長距離を長距離にマージ
-    const categoryName = stat.category === '中長距離' ? '長距離' : stat.category;
+  // 距離別データをテーブル形式に変換（全カテゴリを表示）
+  const allDistanceCategories = ['短距離', 'マイル', '中距離', '長距離'];
+  const distanceStatsRaw = allDistanceCategories.map(category => {
+    // 既存データを検索（中長距離は長距離に含める）
+    const stats = jockey.distance_stats.filter(stat => {
+      if (stat.category === '中長距離') return category === '長距離';
+      return stat.category === category;
+    });
 
-    const existing = acc.find(item => item.name === categoryName);
-    if (existing) {
-      // 既存のカテゴリに統合（合計を計算）
-      existing.races += stat.races;
-      existing.wins += stat.wins;
-      existing.places_2 += stat.places_2;
-      existing.places_3 += stat.places_3;
-    } else {
-      // 新しいカテゴリを追加
-      acc.push({
-        name: categoryName,
-        races: stat.races,
-        wins: stat.wins,
-        places_2: stat.places_2,
-        places_3: stat.places_3,
-        win_rate: 0, // 後で再計算
+    if (stats.length === 0) {
+      // データがない場合は0で埋める
+      return {
+        name: category,
+        category: category,
+        races: 0,
+        wins: 0,
+        places_2: 0,
+        places_3: 0,
+        win_rate: 0,
         quinella_rate: 0,
         place_rate: 0,
-        win_payback: stat.win_payback,
-        place_payback: stat.place_payback,
-      });
+        win_payback: 0,
+        place_payback: 0,
+      };
     }
-    return acc;
-  }, [] as Array<{
-    name: string;
-    races: number;
-    wins: number;
-    places_2: number;
-    places_3: number;
-    win_rate: number;
-    quinella_rate: number;
-    place_rate: number;
-    win_payback: number;
-    place_payback: number;
-  }>);
+
+    // データを統合（中長距離と長距離をマージ）
+    const totalRaces = stats.reduce((sum, s) => sum + s.races, 0);
+    const totalWins = stats.reduce((sum, s) => sum + s.wins, 0);
+    const totalPlaces2 = stats.reduce((sum, s) => sum + s.places_2, 0);
+    const totalPlaces3 = stats.reduce((sum, s) => sum + s.places_3, 0);
+
+    return {
+      name: category,
+      category: category,
+      races: totalRaces,
+      wins: totalWins,
+      places_2: totalPlaces2,
+      places_3: totalPlaces3,
+      win_rate: 0, // 後で再計算
+      quinella_rate: 0,
+      place_rate: 0,
+      win_payback: totalRaces > 0 ? stats.reduce((sum, s) => sum + (s.win_payback * s.races), 0) / totalRaces : 0,
+      place_payback: totalRaces > 0 ? stats.reduce((sum, s) => sum + (s.place_payback * s.races), 0) / totalRaces : 0,
+    };
+  });
 
   // 勝率・連対率・複勝率を再計算
   const distanceStatsData = distanceStatsRaw.map(stat => ({
@@ -365,19 +371,38 @@ export default async function JockeyPage({
     place_rate: stat.races > 0 ? ((stat.wins + stat.places_2 + stat.places_3) / stat.races) * 100 : 0,
   }));
 
-  // 芝・ダート別データをテーブル形式に変換（順位なし）
-  const surfaceStatsData = jockey.surface_stats.map((stat) => ({
-    name: stat.surface,
-    races: stat.races,
-    wins: stat.wins,
-    places_2: stat.places_2,
-    places_3: stat.places_3,
-    win_rate: stat.win_rate,
-    quinella_rate: stat.quinella_rate,
-    place_rate: stat.place_rate,
-    win_payback: stat.win_payback,
-    place_payback: stat.place_payback,
-  }));
+  // 芝・ダート・障害別データをテーブル形式に変換（全カテゴリを表示）
+  const allSurfaces = ['芝', 'ダート', '障害'];
+  const surfaceStatsData = allSurfaces.map(surface => {
+    const existingData = jockey.surface_stats.find(stat => stat.surface === surface);
+    if (existingData) {
+      return {
+        name: existingData.surface,
+        races: existingData.races,
+        wins: existingData.wins,
+        places_2: existingData.places_2,
+        places_3: existingData.places_3,
+        win_rate: existingData.win_rate,
+        quinella_rate: existingData.quinella_rate,
+        place_rate: existingData.place_rate,
+        win_payback: existingData.win_payback,
+        place_payback: existingData.place_payback,
+      };
+    } else {
+      return {
+        name: surface,
+        races: 0,
+        wins: 0,
+        places_2: 0,
+        places_3: 0,
+        win_rate: 0,
+        quinella_rate: 0,
+        place_rate: 0,
+        win_payback: 0,
+        place_payback: 0,
+      };
+    }
+  });
 
   // 芝・ダートの得意傾向を計算（複勝率の差から判定）
   const turfStat = jockey.surface_stats.find(s => s.surface === '芝');
@@ -450,43 +475,6 @@ export default async function JockeyPage({
     else distanceTrendPosition = 3; // 互角
   }
 
-  // 馬場状態別データをテーブル形式に変換（順位なし）
-  const trackConditionStatsData = jockey.track_condition_stats.map((stat) => {
-    // 馬場状態ラベルを短縮
-    let shortLabel = stat.condition_label;
-    if (shortLabel === '稍重') shortLabel = '稍';
-    if (shortLabel === '不良') shortLabel = '不';
-
-    return {
-      name: `${stat.surface}・${shortLabel}`,
-      surface: stat.surface,
-      condition_label: shortLabel,
-      races: stat.races,
-      wins: stat.wins,
-      places_2: stat.places_2,
-      places_3: stat.places_3,
-      win_rate: stat.win_rate,
-      quinella_rate: stat.quinella_rate,
-      place_rate: stat.place_rate,
-      win_payback: stat.win_payback,
-      place_payback: stat.place_payback,
-    };
-  });
-
-  // クラス別データをテーブル形式に変換（順位なし）
-  const classStatsData = jockey.class_stats.map((stat) => ({
-    name: stat.class_name,
-    races: stat.races,
-    wins: stat.wins,
-    places_2: stat.places_2,
-    places_3: stat.places_3,
-    win_rate: stat.win_rate,
-    quinella_rate: stat.quinella_rate,
-    place_rate: stat.place_rate,
-    win_payback: stat.win_payback,
-    place_payback: stat.place_payback,
-  }));
-
   // DataTableコンポーネント用にデータ整形（linkプロパティを追加）
   // 障害コースを除外
   const courseTableData = jockey.course_stats
@@ -531,7 +519,7 @@ export default async function JockeyPage({
     };
   }).filter(group => group.courses.length > 0); // コースがある競馬場のみ
 
-  // 競馬場別サマリーデータをracecourse_statsから取得し、順番を整理
+  // 競馬場別サマリーデータをracecourse_statsから取得し、順番を整理（全競馬場を表示）
   const racecourseSummaryData = racecourseOrder
     .map(racecourseItem => {
       // name フィールド(日本語)または racecourse_en フィールドで検索
@@ -540,7 +528,23 @@ export default async function JockeyPage({
       const racecourse = jockey.racecourse_stats?.find(r =>
         r.racecourse_en === racecourseItem.en || r.name === racecourseNameWithoutSuffix
       );
-      if (!racecourse) return null;
+      if (!racecourse) {
+        // データがない場合は0で埋める
+        return {
+          name: racecourseNameWithoutSuffix,
+          racecourse_ja: racecourseNameWithoutSuffix,
+          racecourse_en: racecourseItem.en,
+          races: 0,
+          wins: 0,
+          places_2: 0,
+          places_3: 0,
+          win_rate: 0,
+          quinella_rate: 0,
+          place_rate: 0,
+          win_payback: 0,
+          place_payback: 0,
+        };
+      }
       return {
         name: racecourseNameWithoutSuffix,
         racecourse_ja: racecourseNameWithoutSuffix,
@@ -555,8 +559,7 @@ export default async function JockeyPage({
         win_payback: racecourse.win_payback,
         place_payback: racecourse.place_payback,
       };
-    })
-    .filter((item): item is NonNullable<typeof item> => item !== null);
+    });
 
   // 中央・ローカルの集計行を追加
   const centralRacecourses = ['tokyo', 'nakayama', 'hanshin', 'kyoto']; // 東京、中山、阪神、京都
@@ -640,6 +643,132 @@ export default async function JockeyPage({
     ...(centralData ? [centralData] : []),
     ...(localData ? [localData] : [])
   ];
+
+  // 性別データ（全性別を表示）
+  const allGenders = ['牡馬', '牝馬', 'セン馬'];
+  const genderStatsData = allGenders.map(gender => {
+    const existingData = jockey.gender_stats.find(stat => stat.name === gender);
+    if (existingData) {
+      return existingData;
+    } else {
+      return {
+        name: gender,
+        races: 0,
+        wins: 0,
+        places_2: 0,
+        places_3: 0,
+        win_rate: 0,
+        quinella_rate: 0,
+        place_rate: 0,
+        win_payback: 0,
+        place_payback: 0,
+      };
+    }
+  });
+
+  // 馬場状態別データ（全カテゴリを表示）
+  const trackConditionSurfaces = ['芝', 'ダート'];
+  const trackConditions = [
+    { condition: 'good', condition_label: '良', short_label: '良' },
+    { condition: 'yielding', condition_label: '稍重', short_label: '稍' },
+    { condition: 'soft', condition_label: '重', short_label: '重' },
+    { condition: 'heavy', condition_label: '不良', short_label: '不' }
+  ];
+
+  const trackConditionStatsData = trackConditionSurfaces.flatMap(surface => {
+    return trackConditions.map(({ condition, condition_label, short_label }) => {
+      const existingData = jockey.track_condition_stats.find(
+        stat => stat.surface === surface && stat.condition === condition
+      );
+
+      const shortSurface = surface === 'ダート' ? 'ダ' : surface;
+
+      if (existingData) {
+        return {
+          name: `${shortSurface}・${short_label}`,
+          surface: shortSurface,
+          condition: existingData.condition,
+          condition_label: short_label,
+          races: existingData.races,
+          wins: existingData.wins,
+          places_2: existingData.places_2,
+          places_3: existingData.places_3,
+          win_rate: existingData.win_rate,
+          quinella_rate: existingData.quinella_rate,
+          place_rate: existingData.place_rate,
+          win_payback: existingData.win_payback,
+          place_payback: existingData.place_payback,
+        };
+      } else {
+        return {
+          name: `${shortSurface}・${short_label}`,
+          surface: shortSurface,
+          condition: condition,
+          condition_label: short_label,
+          races: 0,
+          wins: 0,
+          places_2: 0,
+          places_3: 0,
+          win_rate: 0,
+          quinella_rate: 0,
+          place_rate: 0,
+          win_payback: 0,
+          place_payback: 0,
+        };
+      }
+    });
+  });
+
+  // クラス別データ（全クラスを表示）
+  const allClasses = ['新馬', '未勝利', '1勝', '2勝', '3勝', 'オープン', 'G3', 'G2', 'G1'];
+  const classStatsData = allClasses.map(className => {
+    const existingData = jockey.class_stats.find(stat => stat.class_name === className);
+    if (existingData) {
+      return existingData;
+    } else {
+      return {
+        rank: 0,
+        class_name: className,
+        races: 0,
+        wins: 0,
+        places_2: 0,
+        places_3: 0,
+        win_rate: 0,
+        quinella_rate: 0,
+        place_rate: 0,
+        win_payback: 0,
+        place_payback: 0,
+      };
+    }
+  });
+
+  // 脚質別データ（全脚質を表示）
+  const allRunningStyles = [
+    { style: 'escape', style_label: '逃げ' },
+    { style: 'lead', style_label: '先行' },
+    { style: 'pursue', style_label: '差し' },
+    { style: 'close', style_label: '追込' }
+  ];
+  const runningStyleStatsData = allRunningStyles.map(({ style, style_label }) => {
+    const existingData = jockey.running_style_stats.find(stat => stat.style === style);
+    if (existingData) {
+      return existingData;
+    } else {
+      return {
+        style: style,
+        style_label: style_label,
+        races: 0,
+        wins: 0,
+        places_2: 0,
+        places_3: 0,
+        win_rate: 0,
+        quinella_rate: 0,
+        place_rate: 0,
+        win_payback: 0,
+        place_payback: 0,
+      };
+    }
+  });
 
   // ナビゲーションアイテム
   const navigationItems = [
@@ -968,7 +1097,7 @@ export default async function JockeyPage({
                       <div className="gate-detail-title">距離別複勝率</div>
                       <div className="gate-chart">
                         {distanceStatsData.map((distance) => (
-                          <div key={distance.name} className="gate-chart-item">
+                          <div key={distance.category} className="gate-chart-item">
                             <div
                               className="distance-badge"
                               style={{
@@ -1007,7 +1136,7 @@ export default async function JockeyPage({
           <section id="class-stats" aria-label="クラス別データ">
             <ClassTable
               title={`${jockey.name}騎手 クラス別データ`}
-              data={jockey.class_stats}
+              data={classStatsData}
             />
           </section>
 
@@ -1023,7 +1152,7 @@ export default async function JockeyPage({
           <section id="running-style-stats" aria-label="脚質別データ">
             <RunningStyleTable
               title={`${jockey.name}騎手 脚質別データ`}
-              data={jockey.running_style_stats}
+              data={runningStyleStatsData}
             />
           </section>
 
@@ -1039,7 +1168,7 @@ export default async function JockeyPage({
           <section id="distance-stats" aria-label="距離別データ">
             <DistanceTable
               title={`${jockey.name}騎手 距離別データ`}
-              data={jockey.distance_stats}
+              data={distanceStatsData}
             />
           </section>
 
@@ -1047,7 +1176,7 @@ export default async function JockeyPage({
           <section id="gender-stats" aria-label="性別データ">
             <GenderTable
               title={`${jockey.name}騎手 性別データ`}
-              data={jockey.gender_stats}
+              data={genderStatsData}
             />
           </section>
 

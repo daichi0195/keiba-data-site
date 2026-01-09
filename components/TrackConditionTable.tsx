@@ -54,12 +54,14 @@ export default function TrackConditionTable({ title, data }: Props) {
 
   const isHighlight = (value: number, maxValue: number) => value === maxValue && value > 0;
 
-  // 馬場状態バッジのクラスを取得（芝/ダートで色分け）
+  // 馬場状態バッジのクラスを取得（芝/ダート/障害で色分け）
   const getConditionBadgeClass = (surface: string) => {
     if (surface === '芝') {
       return styles.turfConditionBadge;
     } else if (surface === 'ダ' || surface === 'ダート') {
       return styles.dirtConditionBadge;
+    } else if (surface === '障' || surface === '障害') {
+      return styles.obstacleConditionBadge;
     }
     return styles.conditionBadge;
   };
@@ -100,22 +102,22 @@ export default function TrackConditionTable({ title, data }: Props) {
                   </td>
                   <td className={styles.scrollCol}>
                     <span className={isHighlight(row.races ?? 0, maxRaces) ? styles.highlight : ''}>
-                      {row.races}
+                      {row.races ?? 0}
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
                     <span className={isHighlight(row.wins ?? 0, maxWins) ? styles.highlight : ''}>
-                      {row.wins}
+                      {row.wins ?? 0}
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
                     <span className={isHighlight(row.places_2 ?? 0, maxPlaces2) ? styles.highlight : ''}>
-                      {row.places_2}
+                      {row.places_2 ?? 0}
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
                     <span className={isHighlight(row.places_3 ?? 0, maxPlaces3) ? styles.highlight : ''}>
-                      {row.places_3}
+                      {row.places_3 ?? 0}
                     </span>
                   </td>
                   <td className={styles.scrollCol}>

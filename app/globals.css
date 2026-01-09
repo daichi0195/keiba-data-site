@@ -892,6 +892,7 @@ main {
   text-align: center;
   box-sizing: border-box;
   white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 @media (max-width: 768px) {
@@ -906,8 +907,9 @@ main {
 }
 
 .highlight-card-strong:hover {
-  box-shadow: 0 2px 8px rgba(29, 184, 84, 0.15);
+  box-shadow: 0 4px 12px rgba(29, 184, 84, 0.25);
   border-color: #1a9f47;
+  transform: translateY(-1px);
 }
 
 .highlight-card-weak {
@@ -916,8 +918,9 @@ main {
 }
 
 .highlight-card-weak:hover {
-  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
   border-color: #d97706;
+  transform: translateY(-1px);
 }
 
 .highlight-card .card-name {
