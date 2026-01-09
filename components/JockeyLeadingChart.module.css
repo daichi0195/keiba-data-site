@@ -57,6 +57,13 @@
   display: block;
 }
 
+/* PC表示時のパディング統一 */
+@media (min-width: 769px) {
+  .container {
+    padding: 2rem;
+  }
+}
+
 @media (max-width: 768px) {
   .container {
     padding: 1rem;
