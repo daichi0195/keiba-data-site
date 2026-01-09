@@ -25,32 +25,58 @@ type Props = {
 export default function GateTable({ title, data }: Props) {
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
-  
+
   useEffect(() => {
     const handleScroll = (e: Event) => {
       const target = e.target as HTMLDivElement;
       const scrollLeft = target.scrollLeft;
       setIsScrolled(scrollLeft > 5);
     };
-    
+
     const scrollElement = scrollRef.current;
     if (scrollElement) {
       scrollElement.addEventListener('scroll', handleScroll);
       return () => scrollElement.removeEventListener('scroll', handleScroll);
     }
   }, []);
-  
+
+  // 全枠を定義（1-8枠）
+  const allGates = [1, 2, 3, 4, 5, 6, 7, 8];
+  const gateColors = ['white', 'black', 'red', 'blue', 'yellow', 'green', 'orange', 'pink'];
+
+  // データを全枠に揃える（データがない枠は0で埋める）
+  const completeData = allGates.map((gateNum) => {
+    const existingData = data.find(d => d.gate === gateNum);
+    if (existingData) {
+      return existingData;
+    }
+    // データがない場合は0で埋める
+    return {
+      gate: gateNum,
+      color: gateColors[gateNum - 1],
+      races: 0,
+      wins: 0,
+      places_2: 0,
+      places_3: 0,
+      win_rate: 0,
+      place_rate: 0,
+      quinella_rate: 0,
+      win_payback: 0,
+      place_payback: 0,
+    };
+  });
+
   // 各カラムの最大値を取得
-  const maxRaces = Math.max(...data.map(d => d.races ?? 0));
-  const maxWins = Math.max(...data.map(d => d.wins ?? 0));
-  const maxPlaces2 = Math.max(...data.map(d => d.places_2 ?? 0));
-  const maxPlaces3 = Math.max(...data.map(d => d.places_3 ?? 0));
-  const maxWinRate = Math.max(...data.map(d => d.win_rate ?? 0));
-  const maxPlaceRate = Math.max(...data.map(d => d.place_rate ?? 0));
-  const maxQuinellaRate = Math.max(...data.map(d => d.quinella_rate ?? 0));
-  const maxWinPayback = Math.max(...data.map(d => d.win_payback ?? 0));
-  const maxPlacePayback = Math.max(...data.map(d => d.place_payback ?? 0));
-  
+  const maxRaces = Math.max(...completeData.map(d => d.races ?? 0));
+  const maxWins = Math.max(...completeData.map(d => d.wins ?? 0));
+  const maxPlaces2 = Math.max(...completeData.map(d => d.places_2 ?? 0));
+  const maxPlaces3 = Math.max(...completeData.map(d => d.places_3 ?? 0));
+  const maxWinRate = Math.max(...completeData.map(d => d.win_rate ?? 0));
+  const maxPlaceRate = Math.max(...completeData.map(d => d.place_rate ?? 0));
+  const maxQuinellaRate = Math.max(...completeData.map(d => d.quinella_rate ?? 0));
+  const maxWinPayback = Math.max(...completeData.map(d => d.win_payback ?? 0));
+  const maxPlacePayback = Math.max(...completeData.map(d => d.place_payback ?? 0));
+
   const isHighlight = (value: number, maxValue: number) => value === maxValue && value > 0;
 
   return (
@@ -77,7 +103,7 @@ export default function GateTable({ title, data }: Props) {
               </tr>
             </thead>
             <tbody>
-              {data.map((row, index) => (
+              {completeData.map((row, index) => (
                 <tr
                   key={row.gate}
                   className={index % 2 === 0 ? styles.rowEven : styles.rowOdd}

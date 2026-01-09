@@ -439,10 +439,11 @@ export default async function SirePage({
   // クラス別データをテーブル形式に変換（順位なし）
   // クラス別データ（全クラスを表示）
   const allClasses = ['新馬', '未勝利', '1勝', '2勝', '3勝', 'オープン', 'G3', 'G2', 'G1'];
-  const classStatsData = allClasses.map(className => {
+  const classStatsData = allClasses.map((className, index) => {
     const existingData = sire.class_stats.find(stat => stat.class_name === className);
     return existingData ? {
-      name: existingData.class_name,
+      rank: existingData.rank || index + 1,
+      class_name: existingData.class_name,
       races: existingData.races,
       wins: existingData.wins,
       places_2: existingData.places_2,
@@ -453,7 +454,8 @@ export default async function SirePage({
       win_payback: existingData.win_payback,
       place_payback: existingData.place_payback,
     } : {
-      name: className,
+      rank: index + 1,
+      class_name: className,
       races: 0,
       wins: 0,
       places_2: 0,
@@ -466,39 +468,7 @@ export default async function SirePage({
     };
   });
 
-  // 枠順別データ（全枠を表示）
-  const allGates = [1, 2, 3, 4, 5, 6, 7, 8];
-  const gateStatsData = allGates.map(gateNum => {
-    const existingData = sire.gate_stats.find(stat => stat.gate_number === gateNum);
-    if (existingData) {
-      return {
-        gate: existingData.gate_number,
-        color: existingData.color,
-        races: existingData.races,
-        wins: existingData.wins,
-        places_2: existingData.places_2,
-        places_3: existingData.places_3,
-        win_rate: existingData.win_rate,
-        place_rate: existingData.place_rate,
-        quinella_rate: existingData.quinella_rate,
-        win_payback: existingData.win_payback,
-        place_payback: existingData.place_payback,
-      };
-    }
-    return {
-      gate: gateNum,
-      color: ['white', 'black', 'red', 'blue', 'yellow', 'green', 'orange', 'pink'][gateNum - 1],
-      races: 0,
-      wins: 0,
-      places_2: 0,
-      places_3: 0,
-      win_rate: 0,
-      place_rate: 0,
-      quinella_rate: 0,
-      win_payback: 0,
-      place_payback: 0,
-    };
-  });
+  // 枠順別データ（GateTableコンポーネント側で全枠表示）
 
   // 脚質別データ（全脚質を表示）
   const allRunningStyles = [
@@ -1131,7 +1101,7 @@ export default async function SirePage({
           <section id="gate-stats" aria-label="枠順別データ">
             <GateTable
               title={`${sire.name}産駒 枠順別データ`}
-              data={gateStatsData}
+              data={sire.gate_stats}
             />
           </section>
 
