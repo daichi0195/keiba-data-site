@@ -674,15 +674,15 @@ def get_horse_weight_stats(client):
     query = f"""
     SELECT
       CASE
-        WHEN rr.weight <= 400 THEN '400kg以下'
-        WHEN rr.weight BETWEEN 401 AND 420 THEN '401-420kg'
-        WHEN rr.weight BETWEEN 421 AND 440 THEN '421-440kg'
-        WHEN rr.weight BETWEEN 441 AND 460 THEN '441-460kg'
-        WHEN rr.weight BETWEEN 461 AND 480 THEN '461-480kg'
-        WHEN rr.weight BETWEEN 481 AND 500 THEN '481-500kg'
-        WHEN rr.weight BETWEEN 501 AND 520 THEN '501-520kg'
-        WHEN rr.weight BETWEEN 521 AND 540 THEN '521-540kg'
-        WHEN rr.weight >= 541 THEN '541kg以上'
+        WHEN rr.horse_weight <= 400 THEN '400kg以下'
+        WHEN rr.horse_weight BETWEEN 401 AND 420 THEN '401-420kg'
+        WHEN rr.horse_weight BETWEEN 421 AND 440 THEN '421-440kg'
+        WHEN rr.horse_weight BETWEEN 441 AND 460 THEN '441-460kg'
+        WHEN rr.horse_weight BETWEEN 461 AND 480 THEN '461-480kg'
+        WHEN rr.horse_weight BETWEEN 481 AND 500 THEN '481-500kg'
+        WHEN rr.horse_weight BETWEEN 501 AND 520 THEN '501-520kg'
+        WHEN rr.horse_weight BETWEEN 521 AND 540 THEN '521-540kg'
+        WHEN rr.horse_weight >= 541 THEN '541kg以上'
       END as weight_category,
       COUNT(*) as races,
       SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
@@ -700,8 +700,8 @@ def get_horse_weight_stats(client):
     WHERE
       h.father = '{SIRE_NAME}'
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
-      AND rr.weight IS NOT NULL
-      AND rr.weight > 0
+      AND rr.horse_weight IS NOT NULL
+      AND rr.horse_weight > 0
     GROUP BY weight_category
     ORDER BY
       CASE weight_category

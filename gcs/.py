@@ -955,6 +955,125 @@ def get_total_races(client):
         raise
 
 
+def get_gender_stats(client):
+    """性別成績を取得（過去3年間）"""
+    # track_variant条件を動的に生成（内回り・外回りを区別するコースのみ）
+    if (VENUE, SURFACE, DISTANCE) in COURSES_WITH_VARIANT:
+        bq_variant = TRACK_VARIANT_MAPPING.get(TRACK_VARIANT, TRACK_VARIANT) if TRACK_VARIANT else None
+        track_variant_condition = "AND rm.track_variant IS NULL" if bq_variant is None else f"AND rm.track_variant = '{bq_variant}'"
+    else:
+        track_variant_condition = ""
+
+    query = f"""
+    SELECT
+      CASE rr.sex
+        WHEN 1 THEN '牡馬'
+        WHEN 2 THEN '牝馬'
+        WHEN 3 THEN 'セン馬'
+        ELSE '不明'
+      END as name,
+      COUNT(*) as races,
+      SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
+      SUM(CASE WHEN rr.finish_position = 2 THEN 1 ELSE 0 END) as places_2,
+      SUM(CASE WHEN rr.finish_position = 3 THEN 1 ELSE 0 END) as places_3,
+      ROUND(AVG(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) as win_rate,
+      ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
+      ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
+    FROM
+      `{DATASET}.race_master` rm
+      JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
+    WHERE
+      rm.venue_name = '{VENUE}'
+      AND rm.surface = '{SURFACE}'
+      AND rm.distance = {DISTANCE}
+      {track_variant_condition}
+      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+      AND rr.sex IS NOT NULL
+    GROUP BY rr.sex
+    ORDER BY
+      CASE rr.sex
+        WHEN 1 THEN 1
+        WHEN 2 THEN 2
+        WHEN 3 THEN 3
+        ELSE 4
+      END
+    """
+
+    try:
+        results = client.query(query).result()
+        return [dict(row) for row in results]
+    except Exception as e:
+        print(f"   ⚠️  Error fetching gender stats: {str(e)}", file=sys.stderr)
+        raise
+
+
+def get_horse_weight_stats(client):
+    """馬体重別成績を取得（過去3年間）"""
+    # track_variant条件を動的に生成（内回り・外回りを区別するコースのみ）
+    if (VENUE, SURFACE, DISTANCE) in COURSES_WITH_VARIANT:
+        bq_variant = TRACK_VARIANT_MAPPING.get(TRACK_VARIANT, TRACK_VARIANT) if TRACK_VARIANT else None
+        track_variant_condition = "AND rm.track_variant IS NULL" if bq_variant is None else f"AND rm.track_variant = '{bq_variant}'"
+    else:
+        track_variant_condition = ""
+
+    query = f"""
+    SELECT
+      CASE
+        WHEN rr.horse_weight <= 400 THEN '400kg以下'
+        WHEN rr.horse_weight BETWEEN 401 AND 420 THEN '401-420kg'
+        WHEN rr.horse_weight BETWEEN 421 AND 440 THEN '421-440kg'
+        WHEN rr.horse_weight BETWEEN 441 AND 460 THEN '441-460kg'
+        WHEN rr.horse_weight BETWEEN 461 AND 480 THEN '461-480kg'
+        WHEN rr.horse_weight BETWEEN 481 AND 500 THEN '481-500kg'
+        WHEN rr.horse_weight BETWEEN 501 AND 520 THEN '501-520kg'
+        WHEN rr.horse_weight BETWEEN 521 AND 540 THEN '521-540kg'
+        WHEN rr.horse_weight >= 541 THEN '541kg以上'
+      END as weight_category,
+      COUNT(*) as races,
+      SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
+      SUM(CASE WHEN rr.finish_position = 2 THEN 1 ELSE 0 END) as places_2,
+      SUM(CASE WHEN rr.finish_position = 3 THEN 1 ELSE 0 END) as places_3,
+      ROUND(AVG(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) as win_rate,
+      ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
+      ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
+    FROM
+      `{DATASET}.race_master` rm
+      JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
+    WHERE
+      rm.venue_name = '{VENUE}'
+      AND rm.surface = '{SURFACE}'
+      AND rm.distance = {DISTANCE}
+      {track_variant_condition}
+      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+      AND rr.horse_weight IS NOT NULL
+      AND rr.horse_weight > 0
+    GROUP BY weight_category
+    ORDER BY
+      CASE weight_category
+        WHEN '400kg以下' THEN 1
+        WHEN '401-420kg' THEN 2
+        WHEN '421-440kg' THEN 3
+        WHEN '441-460kg' THEN 4
+        WHEN '461-480kg' THEN 5
+        WHEN '481-500kg' THEN 6
+        WHEN '501-520kg' THEN 7
+        WHEN '521-540kg' THEN 8
+        WHEN '541kg以上' THEN 9
+      END
+    """
+
+    try:
+        results = client.query(query).result()
+        return [dict(row) for row in results]
+    except Exception as e:
+        print(f"   ⚠️  Error fetching horse weight stats: {str(e)}", file=sys.stderr)
+        raise
+
+
 def process_course(bq_client, storage_client, venue, venue_en, surface, surface_en, distance, track_variant):
     """単一コースのデータを処理してGCSにアップロード"""
     global VENUE, SURFACE, DISTANCE, VENUE_EN, SURFACE_EN, TRACK_VARIANT
@@ -984,6 +1103,8 @@ def process_course(bq_client, storage_client, venue, venue_en, surface, surface_
         dam_sire_stats = get_dam_sire_stats(bq_client)
         running_style_stats = get_running_style_stats(bq_client)
         running_style_trends = get_running_style_trends(bq_client)
+        gender_stats = get_gender_stats(bq_client)
+        horse_weight_stats = get_horse_weight_stats(bq_client)
         total_races = get_total_races(bq_client)
 
         # 統合データ作成
@@ -997,6 +1118,8 @@ def process_course(bq_client, storage_client, venue, venue_en, surface, surface_
             'dam_sire_stats': dam_sire_stats,
             'running_style_stats': running_style_stats,
             'running_style_trends': running_style_trends,
+            'gender_stats': gender_stats,
+            'horse_weight_stats': horse_weight_stats,
         }
 
         # volatility_statsがNoneの場合のデフォルト値を設定

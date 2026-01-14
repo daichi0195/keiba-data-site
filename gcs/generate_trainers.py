@@ -44,6 +44,8 @@ def get_trainer_basic_info(client):
     SELECT
       trainer_id,
       trainer_name as name,
+      kana as kana,
+      region as stable,
       debut_year,
       is_active
     FROM
@@ -60,15 +62,6 @@ def get_trainer_basic_info(client):
 
         # 基本情報を辞書に変換
         basic_info = dict(rows[0])
-
-        # CSVからかな名と所属を追加
-        if TRAINER_ID in TRAINER_KANA_MAP:
-            basic_info['kana'] = TRAINER_KANA_MAP[TRAINER_ID]['kana']
-            basic_info['stable'] = TRAINER_KANA_MAP[TRAINER_ID]['region']
-        else:
-            basic_info['kana'] = ''
-            basic_info['stable'] = ''
-            print(f"   ⚠️  Kana not found for trainer {TRAINER_ID}")
 
         return basic_info
     except Exception as e:
@@ -1385,9 +1378,6 @@ def main():
     args = parser.parse_args()
 
     try:
-        # 調教師かな名マッピングを読み込む
-        load_trainer_kana_mapping()
-
         # BigQueryとGCS クライアント
         bq_client = bigquery.Client(project=PROJECT_ID)
         storage_client = storage.Client(project=PROJECT_ID)

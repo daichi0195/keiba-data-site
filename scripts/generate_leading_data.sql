@@ -6,37 +6,39 @@
 DECLARE current_year INT64 DEFAULT 2025;
 
 -- 騎手リーディング TOP 10
--- all_features_complete_no_leakageテーブルから集計し、jockeyテーブルから名前を取得
+-- race_resultテーブルから集計し、jockeyテーブルから名前を取得
 CREATE TEMP TABLE jockey_leading AS
 SELECT
-  r.jockey_id,
+  rr.jockey_id,
   j.jockey_name,
   COUNT(*) as rides,
-  COUNTIF(r.finish_position = 1) as wins,
-  ROUND(COUNTIF(r.finish_position = 1) * 100.0 / COUNT(*), 1) as win_rate
-FROM `umadata.keiba_data.all_features_complete_no_leakage` r
-INNER JOIN `umadata.keiba_data.jockey` j ON r.jockey_id = j.jockey_id
-WHERE EXTRACT(YEAR FROM r.race_date) = current_year
-  AND r.jockey_id IS NOT NULL
-GROUP BY r.jockey_id, j.jockey_name
+  COUNTIF(rr.finish_position = 1) as wins,
+  ROUND(COUNTIF(rr.finish_position = 1) * 100.0 / COUNT(*), 1) as win_rate
+FROM `umadata.keiba_data.race_result` rr
+INNER JOIN `umadata.keiba_data.jockey` j ON rr.jockey_id = j.jockey_id
+INNER JOIN `umadata.keiba_data.race_master` rm ON rr.race_id = rm.race_id
+WHERE EXTRACT(YEAR FROM rm.race_date) = current_year
+  AND rr.jockey_id IS NOT NULL
+GROUP BY rr.jockey_id, j.jockey_name
 HAVING wins > 0
 ORDER BY wins DESC
 LIMIT 10;
 
 -- 調教師リーディング TOP 10
--- all_features_complete_no_leakageテーブルから集計し、trainerテーブルから名前を取得
+-- race_resultテーブルから集計し、trainerテーブルから名前を取得
 CREATE TEMP TABLE trainer_leading AS
 SELECT
-  r.trainer_id,
+  rr.trainer_id,
   t.trainer_name,
   COUNT(*) as rides,
-  COUNTIF(r.finish_position = 1) as wins,
-  ROUND(COUNTIF(r.finish_position = 1) * 100.0 / COUNT(*), 1) as win_rate
-FROM `umadata.keiba_data.all_features_complete_no_leakage` r
-INNER JOIN `umadata.keiba_data.trainer` t ON r.trainer_id = t.trainer_id
-WHERE EXTRACT(YEAR FROM r.race_date) = current_year
-  AND r.trainer_id IS NOT NULL
-GROUP BY r.trainer_id, t.trainer_name
+  COUNTIF(rr.finish_position = 1) as wins,
+  ROUND(COUNTIF(rr.finish_position = 1) * 100.0 / COUNT(*), 1) as win_rate
+FROM `umadata.keiba_data.race_result` rr
+INNER JOIN `umadata.keiba_data.trainer` t ON rr.trainer_id = t.trainer_id
+INNER JOIN `umadata.keiba_data.race_master` rm ON rr.race_id = rm.race_id
+WHERE EXTRACT(YEAR FROM rm.race_date) = current_year
+  AND rr.trainer_id IS NOT NULL
+GROUP BY rr.trainer_id, t.trainer_name
 HAVING wins > 0
 ORDER BY wins DESC
 LIMIT 10;

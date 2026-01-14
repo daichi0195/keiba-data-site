@@ -24,7 +24,7 @@ def get_jockey_basic_info(client):
     SELECT
       jockey_id,
       jockey_name as name,
-      jockey_kana as kana,
+      kana as kana,
       region as affiliation,
       debut_year,
       is_active
