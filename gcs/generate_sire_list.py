@@ -2,10 +2,12 @@
 # -*- coding: utf-8 -*-
 """
 BigQueryから種牡馬リストを取得してTypeScriptファイルを生成
+種牡馬IDはハッシュベースで固定（URL安定性のため）
 """
 
 import os
 import sys
+import hashlib
 from google.cloud import bigquery
 from datetime import datetime
 
@@ -14,10 +16,22 @@ PROJECT_ID = 'umadata'
 BUCKET_NAME = 'umadata'
 DATASET = f"{PROJECT_ID}.keiba_data"
 
+def get_stable_sire_id(name):
+    """種牡馬名から固定IDを生成（SHA256ハッシュベース）
+
+    Args:
+        name: 種牡馬名（例: "ロードカナロア"）
+
+    Returns:
+        1-99999の範囲の固定ID
+    """
+    hash_hex = hashlib.sha256(name.encode('utf-8')).hexdigest()
+    return int(hash_hex, 16) % 99999 + 1
+
 def get_sire_list():
     """過去3年間に産駒が出走している種牡馬リストを取得"""
     client = bigquery.Client(project=PROJECT_ID)
-    
+
     query = f"""
     WITH recent_races AS (
       SELECT race_id
@@ -48,17 +62,43 @@ def get_sire_list():
     ORDER BY race_count DESC
     LIMIT 300
     """
-    
+
     try:
         results = client.query(query).result()
         sires = []
-        for i, row in enumerate(results, 1):
-            sires.append({
-                'id': i,
-                'name': row['name'],
-                'race_count': row['race_count'],
-                'horse_count': row['horse_count']
-            })
+        id_map = {}
+        conflicts = []
+
+        for row in results:
+            name = row['name']
+            sire_id = get_stable_sire_id(name)
+
+            # 衝突チェック
+            if sire_id in id_map:
+                conflicts.append({
+                    'id': sire_id,
+                    'name1': id_map[sire_id],
+                    'name2': name
+                })
+            else:
+                id_map[sire_id] = name
+                sires.append({
+                    'id': sire_id,
+                    'name': name,
+                    'race_count': row['race_count'],
+                    'horse_count': row['horse_count']
+                })
+
+        # 衝突があればエラー
+        if conflicts:
+            print("❌ ID衝突が発生しました:", file=sys.stderr)
+            for c in conflicts:
+                print(f"   ID {c['id']}: {c['name1']} と {c['name2']}", file=sys.stderr)
+            sys.exit(1)
+
+        # IDでソート（表示用）
+        sires.sort(key=lambda x: x['id'])
+
         return sires
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
