@@ -35,7 +35,7 @@ export default function Footer() {
 
         <div className={styles.disclaimer}>
           <p className={styles.disclaimerItem}>
-            ※ 馬券の購入は20歳になってから
+            馬券の購入は20歳になってから
           </p>
           <p className={styles.disclaimerItem}>
             本サイトに掲載されているデータは参考情報です。
