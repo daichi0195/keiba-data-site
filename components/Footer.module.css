@@ -60,6 +60,54 @@
   opacity: 1;
 }
 
+.disclaimer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.5rem 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  width: 100%;
+  max-width: 800px;
+}
+
+.disclaimerItem {
+  font-size: 0.85rem;
+  color: #ffffff;
+  margin: 0;
+  opacity: 0.7;
+  line-height: 1.6;
+}
+
+.disclaimerItemSplit {
+  font-size: 0.85rem;
+  color: #ffffff;
+  margin: 0;
+  opacity: 0.7;
+  line-height: 1.6;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.disclaimerPrefix {
+  flex-shrink: 0;
+}
+
+.disclaimerText {
+  flex: 1;
+}
+
+.externalLink {
+  color: #52af77;
+  text-decoration: underline;
+  transition: opacity 0.2s ease;
+}
+
+.externalLink:hover {
+  opacity: 0.8;
+}
+
 .copyright {
   font-size: 0.8rem;
   color: #ffffff;
