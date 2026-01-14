@@ -79,23 +79,8 @@
   line-height: 1.6;
 }
 
-.disclaimerItemSplit {
-  font-size: 0.85rem;
-  color: #ffffff;
-  margin: 0;
-  opacity: 0.7;
-  line-height: 1.6;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.disclaimerPrefix {
-  flex-shrink: 0;
-}
-
-.disclaimerText {
-  flex: 1;
+.mobileBreak {
+  display: none;
 }
 
 .externalLink {
@@ -140,5 +125,9 @@
 
   .footerLink {
     font-size: 0.85rem;
+  }
+
+  .mobileBreak {
+    display: inline;
   }
 }
