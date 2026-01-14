@@ -740,60 +740,6 @@ def get_class_stats(client):
         raise
 
 
-def get_track_condition_stats(client):
-    """馬場状態別成績を取得（過去3年間）"""
-    query = f"""
-    SELECT
-      CASE rm.surface
-        WHEN 'ダート' THEN 'ダ'
-        ELSE rm.surface
-      END as surface,
-      rm.track_state as condition,
-      rm.track_state as condition_label,
-      COUNT(*) as races,
-      SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
-      SUM(CASE WHEN rr.finish_position = 2 THEN 1 ELSE 0 END) as places_2,
-      SUM(CASE WHEN rr.finish_position = 3 THEN 1 ELSE 0 END) as places_3,
-      ROUND(AVG(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) * 100, 1) as win_rate,
-      ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
-      ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
-      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
-      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
-    FROM
-      `{DATASET}.race_master` rm
-      JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
-    WHERE
-      CAST(rr.trainer_id AS STRING) = CAST({TRAINER_ID} AS STRING)
-      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
-      AND rm.track_state IS NOT NULL
-      AND rm.surface IN ('芝', 'ダート', '障害')
-    GROUP BY rm.surface, rm.track_state
-    ORDER BY
-      CASE rm.surface
-        WHEN '芝' THEN 1
-        WHEN 'ダート' THEN 2
-        WHEN '障害' THEN 3
-        ELSE 4
-      END,
-      CASE rm.track_state
-        WHEN '良' THEN 1
-        WHEN '稍' THEN 2
-        WHEN '稍重' THEN 2
-        WHEN '重' THEN 3
-        WHEN '不' THEN 4
-        WHEN '不良' THEN 4
-        ELSE 5
-      END
-    """
-
-    try:
-        results = client.query(query).result()
-        return [dict(row) for row in results]
-    except Exception as e:
-        print(f"   ⚠️  Error fetching track condition stats: {str(e)}", file=sys.stderr)
-        raise
-
-
 def get_gender_stats(client):
     """性別成績を取得（過去3年間）"""
     query = f"""
@@ -1287,22 +1233,19 @@ def process_trainer(bq_client, storage_client, trainer_id, trainer_name):
         print("  [12/17] Fetching class stats...")
         class_stats = get_class_stats(bq_client)
 
-        print("  [13/17] Fetching track condition stats...")
-        track_condition_stats = get_track_condition_stats(bq_client)
-
-        print("  [14/18] Fetching gender stats...")
+        print("  [13/17] Fetching gender stats...")
         gender_stats = get_gender_stats(bq_client)
 
-        print("  [15/18] Fetching interval stats...")
+        print("  [14/17] Fetching interval stats...")
         interval_stats = get_interval_stats(bq_client)
 
-        print("  [16/18] Fetching racecourse stats...")
+        print("  [15/17] Fetching racecourse stats...")
         racecourse_stats = get_racecourse_stats(bq_client)
 
-        print("  [17/18] Fetching owner stats...")
+        print("  [16/17] Fetching owner stats...")
         owner_stats = get_owner_stats(bq_client)
 
-        print("  [18/18] Calculating characteristics...")
+        print("  [17/17] Calculating characteristics...")
         characteristics = get_characteristics(bq_client, surface_stats, distance_stats)
 
         # データ期間と更新日を設定
@@ -1341,7 +1284,6 @@ def process_trainer(bq_client, storage_client, trainer_id, trainer_name):
             'course_stats': course_stats or [],
             'jockey_stats': jockey_stats or [],
             'class_stats': class_stats or [],
-            'track_condition_stats': track_condition_stats or [],
             'gender_stats': gender_stats or [],
             'interval_stats': interval_stats or [],
             'racecourse_stats': racecourse_stats or [],
