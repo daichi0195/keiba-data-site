@@ -1,0 +1,298 @@
+/* 記事詳細ページのスタイル */
+
+.container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+/* パンくずリスト */
+.breadcrumb {
+  font-size: 0.875rem;
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.breadcrumb a {
+  color: #52af77;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.breadcrumb a:hover {
+  opacity: 0.7;
+  text-decoration: underline;
+}
+
+.breadcrumb span {
+  color: #999;
+}
+
+/* 記事 */
+.article {
+  background: #fff;
+  border-radius: 12px;
+  padding: 3rem 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* ヘッダー */
+.header {
+  border-bottom: 2px solid #f5f7fa;
+  padding-bottom: 2rem;
+  margin-bottom: 3rem;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.category {
+  display: inline-block;
+  background: #52af77;
+  color: #fff;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.date {
+  color: #666;
+  font-size: 0.875rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: #2d3748;
+  margin: 0 0 1rem 0;
+}
+
+.description {
+  font-size: 1.125rem;
+  color: #666;
+  line-height: 1.7;
+  margin: 0 0 1.5rem 0;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tag {
+  color: #52af77;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* 本文 */
+.content {
+  font-size: 1rem;
+  line-height: 1.9;
+  color: #2d3748;
+}
+
+.content h1,
+.content h2,
+.content h3,
+.content h4 {
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 2.5rem 0 1rem 0;
+  color: #2d3748;
+}
+
+.content h1 {
+  font-size: 1.875rem;
+  border-bottom: 3px solid #52af77;
+  padding-bottom: 0.5rem;
+}
+
+.content h2 {
+  font-size: 1.5rem;
+  border-left: 4px solid #52af77;
+  padding-left: 0.75rem;
+}
+
+.content h3 {
+  font-size: 1.25rem;
+}
+
+.content h4 {
+  font-size: 1.125rem;
+}
+
+.content p {
+  margin: 1.5rem 0;
+}
+
+.content a {
+  color: #52af77;
+  text-decoration: underline;
+  transition: opacity 0.2s;
+}
+
+.content a:hover {
+  opacity: 0.7;
+}
+
+.content ul,
+.content ol {
+  margin: 1.5rem 0;
+  padding-left: 2rem;
+}
+
+.content li {
+  margin: 0.5rem 0;
+}
+
+.content strong {
+  font-weight: 700;
+  color: #2d3748;
+  background: linear-gradient(transparent 60%, #CAFEE3 60%);
+}
+
+.content blockquote {
+  border-left: 4px solid #e2e8f0;
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  color: #666;
+  font-style: italic;
+}
+
+.content hr {
+  border: none;
+  border-top: 2px solid #f5f7fa;
+  margin: 3rem 0;
+}
+
+/* フッター */
+.footer {
+  border-top: 2px solid #f5f7fa;
+  padding-top: 2rem;
+  margin-top: 3rem;
+}
+
+.author {
+  color: #666;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+/* 関連記事 */
+.relatedArticles {
+  margin-top: 4rem;
+}
+
+.relatedTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0 0 1.5rem 0;
+  border-left: 4px solid #52af77;
+  padding-left: 0.75rem;
+}
+
+.relatedGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.relatedCard {
+  display: block;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.relatedCard:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.relatedCategory {
+  display: inline-block;
+  background: #f5f7fa;
+  color: #52af77;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.relatedCardTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2d3748;
+  line-height: 1.4;
+  margin: 0 0 0.5rem 0;
+}
+
+.relatedCardDescription {
+  font-size: 0.875rem;
+  color: #666;
+  line-height: 1.6;
+  margin: 0 0 0.75rem 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.relatedCardDate {
+  font-size: 0.75rem;
+  color: #999;
+}
+
+/* モバイル対応 */
+@media (max-width: 768px) {
+  .container {
+    margin: 1rem auto;
+    padding: 0 0.75rem;
+  }
+
+  .article {
+    padding: 2rem 1.5rem;
+    border-radius: 8px;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .description {
+    font-size: 1rem;
+  }
+
+  .content {
+    font-size: 0.9375rem;
+  }
+
+  .content h1 {
+    font-size: 1.5rem;
+  }
+
+  .content h2 {
+    font-size: 1.25rem;
+  }
+
+  .content h3 {
+    font-size: 1.125rem;
+  }
+
+  .relatedGrid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,174 @@
+import fs from 'fs';
+import path from 'path';
+import matter from 'gray-matter';
+import { remark } from 'remark';
+import html from 'remark-html';
+import gfm from 'remark-gfm';
+
+const articlesDirectory = path.join(process.cwd(), 'content/articles');
+
+export interface ArticleFrontmatter {
+  title: string;
+  description: string;
+  date: string;
+  category: string;
+  tags: string[];
+  author: string;
+}
+
+export interface Article {
+  slug: string;
+  frontmatter: ArticleFrontmatter;
+  content: string;
+}
+
+export interface ArticleData extends Article {
+  contentHtml: string;
+}
+
+/**
+ * 全ての記事のslugを取得
+ */
+export function getAllArticleSlugs(): string[] {
+  if (!fs.existsSync(articlesDirectory)) {
+    return [];
+  }
+
+  const fileNames = fs.readdirSync(articlesDirectory);
+  return fileNames
+    .filter((fileName) => fileName.endsWith('.md'))
+    .map((fileName) => fileName.replace(/\.md$/, ''));
+}
+
+/**
+ * 全ての記事データを取得（一覧表示用）
+ */
+export function getAllArticles(): Article[] {
+  const slugs = getAllArticleSlugs();
+
+  const articles = slugs.map((slug) => {
+    const fullPath = path.join(articlesDirectory, `${slug}.md`);
+    const fileContents = fs.readFileSync(fullPath, 'utf8');
+    const { data, content } = matter(fileContents);
+
+    return {
+      slug,
+      frontmatter: data as ArticleFrontmatter,
+      content,
+    };
+  });
+
+  // 日付の降順でソート
+  return articles.sort((a, b) => {
+    if (a.frontmatter.date < b.frontmatter.date) {
+      return 1;
+    } else {
+      return -1;
+    }
+  });
+}
+
+/**
+ * 特定の記事データを取得（詳細ページ用）
+ */
+export async function getArticleBySlug(slug: string): Promise<ArticleData | null> {
+  try {
+    const fullPath = path.join(articlesDirectory, `${slug}.md`);
+    const fileContents = fs.readFileSync(fullPath, 'utf8');
+    const { data, content } = matter(fileContents);
+
+    // MarkdownをHTMLに変換
+    const processedContent = await remark()
+      .use(gfm) // GitHub Flavored Markdown対応
+      .use(html, { sanitize: false }) // HTMLタグを許可
+      .process(content);
+
+    const contentHtml = processedContent.toString();
+
+    return {
+      slug,
+      frontmatter: data as ArticleFrontmatter,
+      content,
+      contentHtml,
+    };
+  } catch (error) {
+    console.error(`Error loading article: ${slug}`, error);
+    return null;
+  }
+}
+
+/**
+ * カテゴリ別に記事を取得
+ */
+export function getArticlesByCategory(category: string): Article[] {
+  const allArticles = getAllArticles();
+  return allArticles.filter(
+    (article) => article.frontmatter.category === category
+  );
+}
+
+/**
+ * タグ別に記事を取得
+ */
+export function getArticlesByTag(tag: string): Article[] {
+  const allArticles = getAllArticles();
+  return allArticles.filter((article) =>
+    article.frontmatter.tags.includes(tag)
+  );
+}
+
+/**
+ * 関連記事を取得（同じカテゴリまたはタグを持つ記事）
+ */
+export function getRelatedArticles(
+  currentSlug: string,
+  maxResults: number = 3
+): Article[] {
+  const allArticles = getAllArticles();
+  const currentArticle = allArticles.find(
+    (article) => article.slug === currentSlug
+  );
+
+  if (!currentArticle) {
+    return [];
+  }
+
+  const { category, tags } = currentArticle.frontmatter;
+
+  // スコアリング: 同じカテゴリ=2点、同じタグ=1点/tag
+  const scoredArticles = allArticles
+    .filter((article) => article.slug !== currentSlug)
+    .map((article) => {
+      let score = 0;
+      if (article.frontmatter.category === category) {
+        score += 2;
+      }
+      const matchingTags = article.frontmatter.tags.filter((tag) =>
+        tags.includes(tag)
+      );
+      score += matchingTags.length;
+      return { article, score };
+    })
+    .filter((item) => item.score > 0)
+    .sort((a, b) => b.score - a.score);
+
+  return scoredArticles.slice(0, maxResults).map((item) => item.article);
+}
+
+/**
+ * 全てのカテゴリを取得
+ */
+export function getAllCategories(): string[] {
+  const allArticles = getAllArticles();
+  const categories = allArticles.map((article) => article.frontmatter.category);
+  return Array.from(new Set(categories));
+}
+
+/**
+ * 全てのタグを取得
+ */
+export function getAllTags(): string[] {
+  const allArticles = getAllArticles();
+  const tags = allArticles.flatMap((article) => article.frontmatter.tags);
+  return Array.from(new Set(tags));
+}

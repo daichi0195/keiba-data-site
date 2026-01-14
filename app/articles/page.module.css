@@ -1,0 +1,195 @@
+/* 記事一覧ページのスタイル */
+
+.container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+/* パンくずリスト */
+.breadcrumb {
+  font-size: 0.875rem;
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.breadcrumb a {
+  color: #52af77;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.breadcrumb a:hover {
+  opacity: 0.7;
+  text-decoration: underline;
+}
+
+.breadcrumb span {
+  color: #999;
+}
+
+/* ヘッダー */
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0 0 1rem 0;
+}
+
+.description {
+  font-size: 1.125rem;
+  color: #666;
+  margin: 0;
+}
+
+/* カテゴリフィルター */
+.categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-bottom: 3rem;
+}
+
+.categoryChip {
+  display: inline-block;
+  background: #fff;
+  color: #52af77;
+  border: 2px solid #52af77;
+  padding: 0.5rem 1.25rem;
+  border-radius: 24px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.categoryChip:hover {
+  background: #52af77;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+/* 記事グリッド */
+.articleGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+}
+
+.emptyMessage {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #666;
+  font-size: 1.125rem;
+  padding: 3rem 0;
+}
+
+/* 記事カード */
+.articleCard {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 2rem;
+  text-decoration: none;
+  transition: all 0.3s;
+  height: 100%;
+}
+
+.articleCard:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+  border-color: #52af77;
+}
+
+/* カードヘッダー */
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.cardCategory {
+  display: inline-block;
+  background: #52af77;
+  color: #fff;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.cardDate {
+  font-size: 0.75rem;
+  color: #999;
+}
+
+/* カードコンテンツ */
+.cardTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #2d3748;
+  line-height: 1.4;
+  margin: 0 0 1rem 0;
+}
+
+.cardDescription {
+  font-size: 0.9375rem;
+  color: #666;
+  line-height: 1.7;
+  margin: 0 0 1.5rem 0;
+  flex-grow: 1;
+}
+
+.cardTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.cardTag {
+  color: #52af77;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* モバイル対応 */
+@media (max-width: 768px) {
+  .container {
+    margin: 1rem auto;
+    padding: 0 0.75rem;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .description {
+    font-size: 1rem;
+  }
+
+  .articleGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .articleCard {
+    padding: 1.5rem;
+  }
+
+  .cardTitle {
+    font-size: 1.125rem;
+  }
+
+  .cardDescription {
+    font-size: 0.875rem;
+  }
+}
