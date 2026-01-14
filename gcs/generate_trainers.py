@@ -748,8 +748,8 @@ def get_track_condition_stats(client):
         WHEN 'ダート' THEN 'ダ'
         ELSE rm.surface
       END as surface,
-      rm.track_condition as condition,
-      rm.track_condition as condition_label,
+      rm.track_state as condition,
+      rm.track_state as condition_label,
       COUNT(*) as races,
       SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
       SUM(CASE WHEN rr.finish_position = 2 THEN 1 ELSE 0 END) as places_2,
@@ -765,9 +765,9 @@ def get_track_condition_stats(client):
     WHERE
       CAST(rr.trainer_id AS STRING) = CAST({TRAINER_ID} AS STRING)
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
-      AND rm.track_condition IS NOT NULL
+      AND rm.track_state IS NOT NULL
       AND rm.surface IN ('芝', 'ダート', '障害')
-    GROUP BY rm.surface, rm.track_condition
+    GROUP BY rm.surface, rm.track_state
     ORDER BY
       CASE rm.surface
         WHEN '芝' THEN 1
@@ -775,7 +775,7 @@ def get_track_condition_stats(client):
         WHEN '障害' THEN 3
         ELSE 4
       END,
-      CASE rm.track_condition
+      CASE rm.track_state
         WHEN '良' THEN 1
         WHEN '稍' THEN 2
         WHEN '稍重' THEN 2
