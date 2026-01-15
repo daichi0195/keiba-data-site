@@ -94,64 +94,64 @@ export default function HorseWeightTable({ title, data }: Props) {
                       {row.weight_category.replace('kg', '')}
                     </span>
                   </td>
-                  <td className={styles.scrollCol}>
-                    <span className={isHighlight(row.races ?? 0, maxRaces) ? styles.highlight : ''}>
-                      {row.races ?? 0}
-                    </span>
-                  </td>
-                  <td className={styles.scrollCol}>
-                    <span className={isHighlight(row.wins ?? 0, maxWins) ? styles.highlight : ''}>
-                      {row.wins ?? 0}
-                    </span>
-                  </td>
-                  <td className={styles.scrollCol}>
-                    <span className={isHighlight(row.places_2 ?? 0, maxPlaces2) ? styles.highlight : ''}>
-                      {row.places_2 ?? 0}
-                    </span>
-                  </td>
-                  <td className={styles.scrollCol}>
-                    <span className={isHighlight(row.places_3 ?? 0, maxPlaces3) ? styles.highlight : ''}>
-                      {row.places_3 ?? 0}
-                    </span>
-                  </td>
-                  <td className={styles.scrollCol}>
-                    <span className={isHighlight(row.win_rate ?? 0, maxWinRate) ? styles.highlight : ''}>
-                      {(row.win_rate ?? 0).toFixed(1)}%
-                    </span>
-                  </td>
-                  <td className={styles.scrollCol}>
-                    <span className={isHighlight(row.quinella_rate ?? 0, maxQuinellaRate) ? styles.highlight : ''}>
-                      {(row.quinella_rate ?? 0).toFixed(1)}%
-                    </span>
-                  </td>
-                  <td className={styles.scrollCol}>
-                    <span className={isHighlight(row.place_rate ?? 0, maxPlaceRate) ? styles.highlight : ''}>
-                      {(row.place_rate ?? 0).toFixed(1)}%
-                    </span>
-                  </td>
-                  <td className={styles.scrollCol}>
-                    <span className={isHighlight(row.win_payback ?? 0, maxWinPayback) ? styles.highlight : ''}>
-                      {(row.win_payback ?? 0).toFixed(1)}%
-                    </span>
-                  </td>
-                  <td className={styles.scrollCol}>
-                    <span className={isHighlight(row.place_payback ?? 0, maxPlacePayback) ? styles.highlight : ''}>
-                      {(row.place_payback ?? 0).toFixed(1)}%
-                    </span>
-                  </td>
-                  <td className={styles.scrollCol} style={{ width: '100px', minWidth: '100px' }}>
-                    <span>{row.avg_popularity !== undefined ? row.avg_popularity.toFixed(1) : '-'}</span>
-                  </td>
-                  <td className={styles.scrollCol} style={{ width: '100px', minWidth: '100px' }}>
-                    <span>{row.avg_rank !== undefined ? row.avg_rank.toFixed(1) : '-'}</span>
-                  </td>
-                  <td className={styles.scrollCol} style={{ width: '100px', minWidth: '100px' }}>
-                    <span>{row.median_popularity !== undefined ? Math.round(row.median_popularity) : '-'}</span>
-                  </td>
-                  <td className={styles.scrollCol} style={{ width: '100px', minWidth: '100px' }}>
-                    <span>{row.median_rank !== undefined ? Math.round(row.median_rank) : '-'}</span>
-                  </td>
-                </tr>
+                    <td className={styles.scrollCol}>
+                      <span className={isHighlight(row.races ?? 0, maxRaces) ? styles.highlight : ''}>
+                        {row.races ?? 0}
+                      </span>
+                    </td>
+                    <td className={styles.scrollCol}>
+                      <span className={isHighlight(row.wins ?? 0, maxWins) ? styles.highlight : ''}>
+                        {row.wins ?? 0}
+                      </span>
+                    </td>
+                    <td className={styles.scrollCol}>
+                      <span className={isHighlight(row.places_2 ?? 0, maxPlaces2) ? styles.highlight : ''}>
+                        {row.places_2 ?? 0}
+                      </span>
+                    </td>
+                    <td className={styles.scrollCol}>
+                      <span className={isHighlight(row.places_3 ?? 0, maxPlaces3) ? styles.highlight : ''}>
+                        {row.places_3 ?? 0}
+                      </span>
+                    </td>
+                    <td className={styles.scrollCol}>
+                      <span className={isHighlight(row.win_rate ?? 0, maxWinRate) ? styles.highlight : ''}>
+                        {(row.win_rate ?? 0).toFixed(1)}%
+                      </span>
+                    </td>
+                    <td className={styles.scrollCol}>
+                      <span className={isHighlight(row.quinella_rate ?? 0, maxQuinellaRate) ? styles.highlight : ''}>
+                        {(row.quinella_rate ?? 0).toFixed(1)}%
+                      </span>
+                    </td>
+                    <td className={styles.scrollCol}>
+                      <span className={isHighlight(row.place_rate ?? 0, maxPlaceRate) ? styles.highlight : ''}>
+                        {(row.place_rate ?? 0).toFixed(1)}%
+                      </span>
+                    </td>
+                    <td className={styles.scrollCol}>
+                      <span className={isHighlight(row.win_payback ?? 0, maxWinPayback) ? styles.highlight : ''}>
+                        {(row.win_payback ?? 0).toFixed(1)}%
+                      </span>
+                    </td>
+                    <td className={styles.scrollCol}>
+                      <span className={isHighlight(row.place_payback ?? 0, maxPlacePayback) ? styles.highlight : ''}>
+                        {(row.place_payback ?? 0).toFixed(1)}%
+                      </span>
+                    </td>
+                    <td className={styles.scrollCol} style={{ width: '100px', minWidth: '100px' }}>
+                      <span>{row.avg_popularity !== undefined ? row.avg_popularity.toFixed(1) : '-'}</span>
+                    </td>
+                    <td className={styles.scrollCol} style={{ width: '100px', minWidth: '100px' }}>
+                      <span>{row.avg_rank !== undefined ? row.avg_rank.toFixed(1) : '-'}</span>
+                    </td>
+                    <td className={styles.scrollCol} style={{ width: '100px', minWidth: '100px' }}>
+                      <span>{row.median_popularity !== undefined ? Math.round(row.median_popularity) : '-'}</span>
+                    </td>
+                    <td className={styles.scrollCol} style={{ width: '100px', minWidth: '100px' }}>
+                      <span>{row.median_rank !== undefined ? Math.round(row.median_rank) : '-'}</span>
+                    </td>
+                  </tr>
               ))}
             </tbody>
           </table>

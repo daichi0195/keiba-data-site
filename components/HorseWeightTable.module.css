@@ -162,6 +162,34 @@
   white-space: nowrap;
 }
 
+/* グループヘッダー */
+.groupHeader {
+  background: #f5f5f5 !important;
+  border-top: 2px solid #000 !important;
+  border-bottom: 1px solid #ddd !important;
+}
+
+.groupHeader:not(:first-child) {
+  border-top: none !important;
+}
+
+.groupHeaderCell {
+  position: sticky !important;
+  left: 0 !important;
+  padding: 10px 12px !important;
+  text-align: left !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  color: #000 !important;
+  background: #f5f5f5 !important;
+  border: none !important;
+  z-index: 20 !important;
+}
+
+.groupHeaderCell strong {
+  font-size: 14px;
+}
+
 /* ハイライト */
 .highlight {
   background: linear-gradient(135deg, #d1f0e5 0%, #e8f9f0 100%) !important;

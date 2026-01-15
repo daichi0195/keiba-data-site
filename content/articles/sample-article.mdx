@@ -305,6 +305,55 @@ author: "ダイチ"
 
 一方で、勝率でみるとオープン〜未勝利でそこまで差はなく、**上のクラスでも一発の魅力は秘めていそう**です。
 
+## 初ダートと性別は関係ある？
+馬体重が重い馬が有利ということは、相対的に**馬体が大きい牡馬の方が成績が良いのでは**？と思ったので、性別でもみてみましょう。
+
+<GenderTable
+  data={[
+    { name: '牡馬', races: 2901, wins: 217, places_2: 170, places_3: 168, win_rate: 7.5, quinella_rate: 13.3, place_rate: 19.1, win_payback: 87.0, place_payback: 74.0, avg_popularity: 7.4, avg_rank: 8.3, median_popularity: 7, median_rank: 8 },
+    { name: '牝馬', races: 2952, wins: 133, places_2: 124, places_3: 114, win_rate: 4.5, quinella_rate: 8.7, place_rate: 12.6, win_payback: 51.0, place_payback: 51.0, avg_popularity: 8.4, avg_rank: 9.4, median_popularity: 8, median_rank: 10 },
+    { name: 'セン馬', races: 136, wins: 4, places_2: 6, places_3: 7, win_rate: 2.9, quinella_rate: 7.4, place_rate: 12.5, win_payback: 46.0, place_payback: 66.0, avg_popularity: 9.4, avg_rank: 10.2, median_popularity: 10, median_rank: 11 },
+  ]}
+/>
+
+やはり<strong>牡馬の方が成績が良さそう</strong>です。<br />
+
+しかし、これだと性別によって有利不利が決まるのか、馬体重によって有利不利が決まるのかはっきりしません。
+そこで、性別と馬体重を掛け合わせて集計してみます。
+
+### 牡馬
+<HorseWeightTable
+  title=""
+  data={[
+    { weight_category: '400kg以下', races: 5, wins: 0, places_2: 0, places_3: 0, win_rate: 0.0, quinella_rate: 0.0, place_rate: 0.0, win_payback: 0.0, place_payback: 0.0, avg_popularity: 11.6, avg_rank: 11.6, median_popularity: 10, median_rank: 11 },
+    { weight_category: '401-420kg', races: 44, wins: 1, places_2: 1, places_3: 0, win_rate: 2.3, quinella_rate: 4.5, place_rate: 4.5, win_payback: 220.0, place_payback: 40.0, avg_popularity: 9.8, avg_rank: 10.5, median_popularity: 10, median_rank: 11 },
+    { weight_category: '421-440kg', races: 220, wins: 5, places_2: 10, places_3: 10, win_rate: 2.3, quinella_rate: 6.8, place_rate: 11.4, win_payback: 39.0, place_payback: 84.0, avg_popularity: 9.3, avg_rank: 9.2, median_popularity: 10, median_rank: 9 },
+    { weight_category: '441-460kg', races: 553, wins: 29, places_2: 17, places_3: 32, win_rate: 5.2, quinella_rate: 8.3, place_rate: 14.1, win_payback: 56.0, place_payback: 55.0, avg_popularity: 8.0, avg_rank: 8.7, median_popularity: 8, median_rank: 9 },
+    { weight_category: '461-480kg', races: 832, wins: 59, places_2: 53, places_3: 51, win_rate: 7.1, quinella_rate: 13.5, place_rate: 19.6, win_payback: 86.0, place_payback: 69.0, avg_popularity: 7.5, avg_rank: 8.2, median_popularity: 7, median_rank: 8 },
+    { weight_category: '481-500kg', races: 697, wins: 70, places_2: 44, places_3: 38, win_rate: 10.0, quinella_rate: 16.4, place_rate: 21.8, win_payback: 86.0, place_payback: 79.0, avg_popularity: 6.6, avg_rank: 7.9, median_popularity: 6, median_rank: 8 },
+    { weight_category: '501-520kg', races: 395, wins: 37, places_2: 35, places_3: 27, win_rate: 9.4, quinella_rate: 18.2, place_rate: 25.1, win_payback: 122.0, place_payback: 92.0, avg_popularity: 6.4, avg_rank: 7.7, median_popularity: 6, median_rank: 7 },
+    { weight_category: '521kg以上', races: 155, wins: 16, places_2: 10, places_3: 10, win_rate: 10.3, quinella_rate: 16.8, place_rate: 23.2, win_payback: 154.0, place_payback: 93.0, avg_popularity: 6.3, avg_rank: 8.3, median_popularity: 6, median_rank: 8 },
+  ]}
+/>
+
+### 牝馬
+<HorseWeightTable
+  title=""
+  data={[
+    { weight_category: '400kg以下', races: 104, wins: 0, places_2: 2, places_3: 1, win_rate: 0.0, quinella_rate: 1.9, place_rate: 2.9, win_payback: 0.0, place_payback: 50.0, avg_popularity: 11.2, avg_rank: 11.0, median_popularity: 11, median_rank: 12 },
+    { weight_category: '401-420kg', races: 337, wins: 4, places_2: 3, places_3: 4, win_rate: 1.2, quinella_rate: 2.1, place_rate: 3.3, win_payback: 44.0, place_payback: 28.0, avg_popularity: 10.5, avg_rank: 10.7, median_popularity: 11, median_rank: 11 },
+    { weight_category: '421-440kg', races: 671, wins: 20, places_2: 28, places_3: 21, win_rate: 3.0, quinella_rate: 7.2, place_rate: 10.3, win_payback: 57.0, place_payback: 56.0, avg_popularity: 9.4, avg_rank: 9.9, median_popularity: 9, median_rank: 10 },
+    { weight_category: '441-460kg', races: 869, wins: 47, places_2: 48, places_3: 37, win_rate: 5.4, quinella_rate: 10.9, place_rate: 15.2, win_payback: 53.0, place_payback: 54.0, avg_popularity: 7.9, avg_rank: 8.9, median_popularity: 8, median_rank: 9 },
+    { weight_category: '461-480kg', races: 618, wins: 35, places_2: 27, places_3: 23, win_rate: 5.7, quinella_rate: 10.0, place_rate: 13.8, win_payback: 52.0, place_payback: 47.0, avg_popularity: 7.7, avg_rank: 9.0, median_popularity: 8, median_rank: 9 },
+    { weight_category: '481-500kg', races: 269, wins: 20, places_2: 11, places_3: 23, win_rate: 7.4, quinella_rate: 11.5, place_rate: 20.1, win_payback: 56.0, place_payback: 62.0, avg_popularity: 6.2, avg_rank: 8.3, median_popularity: 6, median_rank: 8 },
+    { weight_category: '501-520kg', races: 64, wins: 5, places_2: 3, places_3: 5, win_rate: 7.8, quinella_rate: 12.5, place_rate: 20.3, win_payback: 38.0, place_payback: 46.0, avg_popularity: 6.4, avg_rank: 9.1, median_popularity: 6, median_rank: 9 },
+    { weight_category: '521kg以上', races: 20, wins: 2, places_2: 2, places_3: 0, win_rate: 10.0, quinella_rate: 20.0, place_rate: 20.0, win_payback: 75.0, place_payback: 56.0, avg_popularity: 6.4, avg_rank: 7.5, median_popularity: 4, median_rank: 6 },
+  ]}
+/>
+
+牝馬でも馬体重が重い方が成績が良くなる傾向にありますが、2つの表を見比べてみると同じ馬体重帯でもやや牡馬の方が成績が良さそうですね。
+ということで、やはりよりパワーのある牡馬の方が有利だということが分かりました。
+
 ## 初ダートで内枠は割引なのか？
 最後に、**枠順別**で傾向があるかを検証してみます。<br />
 一般的には**砂を被らない外枠が有利**とされていそうですが、どうでしょうか。
