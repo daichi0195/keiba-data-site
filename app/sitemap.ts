@@ -60,6 +60,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
+  // 記事ページ
+  const articleEntries: MetadataRoute.Sitemap = [
+    {
+      url: `${baseUrl}/articles/1`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/articles/sample-article`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    },
+  ];
+
   // 静的ページ
   const staticEntries: MetadataRoute.Sitemap = [
     {
@@ -112,5 +128,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  return [...homeEntry, ...staticEntries, ...courseEntries, ...jockeyEntries, ...trainerEntries, ...sireEntries];
+  return [...homeEntry, ...staticEntries, ...articleEntries, ...courseEntries, ...jockeyEntries, ...trainerEntries, ...sireEntries];
 }
