@@ -21,7 +21,11 @@ type MetricKey =
   | 'quinella_rate'  // 連対率(%)
   | 'place_rate'     // 複勝率(%)
   | 'win_payback'    // 単勝回収率(%)
-  | 'place_payback'; // 複勝回収率(%)
+  | 'place_payback'  // 複勝回収率(%)
+  | 'avg_popularity'     // 平均人気
+  | 'avg_rank'           // 平均着順
+  | 'median_popularity'  // 人気中央値
+  | 'median_rank';       // 着順中央値
 
 export type PopularityStats = Record<PopularityBand, Record<MetricKey, number>>;
 
@@ -35,7 +39,7 @@ const BAND_ROWS: { key: PopularityBand; label: string }[] = [
   { key: 'fav10plus', label: '10人気-' },
 ];
 
-const METRIC_COLS: { key: MetricKey; label: string; suffix?: string }[] = [
+const METRIC_COLS: { key: MetricKey; label: string; suffix?: string; width?: string }[] = [
   { key: 'races', label: '出走数' },
   { key: 'wins', label: '1着' },
   { key: 'places_2', label: '2着' },
@@ -45,6 +49,10 @@ const METRIC_COLS: { key: MetricKey; label: string; suffix?: string }[] = [
   { key: 'place_rate', label: '複勝率', suffix: '%' },
   { key: 'win_payback', label: '単勝回収率', suffix: '%' },
   { key: 'place_payback', label: '複勝回収率', suffix: '%' },
+  { key: 'avg_popularity', label: '平均人気', width: '100px' },
+  { key: 'avg_rank', label: '平均着順', width: '100px' },
+  { key: 'median_popularity', label: '人気中央値', width: '100px' },
+  { key: 'median_rank', label: '着順中央値', width: '100px' },
 ];
 
 export default function PopularityTable({
@@ -87,7 +95,7 @@ export default function PopularityTable({
               <tr>
                 <th className={styles.styleCol}>人気</th>
                 {METRIC_COLS.map((col) => (
-                  <th key={col.key} className={styles.scrollCol}>{col.label}</th>
+                  <th key={col.key} className={styles.scrollCol} style={col.width ? { width: col.width, minWidth: col.width } : undefined}>{col.label}</th>
                 ))}
               </tr>
             </thead>
@@ -99,10 +107,18 @@ export default function PopularityTable({
                   </td>
                   {METRIC_COLS.map((col) => {
                     const v = data?.[band.key]?.[col.key];
-                    const disp = v === undefined || v === null ? '-' : `${typeof v === 'number' && col.suffix === '%' ? (v).toFixed(1) : v}${col.suffix ?? ''}`;
+                    // 新しい4つのカラムはtoFixed(1)を適用、それ以外は既存のロジック
+                    let disp: string;
+                    if (v === undefined || v === null) {
+                      disp = '-';
+                    } else if (col.key === 'avg_popularity' || col.key === 'avg_rank' || col.key === 'median_popularity' || col.key === 'median_rank') {
+                      disp = (v as number).toFixed(1);
+                    } else {
+                      disp = `${typeof v === 'number' && col.suffix === '%' ? (v).toFixed(1) : v}${col.suffix ?? ''}`;
+                    }
                     const isMax = typeof v === 'number' && v === maxByMetric[col.key];
                     return (
-                      <td key={col.key} className={styles.scrollCol}>
+                      <td key={col.key} className={styles.scrollCol} style={col.width ? { width: col.width, minWidth: col.width } : undefined}>
                         <span className={isMax ? styles.highlight : ''}>{disp}</span>
                       </td>
                     );

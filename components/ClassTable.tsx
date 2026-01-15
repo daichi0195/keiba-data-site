@@ -15,14 +15,19 @@ type ClassRow = {
   quinella_rate: number;
   win_payback: number;
   place_payback: number;
+  avg_popularity?: number;
+  avg_rank?: number;
+  median_popularity?: number;
+  median_rank?: number;
 };
 
 type Props = {
   title: string;
   data: ClassRow[];
+  showOnlyProvidedData?: boolean; // trueの場合、渡されたデータのみを表示
 };
 
-export default function ClassTable({ title, data }: Props) {
+export default function ClassTable({ title, data, showOnlyProvidedData = false }: Props) {
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -30,26 +35,32 @@ export default function ClassTable({ title, data }: Props) {
   const allClasses = ['G1', 'G2', 'G3', 'オープン', '3勝', '2勝', '1勝', '未勝利', '新馬'];
 
   // データを全クラスに揃える（データがないクラスは0で埋める）
-  const completeData = allClasses.map((className, index) => {
-    const existingData = data.find(d => d.class_name === className);
-    if (existingData) {
-      return existingData;
-    }
-    // データがない場合は0で埋める
-    return {
-      rank: index + 1,
-      class_name: className,
-      races: 0,
-      wins: 0,
-      places_2: 0,
-      places_3: 0,
-      win_rate: 0,
-      place_rate: 0,
-      quinella_rate: 0,
-      win_payback: 0,
-      place_payback: 0,
-    };
-  });
+  const completeData = showOnlyProvidedData
+    ? data // 渡されたデータのみを表示
+    : allClasses.map((className, index) => {
+        const existingData = data.find(d => d.class_name === className);
+        if (existingData) {
+          return existingData;
+        }
+        // データがない場合は0で埋める
+        return {
+          rank: index + 1,
+          class_name: className,
+          races: 0,
+          wins: 0,
+          places_2: 0,
+          places_3: 0,
+          win_rate: 0,
+          place_rate: 0,
+          quinella_rate: 0,
+          win_payback: 0,
+          place_payback: 0,
+          avg_popularity: undefined,
+          avg_rank: undefined,
+          median_popularity: undefined,
+          median_rank: undefined,
+        };
+      });
 
   useEffect(() => {
     const handleScroll = (e: Event) => {
@@ -113,6 +124,10 @@ export default function ClassTable({ title, data }: Props) {
                 <th className={styles.scrollCol}>複勝率</th>
                 <th className={styles.scrollCol}>単勝回収率</th>
                 <th className={styles.scrollCol}>複勝回収率</th>
+                <th className={styles.scrollCol} style={{ width: '100px', minWidth: '100px' }}>平均人気</th>
+                <th className={styles.scrollCol} style={{ width: '100px', minWidth: '100px' }}>平均着順</th>
+                <th className={styles.scrollCol} style={{ width: '100px', minWidth: '100px' }}>人気中央値</th>
+                <th className={styles.scrollCol} style={{ width: '100px', minWidth: '100px' }}>着順中央値</th>
               </tr>
             </thead>
             <tbody>
@@ -176,6 +191,18 @@ export default function ClassTable({ title, data }: Props) {
                       <span className={isHighlight(row.place_payback ?? 0, maxPlacePayback) ? styles.highlight : ''}>
                         {(row.place_payback ?? 0).toFixed(1)}%
                       </span>
+                    </td>
+                    <td className={styles.scrollCol} style={{ width: '100px', minWidth: '100px' }}>
+                      <span>{row.avg_popularity !== undefined ? row.avg_popularity.toFixed(1) : '-'}</span>
+                    </td>
+                    <td className={styles.scrollCol} style={{ width: '100px', minWidth: '100px' }}>
+                      <span>{row.avg_rank !== undefined ? row.avg_rank.toFixed(1) : '-'}</span>
+                    </td>
+                    <td className={styles.scrollCol} style={{ width: '100px', minWidth: '100px' }}>
+                      <span>{row.median_popularity !== undefined ? Math.round(row.median_popularity) : '-'}</span>
+                    </td>
+                    <td className={styles.scrollCol} style={{ width: '100px', minWidth: '100px' }}>
+                      <span>{row.median_rank !== undefined ? Math.round(row.median_rank) : '-'}</span>
                     </td>
                   </tr>
                 );

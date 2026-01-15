@@ -38,9 +38,7 @@ export default function Footer() {
             馬券の購入は20歳になってから
           </p>
           <p className={styles.disclaimerItem}>
-            本サイトに掲載されているデータは参考情報です。
-            <br className={styles.mobileBreak} />
-            的中を保証するものではございません。
+            本サイトに掲載されているデータは参考情報であり、的中を保証するものではございません
           </p>
           <p className={styles.disclaimerItem}>
             ギャンブル等依存症でお困りの方は、

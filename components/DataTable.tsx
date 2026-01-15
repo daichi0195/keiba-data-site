@@ -15,6 +15,10 @@ type DataRow = {
   quinella_rate: number;
   win_payback: number;
   place_payback: number;
+  avg_popularity?: number;
+  avg_rank?: number;
+  median_popularity?: number;
+  median_rank?: number;
   link?: string;
 };
 
@@ -224,6 +228,10 @@ export default function DataTable({ title, data, initialShow = 10, nameLabel = '
                 <th className="mobile-scroll-col mobile-col-rate">複勝率</th>
                 <th className="mobile-scroll-col mobile-col-payback">単勝回収率</th>
                 <th className="mobile-scroll-col mobile-col-payback">複勝回収率</th>
+                <th className="mobile-scroll-col" style={{ width: '100px', minWidth: '100px' }}>平均人気</th>
+                <th className="mobile-scroll-col" style={{ width: '100px', minWidth: '100px' }}>平均着順</th>
+                <th className="mobile-scroll-col" style={{ width: '100px', minWidth: '100px' }}>人気中央値</th>
+                <th className="mobile-scroll-col" style={{ width: '100px', minWidth: '100px' }}>着順中央値</th>
               </tr>
             </thead>
             <tbody>
@@ -323,6 +331,18 @@ export default function DataTable({ title, data, initialShow = 10, nameLabel = '
                     <span className={isHighlight(row.place_payback ?? 0, maxPlacePayback) ? 'mobile-highlight' : ''}>
                       {(row.place_payback ?? 0).toFixed(1)}%
                     </span>
+                  </td>
+                  <td className="mobile-scroll-col" style={{ width: '100px', minWidth: '100px' }}>
+                    <span>{row.avg_popularity !== undefined ? row.avg_popularity.toFixed(1) : '-'}</span>
+                  </td>
+                  <td className="mobile-scroll-col" style={{ width: '100px', minWidth: '100px' }}>
+                    <span>{row.avg_rank !== undefined ? row.avg_rank.toFixed(1) : '-'}</span>
+                  </td>
+                  <td className="mobile-scroll-col" style={{ width: '100px', minWidth: '100px' }}>
+                    <span>{row.median_popularity !== undefined ? Math.round(row.median_popularity) : '-'}</span>
+                  </td>
+                  <td className="mobile-scroll-col" style={{ width: '100px', minWidth: '100px' }}>
+                    <span>{row.median_rank !== undefined ? Math.round(row.median_rank) : '-'}</span>
                   </td>
                 </tr>
               ))}

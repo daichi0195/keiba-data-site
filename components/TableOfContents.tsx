@@ -21,22 +21,25 @@ export default function TableOfContents({ items }: { items?: Item[] }) {
       return;
     }
 
-    // main要素内のarticle内のH2だけを検出
-    const articleElement = document.querySelector('main article');
+    // article内のH2だけを検出
+    const articleElement = document.querySelector('article');
     if (!articleElement) return;
 
     const headings = Array.from(articleElement.querySelectorAll('h2'));
-    const generatedItems = headings.map((heading, index) => {
-      let id = heading.id;
-      if (!id) {
-        id = `heading-${index}`;
-        heading.id = id;
-      }
-      return {
-        id,
-        label: heading.textContent || '',
-      };
-    });
+    const generatedItems = headings
+      .filter(heading => !heading.classList.contains('section-title')) // 表のタイトルを除外
+      .map((heading, index) => {
+        let id = heading.id;
+        if (!id) {
+          id = `heading-${index}`;
+          heading.id = id;
+        }
+        return {
+          id,
+          label: heading.textContent || '',
+        };
+      })
+      .filter(item => item.label.trim() !== ''); // 空のlabelを除外
 
     setTocItems(generatedItems);
     if (generatedItems.length > 0) {

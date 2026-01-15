@@ -24,10 +24,11 @@ export interface Article {
 
 export interface ArticleData extends Article {
   contentHtml: string;
+  isMDX: boolean;
 }
 
 /**
- * 全ての記事のslugを取得
+ * 全ての記事のslugを取得（.mdと.mdxの両方）
  */
 export function getAllArticleSlugs(): string[] {
   if (!fs.existsSync(articlesDirectory)) {
@@ -36,8 +37,21 @@ export function getAllArticleSlugs(): string[] {
 
   const fileNames = fs.readdirSync(articlesDirectory);
   return fileNames
-    .filter((fileName) => fileName.endsWith('.md'))
-    .map((fileName) => fileName.replace(/\.md$/, ''));
+    .filter((fileName) => fileName.endsWith('.md') || fileName.endsWith('.mdx'))
+    .map((fileName) => fileName.replace(/\.(md|mdx)$/, ''));
+}
+
+/**
+ * 記事ファイルの拡張子を取得
+ */
+export function getArticleExtension(slug: string): 'md' | 'mdx' | null {
+  if (fs.existsSync(path.join(articlesDirectory, `${slug}.mdx`))) {
+    return 'mdx';
+  }
+  if (fs.existsSync(path.join(articlesDirectory, `${slug}.md`))) {
+    return 'md';
+  }
+  return null;
 }
 
 /**
@@ -47,7 +61,10 @@ export function getAllArticles(): Article[] {
   const slugs = getAllArticleSlugs();
 
   const articles = slugs.map((slug) => {
-    const fullPath = path.join(articlesDirectory, `${slug}.md`);
+    const ext = getArticleExtension(slug);
+    if (!ext) return null;
+
+    const fullPath = path.join(articlesDirectory, `${slug}.${ext}`);
     const fileContents = fs.readFileSync(fullPath, 'utf8');
     const { data, content } = matter(fileContents);
 
@@ -56,7 +73,7 @@ export function getAllArticles(): Article[] {
       frontmatter: data as ArticleFrontmatter,
       content,
     };
-  });
+  }).filter((article): article is Article => article !== null);
 
   // 日付の降順でソート
   return articles.sort((a, b) => {
@@ -70,26 +87,37 @@ export function getAllArticles(): Article[] {
 
 /**
  * 特定の記事データを取得（詳細ページ用）
+ * MDXの場合はcontentHtmlは空文字列（動的インポートで処理）
  */
 export async function getArticleBySlug(slug: string): Promise<ArticleData | null> {
   try {
-    const fullPath = path.join(articlesDirectory, `${slug}.md`);
+    const ext = getArticleExtension(slug);
+    if (!ext) {
+      return null;
+    }
+
+    const fullPath = path.join(articlesDirectory, `${slug}.${ext}`);
     const fileContents = fs.readFileSync(fullPath, 'utf8');
     const { data, content } = matter(fileContents);
 
-    // MarkdownをHTMLに変換
-    const processedContent = await remark()
-      .use(gfm) // GitHub Flavored Markdown対応
-      .use(html, { sanitize: false }) // HTMLタグを許可
-      .process(content);
+    let contentHtml = '';
 
-    const contentHtml = processedContent.toString();
+    // Markdownの場合のみHTMLに変換
+    if (ext === 'md') {
+      const processedContent = await remark()
+        .use(gfm) // GitHub Flavored Markdown対応
+        .use(html, { sanitize: false }) // HTMLタグを許可
+        .process(content);
+
+      contentHtml = processedContent.toString();
+    }
 
     return {
       slug,
       frontmatter: data as ArticleFrontmatter,
       content,
       contentHtml,
+      isMDX: ext === 'mdx',
     };
   } catch (error) {
     console.error(`Error loading article: ${slug}`, error);

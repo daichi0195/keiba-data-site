@@ -61,38 +61,6 @@
   background: #333333;
 }
 
-.facebook {
-  background: #1877f2;
-}
-
-.facebook:hover {
-  background: #0c63d4;
-}
-
-.line {
-  background: #00b900;
-}
-
-.line:hover {
-  background: #009900;
-}
-
-.hatena {
-  background: #00a4de;
-}
-
-.hatena:hover {
-  background: #0088bb;
-}
-
-.copy {
-  background: #666;
-}
-
-.copy:hover {
-  background: #555;
-}
-
 /* モバイル対応 */
 @media (max-width: 768px) {
   .shareButtons {
@@ -112,8 +80,6 @@
   .shareButton {
     padding: 0.625rem 1rem;
     font-size: 0.875rem;
-    flex: 1 1 calc(50% - 0.375rem);
-    min-width: 120px;
     justify-content: center;
   }
 

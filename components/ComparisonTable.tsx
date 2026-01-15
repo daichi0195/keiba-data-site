@@ -1,11 +1,11 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import styles from './GateTable.module.css';
+import styles from './ComparisonTable.module.css';
 
-type GateRow = {
-  gate: number;
-  color: string;
+type ComparisonRow = {
+  rank: number;
+  category: string;
   races: number;
   wins: number;
   places_2: number;
@@ -13,8 +13,8 @@ type GateRow = {
   win_rate: number;
   place_rate: number;
   quinella_rate: number;
-  win_payback: number;  // 単勝回収率
-  place_payback: number; // 複勝回収率
+  win_payback: number;
+  place_payback: number;
   avg_popularity?: number;
   avg_rank?: number;
   median_popularity?: number;
@@ -23,10 +23,11 @@ type GateRow = {
 
 type Props = {
   title: string;
-  data: GateRow[];
+  data: ComparisonRow[];
+  categoryLabel?: string; // 1列目のヘッダーラベル（デフォルト: 'カテゴリー'）
 };
 
-export default function GateTable({ title, data }: Props) {
+export default function ComparisonTable({ title, data, categoryLabel = 'カテゴリー' }: Props) {
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -44,46 +45,16 @@ export default function GateTable({ title, data }: Props) {
     }
   }, []);
 
-  // 全枠を定義（1-8枠）
-  const allGates = [1, 2, 3, 4, 5, 6, 7, 8];
-  const gateColors = ['white', 'black', 'red', 'blue', 'yellow', 'green', 'orange', 'pink'];
-
-  // データを全枠に揃える（データがない枠は0で埋める）
-  const completeData = allGates.map((gateNum) => {
-    const existingData = data.find(d => d.gate === gateNum);
-    if (existingData) {
-      return existingData;
-    }
-    // データがない場合は0で埋める
-    return {
-      gate: gateNum,
-      color: gateColors[gateNum - 1],
-      races: 0,
-      wins: 0,
-      places_2: 0,
-      places_3: 0,
-      win_rate: 0,
-      place_rate: 0,
-      quinella_rate: 0,
-      win_payback: 0,
-      place_payback: 0,
-      avg_popularity: undefined,
-      avg_rank: undefined,
-      median_popularity: undefined,
-      median_rank: undefined,
-    };
-  });
-
   // 各カラムの最大値を取得
-  const maxRaces = Math.max(...completeData.map(d => d.races ?? 0));
-  const maxWins = Math.max(...completeData.map(d => d.wins ?? 0));
-  const maxPlaces2 = Math.max(...completeData.map(d => d.places_2 ?? 0));
-  const maxPlaces3 = Math.max(...completeData.map(d => d.places_3 ?? 0));
-  const maxWinRate = Math.max(...completeData.map(d => d.win_rate ?? 0));
-  const maxPlaceRate = Math.max(...completeData.map(d => d.place_rate ?? 0));
-  const maxQuinellaRate = Math.max(...completeData.map(d => d.quinella_rate ?? 0));
-  const maxWinPayback = Math.max(...completeData.map(d => d.win_payback ?? 0));
-  const maxPlacePayback = Math.max(...completeData.map(d => d.place_payback ?? 0));
+  const maxRaces = Math.max(...data.map(d => d.races ?? 0));
+  const maxWins = Math.max(...data.map(d => d.wins ?? 0));
+  const maxPlaces2 = Math.max(...data.map(d => d.places_2 ?? 0));
+  const maxPlaces3 = Math.max(...data.map(d => d.places_3 ?? 0));
+  const maxWinRate = Math.max(...data.map(d => d.win_rate ?? 0));
+  const maxPlaceRate = Math.max(...data.map(d => d.place_rate ?? 0));
+  const maxQuinellaRate = Math.max(...data.map(d => d.quinella_rate ?? 0));
+  const maxWinPayback = Math.max(...data.map(d => d.win_payback ?? 0));
+  const maxPlacePayback = Math.max(...data.map(d => d.place_payback ?? 0));
 
   const isHighlight = (value: number, maxValue: number) => value === maxValue && value > 0;
 
@@ -96,8 +67,8 @@ export default function GateTable({ title, data }: Props) {
           <table className={styles.table}>
             <thead>
               <tr>
-                <th className={styles.gateCol}>
-                  枠番
+                <th className={styles.categoryCol}>
+                  {categoryLabel}
                 </th>
                 <th className={styles.scrollCol}>出走数</th>
                 <th className={styles.scrollCol}>1着</th>
@@ -115,40 +86,32 @@ export default function GateTable({ title, data }: Props) {
               </tr>
             </thead>
             <tbody>
-              {completeData.map((row, index) => (
+              {data.map((row, index) => (
                 <tr
-                  key={row.gate}
+                  key={`${row.category}-${index}`}
                   className={index % 2 === 0 ? styles.rowEven : styles.rowOdd}
                 >
-                  <td className={styles.gateCol}>
-                    <span
-                      className={styles.gateBadge}
-                      style={{
-                        backgroundColor: row.color,
-                        color: row.gate === 1 ? '#000' : '#fff'
-                      }}
-                    >
-                      {row.gate}
-                    </span>
+                  <td className={styles.categoryCol}>
+                    <span className={styles.categoryBadge}>{row.category}</span>
                   </td>
                   <td className={styles.scrollCol}>
                     <span className={isHighlight(row.races ?? 0, maxRaces) ? styles.highlight : ''}>
-                      {row.races}
+                      {row.races ?? 0}
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
                     <span className={isHighlight(row.wins ?? 0, maxWins) ? styles.highlight : ''}>
-                      {row.wins}
+                      {row.wins ?? 0}
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
                     <span className={isHighlight(row.places_2 ?? 0, maxPlaces2) ? styles.highlight : ''}>
-                      {row.places_2}
+                      {row.places_2 ?? 0}
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
                     <span className={isHighlight(row.places_3 ?? 0, maxPlaces3) ? styles.highlight : ''}>
-                      {row.places_3}
+                      {row.places_3 ?? 0}
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
@@ -183,10 +146,10 @@ export default function GateTable({ title, data }: Props) {
                     <span>{row.avg_rank !== undefined ? row.avg_rank.toFixed(1) : '-'}</span>
                   </td>
                   <td className={styles.scrollCol} style={{ width: '100px', minWidth: '100px' }}>
-                    <span>{row.median_popularity !== undefined ? Math.round(row.median_popularity) : '-'}</span>
+                    <span>{row.median_popularity !== undefined ? row.median_popularity.toFixed(1) : '-'}</span>
                   </td>
                   <td className={styles.scrollCol} style={{ width: '100px', minWidth: '100px' }}>
-                    <span>{row.median_rank !== undefined ? Math.round(row.median_rank) : '-'}</span>
+                    <span>{row.median_rank !== undefined ? row.median_rank.toFixed(1) : '-'}</span>
                   </td>
                 </tr>
               ))}

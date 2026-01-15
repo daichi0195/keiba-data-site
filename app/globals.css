@@ -139,7 +139,7 @@ header {
 }
 
 /* メインコンテンツ */
-main {
+main:not(.page_articleMain__GmN3G) {
   max-width: 1200px;
   margin: 0 auto;
   padding: 1rem;
@@ -148,7 +148,7 @@ main {
 
 /* PC表示時：中央配置 + 左右サイドバー */
 @media (min-width: 769px) {
-  main {
+  main:not(.page_articleMain__GmN3G) {
     display: grid;
     grid-template-columns: 280px minmax(0, 700px) 280px;
     gap: 1.5rem;

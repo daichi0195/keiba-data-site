@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import createMDX from '@next/mdx';
 
 const nextConfig: NextConfig = {
   eslint: {
@@ -17,9 +18,17 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ['react-icons'],
   },
   // Optimize for modern browsers (ES2020+)
+  pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
 };
 
-export default nextConfig;
+const withMDX = createMDX({
+  options: {
+    remarkPlugins: [],
+    rehypePlugins: [],
+  },
+});
+
+export default withMDX(nextConfig);
 
 
 // import type { NextConfig } from "next";
