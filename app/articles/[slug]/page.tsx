@@ -18,6 +18,7 @@ import PopularityTable from '@/components/PopularityTable';
 import StatsTable from '@/components/StatsTable';
 import ClassTable from '@/components/ClassTable';
 import ComparisonTable from '@/components/ComparisonTable';
+import GenderTable from '@/components/GenderTable';
 import styles from './page.module.css';
 
 // MDX内で使えるコンポーネント
@@ -30,6 +31,7 @@ const components = {
   StatsTable,
   ClassTable,
   ComparisonTable,
+  GenderTable,
 };
 
 // MDXのオプション設定（GitHub Flavored Markdown対応）
