@@ -359,6 +359,27 @@ author: "ダイチ"
 
 一方で、勝率でみるとオープン〜未勝利でそこまで差はなく、**上のクラスでも一発の魅力は秘めていそう**です。
 
+## 初ダートと前走着順は関係ある？
+では、<strong>前走の着順</strong>によって成績に違いはあるのでしょうか？<br />
+初ダートは<strong>前走大敗した馬がいきなり激走する</strong>イメージがありますが、どうでしょうか。
+
+<PreviousFinishTable
+  title="前走着順別成績"
+  data={[
+    { rank: 1, finish_category: '1着', races: 18, wins: 0, places_2: 2, places_3: 2, win_rate: 0.0, quinella_rate: 11.1, place_rate: 22.2, win_payback: 0.0, place_payback: 65.0, avg_popularity: 6.6, avg_rank: 8.6, median_popularity: 6, median_rank: 9 },
+    { rank: 2, finish_category: '2着', races: 75, wins: 19, places_2: 15, places_3: 6, win_rate: 25.3, quinella_rate: 45.3, place_rate: 53.3, win_payback: 61.0, place_payback: 81.0, avg_popularity: 2.2, avg_rank: 4.8, median_popularity: 2, median_rank: 3 },
+    { rank: 3, finish_category: '3着', races: 152, wins: 29, places_2: 8, places_3: 14, win_rate: 19.1, quinella_rate: 24.3, place_rate: 33.6, win_payback: 65.0, place_payback: 53.0, avg_popularity: 3.0, avg_rank: 5.9, median_popularity: 2, median_rank: 5 },
+    { rank: 4, finish_category: '4-6着', races: 1061, wins: 135, places_2: 96, places_3: 78, win_rate: 12.7, quinella_rate: 21.8, place_rate: 29.1, win_payback: 96.0, place_payback: 76.0, avg_popularity: 4.8, avg_rank: 6.9, median_popularity: 4, median_rank: 6 },
+    { rank: 5, finish_category: '7-9着', races: 1568, wins: 90, places_2: 90, places_3: 89, win_rate: 5.7, quinella_rate: 11.5, place_rate: 17.2, win_payback: 72.0, place_payback: 70.0, avg_popularity: 7.3, avg_rank: 8.4, median_popularity: 7, median_rank: 9 },
+    { rank: 6, finish_category: '10着以下', races: 3115, wins: 81, places_2: 89, places_3: 100, win_rate: 2.6, quinella_rate: 5.5, place_rate: 8.7, win_payback: 58.0, place_payback: 53.0, avg_popularity: 9.7, avg_rank: 10.0, median_popularity: 10, median_rank: 11 }
+  ]}
+/>
+
+前走1着の出走数が極端に少ないですが、これは芝で勝った場合は引き続き芝で出走させるケースが多いということでしょう。
+
+確かに前走10着以下で馬券になるケースもありますが、前走2着の複勝率が50%を超えているように、<strong>複勝率は概ね前走着順に比例する</strong>と考えて良さそうですね。<br />
+芝である程度勝負になった馬の方が成績が高いことが分かりました。
+
 ## 初ダートで内枠は割引なのか？
 最後に、**枠順別**で傾向があるかを検証してみます。<br />
 一般的には**砂を被らない外枠が有利**とされていそうですが、どうでしょうか。
@@ -404,7 +425,10 @@ author: "ダイチ"
 2. **馬体重が重い馬**
    - 500kg以上は単勝回収率100%超え
 
-3. **外枠が有利**
+3. **牡馬＞牝馬**
+   - 馬体重に関わらず、牝馬より牡馬の方が成績が良い
+
+4. **外枠が有利**
    - 内枠（1-4枠）より外枠（5-8枠）の成績が良好
    - 特に1枠は割引材料
 
