@@ -1,0 +1,41 @@
+/* SP専用固定シェアボタン */
+.fixedShareButton {
+  position: fixed;
+  bottom: 80px; /* ボトムナビの上 */
+  right: 16px;
+  width: 56px;
+  height: 56px;
+  background: #000000; /* Xのブランドカラー */
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  transition: all 0.3s ease;
+}
+
+.fixedShareButton:hover {
+  background: #1a1a1a;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+}
+
+.fixedShareButton:active {
+  transform: scale(0.95);
+}
+
+.icon {
+  width: 28px;
+  height: 28px;
+  color: #ffffff;
+}
+
+/* PC以上では非表示 */
+@media (min-width: 769px) {
+  .fixedShareButton {
+    display: none;
+  }
+}

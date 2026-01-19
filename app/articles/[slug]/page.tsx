@@ -9,7 +9,7 @@ import {
   getRelatedArticles,
   extractHeadings,
 } from '@/lib/articles';
-import ShareButtons from '@/components/ShareButtons';
+import FixedShareButton from '@/components/FixedShareButton';
 import TableOfContents from '@/components/TableOfContents';
 import MobileTableOfContents from '@/components/MobileTableOfContents';
 import DataTable from '@/components/DataTable';
@@ -181,9 +181,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 )}
               </div>
 
-              {/* SNSシェアボタン */}
-              <ShareButtons title={title} url={articleUrl} />
-
               {/* 記事フッター */}
               <footer className={styles.footer}>
                 <p className={styles.author}>執筆者：{author}</p>
@@ -250,6 +247,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           }),
         }}
       />
+
+      {/* SP専用固定シェアボタン */}
+      <FixedShareButton title={title} url={articleUrl} />
     </>
   );
 }
