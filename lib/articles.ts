@@ -200,3 +200,35 @@ export function getAllTags(): string[] {
   const tags = allArticles.flatMap((article) => article.frontmatter.tags);
   return Array.from(new Set(tags));
 }
+
+/**
+ * MDXコンテンツから見出し（H2, H3）を抽出
+ */
+export function extractHeadings(content: string): Array<{ level: number; text: string; id: string }> {
+  const headings: Array<{ level: number; text: string; id: string }> = [];
+  const lines = content.split('\n');
+
+  for (const line of lines) {
+    // H2 (##) またはH3 (###) の見出しを検出
+    const h2Match = line.match(/^##\s+(.+)$/);
+    const h3Match = line.match(/^###\s+(.+)$/);
+
+    if (h3Match) {
+      const text = h3Match[1].trim();
+      const id = text
+        .toLowerCase()
+        .replace(/[^\w\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF\s-]/g, '')
+        .replace(/\s+/g, '-');
+      headings.push({ level: 3, text, id });
+    } else if (h2Match) {
+      const text = h2Match[1].trim();
+      const id = text
+        .toLowerCase()
+        .replace(/[^\w\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF\s-]/g, '')
+        .replace(/\s+/g, '-');
+      headings.push({ level: 2, text, id });
+    }
+  }
+
+  return headings;
+}

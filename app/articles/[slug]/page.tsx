@@ -7,9 +7,11 @@ import {
   getArticleBySlug,
   getAllArticleSlugs,
   getRelatedArticles,
+  extractHeadings,
 } from '@/lib/articles';
 import ShareButtons from '@/components/ShareButtons';
 import TableOfContents from '@/components/TableOfContents';
+import MobileTableOfContents from '@/components/MobileTableOfContents';
 import DataTable from '@/components/DataTable';
 import GateTable from '@/components/GateTable';
 import HorseWeightTable from '@/components/HorseWeightTable';
@@ -22,18 +24,53 @@ import GenderTable from '@/components/GenderTable';
 import PreviousFinishTable from '@/components/PreviousFinishTable';
 import styles from './page.module.css';
 
-// MDX内で使えるコンポーネント
-const components = {
-  DataTable,
-  GateTable,
-  HorseWeightTable,
-  RunningStyleTable,
-  PopularityTable,
-  StatsTable,
-  ClassTable,
-  ComparisonTable,
-  GenderTable,
-  PreviousFinishTable,
+// 見出しのIDを生成する関数
+function generateId(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^\w\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF\s-]/g, '')
+    .replace(/\s+/g, '-');
+}
+
+// 最初のH2かどうかを追跡する変数（各レンダリングでリセット）
+let isFirstH2 = true;
+
+// MDX内で使えるコンポーネントを生成する関数
+const createComponents = (headings: Array<{ level: number; text: string; id: string }>) => {
+  // 各レンダリングでリセット
+  isFirstH2 = true;
+
+  return {
+    DataTable,
+    GateTable,
+    HorseWeightTable,
+    RunningStyleTable,
+    PopularityTable,
+    StatsTable,
+    ClassTable,
+    ComparisonTable,
+    GenderTable,
+    PreviousFinishTable,
+    // 見出しにIDを付与し、最初のH2の前に目次を挿入
+    h2: ({ children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => {
+      const text = String(children);
+      const id = generateId(text);
+      const showToc = isFirstH2;
+      isFirstH2 = false;
+
+      return (
+        <>
+          {showToc && <MobileTableOfContents headings={headings} initialShow={5} />}
+          <h2 id={id} {...props}>{children}</h2>
+        </>
+      );
+    },
+    h3: ({ children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => {
+      const text = String(children);
+      const id = generateId(text);
+      return <h3 id={id} {...props}>{children}</h3>;
+    },
+  };
 };
 
 // MDXのオプション設定（GitHub Flavored Markdown対応）
@@ -107,6 +144,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   // 記事のフルURLを生成
   const articleUrl = `https://keibadata.com/articles/${slug}`;
 
+  // 見出しを抽出（SP用目次）
+  const headings = extractHeadings(article.content);
+
   return (
     <>
       <div className={styles.articleMain}>
@@ -128,12 +168,12 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 <time className={styles.articleDate}>{formattedDate}</time>
               </div>
 
-              {/* 記事本文 */}
+              {/* 記事本文（最初のH2の前に目次が挿入される） */}
               <div className={styles.content}>
                 {article.isMDX ? (
                   <MDXRemote
                     source={article.content}
-                    components={components}
+                    components={createComponents(headings)}
                     options={options}
                   />
                 ) : (

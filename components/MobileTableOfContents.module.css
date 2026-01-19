@@ -1,0 +1,124 @@
+/* SP用目次 - モバイルのみ表示 */
+.tocContainer {
+  background: #f7f7f7 !important;
+  border: 1px solid #e0e0e0 !important;
+  border-radius: 4px !important;
+  padding: 16px !important;
+  margin: 24px 0 !important;
+  display: block !important;
+}
+
+/* PC以上では非表示 */
+@media (min-width: 769px) {
+  .tocContainer {
+    display: none !important;
+  }
+}
+
+.tocHeader {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  margin-bottom: 12px !important;
+  border: none !important;
+  padding: 0 !important;
+  background: none !important;
+}
+
+.tocIcon {
+  font-size: 12px !important;
+  color: #666 !important;
+}
+
+.tocTitle {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: #333 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  background: none !important;
+}
+
+.tocList {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.tocItem {
+  border-bottom: 1px solid #e0e0e0 !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-top: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: none !important;
+}
+
+.tocItemIndent {
+  border-bottom: 1px solid #e0e0e0 !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-top: none !important;
+  padding: 0 !important;
+  margin-left: 16px !important;
+  margin-top: 0 !important;
+  margin-right: 0 !important;
+  margin-bottom: 0 !important;
+  background: none !important;
+}
+
+/* 最後の項目の下線を削除 */
+.tocItem:last-child,
+.tocItemIndent:last-child {
+  border-bottom: none !important;
+}
+
+.tocLink {
+  display: block !important;
+  width: 100% !important;
+  text-align: left !important;
+  background: none !important;
+  border: none !important;
+  padding: 12px 0 !important;
+  margin: 0 !important;
+  font-size: 13px !important;
+  color: #333 !important;
+  cursor: pointer !important;
+  line-height: 1.5 !important;
+  transition: color 0.2s ease !important;
+  font-weight: 400 !important;
+}
+
+.tocLink:hover {
+  color: var(--primary-green) !important;
+}
+
+.tocLink:active {
+  color: var(--primary-green-dark) !important;
+}
+
+.showAllButton {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.showAllButton:hover {
+  background: #fafafa;
+  border-color: #ccc;
+}
+
+.showAllButton:active {
+  background: #f0f0f0;
+}
