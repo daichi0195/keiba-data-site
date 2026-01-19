@@ -2,17 +2,18 @@
 .fixedShareButton {
   position: fixed;
   bottom: 80px; /* ボトムナビの上 */
-  right: 16px;
-  width: 56px;
-  height: 56px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 24px;
   background: #000000; /* Xのブランドカラー */
   border: none;
-  border-radius: 50%;
+  border-radius: 24px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   z-index: 100;
   transition: all 0.3s ease;
 }
@@ -20,17 +21,25 @@
 .fixedShareButton:hover {
   background: #1a1a1a;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
-  transform: scale(1.05);
+  transform: translateX(-50%) scale(1.02);
 }
 
 .fixedShareButton:active {
-  transform: scale(0.95);
+  transform: translateX(-50%) scale(0.98);
 }
 
 .icon {
-  width: 28px;
-  height: 28px;
+  width: 20px;
+  height: 20px;
   color: #ffffff;
+  flex-shrink: 0;
+}
+
+.buttonText {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 /* PC以上では非表示 */
