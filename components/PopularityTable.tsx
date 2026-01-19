@@ -49,10 +49,10 @@ const METRIC_COLS: { key: MetricKey; label: string; suffix?: string; width?: str
   { key: 'place_rate', label: '複勝率', suffix: '%' },
   { key: 'win_payback', label: '単勝回収率', suffix: '%' },
   { key: 'place_payback', label: '複勝回収率', suffix: '%' },
-  { key: 'avg_popularity', label: '平均人気', width: '100px' },
-  { key: 'avg_rank', label: '平均着順', width: '100px' },
-  { key: 'median_popularity', label: '人気中央値', width: '100px' },
-  { key: 'median_rank', label: '着順中央値', width: '100px' },
+  { key: 'avg_popularity', label: '平均人気', width: '80px' },
+  { key: 'avg_rank', label: '平均着順', width: '80px' },
+  { key: 'median_popularity', label: '人気中央値', width: '80px' },
+  { key: 'median_rank', label: '着順中央値', width: '80px' },
 ];
 
 export default function PopularityTable({

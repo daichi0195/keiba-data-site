@@ -124,10 +124,10 @@ export default function ClassTable({ title, data, showOnlyProvidedData = false }
                 <th className={styles.scrollCol}>複勝率</th>
                 <th className={styles.scrollCol}>単勝回収率</th>
                 <th className={styles.scrollCol}>複勝回収率</th>
-                <th className={styles.scrollCol} style={{ width: '100px', minWidth: '100px' }}>平均人気</th>
-                <th className={styles.scrollCol} style={{ width: '100px', minWidth: '100px' }}>平均着順</th>
-                <th className={styles.scrollCol} style={{ width: '100px', minWidth: '100px' }}>人気中央値</th>
-                <th className={styles.scrollCol} style={{ width: '100px', minWidth: '100px' }}>着順中央値</th>
+                <th className={styles.scrollCol} style={{ width: '80px', minWidth: '80px' }}>平均人気</th>
+                <th className={styles.scrollCol} style={{ width: '80px', minWidth: '80px' }}>平均着順</th>
+                <th className={styles.scrollCol} style={{ width: '80px', minWidth: '80px' }}>人気中央値</th>
+                <th className={styles.scrollCol} style={{ width: '80px', minWidth: '80px' }}>着順中央値</th>
               </tr>
             </thead>
             <tbody>
@@ -192,16 +192,16 @@ export default function ClassTable({ title, data, showOnlyProvidedData = false }
                         {(row.place_payback ?? 0).toFixed(1)}%
                       </span>
                     </td>
-                    <td className={styles.scrollCol} style={{ width: '100px', minWidth: '100px' }}>
+                    <td className={styles.scrollCol} style={{ width: '80px', minWidth: '80px' }}>
                       <span>{row.avg_popularity !== undefined ? row.avg_popularity.toFixed(1) : '-'}</span>
                     </td>
-                    <td className={styles.scrollCol} style={{ width: '100px', minWidth: '100px' }}>
+                    <td className={styles.scrollCol} style={{ width: '80px', minWidth: '80px' }}>
                       <span>{row.avg_rank !== undefined ? row.avg_rank.toFixed(1) : '-'}</span>
                     </td>
-                    <td className={styles.scrollCol} style={{ width: '100px', minWidth: '100px' }}>
+                    <td className={styles.scrollCol} style={{ width: '80px', minWidth: '80px' }}>
                       <span>{row.median_popularity !== undefined ? Math.round(row.median_popularity) : '-'}</span>
                     </td>
-                    <td className={styles.scrollCol} style={{ width: '100px', minWidth: '100px' }}>
+                    <td className={styles.scrollCol} style={{ width: '80px', minWidth: '80px' }}>
                       <span>{row.median_rank !== undefined ? Math.round(row.median_rank) : '-'}</span>
                     </td>
                   </tr>
