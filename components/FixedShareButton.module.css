@@ -1,7 +1,7 @@
 /* SP専用固定シェアボタン */
 .fixedShareButton {
   position: fixed;
-  bottom: 80px; /* ボトムナビの上 */
+  bottom: 70px; /* ボトムナビの上 */
   left: 50%;
   transform: translateX(-50%);
   padding: 12px 24px;
