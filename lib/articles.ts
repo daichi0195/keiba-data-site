@@ -14,6 +14,8 @@ export interface ArticleFrontmatter {
   category: string;
   tags: string[];
   author: string; // 執筆者IDまたは執筆者名
+  thumbnail?: string; // サムネイル画像のパス（例: /images/articles/1.png）
+  featured?: boolean; // 人気記事フラグ
 }
 
 export interface Article {
@@ -75,12 +77,15 @@ export function getAllArticles(): Article[] {
     };
   }).filter((article): article is Article => article !== null);
 
-  // 日付の降順でソート
+  // 日付の降順でソート（同じ日付の場合はスラッグの昇順）
   return articles.sort((a, b) => {
     if (a.frontmatter.date < b.frontmatter.date) {
       return 1;
-    } else {
+    } else if (a.frontmatter.date > b.frontmatter.date) {
       return -1;
+    } else {
+      // 日付が同じ場合はスラッグで昇順ソート
+      return a.slug.localeCompare(b.slug);
     }
   });
 }
@@ -219,6 +224,25 @@ export function getAdjacentArticles(currentSlug: string): {
     prev: currentIndex > 0 ? allArticles[currentIndex - 1] : null,
     next: currentIndex < allArticles.length - 1 ? allArticles[currentIndex + 1] : null,
   };
+}
+
+/**
+ * 人気記事を取得（featured=trueの記事を優先、なければ最新記事）
+ */
+export function getPopularArticles(limit: number = 10, excludeSlug?: string): Article[] {
+  const allArticles = getAllArticles();
+
+  // 現在の記事を除外
+  const filteredArticles = excludeSlug
+    ? allArticles.filter((article) => article.slug !== excludeSlug)
+    : allArticles;
+
+  // featured=trueの記事のみを取得して返す
+  const featuredArticles = filteredArticles.filter(
+    (article) => article.frontmatter.featured === true
+  );
+
+  return featuredArticles.slice(0, limit);
 }
 
 /**

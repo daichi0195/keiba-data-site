@@ -1,10 +1,12 @@
 ---
-title: "初ダート（ダート替わり）の馬は買うべき？勝率や回収率、狙いたい血統を徹底分析"
+title: "テスト記事3テスト記事3テスト記事3テスト記事3テスト記事3テスト記事3"
 description: "馬券購入者を悩ませる初ダート。勝率や回収率、狙いたい血統など、データから傾向を分析してみました。"
 date: "2025-01-15"
 category: "分析コラム"
 tags: ["初ダート", "ダート替わり", "血統", "馬体重", "データ分析"]
 author: "daichi"
+thumbnail: "/images/articles/1.png"
+featured: true
 ---
 
 # 初ダートの馬は買うべき？勝率や回収率、狙いたい血統を徹底分析
@@ -23,7 +25,7 @@ author: "daichi"
 あまりデータが古すぎても...ということで、データの対象期間は**2023年1月〜2025年12月**（10,365レース）としました。
 
 ## 初ダートの勝率・回収率は？
-というわけで早速ですが、初ダートの馬の成績がこちら。
+早速ですが、初ダートの馬の成績がこちら。
 
 <StatsTable
   data={{
@@ -45,17 +47,16 @@ author: "daichi"
 
 3年間の出走数だけで**約6,000頭**と考えると、思ったより多いですね。
 
-さて肝心の成績ですが、<strong>勝率5.9%</strong>、<strong>複勝率15.7%</strong>、<strong>単勝回収率69%</strong>、<strong>複勝回収率62%</strong>となりました。**壊滅的です**。<br />
-人気と着順の平均値/中央値も計算しましたが、平均値でみても中央値でみても、人気より着順を落とすという結果になっています。
+さて肝心の成績ですが、<strong>勝率5.9%</strong>、<strong>複勝率15.7%</strong>、<strong>単勝回収率69%</strong>、<strong>複勝回収率62%</strong>となりました。**なかなか厳しいですね...**。<br />
+人気と着順の平均値/中央値も計算しましたが、平均値でも中央値でも、人気より着順を落とす結果になりました。
 
-**何も考えずに初ダートの馬だけを買うと大損する**ということが分かりました。<br />
-しかしこれだけだと「初ダートは絶対買うな！！！」で終わってしまうので、血統や馬体重など、別の切り口でさらに深掘ってみたいと思います。
+**何も考えずに初ダートの馬だけを買うと大損する**ことが分かりましたが、このままだと「初ダートは買うな！！！」で終わってしまうので、血統や馬体重など、別の切り口でさらに深掘ってみたいと思います。
 
 ## 初ダートで狙いたい血統は？
 まず思いつくのは、**じゃあダートに強い血統だけ買えばいいのでは**？という疑問です。
 
 ということで、先ほどのデータを種牡馬別にして出力してみました。<br />
-あまりにも出走数が少ない場合は統計的に信頼できないので、出走数20走以上という足切りラインを設け、勝ち数の降順で並び替えています。
+あまりにも出走数が少ない場合は統計的に信頼できないので、出走数20走以上という足切りラインを設け、勝ち数が多い順に並び替えています。
 
 <DataTable
   data={[
@@ -106,35 +107,35 @@ author: "daichi"
     { rank: 45, name: 'ロゴタイプ', link: '/sires/11899', races: 35, wins: 2, places_2: 2, places_3: 1, win_rate: 5.7, quinella_rate: 11.4, place_rate: 14.3, win_payback: 29.0, place_payback: 31.0, avg_popularity: 8.3, avg_rank: 8.7, median_popularity: 9, median_rank: 9 },
     { rank: 46, name: 'カレンブラックヒル', link: '/sires/12734', races: 41, wins: 2, places_2: 4, places_3: 0, win_rate: 4.9, quinella_rate: 14.6, place_rate: 14.6, win_payback: 29.0, place_payback: 68.0, avg_popularity: 7.6, avg_rank: 8.1, median_popularity: 8, median_rank: 8 },
     { rank: 47, name: 'ゴールドアクター', link: '/sires/6901', races: 22, wins: 2, places_2: 0, places_3: 1, win_rate: 9.1, quinella_rate: 9.1, place_rate: 13.6, win_payback: 37.0, place_payback: 51.0, avg_popularity: 9.4, avg_rank: 9.8, median_popularity: 10, median_rank: 11 },
-    { rank: 48, name: 'エイシンフラッシュ', races: 38, wins: 1, places_2: 0, places_3: 1, win_rate: 2.6, quinella_rate: 2.6, place_rate: 5.3, win_payback: 137.0, place_payback: 81.0, avg_popularity: 10.2, avg_rank: 10.6, median_popularity: 10, median_rank: 12 },
-    { rank: 49, name: 'シルバーステート', races: 112, wins: 1, places_2: 4, places_3: 7, win_rate: 0.9, quinella_rate: 4.5, place_rate: 10.7, win_payback: 3.0, place_payback: 53.0, avg_popularity: 8.0, avg_rank: 9.4, median_popularity: 7, median_rank: 10 },
-    { rank: 50, name: 'ブラックタイド', races: 45, wins: 1, places_2: 2, places_3: 2, win_rate: 2.2, quinella_rate: 6.7, place_rate: 11.1, win_payback: 10.0, place_payback: 32.0, avg_popularity: 8.8, avg_rank: 9.4, median_popularity: 9, median_rank: 10 },
-    { rank: 51, name: 'レッドファルクス', races: 47, wins: 1, places_2: 4, places_3: 1, win_rate: 2.1, quinella_rate: 10.6, place_rate: 12.8, win_payback: 69.0, place_payback: 113.0, avg_popularity: 8.9, avg_rank: 9.0, median_popularity: 9, median_rank: 10 },
-    { rank: 52, name: 'サトノクラウン', races: 82, wins: 1, places_2: 1, places_3: 5, win_rate: 1.2, quinella_rate: 2.4, place_rate: 8.5, win_payback: 4.0, place_payback: 62.0, avg_popularity: 9.5, avg_rank: 9.6, median_popularity: 9, median_rank: 10 },
-    { rank: 53, name: 'シャンハイボビー', races: 34, wins: 1, places_2: 3, places_3: 5, win_rate: 2.9, quinella_rate: 11.8, place_rate: 26.5, win_payback: 75.0, place_payback: 116.0, avg_popularity: 6.7, avg_rank: 6.9, median_popularity: 7, median_rank: 7 },
-    { rank: 54, name: 'ダノンバラード', races: 46, wins: 1, places_2: 0, places_3: 2, win_rate: 2.2, quinella_rate: 2.2, place_rate: 6.5, win_payback: 7.0, place_payback: 40.0, avg_popularity: 9.1, avg_rank: 9.9, median_popularity: 9, median_rank: 10 },
-    { rank: 55, name: 'マクフィ', races: 44, wins: 1, places_2: 1, places_3: 1, win_rate: 2.3, quinella_rate: 4.5, place_rate: 6.8, win_payback: 7.0, place_payback: 14.0, avg_popularity: 9.4, avg_rank: 9.5, median_popularity: 9, median_rank: 9 },
-    { rank: 56, name: 'シュヴァルグラン', races: 49, wins: 1, places_2: 2, places_3: 0, win_rate: 2.0, quinella_rate: 6.1, place_rate: 6.1, win_payback: 14.0, place_payback: 43.0, avg_popularity: 9.3, avg_rank: 9.4, median_popularity: 10, median_rank: 10 },
-    { rank: 57, name: 'マジェスティックウォリアー', races: 27, wins: 1, places_2: 3, places_3: 1, win_rate: 3.7, quinella_rate: 14.8, place_rate: 18.5, win_payback: 12.0, place_payback: 90.0, avg_popularity: 7.9, avg_rank: 8.6, median_popularity: 8, median_rank: 9 },
-    { rank: 58, name: 'アルアイン', races: 59, wins: 1, places_2: 2, places_3: 1, win_rate: 1.7, quinella_rate: 5.1, place_rate: 6.8, win_payback: 156.0, place_payback: 51.0, avg_popularity: 9.3, avg_rank: 10.1, median_popularity: 10, median_rank: 11 },
-    { rank: 59, name: 'グレーターロンドン', races: 28, wins: 1, places_2: 1, places_3: 1, win_rate: 3.6, quinella_rate: 7.1, place_rate: 10.7, win_payback: 19.0, place_payback: 21.0, avg_popularity: 7.9, avg_rank: 9.8, median_popularity: 8, median_rank: 10 },
-    { rank: 60, name: 'モーニン', races: 20, wins: 1, places_2: 3, places_3: 3, win_rate: 5.0, quinella_rate: 20.0, place_rate: 35.0, win_payback: 26.0, place_payback: 97.0, avg_popularity: 7.4, avg_rank: 6.5, median_popularity: 6, median_rank: 6 },
-    { rank: 61, name: 'ウインブライト', races: 25, wins: 1, places_2: 1, places_3: 2, win_rate: 4.0, quinella_rate: 8.0, place_rate: 16.0, win_payback: 9.0, place_payback: 50.0, avg_popularity: 8.8, avg_rank: 9.8, median_popularity: 8, median_rank: 11 },
-    { rank: 62, name: 'ミスターメロディ', races: 32, wins: 1, places_2: 0, places_3: 2, win_rate: 3.1, quinella_rate: 3.1, place_rate: 9.4, win_payback: 24.0, place_payback: 20.0, avg_popularity: 8.6, avg_rank: 9.6, median_popularity: 9, median_rank: 10 },
-    { rank: 63, name: 'ヴィクトワールピサ', races: 32, wins: 0, places_2: 0, places_3: 2, win_rate: 0.0, quinella_rate: 0.0, place_rate: 6.3, win_payback: 0.0, place_payback: 35.0, avg_popularity: 9.0, avg_rank: 11.2, median_popularity: 8, median_rank: 11 },
-    { rank: 64, name: 'アドマイヤムーン', races: 32, wins: 0, places_2: 0, places_3: 0, win_rate: 0.0, quinella_rate: 0.0, place_rate: 0.0, win_payback: 0.0, place_payback: 0.0, avg_popularity: 9.9, avg_rank: 11.2, median_popularity: 10, median_rank: 11 },
-    { rank: 65, name: 'バゴ', races: 58, wins: 0, places_2: 1, places_3: 1, win_rate: 0.0, quinella_rate: 1.7, place_rate: 3.4, win_payback: 0.0, place_payback: 10.0, avg_popularity: 9.8, avg_rank: 11.4, median_popularity: 9, median_rank: 13 },
-    { rank: 66, name: 'ディープブリランテ', races: 21, wins: 0, places_2: 0, places_3: 1, win_rate: 0.0, quinella_rate: 0.0, place_rate: 4.8, win_payback: 0.0, place_payback: 9.0, avg_popularity: 9.7, avg_rank: 10.7, median_popularity: 10, median_rank: 12 },
-    { rank: 67, name: 'エイシンヒカリ', races: 29, wins: 0, places_2: 3, places_3: 3, win_rate: 0.0, quinella_rate: 10.3, place_rate: 20.7, win_payback: 0.0, place_payback: 133.0, avg_popularity: 8.6, avg_rank: 8.2, median_popularity: 8, median_rank: 8 },
-    { rank: 68, name: 'ビッグアーサー', races: 83, wins: 0, places_2: 6, places_3: 5, win_rate: 0.0, quinella_rate: 7.2, place_rate: 13.3, win_payback: 0.0, place_payback: 42.0, avg_popularity: 8.2, avg_rank: 9.0, median_popularity: 8, median_rank: 9 },
-    { rank: 69, name: 'ビーチパトロール', races: 40, wins: 0, places_2: 0, places_3: 3, win_rate: 0.0, quinella_rate: 0.0, place_rate: 7.5, win_payback: 0.0, place_payback: 29.0, avg_popularity: 10.8, avg_rank: 10.1, median_popularity: 11, median_rank: 11 },
-    { rank: 70, name: 'ストロングリターン', races: 26, wins: 0, places_2: 2, places_3: 1, win_rate: 0.0, quinella_rate: 7.7, place_rate: 11.5, win_payback: 0.0, place_payback: 50.0, avg_popularity: 8.6, avg_rank: 9.3, median_popularity: 9, median_rank: 9 },
-    { rank: 71, name: 'トーセンラー', races: 21, wins: 0, places_2: 0, places_3: 0, win_rate: 0.0, quinella_rate: 0.0, place_rate: 0.0, win_payback: 0.0, place_payback: 0.0, avg_popularity: 11.5, avg_rank: 12.7, median_popularity: 11, median_rank: 13 },
-    { rank: 72, name: 'ロジャーバローズ', races: 35, wins: 0, places_2: 1, places_3: 1, win_rate: 0.0, quinella_rate: 2.9, place_rate: 5.7, win_payback: 0.0, place_payback: 8.0, avg_popularity: 7.9, avg_rank: 8.7, median_popularity: 8, median_rank: 7 },
-    { rank: 73, name: 'ホークビル', races: 28, wins: 0, places_2: 0, places_3: 1, win_rate: 0.0, quinella_rate: 0.0, place_rate: 3.6, win_payback: 0.0, place_payback: 10.0, avg_popularity: 10.5, avg_rank: 10.5, median_popularity: 10, median_rank: 11 },
-    { rank: 74, name: 'アニマルキングダム', races: 21, wins: 0, places_2: 0, places_3: 0, win_rate: 0.0, quinella_rate: 0.0, place_rate: 0.0, win_payback: 0.0, place_payback: 0.0, avg_popularity: 8.9, avg_rank: 10.2, median_popularity: 9, median_rank: 9 },
-    { rank: 75, name: 'ノーブルミッション', races: 35, wins: 0, places_2: 0, places_3: 1, win_rate: 0.0, quinella_rate: 0.0, place_rate: 2.9, win_payback: 0.0, place_payback: 27.0, avg_popularity: 10.3, avg_rank: 11.1, median_popularity: 10, median_rank: 12 },
-    { rank: 76, name: 'フィエールマン', races: 27, wins: 0, places_2: 1, places_3: 0, win_rate: 0.0, quinella_rate: 3.7, place_rate: 3.7, win_payback: 0.0, place_payback: 9.0, avg_popularity: 8.6, avg_rank: 10.2, median_popularity: 8, median_rank: 10 }
+    { rank: 48, name: 'エイシンフラッシュ', link: '/sires/35586', races: 38, wins: 1, places_2: 0, places_3: 1, win_rate: 2.6, quinella_rate: 2.6, place_rate: 5.3, win_payback: 137.0, place_payback: 81.0, avg_popularity: 10.2, avg_rank: 10.6, median_popularity: 10, median_rank: 12 },
+    { rank: 49, name: 'シルバーステート', link: '/sires/12916', races: 112, wins: 1, places_2: 4, places_3: 7, win_rate: 0.9, quinella_rate: 4.5, place_rate: 10.7, win_payback: 3.0, place_payback: 53.0, avg_popularity: 8.0, avg_rank: 9.4, median_popularity: 7, median_rank: 10 },
+    { rank: 50, name: 'ブラックタイド', link: '/sires/50992', races: 45, wins: 1, places_2: 2, places_3: 2, win_rate: 2.2, quinella_rate: 6.7, place_rate: 11.1, win_payback: 10.0, place_payback: 32.0, avg_popularity: 8.8, avg_rank: 9.4, median_popularity: 9, median_rank: 10 },
+    { rank: 51, name: 'レッドファルクス', link: '/sires/22614', races: 47, wins: 1, places_2: 4, places_3: 1, win_rate: 2.1, quinella_rate: 10.6, place_rate: 12.8, win_payback: 69.0, place_payback: 113.0, avg_popularity: 8.9, avg_rank: 9.0, median_popularity: 9, median_rank: 10 },
+    { rank: 52, name: 'サトノクラウン', link: '/sires/48128', races: 82, wins: 1, places_2: 1, places_3: 5, win_rate: 1.2, quinella_rate: 2.4, place_rate: 8.5, win_payback: 4.0, place_payback: 62.0, avg_popularity: 9.5, avg_rank: 9.6, median_popularity: 9, median_rank: 10 },
+    { rank: 53, name: 'シャンハイボビー', link: '/sires/2552', races: 34, wins: 1, places_2: 3, places_3: 5, win_rate: 2.9, quinella_rate: 11.8, place_rate: 26.5, win_payback: 75.0, place_payback: 116.0, avg_popularity: 6.7, avg_rank: 6.9, median_popularity: 7, median_rank: 7 },
+    { rank: 54, name: 'ダノンバラード', link: '/sires/1510', races: 46, wins: 1, places_2: 0, places_3: 2, win_rate: 2.2, quinella_rate: 2.2, place_rate: 6.5, win_payback: 7.0, place_payback: 40.0, avg_popularity: 9.1, avg_rank: 9.9, median_popularity: 9, median_rank: 10 },
+    { rank: 55, name: 'マクフィ', link: '/sires/62397', races: 44, wins: 1, places_2: 1, places_3: 1, win_rate: 2.3, quinella_rate: 4.5, place_rate: 6.8, win_payback: 7.0, place_payback: 14.0, avg_popularity: 9.4, avg_rank: 9.5, median_popularity: 9, median_rank: 9 },
+    { rank: 56, name: 'シュヴァルグラン', link: '/sires/45650', races: 49, wins: 1, places_2: 2, places_3: 0, win_rate: 2.0, quinella_rate: 6.1, place_rate: 6.1, win_payback: 14.0, place_payback: 43.0, avg_popularity: 9.3, avg_rank: 9.4, median_popularity: 10, median_rank: 10 },
+    { rank: 57, name: 'マジェスティックウォリアー', link: '/sires/5462', races: 27, wins: 1, places_2: 3, places_3: 1, win_rate: 3.7, quinella_rate: 14.8, place_rate: 18.5, win_payback: 12.0, place_payback: 90.0, avg_popularity: 7.9, avg_rank: 8.6, median_popularity: 8, median_rank: 9 },
+    { rank: 58, name: 'アルアイン', link: '/sires/55312', races: 59, wins: 1, places_2: 2, places_3: 1, win_rate: 1.7, quinella_rate: 5.1, place_rate: 6.8, win_payback: 156.0, place_payback: 51.0, avg_popularity: 9.3, avg_rank: 10.1, median_popularity: 10, median_rank: 11 },
+    { rank: 59, name: 'グレーターロンドン', link: '/sires/4005', races: 28, wins: 1, places_2: 1, places_3: 1, win_rate: 3.6, quinella_rate: 7.1, place_rate: 10.7, win_payback: 19.0, place_payback: 21.0, avg_popularity: 7.9, avg_rank: 9.8, median_popularity: 8, median_rank: 10 },
+    { rank: 60, name: 'モーニン', link: '/sires/48408', races: 20, wins: 1, places_2: 3, places_3: 3, win_rate: 5.0, quinella_rate: 20.0, place_rate: 35.0, win_payback: 26.0, place_payback: 97.0, avg_popularity: 7.4, avg_rank: 6.5, median_popularity: 6, median_rank: 6 },
+    { rank: 61, name: 'ウインブライト', link: '/sires/46295', races: 25, wins: 1, places_2: 1, places_3: 2, win_rate: 4.0, quinella_rate: 8.0, place_rate: 16.0, win_payback: 9.0, place_payback: 50.0, avg_popularity: 8.8, avg_rank: 9.8, median_popularity: 8, median_rank: 11 },
+    { rank: 62, name: 'ミスターメロディ', link: '/sires/56029', races: 32, wins: 1, places_2: 0, places_3: 2, win_rate: 3.1, quinella_rate: 3.1, place_rate: 9.4, win_payback: 24.0, place_payback: 20.0, avg_popularity: 8.6, avg_rank: 9.6, median_popularity: 9, median_rank: 10 },
+    { rank: 63, name: 'ヴィクトワールピサ', link: '/sires/98605', races: 32, wins: 0, places_2: 0, places_3: 2, win_rate: 0.0, quinella_rate: 0.0, place_rate: 6.3, win_payback: 0.0, place_payback: 35.0, avg_popularity: 9.0, avg_rank: 11.2, median_popularity: 8, median_rank: 11 },
+    { rank: 64, name: 'アドマイヤムーン', link: '/sires/5525', races: 32, wins: 0, places_2: 0, places_3: 0, win_rate: 0.0, quinella_rate: 0.0, place_rate: 0.0, win_payback: 0.0, place_payback: 0.0, avg_popularity: 9.9, avg_rank: 11.2, median_popularity: 10, median_rank: 11 },
+    { rank: 65, name: 'バゴ', link: '/sires/79522', races: 58, wins: 0, places_2: 1, places_3: 1, win_rate: 0.0, quinella_rate: 1.7, place_rate: 3.4, win_payback: 0.0, place_payback: 10.0, avg_popularity: 9.8, avg_rank: 11.4, median_popularity: 9, median_rank: 13 },
+    { rank: 66, name: 'ディープブリランテ', link: '/sires/35906', races: 21, wins: 0, places_2: 0, places_3: 1, win_rate: 0.0, quinella_rate: 0.0, place_rate: 4.8, win_payback: 0.0, place_payback: 9.0, avg_popularity: 9.7, avg_rank: 10.7, median_popularity: 10, median_rank: 12 },
+    { rank: 67, name: 'エイシンヒカリ', link: '/sires/78059', races: 29, wins: 0, places_2: 3, places_3: 3, win_rate: 0.0, quinella_rate: 10.3, place_rate: 20.7, win_payback: 0.0, place_payback: 133.0, avg_popularity: 8.6, avg_rank: 8.2, median_popularity: 8, median_rank: 8 },
+    { rank: 68, name: 'ビッグアーサー', link: '/sires/80004', races: 83, wins: 0, places_2: 6, places_3: 5, win_rate: 0.0, quinella_rate: 7.2, place_rate: 13.3, win_payback: 0.0, place_payback: 42.0, avg_popularity: 8.2, avg_rank: 9.0, median_popularity: 8, median_rank: 9 },
+    { rank: 69, name: 'ビーチパトロール', link: '/sires/35278', races: 40, wins: 0, places_2: 0, places_3: 3, win_rate: 0.0, quinella_rate: 0.0, place_rate: 7.5, win_payback: 0.0, place_payback: 29.0, avg_popularity: 10.8, avg_rank: 10.1, median_popularity: 11, median_rank: 11 },
+    { rank: 70, name: 'ストロングリターン', link: '/sires/22519', races: 26, wins: 0, places_2: 2, places_3: 1, win_rate: 0.0, quinella_rate: 7.7, place_rate: 11.5, win_payback: 0.0, place_payback: 50.0, avg_popularity: 8.6, avg_rank: 9.3, median_popularity: 9, median_rank: 9 },
+    { rank: 71, name: 'トーセンラー', link: '/sires/40028', races: 21, wins: 0, places_2: 0, places_3: 0, win_rate: 0.0, quinella_rate: 0.0, place_rate: 0.0, win_payback: 0.0, place_payback: 0.0, avg_popularity: 11.5, avg_rank: 12.7, median_popularity: 11, median_rank: 13 },
+    { rank: 72, name: 'ロジャーバローズ', link: '/sires/53562', races: 35, wins: 0, places_2: 1, places_3: 1, win_rate: 0.0, quinella_rate: 2.9, place_rate: 5.7, win_payback: 0.0, place_payback: 8.0, avg_popularity: 7.9, avg_rank: 8.7, median_popularity: 8, median_rank: 7 },
+    { rank: 73, name: 'ホークビル', link: '/sires/14771', races: 28, wins: 0, places_2: 0, places_3: 1, win_rate: 0.0, quinella_rate: 0.0, place_rate: 3.6, win_payback: 0.0, place_payback: 10.0, avg_popularity: 10.5, avg_rank: 10.5, median_popularity: 10, median_rank: 11 },
+    { rank: 74, name: 'アニマルキングダム', link: '/sires/49', races: 21, wins: 0, places_2: 0, places_3: 0, win_rate: 0.0, quinella_rate: 0.0, place_rate: 0.0, win_payback: 0.0, place_payback: 0.0, avg_popularity: 8.9, avg_rank: 10.2, median_popularity: 9, median_rank: 9 },
+    { rank: 75, name: 'ノーブルミッション', link: '/sires/41432', races: 35, wins: 0, places_2: 0, places_3: 1, win_rate: 0.0, quinella_rate: 0.0, place_rate: 2.9, win_payback: 0.0, place_payback: 27.0, avg_popularity: 10.3, avg_rank: 11.1, median_popularity: 10, median_rank: 12 },
+    { rank: 76, name: 'フィエールマン', link: '/sires/75240', races: 27, wins: 0, places_2: 1, places_3: 0, win_rate: 0.0, quinella_rate: 3.7, place_rate: 3.7, win_payback: 0.0, place_payback: 9.0, avg_popularity: 8.6, avg_rank: 10.2, median_popularity: 8, median_rank: 10 }
   ]}
   nameLabel="種牡馬"
   initialShow={10}
@@ -158,63 +159,63 @@ author: "daichi"
 それよりは狙いたい血統であげた種牡馬たちを買い目に入れたいですね。
 
 ## おまけ：初ダートで狙いたい血統は？（母父版）
-種牡馬だけではなく母父別でもみてみたいという声が聞こえた気がしたので、同様に母父別で出力したデータも置いておきます。
+母父別でもみたいという声が聞こえた気がしたので、同様に母父別で出力したデータも置いておきます。
 
 <DataTable
   data={[
-    { rank: 1, name: 'キングカメハメハ', races: 274, wins: 17, places_2: 14, places_3: 17, win_rate: 6.2, quinella_rate: 11.3, place_rate: 17.5, win_payback: 48.0, place_payback: 57.0, avg_popularity: 7.8, avg_rank: 8.4, median_popularity: 8, median_rank: 8 },
-    { rank: 2, name: 'ダイワメジャー', races: 166, wins: 15, places_2: 10, places_3: 4, win_rate: 9.0, quinella_rate: 15.1, place_rate: 17.5, win_payback: 94.0, place_payback: 71.0, avg_popularity: 7.5, avg_rank: 8.6, median_popularity: 7, median_rank: 9 },
-    { rank: 3, name: 'ディープインパクト', races: 339, wins: 13, places_2: 14, places_3: 15, win_rate: 3.8, quinella_rate: 8.0, place_rate: 12.4, win_payback: 52.0, place_payback: 52.0, avg_popularity: 8.3, avg_rank: 9.5, median_popularity: 8, median_rank: 10 },
-    { rank: 4, name: 'クロフネ', races: 172, wins: 12, places_2: 13, places_3: 7, win_rate: 7.0, quinella_rate: 14.5, place_rate: 18.6, win_payback: 51.0, place_payback: 60.0, avg_popularity: 7.2, avg_rank: 8.4, median_popularity: 7, median_rank: 9 },
-    { rank: 5, name: 'シンボリクリスエス', races: 137, wins: 11, places_2: 5, places_3: 6, win_rate: 8.0, quinella_rate: 11.7, place_rate: 16.1, win_payback: 71.0, place_payback: 66.0, avg_popularity: 7.9, avg_rank: 8.9, median_popularity: 8, median_rank: 9 },
+    { rank: 1, name: 'キングカメハメハ', link: '/sires/73353', races: 274, wins: 17, places_2: 14, places_3: 17, win_rate: 6.2, quinella_rate: 11.3, place_rate: 17.5, win_payback: 48.0, place_payback: 57.0, avg_popularity: 7.8, avg_rank: 8.4, median_popularity: 8, median_rank: 8 },
+    { rank: 2, name: 'ダイワメジャー', link: '/sires/3945', races: 166, wins: 15, places_2: 10, places_3: 4, win_rate: 9.0, quinella_rate: 15.1, place_rate: 17.5, win_payback: 94.0, place_payback: 71.0, avg_popularity: 7.5, avg_rank: 8.6, median_popularity: 7, median_rank: 9 },
+    { rank: 3, name: 'ディープインパクト', link: '/sires/8449', races: 339, wins: 13, places_2: 14, places_3: 15, win_rate: 3.8, quinella_rate: 8.0, place_rate: 12.4, win_payback: 52.0, place_payback: 52.0, avg_popularity: 8.3, avg_rank: 9.5, median_popularity: 8, median_rank: 10 },
+    { rank: 4, name: 'クロフネ', link: '/sires/51085', races: 172, wins: 12, places_2: 13, places_3: 7, win_rate: 7.0, quinella_rate: 14.5, place_rate: 18.6, win_payback: 51.0, place_payback: 60.0, avg_popularity: 7.2, avg_rank: 8.4, median_popularity: 7, median_rank: 9 },
+    { rank: 5, name: 'シンボリクリスエス', link: '/sires/74702', races: 137, wins: 11, places_2: 5, places_3: 6, win_rate: 8.0, quinella_rate: 11.7, place_rate: 16.1, win_payback: 71.0, place_payback: 66.0, avg_popularity: 7.9, avg_rank: 8.9, median_popularity: 8, median_rank: 9 },
     { rank: 6, name: 'エンパイアメーカー', races: 85, wins: 9, places_2: 4, places_3: 8, win_rate: 10.6, quinella_rate: 15.3, place_rate: 24.7, win_payback: 59.0, place_payback: 75.0, avg_popularity: 7.0, avg_rank: 7.5, median_popularity: 6, median_rank: 7 },
     { rank: 7, name: 'スペシャルウィーク', races: 77, wins: 7, places_2: 5, places_3: 3, win_rate: 9.1, quinella_rate: 15.6, place_rate: 19.5, win_payback: 180.0, place_payback: 66.0, avg_popularity: 7.5, avg_rank: 8.6, median_popularity: 7, median_rank: 9 },
     { rank: 8, name: 'フジキセキ', races: 84, wins: 7, places_2: 4, places_3: 2, win_rate: 8.3, quinella_rate: 13.1, place_rate: 15.5, win_payback: 90.0, place_payback: 50.0, avg_popularity: 8.2, avg_rank: 8.8, median_popularity: 8, median_rank: 9 },
-    { rank: 9, name: 'ゴールドアリュール', races: 40, wins: 7, places_2: 1, places_3: 2, win_rate: 17.5, quinella_rate: 20.0, place_rate: 25.0, win_payback: 82.0, place_payback: 54.0, avg_popularity: 7.4, avg_rank: 7.3, median_popularity: 7, median_rank: 7 },
-    { rank: 10, name: 'ハーツクライ', races: 151, wins: 6, places_2: 6, places_3: 5, win_rate: 4.0, quinella_rate: 7.9, place_rate: 11.3, win_payback: 27.0, place_payback: 52.0, avg_popularity: 8.2, avg_rank: 9.2, median_popularity: 9, median_rank: 9 },
+    { rank: 9, name: 'ゴールドアリュール', link: '/sires/83312', races: 40, wins: 7, places_2: 1, places_3: 2, win_rate: 17.5, quinella_rate: 20.0, place_rate: 25.0, win_payback: 82.0, place_payback: 54.0, avg_popularity: 7.4, avg_rank: 7.3, median_popularity: 7, median_rank: 7 },
+    { rank: 10, name: 'ハーツクライ', link: '/sires/18600', races: 151, wins: 6, places_2: 6, places_3: 5, win_rate: 4.0, quinella_rate: 7.9, place_rate: 11.3, win_payback: 27.0, place_payback: 52.0, avg_popularity: 8.2, avg_rank: 9.2, median_popularity: 9, median_rank: 9 },
     { rank: 11, name: 'ステイゴールド', races: 74, wins: 6, places_2: 1, places_3: 0, win_rate: 8.1, quinella_rate: 9.5, place_rate: 9.5, win_payback: 73.0, place_payback: 30.0, avg_popularity: 8.8, avg_rank: 10.1, median_popularity: 8, median_rank: 11 },
     { rank: 12, name: 'サクラバクシンオー', races: 80, wins: 5, places_2: 1, places_3: 2, win_rate: 6.3, quinella_rate: 7.5, place_rate: 10.0, win_payback: 32.0, place_payback: 26.0, avg_popularity: 8.0, avg_rank: 9.5, median_popularity: 8, median_rank: 10 },
     { rank: 13, name: 'アグネスタキオン', races: 102, wins: 5, places_2: 7, places_3: 2, win_rate: 4.9, quinella_rate: 11.8, place_rate: 13.7, win_payback: 102.0, place_payback: 45.0, avg_popularity: 8.0, avg_rank: 9.0, median_popularity: 8, median_rank: 9 },
-    { rank: 14, name: 'ゼンノロブロイ', races: 100, wins: 5, places_2: 5, places_3: 5, win_rate: 5.0, quinella_rate: 10.0, place_rate: 15.0, win_payback: 210.0, place_payback: 100.0, avg_popularity: 8.9, avg_rank: 9.3, median_popularity: 9, median_rank: 9 },
-    { rank: 15, name: 'ネオユニヴァース', races: 95, wins: 4, places_2: 8, places_3: 3, win_rate: 4.2, quinella_rate: 12.6, place_rate: 15.8, win_payback: 176.0, place_payback: 98.0, avg_popularity: 8.4, avg_rank: 8.7, median_popularity: 8, median_rank: 9 },
-    { rank: 16, name: 'アドマイヤムーン', races: 72, wins: 4, places_2: 1, places_3: 3, win_rate: 5.6, quinella_rate: 6.9, place_rate: 11.1, win_payback: 49.0, place_payback: 34.0, avg_popularity: 8.6, avg_rank: 9.2, median_popularity: 8, median_rank: 10 },
+    { rank: 14, name: 'ゼンノロブロイ', link: '/sires/24463', races: 100, wins: 5, places_2: 5, places_3: 5, win_rate: 5.0, quinella_rate: 10.0, place_rate: 15.0, win_payback: 210.0, place_payback: 100.0, avg_popularity: 8.9, avg_rank: 9.3, median_popularity: 9, median_rank: 9 },
+    { rank: 15, name: 'ネオユニヴァース', link: '/sires/61097', races: 95, wins: 4, places_2: 8, places_3: 3, win_rate: 4.2, quinella_rate: 12.6, place_rate: 15.8, win_payback: 176.0, place_payback: 98.0, avg_popularity: 8.4, avg_rank: 8.7, median_popularity: 8, median_rank: 9 },
+    { rank: 16, name: 'アドマイヤムーン', link: '/sires/5525', races: 72, wins: 4, places_2: 1, places_3: 3, win_rate: 5.6, quinella_rate: 6.9, place_rate: 11.1, win_payback: 49.0, place_payback: 34.0, avg_popularity: 8.6, avg_rank: 9.2, median_popularity: 8, median_rank: 10 },
     { rank: 17, name: 'マンハッタンカフェ', races: 116, wins: 4, places_2: 10, places_3: 7, win_rate: 3.4, quinella_rate: 12.1, place_rate: 18.1, win_payback: 45.0, place_payback: 116.0, avg_popularity: 8.0, avg_rank: 9.1, median_popularity: 8, median_rank: 9 },
-    { rank: 18, name: 'ヴィクトワールピサ', races: 49, wins: 4, places_2: 1, places_3: 2, win_rate: 8.2, quinella_rate: 10.2, place_rate: 14.3, win_payback: 318.0, place_payback: 72.0, avg_popularity: 7.3, avg_rank: 8.6, median_popularity: 7, median_rank: 9 },
-    { rank: 19, name: 'ロードカナロア', races: 68, wins: 4, places_2: 2, places_3: 3, win_rate: 5.9, quinella_rate: 8.8, place_rate: 13.2, win_payback: 38.0, place_payback: 125.0, avg_popularity: 8.4, avg_rank: 8.8, median_popularity: 8, median_rank: 10 },
+    { rank: 18, name: 'ヴィクトワールピサ', link: '/sires/98605', races: 49, wins: 4, places_2: 1, places_3: 2, win_rate: 8.2, quinella_rate: 10.2, place_rate: 14.3, win_payback: 318.0, place_payback: 72.0, avg_popularity: 7.3, avg_rank: 8.6, median_popularity: 7, median_rank: 9 },
+    { rank: 19, name: 'ロードカナロア', link: '/sires/88034', races: 68, wins: 4, places_2: 2, places_3: 3, win_rate: 5.9, quinella_rate: 8.8, place_rate: 13.2, win_payback: 38.0, place_payback: 125.0, avg_popularity: 8.4, avg_rank: 8.8, median_popularity: 8, median_rank: 10 },
     { rank: 20, name: 'サンデーサイレンス', races: 43, wins: 3, places_2: 2, places_3: 4, win_rate: 7.0, quinella_rate: 11.6, place_rate: 20.9, win_payback: 188.0, place_payback: 94.0, avg_popularity: 8.6, avg_rank: 9.0, median_popularity: 9, median_rank: 10 },
-    { rank: 21, name: 'Tapit', races: 31, wins: 3, places_2: 1, places_3: 2, win_rate: 9.7, quinella_rate: 12.9, place_rate: 19.4, win_payback: 62.0, place_payback: 57.0, avg_popularity: 6.8, avg_rank: 7.5, median_popularity: 7, median_rank: 7 },
+    { rank: 21, name: 'Tapit', link: '/sires/6963', races: 31, wins: 3, places_2: 1, places_3: 2, win_rate: 9.7, quinella_rate: 12.9, place_rate: 19.4, win_payback: 62.0, place_payback: 57.0, avg_popularity: 6.8, avg_rank: 7.5, median_popularity: 7, median_rank: 7 },
     { rank: 22, name: 'Singspiel', races: 24, wins: 3, places_2: 0, places_3: 0, win_rate: 12.5, quinella_rate: 12.5, place_rate: 12.5, win_payback: 53.0, place_payback: 24.0, avg_popularity: 6.8, avg_rank: 8.9, median_popularity: 6, median_rank: 10 },
-    { rank: 23, name: 'ハービンジャー', races: 73, wins: 3, places_2: 2, places_3: 3, win_rate: 4.1, quinella_rate: 6.8, place_rate: 11.0, win_payback: 26.0, place_payback: 41.0, avg_popularity: 8.1, avg_rank: 9.8, median_popularity: 8, median_rank: 10 },
-    { rank: 24, name: 'Frankel', races: 24, wins: 3, places_2: 1, places_3: 2, win_rate: 12.5, quinella_rate: 16.7, place_rate: 25.0, win_payback: 34.0, place_payback: 97.0, avg_popularity: 6.6, avg_rank: 7.0, median_popularity: 5, median_rank: 6 },
+    { rank: 23, name: 'ハービンジャー', link: '/sires/1781', races: 73, wins: 3, places_2: 2, places_3: 3, win_rate: 4.1, quinella_rate: 6.8, place_rate: 11.0, win_payback: 26.0, place_payback: 41.0, avg_popularity: 8.1, avg_rank: 9.8, median_popularity: 8, median_rank: 10 },
+    { rank: 24, name: 'Frankel', link: '/sires/78132', races: 24, wins: 3, places_2: 1, places_3: 2, win_rate: 12.5, quinella_rate: 16.7, place_rate: 25.0, win_payback: 34.0, place_payback: 97.0, avg_popularity: 6.6, avg_rank: 7.0, median_popularity: 5, median_rank: 6 },
     { rank: 25, name: 'ホワイトマズル', races: 26, wins: 3, places_2: 0, places_3: 1, win_rate: 11.5, quinella_rate: 11.5, place_rate: 15.4, win_payback: 284.0, place_payback: 112.0, avg_popularity: 8.7, avg_rank: 9.5, median_popularity: 8, median_rank: 10 },
-    { rank: 26, name: 'ジャングルポケット', races: 56, wins: 2, places_2: 1, places_3: 1, win_rate: 3.6, quinella_rate: 5.4, place_rate: 7.1, win_payback: 217.0, place_payback: 38.0, avg_popularity: 9.2, avg_rank: 9.4, median_popularity: 9, median_rank: 9 },
+    { rank: 26, name: 'ジャングルポケット', link: '/sires/1283', races: 56, wins: 2, places_2: 1, places_3: 1, win_rate: 3.6, quinella_rate: 5.4, place_rate: 7.1, win_payback: 217.0, place_payback: 38.0, avg_popularity: 9.2, avg_rank: 9.4, median_popularity: 9, median_rank: 9 },
     { rank: 27, name: 'ブライアンズタイム', races: 53, wins: 2, places_2: 2, places_3: 1, win_rate: 3.8, quinella_rate: 7.5, place_rate: 9.4, win_payback: 15.0, place_payback: 22.0, avg_popularity: 8.6, avg_rank: 9.2, median_popularity: 9, median_rank: 9 },
     { rank: 28, name: 'フレンチデピュティ', races: 73, wins: 2, places_2: 5, places_3: 4, win_rate: 2.7, quinella_rate: 9.6, place_rate: 15.1, win_payback: 17.0, place_payback: 57.0, avg_popularity: 8.5, avg_rank: 8.8, median_popularity: 8, median_rank: 9 },
-    { rank: 29, name: 'ロージズインメイ', races: 20, wins: 2, places_2: 0, places_3: 0, win_rate: 10.0, quinella_rate: 10.0, place_rate: 10.0, win_payback: 23.0, place_payback: 16.0, avg_popularity: 8.5, avg_rank: 8.4, median_popularity: 9, median_rank: 9 },
+    { rank: 29, name: 'ロージズインメイ', link: '/sires/24144', races: 20, wins: 2, places_2: 0, places_3: 0, win_rate: 10.0, quinella_rate: 10.0, place_rate: 10.0, win_payback: 23.0, place_payback: 16.0, avg_popularity: 8.5, avg_rank: 8.4, median_popularity: 9, median_rank: 9 },
     { rank: 30, name: 'Galileo', races: 44, wins: 2, places_2: 1, places_3: 3, win_rate: 4.5, quinella_rate: 6.8, place_rate: 13.6, win_payback: 81.0, place_payback: 73.0, avg_popularity: 8.3, avg_rank: 9.9, median_popularity: 7, median_rank: 10 },
-    { rank: 31, name: "Medaglia d'Oro", races: 22, wins: 2, places_2: 2, places_3: 3, win_rate: 9.1, quinella_rate: 18.2, place_rate: 31.8, win_payback: 28.0, place_payback: 163.0, avg_popularity: 5.8, avg_rank: 8.2, median_popularity: 5, median_rank: 8 },
-    { rank: 32, name: 'パイロ', races: 25, wins: 2, places_2: 1, places_3: 0, win_rate: 8.0, quinella_rate: 12.0, place_rate: 12.0, win_payback: 38.0, place_payback: 56.0, avg_popularity: 7.7, avg_rank: 8.7, median_popularity: 8, median_rank: 8 },
+    { rank: 31, name: "Medaglia d'Oro", link: '/sires/1005', races: 22, wins: 2, places_2: 2, places_3: 3, win_rate: 9.1, quinella_rate: 18.2, place_rate: 31.8, win_payback: 28.0, place_payback: 163.0, avg_popularity: 5.8, avg_rank: 8.2, median_popularity: 5, median_rank: 8 },
+    { rank: 32, name: 'パイロ', link: '/sires/70205', races: 25, wins: 2, places_2: 1, places_3: 0, win_rate: 8.0, quinella_rate: 12.0, place_rate: 12.0, win_payback: 38.0, place_payback: 56.0, avg_popularity: 7.7, avg_rank: 8.7, median_popularity: 8, median_rank: 8 },
     { rank: 33, name: 'ファルブラヴ', races: 34, wins: 2, places_2: 1, places_3: 1, win_rate: 5.9, quinella_rate: 8.8, place_rate: 11.8, win_payback: 15.0, place_payback: 79.0, avg_popularity: 7.9, avg_rank: 8.8, median_popularity: 8, median_rank: 8 },
     { rank: 34, name: 'タイキシャトル', races: 58, wins: 2, places_2: 0, places_3: 3, win_rate: 3.4, quinella_rate: 3.4, place_rate: 8.6, win_payback: 12.0, place_payback: 26.0, avg_popularity: 8.8, avg_rank: 10.1, median_popularity: 8, median_rank: 11 },
     { rank: 35, name: 'Storm Cat', races: 23, wins: 2, places_2: 0, places_3: 1, win_rate: 8.7, quinella_rate: 8.7, place_rate: 13.0, win_payback: 30.0, place_payback: 36.0, avg_popularity: 7.0, avg_rank: 8.6, median_popularity: 7, median_rank: 8 },
     { rank: 36, name: 'ヨハネスブルグ', races: 32, wins: 2, places_2: 2, places_3: 2, win_rate: 6.3, quinella_rate: 12.5, place_rate: 18.8, win_payback: 39.0, place_payback: 36.0, avg_popularity: 7.7, avg_rank: 8.4, median_popularity: 7, median_rank: 9 },
     { rank: 37, name: 'ストリートセンス', races: 20, wins: 2, places_2: 2, places_3: 3, win_rate: 10.0, quinella_rate: 20.0, place_rate: 35.0, win_payback: 128.0, place_payback: 128.0, avg_popularity: 7.3, avg_rank: 6.8, median_popularity: 7, median_rank: 6 },
-    { rank: 38, name: 'ヘニーヒューズ', races: 20, wins: 2, places_2: 0, places_3: 1, win_rate: 10.0, quinella_rate: 10.0, place_rate: 15.0, win_payback: 267.0, place_payback: 240.0, avg_popularity: 7.9, avg_rank: 8.6, median_popularity: 7, median_rank: 9 },
+    { rank: 38, name: 'ヘニーヒューズ', link: '/sires/67587', races: 20, wins: 2, places_2: 0, places_3: 1, win_rate: 10.0, quinella_rate: 10.0, place_rate: 15.0, win_payback: 267.0, place_payback: 240.0, avg_popularity: 7.9, avg_rank: 8.6, median_popularity: 7, median_rank: 9 },
     { rank: 39, name: 'ウォーエンブレム', races: 25, wins: 1, places_2: 1, places_3: 1, win_rate: 4.0, quinella_rate: 8.0, place_rate: 12.0, win_payback: 27.0, place_payback: 40.0, avg_popularity: 8.4, avg_rank: 11.3, median_popularity: 8, median_rank: 14 },
-    { rank: 40, name: "Giant's Causeway", races: 28, wins: 1, places_2: 3, places_3: 3, win_rate: 3.6, quinella_rate: 14.3, place_rate: 25.0, win_payback: 33.0, place_payback: 81.0, avg_popularity: 7.5, avg_rank: 7.5, median_popularity: 8, median_rank: 7 },
+    { rank: 40, name: "Giant's Causeway", link: '/sires/666', races: 28, wins: 1, places_2: 3, places_3: 3, win_rate: 3.6, quinella_rate: 14.3, place_rate: 25.0, win_payback: 33.0, place_payback: 81.0, avg_popularity: 7.5, avg_rank: 7.5, median_popularity: 8, median_rank: 7 },
     { rank: 41, name: 'Street Cry', races: 23, wins: 1, places_2: 1, places_3: 2, win_rate: 4.3, quinella_rate: 8.7, place_rate: 17.4, win_payback: 30.0, place_payback: 75.0, avg_popularity: 8.4, avg_rank: 8.7, median_popularity: 8, median_rank: 8 },
     { rank: 42, name: 'Monsun', races: 20, wins: 1, places_2: 0, places_3: 1, win_rate: 5.0, quinella_rate: 5.0, place_rate: 10.0, win_payback: 66.0, place_payback: 31.0, avg_popularity: 8.9, avg_rank: 10.3, median_popularity: 8, median_rank: 11 },
     { rank: 43, name: 'ルーラーシップ', races: 45, wins: 1, places_2: 3, places_3: 2, win_rate: 2.2, quinella_rate: 8.9, place_rate: 13.3, win_payback: 11.0, place_payback: 27.0, avg_popularity: 8.1, avg_rank: 8.5, median_popularity: 8, median_rank: 9 },
     { rank: 44, name: 'Dubawi', races: 28, wins: 1, places_2: 2, places_3: 2, win_rate: 3.6, quinella_rate: 10.7, place_rate: 17.9, win_payback: 78.0, place_payback: 61.0, avg_popularity: 6.3, avg_rank: 8.7, median_popularity: 5, median_rank: 8 },
     { rank: 45, name: 'タニノギムレット', races: 42, wins: 1, places_2: 5, places_3: 3, win_rate: 2.4, quinella_rate: 14.3, place_rate: 21.4, win_payback: 24.0, place_payback: 161.0, avg_popularity: 8.1, avg_rank: 8.3, median_popularity: 7, median_rank: 9 },
-    { rank: 46, name: 'ブラックタイド', races: 42, wins: 1, places_2: 1, places_3: 2, win_rate: 2.4, quinella_rate: 4.8, place_rate: 9.5, win_payback: 8.0, place_payback: 65.0, avg_popularity: 8.2, avg_rank: 9.1, median_popularity: 8, median_rank: 8 },
+    { rank: 46, name: 'ブラックタイド', link: '/sires/50992', races: 42, wins: 1, places_2: 1, places_3: 2, win_rate: 2.4, quinella_rate: 4.8, place_rate: 9.5, win_payback: 8.0, place_payback: 65.0, avg_popularity: 8.2, avg_rank: 9.1, median_popularity: 8, median_rank: 8 },
     { rank: 47, name: 'スウェプトオーヴァーボード', races: 32, wins: 1, places_2: 4, places_3: 3, win_rate: 3.1, quinella_rate: 15.6, place_rate: 25.0, win_payback: 18.0, place_payback: 54.0, avg_popularity: 7.3, avg_rank: 8.1, median_popularity: 6, median_rank: 7 },
     { rank: 48, name: 'ワークフォース', races: 28, wins: 1, places_2: 1, places_3: 1, win_rate: 3.6, quinella_rate: 7.1, place_rate: 10.7, win_payback: 39.0, place_payback: 37.0, avg_popularity: 7.1, avg_rank: 8.6, median_popularity: 7, median_rank: 8 },
-    { rank: 49, name: 'メイショウサムソン', races: 20, wins: 1, places_2: 0, places_3: 1, win_rate: 5.0, quinella_rate: 5.0, place_rate: 10.0, win_payback: 17.0, place_payback: 16.0, avg_popularity: 8.5, avg_rank: 8.8, median_popularity: 8, median_rank: 9 },
-    { rank: 50, name: 'ノヴェリスト', races: 22, wins: 1, places_2: 1, places_3: 2, win_rate: 4.5, quinella_rate: 9.1, place_rate: 18.2, win_payback: 19.0, place_payback: 57.0, avg_popularity: 8.9, avg_rank: 10.1, median_popularity: 9, median_rank: 11 },
-    { rank: 51, name: 'サウスヴィグラス', races: 24, wins: 1, places_2: 2, places_3: 3, win_rate: 4.2, quinella_rate: 12.5, place_rate: 25.0, win_payback: 26.0, place_payback: 49.0, avg_popularity: 7.7, avg_rank: 7.9, median_popularity: 7, median_rank: 8 },
-    { rank: 52, name: 'キンシャサノキセキ', races: 37, wins: 1, places_2: 3, places_3: 0, win_rate: 2.7, quinella_rate: 10.8, place_rate: 10.8, win_payback: 6.0, place_payback: 74.0, avg_popularity: 8.8, avg_rank: 8.9, median_popularity: 9, median_rank: 10 },
-    { rank: 53, name: 'オルフェーヴル', races: 21, wins: 1, places_2: 1, places_3: 0, win_rate: 4.8, quinella_rate: 9.5, place_rate: 9.5, win_payback: 25.0, place_payback: 14.0, avg_popularity: 7.7, avg_rank: 8.7, median_popularity: 8, median_rank: 7 },
+    { rank: 49, name: 'メイショウサムソン', link: '/sires/67026', races: 20, wins: 1, places_2: 0, places_3: 1, win_rate: 5.0, quinella_rate: 5.0, place_rate: 10.0, win_payback: 17.0, place_payback: 16.0, avg_popularity: 8.5, avg_rank: 8.8, median_popularity: 8, median_rank: 9 },
+    { rank: 50, name: 'ノヴェリスト', link: '/sires/23121', races: 22, wins: 1, places_2: 1, places_3: 2, win_rate: 4.5, quinella_rate: 9.1, place_rate: 18.2, win_payback: 19.0, place_payback: 57.0, avg_popularity: 8.9, avg_rank: 10.1, median_popularity: 9, median_rank: 11 },
+    { rank: 51, name: 'サウスヴィグラス', link: '/sires/34711', races: 24, wins: 1, places_2: 2, places_3: 3, win_rate: 4.2, quinella_rate: 12.5, place_rate: 25.0, win_payback: 26.0, place_payback: 49.0, avg_popularity: 7.7, avg_rank: 7.9, median_popularity: 7, median_rank: 8 },
+    { rank: 52, name: 'キンシャサノキセキ', link: '/sires/88795', races: 37, wins: 1, places_2: 3, places_3: 0, win_rate: 2.7, quinella_rate: 10.8, place_rate: 10.8, win_payback: 6.0, place_payback: 74.0, avg_popularity: 8.8, avg_rank: 8.9, median_popularity: 9, median_rank: 10 },
+    { rank: 53, name: 'オルフェーヴル', link: '/sires/83703', races: 21, wins: 1, places_2: 1, places_3: 0, win_rate: 4.8, quinella_rate: 9.5, place_rate: 9.5, win_payback: 25.0, place_payback: 14.0, avg_popularity: 7.7, avg_rank: 8.7, median_popularity: 8, median_rank: 7 },
     { rank: 54, name: 'ダンスインザダーク', races: 65, wins: 0, places_2: 4, places_3: 5, win_rate: 0.0, quinella_rate: 6.2, place_rate: 13.8, win_payback: 0.0, place_payback: 89.0, avg_popularity: 8.8, avg_rank: 9.9, median_popularity: 9, median_rank: 10 },
     { rank: 55, name: 'ロックオブジブラルタル', races: 23, wins: 0, places_2: 2, places_3: 0, win_rate: 0.0, quinella_rate: 8.7, place_rate: 8.7, win_payback: 0.0, place_payback: 23.0, avg_popularity: 8.5, avg_rank: 10.6, median_popularity: 8, median_rank: 12 },
     { rank: 56, name: 'Shamardal', races: 24, wins: 0, places_2: 0, places_3: 2, win_rate: 0.0, quinella_rate: 0.0, place_rate: 8.3, win_payback: 0.0, place_payback: 54.0, avg_popularity: 8.4, avg_rank: 8.8, median_popularity: 9, median_rank: 9 },
@@ -223,14 +224,14 @@ author: "daichi"
     { rank: 59, name: 'グラスワンダー', races: 26, wins: 0, places_2: 0, places_3: 1, win_rate: 0.0, quinella_rate: 0.0, place_rate: 3.8, win_payback: 0.0, place_payback: 12.0, avg_popularity: 9.3, avg_rank: 11.3, median_popularity: 10, median_rank: 12 },
     { rank: 60, name: 'アグネスデジタル', races: 38, wins: 0, places_2: 2, places_3: 2, win_rate: 0.0, quinella_rate: 5.3, place_rate: 10.5, win_payback: 0.0, place_payback: 42.0, avg_popularity: 8.6, avg_rank: 8.6, median_popularity: 8, median_rank: 8 },
     { rank: 61, name: 'ワイルドラッシュ', races: 24, wins: 0, places_2: 1, places_3: 2, win_rate: 0.0, quinella_rate: 4.2, place_rate: 12.5, win_payback: 0.0, place_payback: 46.0, avg_popularity: 7.7, avg_rank: 8.5, median_popularity: 7, median_rank: 8 },
-    { rank: 62, name: 'スクリーンヒーロー', races: 22, wins: 0, places_2: 0, places_3: 0, win_rate: 0.0, quinella_rate: 0.0, place_rate: 0.0, win_payback: 0.0, place_payback: 0.0, avg_popularity: 9.9, avg_rank: 10.7, median_popularity: 9, median_rank: 10 }
+    { rank: 62, name: 'スクリーンヒーロー', link: '/sires/30113', races: 22, wins: 0, places_2: 0, places_3: 0, win_rate: 0.0, quinella_rate: 0.0, place_rate: 0.0, win_payback: 0.0, place_payback: 0.0, avg_popularity: 9.9, avg_rank: 10.7, median_popularity: 9, median_rank: 10 }
   ]}
   nameLabel="母父"
   initialShow={10}
 />
 
 ## 初ダートで狙いたい脚質は？
-ここは個人的にすごく気になっていた部分なのですが、**芝で逃げ・先行できた初ダートの馬は狙い目**なイメージがあったので、検証してみます。
+個人的にすごく気になっていた部分なのですが、**芝で逃げ・先行できた初ダートの馬は狙い目**なイメージがあったので、検証してみます。
 
 なお、脚質の定義は下記です。
  1. 逃げ：いずれかのコーナー（1～3コーナー）で1位通過
@@ -257,7 +258,7 @@ author: "daichi"
 イメージで語るのはよくないということですね。
 
 ここからさらに細分化できそうな気もしますが、全体としてみると**前走の脚質はそこまで関係なさそう**だということが分かりました。<br />
-あえて言及するなら差しの成績が若干良いので、**前走中団からしっかり上がりを使えた馬はプラス評価**してもいいかもしれません。
+あえて言及するなら差しの成績が若干良いので、**前走である程度ポジションを取れてしっかり上がりを使えた馬はプラス評価**してもいいかもしれません。
 
 ## 初ダートと馬体重は関係ある？
 個人的にもう一つ気になっていたのが、**馬体重との関係性**です。<br />
@@ -283,30 +284,8 @@ author: "daichi"
 
 みなさん、初ダートはデケェ馬を買いましょう。
 
-## 初ダートとレースクラスは関係ある？
-では、初ダートと**レースクラス**に関係はあるのでしょうか。<br />
-最近だと初ダートでフェブラリーS2着のシェケn...じゃなくてガイアフォースの活躍も記憶に新しいところですが、**ダートの適性がありそうなら早めにダートを走らせているのでは**？という疑問はもっともな気がします。
-
-実際にクラス別で初ダートの成績を集計したものがこちら。
-
-<ClassTable
-  title="クラス別成績"
-  data={[
-    { rank: 1, class_name: 'オープン', races: 127, wins: 6, places_2: 5, places_3: 0, win_rate: 4.7, quinella_rate: 8.7, place_rate: 8.7, win_payback: 78.0, place_payback: 53.0, avg_popularity: 10.0, avg_rank: 11.2, median_popularity: 10.0, median_rank: 12.0 },
-    { rank: 2, class_name: '3勝', races: 117, wins: 6, places_2: 2, places_3: 2, win_rate: 5.1, quinella_rate: 6.8, place_rate: 8.5, win_payback: 127.0, place_payback: 39.0, avg_popularity: 9.5, avg_rank: 10.6, median_popularity: 10.0, median_rank: 11.0 },
-    { rank: 3, class_name: '2勝', races: 152, wins: 7, places_2: 5, places_3: 11, win_rate: 4.6, quinella_rate: 7.9, place_rate: 15.1, win_payback: 32.0, place_payback: 73.0, avg_popularity: 8.3, avg_rank: 9.8, median_popularity: 8.0, median_rank: 10.0 },
-    { rank: 4, class_name: '1勝', races: 835, wins: 46, places_2: 34, places_3: 40, win_rate: 5.5, quinella_rate: 9.6, place_rate: 14.4, win_payback: 91.0, place_payback: 55.0, avg_popularity: 7.8, avg_rank: 9.1, median_popularity: 8.0, median_rank: 9.0 },
-    { rank: 5, class_name: '未勝利', races: 4758, wins: 289, places_2: 254, places_3: 236, win_rate: 6.1, quinella_rate: 11.4, place_rate: 16.4, win_payback: 64.0, place_payback: 64.0, avg_popularity: 7.9, avg_rank: 8.7, median_popularity: 8.0, median_rank: 9.0 }
-  ]}
-  showOnlyProvidedData={true}
-/>
-
-3勝クラスになるとガクッと複勝率が下がっていることからも、相手が揃う**上のクラスでは好走するのが難しくなる**ことが分かります。
-
-一方で、勝率でみるとオープン〜未勝利でそこまで差はなく、**上のクラスでも一発の魅力は秘めていそう**です。
-
 ## 初ダートと性別は関係ある？
-馬体重が重い馬が有利ということは、相対的に**馬体が大きい牡馬の方が成績が良いのでは**？と思ったので、性別でもみてみましょう。
+馬体重が重い馬が有利ということは、**パワーがありそうな牡馬の方が成績が良いのでは**？と思ったので、性別でもみてみます。
 
 <GenderTable
   data={[
@@ -318,7 +297,7 @@ author: "daichi"
 
 やはり<strong>牡馬の方が成績が良さそう</strong>です。<br />
 
-しかし、これだと性別によって有利不利が決まるのか、馬体重によって有利不利が決まるのかはっきりしません。
+しかし、これだと「牡馬の方が有利」なのか、「牡馬の方が相対的に馬体重が重いから有利なだけ」なのかはっきりしません。
 そこで、性別と馬体重を掛け合わせて集計してみます。
 
 ### 牡馬
@@ -351,8 +330,56 @@ author: "daichi"
   ]}
 />
 
-牝馬でも馬体重が重い方が成績が良くなる傾向にありますが、2つの表を見比べてみると同じ馬体重帯でもやや牡馬の方が成績が良さそうですね。
-ということで、やはりよりパワーのある牡馬の方が有利だということが分かりました。
+牝馬でも馬体重が重い方が成績が良くなる傾向にありますが、2つの表を見比べてみると**同じ馬体重帯でも牡馬の方がやや成績が良い**ことが分かります。
+
+つまり、**馬体重と性別の両方が成績に影響している**と言えそうです。<br />
+
+初ダートでは「重い馬体重」も「牡馬であること」も両方プラス材料になります。
+
+## 初ダートとレースクラスは関係ある？
+
+では、初ダートと**レースクラス**に関係はあるのでしょうか。<br />
+
+最近だと初ダートでフェブラリーステークス2着のシェケn...じゃなくてガイアフォースの活躍が記憶に新しいところですが、**ダートの適性がありそうなら早めにダートを走らせているのでは**？という疑問はもっともな気がします。
+
+実際にクラス別で初ダートの成績を集計したものがこちら。
+
+<ClassTable
+  title="クラス別成績"
+  data={[
+    { rank: 1, class_name: 'オープン', races: 127, wins: 6, places_2: 5, places_3: 0, win_rate: 4.7, quinella_rate: 8.7, place_rate: 8.7, win_payback: 78.0, place_payback: 53.0, avg_popularity: 10.0, avg_rank: 11.2, median_popularity: 10.0, median_rank: 12.0 },
+    { rank: 2, class_name: '3勝', races: 117, wins: 6, places_2: 2, places_3: 2, win_rate: 5.1, quinella_rate: 6.8, place_rate: 8.5, win_payback: 127.0, place_payback: 39.0, avg_popularity: 9.5, avg_rank: 10.6, median_popularity: 10.0, median_rank: 11.0 },
+    { rank: 3, class_name: '2勝', races: 152, wins: 7, places_2: 5, places_3: 11, win_rate: 4.6, quinella_rate: 7.9, place_rate: 15.1, win_payback: 32.0, place_payback: 73.0, avg_popularity: 8.3, avg_rank: 9.8, median_popularity: 8.0, median_rank: 10.0 },
+    { rank: 4, class_name: '1勝', races: 835, wins: 46, places_2: 34, places_3: 40, win_rate: 5.5, quinella_rate: 9.6, place_rate: 14.4, win_payback: 91.0, place_payback: 55.0, avg_popularity: 7.8, avg_rank: 9.1, median_popularity: 8.0, median_rank: 9.0 },
+    { rank: 5, class_name: '未勝利', races: 4758, wins: 289, places_2: 254, places_3: 236, win_rate: 6.1, quinella_rate: 11.4, place_rate: 16.4, win_payback: 64.0, place_payback: 64.0, avg_popularity: 7.9, avg_rank: 8.7, median_popularity: 8.0, median_rank: 9.0 }
+  ]}
+  showOnlyProvidedData={true}
+/>
+
+3勝クラスになるとガクッと複勝率が下がっていることからも、相手が揃う**上のクラスでは好走するのが難しくなる**ことが分かります。
+
+一方で、勝率でみるとオープン〜未勝利でそこまで差はなく、**上のクラスでも一発の魅力は秘めていそう**です。
+
+## 初ダートと前走着順は関係ある？
+では、<strong>前走の着順</strong>によって成績に違いはあるのでしょうか？<br />
+初ダートは<strong>前走大敗した馬がいきなり激走する</strong>イメージがありますが、どうでしょうか。
+
+<PreviousFinishTable
+  title="前走着順別成績"
+  data={[
+    { rank: 1, finish_category: '1着', races: 18, wins: 0, places_2: 2, places_3: 2, win_rate: 0.0, quinella_rate: 11.1, place_rate: 22.2, win_payback: 0.0, place_payback: 65.0, avg_popularity: 6.6, avg_rank: 8.6, median_popularity: 6, median_rank: 9 },
+    { rank: 2, finish_category: '2着', races: 75, wins: 19, places_2: 15, places_3: 6, win_rate: 25.3, quinella_rate: 45.3, place_rate: 53.3, win_payback: 61.0, place_payback: 81.0, avg_popularity: 2.2, avg_rank: 4.8, median_popularity: 2, median_rank: 3 },
+    { rank: 3, finish_category: '3着', races: 152, wins: 29, places_2: 8, places_3: 14, win_rate: 19.1, quinella_rate: 24.3, place_rate: 33.6, win_payback: 65.0, place_payback: 53.0, avg_popularity: 3.0, avg_rank: 5.9, median_popularity: 2, median_rank: 5 },
+    { rank: 4, finish_category: '4-6着', races: 1061, wins: 135, places_2: 96, places_3: 78, win_rate: 12.7, quinella_rate: 21.8, place_rate: 29.1, win_payback: 96.0, place_payback: 76.0, avg_popularity: 4.8, avg_rank: 6.9, median_popularity: 4, median_rank: 6 },
+    { rank: 5, finish_category: '7-9着', races: 1568, wins: 90, places_2: 90, places_3: 89, win_rate: 5.7, quinella_rate: 11.5, place_rate: 17.2, win_payback: 72.0, place_payback: 70.0, avg_popularity: 7.3, avg_rank: 8.4, median_popularity: 7, median_rank: 9 },
+    { rank: 6, finish_category: '10着以下', races: 3115, wins: 81, places_2: 89, places_3: 100, win_rate: 2.6, quinella_rate: 5.5, place_rate: 8.7, win_payback: 58.0, place_payback: 53.0, avg_popularity: 9.7, avg_rank: 10.0, median_popularity: 10, median_rank: 11 }
+  ]}
+/>
+
+前走1着の出走数が極端に少ないですが、これは芝で勝った場合は引き続き芝で出走させるケースが多いということでしょう。
+
+確かに前走10着以下で馬券になるケースもありますが、前走2着の複勝率が50%を超えているように、<strong>成績は概ね前走着順に比例する</strong>と考えて良さそうですね。<br />
+芝である程度勝負になった馬の方が成績が良いことが分かりました。
 
 ## 初ダートで内枠は割引なのか？
 最後に、**枠順別**で傾向があるかを検証してみます。<br />
@@ -383,8 +410,9 @@ author: "daichi"
   ]}
 />
 
-やはり**外枠の方が若干ですが優勢**と言えそうですね。<br />
-さらに、「**初ダートで最内は割引**」という意見をよく見かけますが、確かに1枠の成績が最も悪いので、**砂を被りやすい1枠はマイナス材料**かもしれません。
+やはり**外枠の方が若干ですが優勢**と言えそうですね。
+
+さらに、「**初ダートで最内は割引**」という意見をよく見かけますが、確かに1枠の成績が勝率・連帯率・複勝率ともに最も低いので、**砂を被りやすい1枠はマイナス材料**かもしれません。
 
 ## まとめ
 初ダート（ダート替わり）の馬を買う際のポイント
@@ -397,9 +425,12 @@ author: "daichi"
    - [キタサンブラック](/sires/62458)、[ドゥラメンテ](/sires/12180)、[キズナ](/sires/99556)、[ロードカナロア](/sires/88034)、[ドレフォン](/sires/87469)なども優秀
 
 2. **馬体重が重い馬**
-   - 500kg以上は勝率9%超、複勝率20%超、単勝回収率100%超え
+   - 500kg以上は単勝回収率100%超え
 
-3. **外枠が有利**
+3. **牡馬＞牝馬**
+   - 馬体重に関わらず、牝馬より牡馬の方が成績が良い
+
+4. **外枠が有利**
    - 内枠（1-4枠）より外枠（5-8枠）の成績が良好
    - 特に1枠は割引材料
 

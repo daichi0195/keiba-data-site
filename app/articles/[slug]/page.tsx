@@ -9,11 +9,13 @@ import {
   getAllArticleSlugs,
   getAdjacentArticles,
   extractHeadings,
+  getPopularArticles,
 } from '@/lib/articles';
 import { getAuthorById, getAuthorByName } from '@/lib/authors';
 import FixedShareButton from '@/components/FixedShareButton';
 import TableOfContents from '@/components/TableOfContents';
 import MobileTableOfContents from '@/components/MobileTableOfContents';
+import PopularArticles from '@/components/PopularArticles';
 import DataTable from '@/components/DataTable';
 import GateTable from '@/components/GateTable';
 import HorseWeightTable from '@/components/HorseWeightTable';
@@ -109,7 +111,7 @@ export async function generateMetadata({
     };
   }
 
-  const { title, description, date, tags } = article.frontmatter;
+  const { title, description, date, tags, thumbnail } = article.frontmatter;
 
   return {
     title: `${title} | 競馬データ.com`,
@@ -120,6 +122,22 @@ export async function generateMetadata({
       type: 'article',
       publishedTime: date,
       tags,
+      images: thumbnail
+        ? [
+            {
+              url: `https://keibadata.com${thumbnail}`,
+              width: 1200,
+              height: 630,
+              alt: title,
+            },
+          ]
+        : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: thumbnail ? [`https://keibadata.com${thumbnail}`] : undefined,
     },
   };
 }
@@ -132,9 +150,12 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     notFound();
   }
 
-  const { title, description, date, category, tags, author } =
+  const { title, description, date, category, tags, author, thumbnail } =
     article.frontmatter;
   const { prev, next } = getAdjacentArticles(slug);
+
+  // 人気記事を取得（最大10件）
+  const popularArticles = getPopularArticles(10);
 
   // 執筆者情報を取得（IDまたは名前から検索）
   const authorData = getAuthorById(author) || getAuthorByName(author);
@@ -176,6 +197,21 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               {/* 記事タイトルと日付 */}
               <div className={styles.articleHeader}>
                 <h1 className={styles.articleTitle}>{title}</h1>
+
+                {/* サムネイル画像 */}
+                {thumbnail && (
+                  <div className={styles.thumbnailWrapper}>
+                    <Image
+                      src={thumbnail}
+                      alt={title}
+                      width={1200}
+                      height={630}
+                      className={styles.thumbnail}
+                      priority={true}
+                    />
+                  </div>
+                )}
+
                 <time className={styles.articleDate}>{formattedDate}</time>
               </div>
 
@@ -273,31 +309,38 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             </article>
 
             {/* 前後の記事ナビゲーション */}
-            <nav className={styles.articleNav}>
-              <div className={styles.articleNavItem}>
+            {(prev || next) && (
+              <nav className={styles.articleNav}>
                 {prev && (
-                  <Link
-                    href={`/articles/${prev.slug}`}
-                    className={`${styles.articleNavLink} ${styles.articleNavPrev}`}
-                  >
-                    <span className={styles.articleNavLabel}>前の記事</span>
-                    <span className={styles.articleNavTitle}>{prev.frontmatter.title}</span>
-                  </Link>
+                  <>
+                    <div className={styles.articleNavItem}>
+                      <Link
+                        href={`/articles/${prev.slug}`}
+                        className={`${styles.articleNavLink} ${styles.articleNavPrev}`}
+                      >
+                        <span className={styles.articleNavLabel}>前の記事</span>
+                        <span className={styles.articleNavTitle}>{prev.frontmatter.title}</span>
+                      </Link>
+                    </div>
+                    {next && <div className={styles.articleNavDivider}></div>}
+                  </>
                 )}
-              </div>
-              <div className={styles.articleNavDivider}></div>
-              <div className={styles.articleNavItem}>
                 {next && (
-                  <Link
-                    href={`/articles/${next.slug}`}
-                    className={`${styles.articleNavLink} ${styles.articleNavNext}`}
-                  >
-                    <span className={styles.articleNavLabel}>次の記事</span>
-                    <span className={styles.articleNavTitle}>{next.frontmatter.title}</span>
-                  </Link>
+                  <div className={styles.articleNavItem}>
+                    <Link
+                      href={`/articles/${next.slug}`}
+                      className={`${styles.articleNavLink} ${styles.articleNavNext}`}
+                    >
+                      <span className={styles.articleNavLabel}>次の記事</span>
+                      <span className={styles.articleNavTitle}>{next.frontmatter.title}</span>
+                    </Link>
+                  </div>
                 )}
-              </div>
-            </nav>
+              </nav>
+            )}
+
+            {/* 人気記事 */}
+            <PopularArticles articles={popularArticles} />
           </div>
 
           {/* 右サイドバー：目次・広告エリア */}
