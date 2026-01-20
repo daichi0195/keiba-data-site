@@ -31,7 +31,7 @@ export default function MobileTableOfContents({ headings, initialShow = 5 }: Pro
     const element = document.getElementById(id);
     if (element) {
       const offset = 80; // ヘッダー分のオフセット
-      const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+      const elementPosition = element.getBoundingClientRect().top + window.scrollY;
       const offsetPosition = elementPosition - offset;
 
       window.scrollTo({
@@ -44,7 +44,6 @@ export default function MobileTableOfContents({ headings, initialShow = 5 }: Pro
   return (
     <nav className={styles.tocContainer}>
       <div className={styles.tocHeader}>
-        <span className={styles.tocIcon}>▼</span>
         <h2 className={styles.tocTitle}>目次</h2>
       </div>
 

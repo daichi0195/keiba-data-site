@@ -1,14 +1,16 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
 import {
   getArticleBySlug,
   getAllArticleSlugs,
-  getRelatedArticles,
+  getAdjacentArticles,
   extractHeadings,
 } from '@/lib/articles';
+import { getAuthorById, getAuthorByName } from '@/lib/authors';
 import FixedShareButton from '@/components/FixedShareButton';
 import TableOfContents from '@/components/TableOfContents';
 import MobileTableOfContents from '@/components/MobileTableOfContents';
@@ -132,7 +134,16 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
   const { title, description, date, category, tags, author } =
     article.frontmatter;
-  const relatedArticles = getRelatedArticles(slug);
+  const { prev, next } = getAdjacentArticles(slug);
+
+  // 執筆者情報を取得（IDまたは名前から検索）
+  const authorData = getAuthorById(author) || getAuthorByName(author);
+  const authorName = authorData?.name || author;
+  const authorImage = authorData?.image;
+  const authorBio = authorData?.bio;
+  const authorTwitter = authorData?.twitter;
+  const authorRss = authorData?.rss;
+  const authorAboutUrl = authorData?.aboutUrl;
 
   // 日付をフォーマット
   const formattedDate = new Date(date).toLocaleDateString('ja-JP', {
@@ -181,42 +192,112 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 )}
               </div>
 
-              {/* 記事フッター */}
+              {/* 記事フッター - 執筆者情報 */}
               <footer className={styles.footer}>
-                <p className={styles.author}>執筆者：{author}</p>
+                <div className={styles.authorCard}>
+                  {authorImage && (
+                    <div className={styles.authorImageWrapper}>
+                      <Image
+                        src={authorImage}
+                        alt={authorName}
+                        width={120}
+                        height={120}
+                        className={styles.authorImage}
+                        priority={false}
+                      />
+                    </div>
+                  )}
+                  <div className={styles.authorInfo}>
+                    <p className={styles.authorName}>{authorName}</p>
+                    {authorBio && (
+                      <p
+                        className={styles.authorBio}
+                        dangerouslySetInnerHTML={{ __html: authorBio }}
+                      />
+                    )}
+                    {(authorTwitter || authorRss || authorAboutUrl) && (
+                      <div className={styles.socialLinks}>
+                        <div className={styles.socialIcons}>
+                          {authorTwitter && (
+                            <a
+                              href={authorTwitter}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={styles.socialIcon}
+                              aria-label="X (Twitter)"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="20"
+                                height="20"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                              >
+                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                              </svg>
+                            </a>
+                          )}
+                          {authorRss && (
+                            <a
+                              href={authorRss}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={styles.socialIcon}
+                              aria-label="RSS"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="20"
+                                height="20"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                              >
+                                <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1Z" />
+                              </svg>
+                            </a>
+                          )}
+                        </div>
+                        {authorAboutUrl && (
+                          <a
+                            href={authorAboutUrl}
+                            className={styles.aboutLink}
+                          >
+                            サイト情報・運営者情報
+                          </a>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
               </footer>
             </article>
 
-            {/* 関連記事 */}
-            {relatedArticles.length > 0 && (
-              <aside className={styles.relatedArticles}>
-                <h2 className={styles.relatedTitle}>関連記事</h2>
-                <div className={styles.relatedGrid}>
-                  {relatedArticles.map((relatedArticle) => (
-                    <Link
-                      key={relatedArticle.slug}
-                      href={`/articles/${relatedArticle.slug}`}
-                      className={styles.relatedCard}
-                    >
-                      <div className={styles.relatedCategory}>
-                        {relatedArticle.frontmatter.category}
-                      </div>
-                      <h3 className={styles.relatedCardTitle}>
-                        {relatedArticle.frontmatter.title}
-                      </h3>
-                      <p className={styles.relatedCardDescription}>
-                        {relatedArticle.frontmatter.description}
-                      </p>
-                      <time className={styles.relatedCardDate}>
-                        {new Date(relatedArticle.frontmatter.date).toLocaleDateString(
-                          'ja-JP'
-                        )}
-                      </time>
-                    </Link>
-                  ))}
-                </div>
-              </aside>
-            )}
+            {/* 前後の記事ナビゲーション */}
+            <nav className={styles.articleNav}>
+              <div className={styles.articleNavItem}>
+                {prev && (
+                  <Link
+                    href={`/articles/${prev.slug}`}
+                    className={`${styles.articleNavLink} ${styles.articleNavPrev}`}
+                  >
+                    <span className={styles.articleNavLabel}>前の記事</span>
+                    <span className={styles.articleNavTitle}>{prev.frontmatter.title}</span>
+                  </Link>
+                )}
+              </div>
+              <div className={styles.articleNavDivider}></div>
+              <div className={styles.articleNavItem}>
+                {next && (
+                  <Link
+                    href={`/articles/${next.slug}`}
+                    className={`${styles.articleNavLink} ${styles.articleNavNext}`}
+                  >
+                    <span className={styles.articleNavLabel}>次の記事</span>
+                    <span className={styles.articleNavTitle}>{next.frontmatter.title}</span>
+                  </Link>
+                )}
+              </div>
+            </nav>
           </div>
 
           {/* 右サイドバー：目次・広告エリア */}
@@ -237,8 +318,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             description: description,
             datePublished: date,
             author: {
-              '@type': 'Organization',
-              name: author,
+              '@type': 'Person',
+              name: authorName,
+              ...(authorImage && { image: authorImage }),
+              ...(authorBio && { description: authorBio }),
             },
             publisher: {
               '@type': 'Organization',

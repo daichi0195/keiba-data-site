@@ -13,7 +13,7 @@ export interface ArticleFrontmatter {
   date: string;
   category: string;
   tags: string[];
-  author: string;
+  author: string; // 執筆者IDまたは執筆者名
 }
 
 export interface Article {
@@ -199,6 +199,26 @@ export function getAllTags(): string[] {
   const allArticles = getAllArticles();
   const tags = allArticles.flatMap((article) => article.frontmatter.tags);
   return Array.from(new Set(tags));
+}
+
+/**
+ * 前後の記事を取得
+ */
+export function getAdjacentArticles(currentSlug: string): {
+  prev: Article | null;
+  next: Article | null;
+} {
+  const allArticles = getAllArticles();
+  const currentIndex = allArticles.findIndex((article) => article.slug === currentSlug);
+
+  if (currentIndex === -1) {
+    return { prev: null, next: null };
+  }
+
+  return {
+    prev: currentIndex > 0 ? allArticles[currentIndex - 1] : null,
+    next: currentIndex < allArticles.length - 1 ? allArticles[currentIndex + 1] : null,
+  };
 }
 
 /**
