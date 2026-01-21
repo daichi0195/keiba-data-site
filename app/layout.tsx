@@ -81,6 +81,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         </noscript>
         {/* End Google Tag Manager (noscript) */}
 
+        <HeaderMenu />
         <header>
           <Link href="/" style={{ textDecoration: 'none', color: 'inherit' }}>
             <div className="site-name" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
@@ -88,7 +89,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               <span style={{ display: 'flex', alignItems: 'center', fontSize: '20px', fontWeight: '600' }}>競馬データ.com</span>
             </div>
           </Link>
-          <HeaderMenu />
         </header>
         {children}
         <Footer />
