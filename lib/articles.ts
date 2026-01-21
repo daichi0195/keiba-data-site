@@ -16,6 +16,7 @@ export interface ArticleFrontmatter {
   author: string; // 執筆者IDまたは執筆者名
   thumbnail?: string; // サムネイル画像のパス（例: /images/articles/1.png）
   featured?: boolean; // 人気記事フラグ
+  priority?: number; // 人気順の優先度（数字が小さいほど上位、未指定は999）
 }
 
 export interface Article {
@@ -237,12 +238,19 @@ export function getPopularArticles(limit: number = 10, excludeSlug?: string): Ar
     ? allArticles.filter((article) => article.slug !== excludeSlug)
     : allArticles;
 
-  // featured=trueの記事のみを取得して返す
+  // featured=trueの記事のみを取得
   const featuredArticles = filteredArticles.filter(
     (article) => article.frontmatter.featured === true
   );
 
-  return featuredArticles.slice(0, limit);
+  // priorityでソート（数字が小さいほど上位、未指定は999として扱う）
+  const sortedArticles = featuredArticles.sort((a, b) => {
+    const priorityA = a.frontmatter.priority ?? 999;
+    const priorityB = b.frontmatter.priority ?? 999;
+    return priorityA - priorityB;
+  });
+
+  return sortedArticles.slice(0, limit);
 }
 
 /**
