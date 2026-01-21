@@ -392,7 +392,7 @@ export default function HeaderMenu() {
           <span className={styles.menuText}>調教師データ</span>
         </button>
         <Link href="/articles" className={styles.menuButton}>
-          <span className={styles.menuIcon}><i className="fa-solid fa-newspaper"></i></span>
+          <span className={styles.menuIcon}><i className="fa-regular fa-pen-to-square"></i></span>
           <span className={styles.menuText}>コラム</span>
         </Link>
       </div>

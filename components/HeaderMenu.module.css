@@ -106,13 +106,14 @@
 .menuIcon {
   font-size: 20px;
   line-height: 1;
-  color: #64748b;
+  color: #1db854;
+  filter: drop-shadow(0 2px 4px rgba(29, 184, 84, 0.3));
 }
 
 .menuText {
   font-size: 10px;
   font-weight: 600;
-  color: #1db854;
+  color: #2d3748;
   letter-spacing: 0.05em;
 }
 
