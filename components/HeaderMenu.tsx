@@ -352,7 +352,7 @@ export default function HeaderMenu() {
         </nav>
       )}
 
-      {/* ===== モバイル：下部固定メニューボタン（4つ） ===== */}
+      {/* ===== モバイル：下部固定メニューボタン（5つ） ===== */}
       {!isPCView && (
       <div className={styles.spMenu}>
         <button
@@ -391,6 +391,10 @@ export default function HeaderMenu() {
           <span className={styles.menuIcon}><i className="fa-solid fa-user"></i></span>
           <span className={styles.menuText}>調教師データ</span>
         </button>
+        <Link href="/articles" className={styles.menuButton}>
+          <span className={styles.menuIcon}><i className="fa-solid fa-newspaper"></i></span>
+          <span className={styles.menuText}>コラム</span>
+        </Link>
       </div>
       )}
 
