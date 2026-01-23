@@ -233,6 +233,35 @@
       padding: 8px 4px !important;
     }
 
+    /* モバイル表示での幅広カラムモード */
+    .wideTable .table th:nth-child(2),
+    .wideTable .table td:nth-child(2) {
+      width: 75px !important;
+      min-width: 75px !important;
+      max-width: 75px !important;
+    }
+
+    .wideTable .table th:nth-child(3),
+    .wideTable .table td:nth-child(3) {
+      width: 65px !important;
+      min-width: 65px !important;
+      max-width: 65px !important;
+    }
+
+    .wideTable .table th:nth-child(4),
+    .wideTable .table td:nth-child(4) {
+      width: 65px !important;
+      min-width: 65px !important;
+      max-width: 65px !important;
+    }
+
+    .wideTable .table th:nth-child(5),
+    .wideTable .table td:nth-child(5) {
+      width: 65px !important;
+      min-width: 65px !important;
+      max-width: 65px !important;
+    }
+
     /* 第6列：勝率 - 80px */
     .table th:nth-child(6),
     .table td:nth-child(6) {
@@ -285,6 +314,35 @@
     }
   }
 
+/* 幅広カラムモード（出走数が多い場合） */
+.wideTable .table th:nth-child(2),
+.wideTable .table td:nth-child(2) {
+  width: 80px !important;
+  min-width: 80px !important;
+  max-width: 80px !important;
+}
+
+.wideTable .table th:nth-child(3),
+.wideTable .table td:nth-child(3) {
+  width: 75px !important;
+  min-width: 75px !important;
+  max-width: 75px !important;
+}
+
+.wideTable .table th:nth-child(4),
+.wideTable .table td:nth-child(4) {
+  width: 75px !important;
+  min-width: 75px !important;
+  max-width: 75px !important;
+}
+
+.wideTable .table th:nth-child(5),
+.wideTable .table td:nth-child(5) {
+  width: 75px !important;
+  min-width: 75px !important;
+  max-width: 75px !important;
+}
+
 /* PC表示：カラム幅調整 */
 @media (min-width: 769px) {
   .table th:nth-child(1),
@@ -293,28 +351,28 @@
     min-width: 90px !important;
     max-width: 90px !important;
   }
-  
+
   .table th:nth-child(2),
   .table td:nth-child(2) {
     width: 80px !important;
     min-width: 80px !important;
     max-width: 80px !important;
   }
-  
+
   .table th:nth-child(3),
   .table td:nth-child(3) {
     width: 60px !important;
     min-width: 60px !important;
     max-width: 60px !important;
   }
-  
+
   .table th:nth-child(4),
   .table td:nth-child(4) {
     width: 60px !important;
     min-width: 60px !important;
     max-width: 60px !important;
   }
-  
+
   .table th:nth-child(5),
   .table td:nth-child(5) {
     width: 60px !important;

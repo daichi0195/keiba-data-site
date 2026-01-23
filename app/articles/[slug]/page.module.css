@@ -667,4 +667,9 @@
   .aboutLink {
     font-size: 0.75rem;
   }
+
+  /* SP表示時、記事内のテーブルの上下余白を0に */
+  .content table:not([class]) {
+    margin: 0;
+  }
 }

@@ -190,6 +190,35 @@
   font-size: 14px;
 }
 
+/* 幅広カラムモード（出走数が多い場合） */
+.wideTable .table th:nth-child(2),
+.wideTable .table td:nth-child(2) {
+  width: 80px !important;
+  min-width: 80px !important;
+  max-width: 80px !important;
+}
+
+.wideTable .table th:nth-child(3),
+.wideTable .table td:nth-child(3) {
+  width: 75px !important;
+  min-width: 75px !important;
+  max-width: 75px !important;
+}
+
+.wideTable .table th:nth-child(4),
+.wideTable .table td:nth-child(4) {
+  width: 75px !important;
+  min-width: 75px !important;
+  max-width: 75px !important;
+}
+
+.wideTable .table th:nth-child(5),
+.wideTable .table td:nth-child(5) {
+  width: 75px !important;
+  min-width: 75px !important;
+  max-width: 75px !important;
+}
+
 /* ハイライト */
 .highlight {
   background: linear-gradient(135deg, #d1f0e5 0%, #e8f9f0 100%) !important;
@@ -305,6 +334,35 @@
   .weightBadge {
     font-size: 10px;
     padding: 3px 4px;
+  }
+
+  /* モバイル表示での幅広カラムモード */
+  .wideTable .table th:nth-child(2),
+  .wideTable .table td:nth-child(2) {
+    width: 75px !important;
+    min-width: 75px !important;
+    max-width: 75px !important;
+  }
+
+  .wideTable .table th:nth-child(3),
+  .wideTable .table td:nth-child(3) {
+    width: 65px !important;
+    min-width: 65px !important;
+    max-width: 65px !important;
+  }
+
+  .wideTable .table th:nth-child(4),
+  .wideTable .table td:nth-child(4) {
+    width: 65px !important;
+    min-width: 65px !important;
+    max-width: 65px !important;
+  }
+
+  .wideTable .table th:nth-child(5),
+  .wideTable .table td:nth-child(5) {
+    width: 65px !important;
+    min-width: 65px !important;
+    max-width: 65px !important;
   }
 }
 

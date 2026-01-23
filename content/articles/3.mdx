@@ -1,0 +1,614 @@
+---
+title: "新馬戦の予想のポイントは？騎手や調教師、血統などのデータを分析！"
+description: "過去レースがない新馬戦だからこそ、データが勝負のカギ。血統傾向、騎手・調教師の成績など、統計データに基づいた予想ポイントを解説します。"
+date: "2025-01-22"
+category: "分析コラム"
+tags: ["新馬戦", "騎手", "調教師", "血統", "馬体重", "データ分析"]
+author: "daichi"
+thumbnail: "/images/articles/3.png"
+featured: true
+priority: 1
+---
+
+# 新馬戦の予想のポイントは？騎手や調教師、血統などのデータを分析！
+
+新馬戦の予想って難しいですよね...<br />
+過去のレース実績がないため、自分を含め何を基準に予想すればいいか迷う方も多いのではないでしょうか。
+
+ということで今回は、新馬戦の予想のポイントをさまざまな切り口で考えてみたいと思います！
+
+## データの定義
+本題に入る前に、まずはデータの定義について。
+
+今回は2022年1月〜2025年10月までに行われた新馬戦（レース数：1,126回）を対象として分析していきます。
+
+## 新馬戦は荒れるのか？
+
+まずは新馬戦の配当傾向を確認してみましょう。
+
+レースを新馬戦と新馬戦以外に区別して、配当の中央値を比較してみました。<br />
+なお同着の場合は配当の計算がややこしくなるので、この対象からは除外しています。
+
+<div style={{ overflowX: 'auto' }}>
+  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
+    <thead>
+      <tr style={{ backgroundColor: '#f5f7fa' }}>
+        <th style={{ padding: '12px', textAlign: 'left', borderBottom: '2px solid #e2e8f0' }}></th>
+        <th style={{ padding: '12px', textAlign: 'center', borderBottom: '2px solid #e2e8f0' }}>新馬戦</th>
+        <th style={{ padding: '12px', textAlign: 'center', borderBottom: '2px solid #e2e8f0' }}>新馬戦以外</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>レース数</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>1,121</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>12,059</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>単勝 中央値</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>440円</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>450円</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>馬連 中央値</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>1,570円</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>1,740円</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>三連複 中央値</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>4,310円</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>4,730円</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>三連単 中央値</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>21,320円</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>24,700円</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+結果を見ると、**新馬戦の配当は全体的に新馬戦以外より若干低い**ことがわかります。<br />
+予想が難しいイメージがある新馬戦ですが、思ったほど荒れないんですね🧐
+
+では、全体の傾向が見えてきたところで、いくつかの観点に分けて分析してみます。
+
+## 新馬戦の騎手成績は？
+
+最初に騎手別の新馬戦成績を見てみましょう。
+
+かなり数が多くなってしまったので期間内で50回以上騎乗した騎手を対象とし、勝ち数の多い順に並べています。
+
+<DataTable
+  data={[
+    { rank: 1, name: 'C.ルメール', link: '/jockeys/5339', races: 283, wins: 76, places_2: 66, places_3: 32, win_rate: 26.9, quinella_rate: 50.2, place_rate: 61.5, win_payback: 65.6, place_payback: 83.6, avg_popularity: 1.9, avg_rank: 3.9, median_popularity: 1, median_rank: 2 },
+    { rank: 2, name: '松山弘平', link: '/jockeys/1126', races: 363, wins: 60, places_2: 45, places_3: 40, win_rate: 16.5, quinella_rate: 28.9, place_rate: 39.9, win_payback: 101.2, place_payback: 82.7, avg_popularity: 4.1, avg_rank: 5.4, median_popularity: 3, median_rank: 5 },
+    { rank: 3, name: '戸崎圭太', link: '/jockeys/5386', races: 317, wins: 57, places_2: 42, places_3: 32, win_rate: 18.0, quinella_rate: 31.2, place_rate: 41.3, win_payback: 70.7, place_payback: 70.0, avg_popularity: 3.4, avg_rank: 5.5, median_popularity: 3, median_rank: 4 },
+    { rank: 4, name: '川田将雅', link: '/jockeys/1088', races: 179, wins: 49, places_2: 32, places_3: 18, win_rate: 27.4, quinella_rate: 45.3, place_rate: 55.3, win_payback: 74.2, place_payback: 74.0, avg_popularity: 1.9, avg_rank: 3.9, median_popularity: 1, median_rank: 3 },
+    { rank: 5, name: '坂井瑠星', link: '/jockeys/1163', races: 288, wins: 44, places_2: 26, places_3: 31, win_rate: 15.3, quinella_rate: 24.3, place_rate: 35.1, win_payback: 74.1, place_payback: 59.5, avg_popularity: 4.0, avg_rank: 5.8, median_popularity: 3, median_rank: 5 },
+    { rank: 6, name: '横山武史', link: '/jockeys/1170', races: 289, wins: 42, places_2: 38, places_3: 41, win_rate: 14.5, quinella_rate: 27.7, place_rate: 41.9, win_payback: 85.7, place_payback: 80.9, avg_popularity: 3.9, avg_rank: 5.5, median_popularity: 3, median_rank: 5 },
+    { rank: 7, name: '岩田望来', link: '/jockeys/1174', races: 270, wins: 34, places_2: 34, places_3: 35, win_rate: 12.6, quinella_rate: 25.2, place_rate: 38.1, win_payback: 72.7, place_payback: 97.2, avg_popularity: 4.5, avg_rank: 5.7, median_popularity: 4, median_rank: 5 },
+    { rank: 8, name: '武豊', link: '/jockeys/666', races: 201, wins: 29, places_2: 22, places_3: 26, win_rate: 14.4, quinella_rate: 25.4, place_rate: 38.3, win_payback: 68.0, place_payback: 66.2, avg_popularity: 3.5, avg_rank: 5.6, median_popularity: 3, median_rank: 5 },
+    { rank: 9, name: '津村明秀', link: '/jockeys/1092', races: 243, wins: 26, places_2: 18, places_3: 29, win_rate: 10.7, quinella_rate: 18.1, place_rate: 30.0, win_payback: 142.3, place_payback: 89.5, avg_popularity: 6.1, avg_rank: 6.1, median_popularity: 6, median_rank: 5 },
+    { rank: 10, name: '北村友一', link: '/jockeys/1102', races: 135, wins: 25, places_2: 8, places_3: 19, win_rate: 18.5, quinella_rate: 24.4, place_rate: 38.5, win_payback: 128.4, place_payback: 80.8, avg_popularity: 5.1, avg_rank: 5.5, median_popularity: 4, median_rank: 5 },
+    { rank: 11, name: '三浦皇成', link: '/jockeys/1122', races: 246, wins: 23, places_2: 32, places_3: 18, win_rate: 9.3, quinella_rate: 22.4, place_rate: 29.7, win_payback: 112.8, place_payback: 73.3, avg_popularity: 5.5, avg_rank: 6.2, median_popularity: 5, median_rank: 5 },
+    { rank: 12, name: '横山和生', link: '/jockeys/1140', races: 173, wins: 22, places_2: 16, places_3: 17, win_rate: 12.7, quinella_rate: 22.0, place_rate: 31.8, win_payback: 116.6, place_payback: 90.8, avg_popularity: 5.8, avg_rank: 6.2, median_popularity: 5, median_rank: 5 },
+    { rank: 13, name: '鮫島克駿', link: '/jockeys/1157', races: 271, wins: 22, places_2: 35, places_3: 33, win_rate: 8.1, quinella_rate: 21.0, place_rate: 33.2, win_payback: 102.8, place_payback: 108.5, avg_popularity: 6.1, avg_rank: 6.0, median_popularity: 6, median_rank: 5 },
+    { rank: 14, name: '佐々木大輔', link: '/jockeys/1197', races: 191, wins: 21, places_2: 18, places_3: 16, win_rate: 11.0, quinella_rate: 20.4, place_rate: 28.8, win_payback: 136.6, place_payback: 82.3, avg_popularity: 6.7, avg_rank: 7.3, median_popularity: 7, median_rank: 7 },
+    { rank: 15, name: '西村淳也', link: '/jockeys/1171', races: 215, wins: 21, places_2: 26, places_3: 27, win_rate: 9.8, quinella_rate: 21.9, place_rate: 34.4, win_payback: 53.1, place_payback: 93.6, avg_popularity: 5.3, avg_rank: 6.1, median_popularity: 5, median_rank: 5 },
+    { rank: 16, name: '菅原明良', link: '/jockeys/1179', races: 326, wins: 19, places_2: 28, places_3: 35, win_rate: 5.8, quinella_rate: 14.4, place_rate: 25.2, win_payback: 62.4, place_payback: 75.0, avg_popularity: 5.6, avg_rank: 7.0, median_popularity: 5, median_rank: 7 },
+    { rank: 17, name: '浜中俊', link: '/jockeys/1115', races: 103, wins: 17, places_2: 11, places_3: 9, win_rate: 16.5, quinella_rate: 27.2, place_rate: 35.9, win_payback: 126.4, place_payback: 81.3, avg_popularity: 5.3, avg_rank: 6.0, median_popularity: 4, median_rank: 5 },
+    { rank: 18, name: '団野大成', link: '/jockeys/1180', races: 214, wins: 17, places_2: 19, places_3: 21, win_rate: 7.9, quinella_rate: 16.8, place_rate: 26.6, win_payback: 58.6, place_payback: 71.3, avg_popularity: 6.3, avg_rank: 6.7, median_popularity: 6, median_rank: 6 },
+    { rank: 19, name: '和田竜二', link: '/jockeys/1018', races: 263, wins: 17, places_2: 24, places_3: 22, win_rate: 6.5, quinella_rate: 15.6, place_rate: 24.0, win_payback: 68.9, place_payback: 74.6, avg_popularity: 6.9, avg_rank: 6.4, median_popularity: 7, median_rank: 6 },
+    { rank: 20, name: '幸英明', link: '/jockeys/732', races: 267, wins: 16, places_2: 20, places_3: 19, win_rate: 6.0, quinella_rate: 13.5, place_rate: 20.6, win_payback: 77.4, place_payback: 65.8, avg_popularity: 7.3, avg_rank: 7.0, median_popularity: 7, median_rank: 7 },
+    { rank: 21, name: '福永祐一', link: '/jockeys/1014', races: 77, wins: 15, places_2: 17, places_3: 8, win_rate: 19.5, quinella_rate: 41.6, place_rate: 51.9, win_payback: 63.0, place_payback: 82.6, avg_popularity: 3.0, avg_rank: 4.7, median_popularity: 2, median_rank: 3 },
+    { rank: 22, name: 'M.デムーロ', link: '/jockeys/5212', races: 180, wins: 15, places_2: 26, places_3: 16, win_rate: 8.3, quinella_rate: 22.8, place_rate: 31.7, win_payback: 75.4, place_payback: 88.1, avg_popularity: 5.4, avg_rank: 6.5, median_popularity: 5, median_rank: 6 },
+    { rank: 23, name: '石川裕紀人', link: '/jockeys/1150', races: 222, wins: 15, places_2: 12, places_3: 11, win_rate: 6.8, quinella_rate: 12.2, place_rate: 17.1, win_payback: 70.9, place_payback: 64.1, avg_popularity: 7.8, avg_rank: 8.1, median_popularity: 8, median_rank: 8 },
+    { rank: 24, name: '池添謙一', link: '/jockeys/1032', races: 129, wins: 14, places_2: 13, places_3: 16, win_rate: 10.9, quinella_rate: 20.9, place_rate: 33.3, win_payback: 151.7, place_payback: 104.3, avg_popularity: 5.4, avg_rank: 6.0, median_popularity: 4, median_rank: 5 },
+    { rank: 25, name: 'T.マーカンド', link: '/jockeys/5626', races: 62, wins: 13, places_2: 7, places_3: 3, win_rate: 21.0, quinella_rate: 32.3, place_rate: 37.1, win_payback: 108.7, place_payback: 63.1, avg_popularity: 4.0, avg_rank: 6.0, median_popularity: 3, median_rank: 5 },
+    { rank: 26, name: '藤岡佑介', link: '/jockeys/1093', races: 113, wins: 13, places_2: 16, places_3: 17, win_rate: 11.5, quinella_rate: 25.7, place_rate: 40.7, win_payback: 80.4, place_payback: 90.8, avg_popularity: 5.2, avg_rank: 6.0, median_popularity: 5, median_rank: 5 },
+    { rank: 27, name: '吉田隼人', link: '/jockeys/1095', races: 116, wins: 13, places_2: 2, places_3: 9, win_rate: 11.2, quinella_rate: 12.9, place_rate: 20.7, win_payback: 190.0, place_payback: 75.9, avg_popularity: 6.5, avg_rank: 7.1, median_popularity: 6, median_rank: 7 },
+    { rank: 28, name: '今村聖奈', link: '/jockeys/1193', races: 122, wins: 12, places_2: 7, places_3: 7, win_rate: 9.8, quinella_rate: 15.6, place_rate: 21.3, win_payback: 80.2, place_payback: 60.6, avg_popularity: 6.7, avg_rank: 7.3, median_popularity: 6, median_rank: 7 },
+    { rank: 29, name: '横山琉人', link: '/jockeys/1192', races: 135, wins: 12, places_2: 7, places_3: 7, win_rate: 8.9, quinella_rate: 14.1, place_rate: 19.3, win_payback: 181.6, place_payback: 74.1, avg_popularity: 8.8, avg_rank: 8.4, median_popularity: 9, median_rank: 9 },
+    { rank: 30, name: '永野猛蔵', link: '/jockeys/1188', races: 172, wins: 12, places_2: 11, places_3: 8, win_rate: 7.0, quinella_rate: 13.4, place_rate: 18.0, win_payback: 147.1, place_payback: 115.2, avg_popularity: 8.5, avg_rank: 7.7, median_popularity: 9, median_rank: 8 },
+    { rank: 31, name: '木幡巧也', link: '/jockeys/1162', races: 252, wins: 12, places_2: 11, places_3: 12, win_rate: 4.8, quinella_rate: 9.1, place_rate: 13.9, win_payback: 58.3, place_payback: 84.5, avg_popularity: 8.8, avg_rank: 8.4, median_popularity: 9, median_rank: 8 },
+    { rank: 32, name: '岩田康誠', link: '/jockeys/5203', races: 131, wins: 11, places_2: 11, places_3: 8, win_rate: 8.4, quinella_rate: 16.8, place_rate: 22.9, win_payback: 82.7, place_payback: 80.4, avg_popularity: 6.5, avg_rank: 7.1, median_popularity: 6, median_rank: 7 },
+    { rank: 33, name: '田辺裕信', link: '/jockeys/1075', races: 142, wins: 10, places_2: 15, places_3: 19, win_rate: 7.0, quinella_rate: 17.6, place_rate: 31.0, win_payback: 60.4, place_payback: 73.2, avg_popularity: 5.2, avg_rank: 6.6, median_popularity: 5, median_rank: 5 },
+    { rank: 34, name: '高杉吏麒', link: '/jockeys/1213', races: 86, wins: 9, places_2: 10, places_3: 6, win_rate: 10.5, quinella_rate: 22.1, place_rate: 29.1, win_payback: 98.1, place_payback: 90.6, avg_popularity: 6.5, avg_rank: 6.4, median_popularity: 6, median_rank: 6 },
+    { rank: 35, name: '荻野極', link: '/jockeys/1160', races: 110, wins: 9, places_2: 9, places_3: 8, win_rate: 8.2, quinella_rate: 16.4, place_rate: 23.6, win_payback: 114.7, place_payback: 97.0, avg_popularity: 7.5, avg_rank: 8.2, median_popularity: 8, median_rank: 8 },
+    { rank: 36, name: '北村宏司', link: '/jockeys/1043', races: 133, wins: 9, places_2: 11, places_3: 11, win_rate: 6.8, quinella_rate: 15.0, place_rate: 23.3, win_payback: 45.2, place_payback: 73.9, avg_popularity: 7.2, avg_rank: 6.9, median_popularity: 7, median_rank: 7 },
+    { rank: 37, name: '田口貫太', link: '/jockeys/1208', races: 171, wins: 9, places_2: 8, places_3: 12, win_rate: 5.3, quinella_rate: 9.9, place_rate: 17.0, win_payback: 100.0, place_payback: 54.4, avg_popularity: 8.0, avg_rank: 7.5, median_popularity: 8, median_rank: 7 },
+    { rank: 38, name: '石橋脩', link: '/jockeys/1077', races: 183, wins: 9, places_2: 15, places_3: 18, win_rate: 4.9, quinella_rate: 13.1, place_rate: 23.0, win_payback: 33.6, place_payback: 77.5, avg_popularity: 7.1, avg_rank: 7.5, median_popularity: 7, median_rank: 7 },
+    { rank: 39, name: '大野拓弥', link: '/jockeys/1096', races: 210, wins: 9, places_2: 14, places_3: 11, win_rate: 4.3, quinella_rate: 11.0, place_rate: 16.2, win_payback: 85.4, place_payback: 61.1, avg_popularity: 8.2, avg_rank: 7.7, median_popularity: 8, median_rank: 7 },
+    { rank: 40, name: '柴田大知', link: '/jockeys/1009', races: 210, wins: 9, places_2: 3, places_3: 10, win_rate: 4.3, quinella_rate: 5.7, place_rate: 10.5, win_payback: 58.8, place_payback: 39.5, avg_popularity: 10.2, avg_rank: 8.9, median_popularity: 10, median_rank: 9 },
+    { rank: 41, name: '酒井学', link: '/jockeys/1034', races: 121, wins: 8, places_2: 3, places_3: 6, win_rate: 6.6, quinella_rate: 9.1, place_rate: 14.0, win_payback: 92.3, place_payback: 47.9, avg_popularity: 9.1, avg_rank: 8.4, median_popularity: 9, median_rank: 9 },
+    { rank: 42, name: '松若風馬', link: '/jockeys/1154', races: 126, wins: 8, places_2: 12, places_3: 12, win_rate: 6.3, quinella_rate: 15.9, place_rate: 25.4, win_payback: 78.7, place_payback: 104.1, avg_popularity: 7.6, avg_rank: 6.8, median_popularity: 8, median_rank: 6 },
+    { rank: 43, name: '菱田裕二', link: '/jockeys/1144', races: 128, wins: 8, places_2: 10, places_3: 6, win_rate: 6.3, quinella_rate: 14.1, place_rate: 18.8, win_payback: 124.1, place_payback: 73.9, avg_popularity: 7.7, avg_rank: 6.9, median_popularity: 7, median_rank: 7 },
+    { rank: 44, name: '角田大河', link: '/jockeys/1199', races: 129, wins: 8, places_2: 8, places_3: 10, win_rate: 6.2, quinella_rate: 12.4, place_rate: 20.2, win_payback: 114.7, place_payback: 78.4, avg_popularity: 8.2, avg_rank: 7.4, median_popularity: 8, median_rank: 7 },
+    { rank: 45, name: '杉原誠人', link: '/jockeys/1135', races: 154, wins: 8, places_2: 5, places_3: 6, win_rate: 5.2, quinella_rate: 8.4, place_rate: 12.3, win_payback: 71.8, place_payback: 57.1, avg_popularity: 10.1, avg_rank: 8.8, median_popularity: 10, median_rank: 8 },
+    { rank: 46, name: '永島まなみ', link: '/jockeys/1187', races: 157, wins: 8, places_2: 4, places_3: 8, win_rate: 5.1, quinella_rate: 7.6, place_rate: 12.7, win_payback: 58.6, place_payback: 38.2, avg_popularity: 7.6, avg_rank: 8.6, median_popularity: 8, median_rank: 9 },
+    { rank: 47, name: '亀田温心', link: '/jockeys/1176', races: 60, wins: 7, places_2: 7, places_3: 4, win_rate: 11.7, quinella_rate: 23.3, place_rate: 30.0, win_payback: 133.3, place_payback: 102.8, avg_popularity: 8.0, avg_rank: 7.0, median_popularity: 7, median_rank: 7 },
+    { rank: 48, name: '藤岡康太', link: '/jockeys/1116', races: 137, wins: 7, places_2: 8, places_3: 11, win_rate: 5.1, quinella_rate: 10.9, place_rate: 19.0, win_payback: 65.3, place_payback: 49.6, avg_popularity: 6.2, avg_rank: 6.8, median_popularity: 5, median_rank: 6 },
+    { rank: 49, name: '丸田恭介', link: '/jockeys/1117', races: 163, wins: 7, places_2: 7, places_3: 10, win_rate: 4.3, quinella_rate: 8.6, place_rate: 14.7, win_payback: 122.2, place_payback: 91.1, avg_popularity: 10.1, avg_rank: 8.3, median_popularity: 10, median_rank: 8 },
+    { rank: 50, name: '原優介', link: '/jockeys/1184', races: 217, wins: 7, places_2: 7, places_3: 12, win_rate: 3.2, quinella_rate: 6.5, place_rate: 12.0, win_payback: 89.6, place_payback: 52.9, avg_popularity: 9.7, avg_rank: 8.8, median_popularity: 10, median_rank: 9 },
+    { rank: 51, name: '横山典弘', link: '/jockeys/660', races: 102, wins: 6, places_2: 5, places_3: 18, win_rate: 5.9, quinella_rate: 10.8, place_rate: 28.4, win_payback: 49.2, place_payback: 82.6, avg_popularity: 5.1, avg_rank: 6.7, median_popularity: 5, median_rank: 6 },
+    { rank: 52, name: '斎藤新', link: '/jockeys/1178', races: 106, wins: 6, places_2: 6, places_3: 10, win_rate: 5.7, quinella_rate: 11.3, place_rate: 20.8, win_payback: 40.2, place_payback: 91.8, avg_popularity: 7.2, avg_rank: 7.4, median_popularity: 7, median_rank: 7 },
+    { rank: 53, name: '富田暁', link: '/jockeys/1168', races: 112, wins: 6, places_2: 8, places_3: 4, win_rate: 5.4, quinella_rate: 12.5, place_rate: 16.1, win_payback: 27.1, place_payback: 46.9, avg_popularity: 8.0, avg_rank: 7.6, median_popularity: 8, median_rank: 7 },
+    { rank: 54, name: '丹内祐次', link: '/jockeys/1091', races: 216, wins: 6, places_2: 12, places_3: 15, win_rate: 2.8, quinella_rate: 8.3, place_rate: 15.3, win_payback: 44.0, place_payback: 49.8, avg_popularity: 6.9, avg_rank: 7.4, median_popularity: 6, median_rank: 7 },
+    { rank: 55, name: '丸山元気', link: '/jockeys/1127', races: 132, wins: 5, places_2: 12, places_3: 13, win_rate: 3.8, quinella_rate: 12.9, place_rate: 22.7, win_payback: 19.1, place_payback: 72.5, avg_popularity: 7.8, avg_rank: 7.7, median_popularity: 7, median_rank: 7 },
+    { rank: 56, name: '松岡正海', link: '/jockeys/1085', races: 163, wins: 5, places_2: 5, places_3: 11, win_rate: 3.1, quinella_rate: 6.1, place_rate: 12.9, win_payback: 62.2, place_payback: 45.4, avg_popularity: 9.1, avg_rank: 8.9, median_popularity: 9, median_rank: 9 },
+    { rank: 57, name: '菊沢一樹', link: '/jockeys/1161', races: 176, wins: 5, places_2: 9, places_3: 11, win_rate: 2.8, quinella_rate: 8.0, place_rate: 14.2, win_payback: 29.4, place_payback: 58.2, avg_popularity: 9.3, avg_rank: 8.6, median_popularity: 9, median_rank: 9 },
+    { rank: 58, name: '河原田菜々', link: '/jockeys/1204', races: 71, wins: 4, places_2: 2, places_3: 1, win_rate: 5.6, quinella_rate: 8.5, place_rate: 9.9, win_payback: 192.4, place_payback: 59.7, avg_popularity: 10.2, avg_rank: 9.6, median_popularity: 11, median_rank: 9 },
+    { rank: 59, name: '国分優作', link: '/jockeys/1125', races: 100, wins: 4, places_2: 4, places_3: 3, win_rate: 4.0, quinella_rate: 8.0, place_rate: 11.0, win_payback: 160.6, place_payback: 81.8, avg_popularity: 11.1, avg_rank: 8.3, median_popularity: 11, median_rank: 8 },
+    { rank: 60, name: '武藤雅', link: '/jockeys/1169', races: 116, wins: 4, places_2: 2, places_3: 10, win_rate: 3.4, quinella_rate: 5.2, place_rate: 13.8, win_payback: 135.5, place_payback: 66.1, avg_popularity: 10.2, avg_rank: 8.9, median_popularity: 10, median_rank: 9 },
+    { rank: 61, name: '小沢大仁', link: '/jockeys/1185', races: 121, wins: 4, places_2: 5, places_3: 5, win_rate: 3.3, quinella_rate: 7.4, place_rate: 11.6, win_payback: 43.9, place_payback: 34.5, avg_popularity: 9.2, avg_rank: 8.4, median_popularity: 9, median_rank: 8 },
+    { rank: 62, name: '吉田豊', link: '/jockeys/733', races: 143, wins: 4, places_2: 9, places_3: 17, win_rate: 2.8, quinella_rate: 9.1, place_rate: 21.0, win_payback: 63.8, place_payback: 82.7, avg_popularity: 7.9, avg_rank: 7.5, median_popularity: 8, median_rank: 7 },
+    { rank: 63, name: '内田博幸', link: '/jockeys/422', races: 202, wins: 4, places_2: 11, places_3: 8, win_rate: 2.0, quinella_rate: 7.4, place_rate: 11.4, win_payback: 67.8, place_payback: 52.6, avg_popularity: 9.6, avg_rank: 8.7, median_popularity: 10, median_rank: 9 },
+    { rank: 64, name: '長岡禎仁', link: '/jockeys/1142', races: 55, wins: 3, places_2: 2, places_3: 1, win_rate: 5.5, quinella_rate: 9.1, place_rate: 10.9, win_payback: 318.5, place_payback: 109.3, avg_popularity: 10.7, avg_rank: 8.4, median_popularity: 10, median_rank: 8 },
+    { rank: 65, name: '小林美駒', link: '/jockeys/1206', races: 56, wins: 3, places_2: 2, places_3: 5, win_rate: 5.4, quinella_rate: 8.9, place_rate: 17.9, win_payback: 16.8, place_payback: 40.0, avg_popularity: 8.4, avg_rank: 9.0, median_popularity: 9, median_rank: 10 },
+    { rank: 66, name: '西塚洸二', link: '/jockeys/1200', races: 65, wins: 3, places_2: 2, places_3: 2, win_rate: 4.6, quinella_rate: 7.7, place_rate: 10.8, win_payback: 38.6, place_payback: 47.5, avg_popularity: 9.5, avg_rank: 8.6, median_popularity: 10, median_rank: 9 },
+    { rank: 67, name: '嶋田純次', link: '/jockeys/1134', races: 70, wins: 3, places_2: 4, places_3: 6, win_rate: 4.3, quinella_rate: 10.0, place_rate: 18.6, win_payback: 59.9, place_payback: 132.6, avg_popularity: 11.0, avg_rank: 8.8, median_popularity: 11, median_rank: 8 },
+    { rank: 68, name: '角田大和', link: '/jockeys/1186', races: 101, wins: 3, places_2: 7, places_3: 8, win_rate: 3.0, quinella_rate: 9.9, place_rate: 17.8, win_payback: 29.7, place_payback: 57.8, avg_popularity: 9.3, avg_rank: 8.6, median_popularity: 10, median_rank: 9 },
+    { rank: 69, name: '吉村誠之助', link: '/jockeys/1216', races: 114, wins: 3, places_2: 8, places_3: 6, win_rate: 2.6, quinella_rate: 9.6, place_rate: 14.9, win_payback: 11.7, place_payback: 61.6, avg_popularity: 7.7, avg_rank: 7.5, median_popularity: 7, median_rank: 7 },
+    { rank: 70, name: '小林凌大', link: '/jockeys/1177', races: 54, wins: 2, places_2: 0, places_3: 2, win_rate: 3.7, quinella_rate: 3.7, place_rate: 7.4, win_payback: 43.1, place_payback: 25.9, avg_popularity: 11.8, avg_rank: 9.1, median_popularity: 12, median_rank: 9 },
+    { rank: 71, name: '小林勝太', link: '/jockeys/1205', races: 59, wins: 2, places_2: 3, places_3: 4, win_rate: 3.4, quinella_rate: 8.5, place_rate: 15.3, win_payback: 114.4, place_payback: 148.3, avg_popularity: 10.0, avg_rank: 8.5, median_popularity: 10, median_rank: 8 },
+    { rank: 72, name: '石神深道', link: '/jockeys/1209', races: 60, wins: 2, places_2: 2, places_3: 2, win_rate: 3.3, quinella_rate: 6.7, place_rate: 10.0, win_payback: 124.2, place_payback: 123.0, avg_popularity: 11.0, avg_rank: 9.1, median_popularity: 11, median_rank: 9 },
+    { rank: 73, name: '藤懸貴志', link: '/jockeys/1138', races: 72, wins: 2, places_2: 2, places_3: 3, win_rate: 2.8, quinella_rate: 5.6, place_rate: 9.7, win_payback: 59.6, place_payback: 40.3, avg_popularity: 9.6, avg_rank: 9.7, median_popularity: 9, median_rank: 9 },
+    { rank: 74, name: '木幡初也', link: '/jockeys/1153', races: 76, wins: 2, places_2: 1, places_3: 5, win_rate: 2.6, quinella_rate: 3.9, place_rate: 10.5, win_payback: 75.3, place_payback: 68.8, avg_popularity: 10.9, avg_rank: 9.1, median_popularity: 11, median_rank: 9 },
+    { rank: 75, name: '秋山稔樹', link: '/jockeys/1181', races: 86, wins: 2, places_2: 4, places_3: 3, win_rate: 2.3, quinella_rate: 7.0, place_rate: 10.5, win_payback: 25.3, place_payback: 94.7, avg_popularity: 10.3, avg_rank: 8.3, median_popularity: 10, median_rank: 8 },
+    { rank: 76, name: '城戸義政', link: '/jockeys/1147', races: 51, wins: 1, places_2: 6, places_3: 2, win_rate: 2.0, quinella_rate: 13.7, place_rate: 17.6, win_payback: 147.8, place_payback: 137.5, avg_popularity: 11.5, avg_rank: 9.2, median_popularity: 12, median_rank: 9 },
+    { rank: 77, name: '小崎綾也', link: '/jockeys/1152', races: 53, wins: 1, places_2: 4, places_3: 4, win_rate: 1.9, quinella_rate: 9.4, place_rate: 17.0, win_payback: 39.6, place_payback: 63.2, avg_popularity: 9.6, avg_rank: 7.8, median_popularity: 10, median_rank: 7 },
+    { rank: 78, name: '石田拓郎', link: '/jockeys/1203', races: 52, wins: 1, places_2: 0, places_3: 1, win_rate: 1.9, quinella_rate: 1.9, place_rate: 3.8, win_payback: 13.8, place_payback: 7.1, avg_popularity: 11.1, avg_rank: 9.8, median_popularity: 11, median_rank: 10 },
+    { rank: 79, name: '柴田善臣', link: '/jockeys/641', races: 57, wins: 1, places_2: 6, places_3: 2, win_rate: 1.8, quinella_rate: 12.3, place_rate: 15.8, win_payback: 4.4, place_payback: 126.0, avg_popularity: 9.2, avg_rank: 7.9, median_popularity: 9, median_rank: 8 },
+    { rank: 80, name: '松本大輝', link: '/jockeys/1191', races: 58, wins: 1, places_2: 4, places_3: 5, win_rate: 1.7, quinella_rate: 8.6, place_rate: 17.2, win_payback: 8.6, place_payback: 88.6, avg_popularity: 9.6, avg_rank: 7.5, median_popularity: 9, median_rank: 7 },
+    { rank: 81, name: '黛弘人', link: '/jockeys/1109', races: 62, wins: 1, places_2: 0, places_3: 4, win_rate: 1.6, quinella_rate: 1.6, place_rate: 8.1, win_payback: 97.6, place_payback: 90.0, avg_popularity: 11.0, avg_rank: 9.6, median_popularity: 11, median_rank: 10 },
+    { rank: 82, name: '太宰啓介', link: '/jockeys/1037', races: 61, wins: 1, places_2: 2, places_3: 7, win_rate: 1.6, quinella_rate: 4.9, place_rate: 16.4, win_payback: 14.4, place_payback: 92.6, avg_popularity: 10.1, avg_rank: 8.5, median_popularity: 10, median_rank: 8 },
+    { rank: 83, name: '川須栄彦', link: '/jockeys/1128', races: 78, wins: 1, places_2: 3, places_3: 4, win_rate: 1.3, quinella_rate: 5.1, place_rate: 10.3, win_payback: 13.1, place_payback: 63.1, avg_popularity: 9.4, avg_rank: 8.6, median_popularity: 10, median_rank: 9 },
+    { rank: 84, name: '岩部純二', link: '/jockeys/726', races: 93, wins: 1, places_2: 0, places_3: 3, win_rate: 1.1, quinella_rate: 1.1, place_rate: 4.3, win_payback: 55.2, place_payback: 24.5, avg_popularity: 12.2, avg_rank: 10.0, median_popularity: 12, median_rank: 10 },
+    { rank: 85, name: '野中悠太郎', link: '/jockeys/1158', races: 137, wins: 0, places_2: 2, places_3: 5, win_rate: 0.0, quinella_rate: 1.5, place_rate: 5.1, win_payback: 0.0, place_payback: 70.4, avg_popularity: 10.9, avg_rank: 9.7, median_popularity: 11, median_rank: 10 },
+    { rank: 86, name: '藤田菜七子', link: '/jockeys/1164', races: 61, wins: 0, places_2: 3, places_3: 4, win_rate: 0.0, quinella_rate: 4.9, place_rate: 11.5, win_payback: 0.0, place_payback: 57.0, avg_popularity: 9.6, avg_rank: 9.8, median_popularity: 10, median_rank: 10 },
+    { rank: 87, name: '古川吉洋', link: '/jockeys/1015', races: 93, wins: 0, places_2: 4, places_3: 3, win_rate: 0.0, quinella_rate: 4.3, place_rate: 7.5, win_payback: 0.0, place_payback: 33.3, avg_popularity: 9.8, avg_rank: 8.8, median_popularity: 10, median_rank: 8 },
+    { rank: 88, name: '原田和真', link: '/jockeys/1143', races: 72, wins: 0, places_2: 2, places_3: 2, win_rate: 0.0, quinella_rate: 2.8, place_rate: 5.6, win_payback: 0.0, place_payback: 106.9, avg_popularity: 12.4, avg_rank: 10.3, median_popularity: 12, median_rank: 11 },
+    { rank: 89, name: '長浜鴻緒', link: '/jockeys/1214', races: 54, wins: 0, places_2: 5, places_3: 0, win_rate: 0.0, quinella_rate: 9.3, place_rate: 9.3, win_payback: 0.0, place_payback: 54.3, avg_popularity: 9.6, avg_rank: 9.4, median_popularity: 10, median_rank: 9 },
+    { rank: 90, name: '武士沢友治', link: '/jockeys/1029', races: 53, wins: 0, places_2: 2, places_3: 2, win_rate: 0.0, quinella_rate: 3.8, place_rate: 7.5, win_payback: 0.0, place_payback: 84.7, avg_popularity: 12.0, avg_rank: 9.7, median_popularity: 12, median_rank: 10 },
+    { rank: 91, name: '小林脩斗', link: '/jockeys/1183', races: 85, wins: 0, places_2: 3, places_3: 1, win_rate: 0.0, quinella_rate: 3.5, place_rate: 4.7, win_payback: 0.0, place_payback: 85.6, avg_popularity: 11.8, avg_rank: 10.3, median_popularity: 12, median_rank: 11 },
+    { rank: 92, name: '佐藤翔馬', link: '/jockeys/1207', races: 60, wins: 0, places_2: 0, places_3: 1, win_rate: 0.0, quinella_rate: 0.0, place_rate: 1.7, win_payback: 0.0, place_payback: 22.7, avg_popularity: 12.4, avg_rank: 11.0, median_popularity: 13, median_rank: 11 },
+    { rank: 93, name: '江田照男', link: '/jockeys/689', races: 105, wins: 0, places_2: 4, places_3: 2, win_rate: 0.0, quinella_rate: 3.8, place_rate: 5.7, win_payback: 0.0, place_payback: 40.3, avg_popularity: 10.1, avg_rank: 10.0, median_popularity: 10, median_rank: 11 },
+    { rank: 94, name: '国分恭介', link: '/jockeys/1124', races: 76, wins: 0, places_2: 3, places_3: 9, win_rate: 0.0, quinella_rate: 3.9, place_rate: 15.8, win_payback: 0.0, place_payback: 100.7, avg_popularity: 9.3, avg_rank: 8.5, median_popularity: 9, median_rank: 8 },
+    { rank: 95, name: '木幡育也', link: '/jockeys/1167', races: 51, wins: 0, places_2: 0, places_3: 2, win_rate: 0.0, quinella_rate: 0.0, place_rate: 3.9, win_payback: 0.0, place_payback: 27.3, avg_popularity: 11.6, avg_rank: 9.8, median_popularity: 12, median_rank: 10 },
+  ]}
+  nameLabel="騎手"
+  initialShow={10}
+/>
+
+勝率のTOPは<strong>川田騎手</strong>で<strong>27.4%</strong>、連帯率・複勝率のTOPは<strong>ルメール騎手</strong>で、それぞれ<strong>50.2%</strong>・<strong>61.5%</strong>。<br />
+そしてなんと平均人気はどちらも<strong>1.9倍</strong>！<br />
+2倍台の騎手が1人もいないことからも、<strong>この2人に人気が集中する</strong>傾向が見て取れます。<br />
+成績は優秀ではありますが、その分人気している印象で、回収率で見ると<strong>70%〜80%</strong>という結果でした。
+
+個人的に注目したいのは<strong>津村騎手</strong>と<strong>鮫島駿騎手</strong>。<br />
+どちらも<strong>200回以上騎乗して回収率100%を超えている</strong>ことはもちろん、<strong>人気中央値を着順中央値が上回っている</strong>のがいいですね。<br />
+一般的に上位人気に支持されやすい騎手は人気より着順を落とすケースが多いのですが、その中でもしっかり走らせているのは買いポイントだと思います。
+
+ちなみに、ベテラン騎手は~~ポツn~~教育騎乗ばかりで買えない！みたいなことを書かれがちですが、武豊騎手にしても横山典騎手にしても成績はそこまで悪くありません。（擁護）
+
+## 新馬戦の調教師成績は？
+では続いて調教師別でもみてみましょう。
+
+ここでは期間内で30回以上出走させた調教師を対象とし、同様に勝ち数の多い順に並べています。<br />
+ちょっと表が縦長ですがお許しを...🙏
+<DataTable
+  data={[
+    { rank: 1, name: '矢作芳人', link: '/trainers/1075', races: 114, wins: 29, places_2: 13, places_3: 8, win_rate: 25.4, quinella_rate: 36.8, place_rate: 43.9, win_payback: 138.5, place_payback: 75.1, avg_popularity: 3.9, avg_rank: 5.0, median_popularity: 3, median_rank: 4 },
+    { rank: 2, name: '木村哲也', link: '/trainers/1126', races: 75, wins: 25, places_2: 11, places_3: 11, win_rate: 33.3, quinella_rate: 48.0, place_rate: 62.7, win_payback: 83.6, place_payback: 91.6, avg_popularity: 2.2, avg_rank: 3.4, median_popularity: 2, median_rank: 3 },
+    { rank: 3, name: '杉山晴紀', link: '/trainers/1157', races: 108, wins: 25, places_2: 14, places_3: 10, win_rate: 23.1, quinella_rate: 36.1, place_rate: 45.4, win_payback: 126.4, place_payback: 85.7, avg_popularity: 3.8, avg_rank: 4.5, median_popularity: 3, median_rank: 4 },
+    { rank: 4, name: '高野友和', link: '/trainers/1117', races: 83, wins: 23, places_2: 7, places_3: 5, win_rate: 27.7, quinella_rate: 36.1, place_rate: 42.2, win_payback: 283.1, place_payback: 133.9, avg_popularity: 4.2, avg_rank: 5.5, median_popularity: 4, median_rank: 5 },
+    { rank: 5, name: '中内田充正', link: '/trainers/1137', races: 70, wins: 22, places_2: 18, places_3: 9, win_rate: 31.4, quinella_rate: 57.1, place_rate: 70.0, win_payback: 83.9, place_payback: 96.1, avg_popularity: 1.9, avg_rank: 3.3, median_popularity: 2, median_rank: 2 },
+    { rank: 6, name: '須貝尚介', link: '/trainers/1105', races: 87, wins: 20, places_2: 13, places_3: 10, win_rate: 23.0, quinella_rate: 37.9, place_rate: 49.4, win_payback: 89.7, place_payback: 80.5, avg_popularity: 3.5, avg_rank: 4.8, median_popularity: 2, median_rank: 4 },
+    { rank: 7, name: '堀宣行', link: '/trainers/1070', races: 49, wins: 19, places_2: 13, places_3: 3, win_rate: 38.8, quinella_rate: 65.3, place_rate: 71.4, win_payback: 101.2, place_payback: 105.7, avg_popularity: 2.1, avg_rank: 3.1, median_popularity: 2, median_rank: 2 },
+    { rank: 8, name: '藤原英昭', link: '/trainers/1055', races: 79, wins: 18, places_2: 11, places_3: 2, win_rate: 22.8, quinella_rate: 36.7, place_rate: 39.2, win_payback: 92.0, place_payback: 58.6, avg_popularity: 3.1, avg_rank: 5.2, median_popularity: 2, median_rank: 4 },
+    { rank: 9, name: '国枝栄', link: '/trainers/399', races: 91, wins: 18, places_2: 14, places_3: 8, win_rate: 19.8, quinella_rate: 35.2, place_rate: 44.0, win_payback: 67.3, place_payback: 77.9, avg_popularity: 3.3, avg_rank: 4.8, median_popularity: 2, median_rank: 4 },
+    { rank: 10, name: '林徹', link: '/trainers/1163', races: 71, wins: 16, places_2: 8, places_3: 8, win_rate: 22.5, quinella_rate: 33.8, place_rate: 45.1, win_payback: 115.8, place_payback: 83.7, avg_popularity: 4.6, avg_rank: 5.3, median_popularity: 3, median_rank: 4 },
+    { rank: 11, name: '友道康夫', link: '/trainers/1061', races: 80, wins: 16, places_2: 17, places_3: 10, win_rate: 20.0, quinella_rate: 41.3, place_rate: 53.7, win_payback: 69.1, place_payback: 85.3, avg_popularity: 2.4, avg_rank: 4.3, median_popularity: 2, median_rank: 3 },
+    { rank: 12, name: '大久保龍志', link: '/trainers/1058', races: 81, wins: 16, places_2: 10, places_3: 11, win_rate: 19.8, quinella_rate: 32.1, place_rate: 45.7, win_payback: 80.6, place_payback: 86.0, avg_popularity: 4.3, avg_rank: 4.8, median_popularity: 3, median_rank: 4 },
+    { rank: 13, name: '鹿戸雄一', link: '/trainers/1097', races: 92, wins: 16, places_2: 21, places_3: 10, win_rate: 17.4, quinella_rate: 40.2, place_rate: 51.1, win_payback: 79.2, place_payback: 120.8, avg_popularity: 4.4, avg_rank: 4.5, median_popularity: 4, median_rank: 3 },
+    { rank: 14, name: '手塚貴久', link: '/trainers/1038', races: 99, wins: 16, places_2: 14, places_3: 11, win_rate: 16.2, quinella_rate: 30.3, place_rate: 41.4, win_payback: 40.2, place_payback: 77.2, avg_popularity: 4.2, avg_rank: 5.4, median_popularity: 3, median_rank: 4 },
+    { rank: 15, name: '黒岩陽一', link: '/trainers/1133', races: 79, wins: 15, places_2: 5, places_3: 3, win_rate: 19.0, quinella_rate: 25.3, place_rate: 29.1, win_payback: 164.6, place_payback: 80.1, avg_popularity: 6.1, avg_rank: 6.5, median_popularity: 5, median_rank: 7 },
+    { rank: 16, name: '寺島良', link: '/trainers/1158', races: 88, wins: 15, places_2: 5, places_3: 5, win_rate: 17.0, quinella_rate: 22.7, place_rate: 28.4, win_payback: 93.3, place_payback: 55.6, avg_popularity: 4.7, avg_rank: 6.1, median_popularity: 4, median_rank: 5 },
+    { rank: 17, name: '上村洋行', link: '/trainers/1168', races: 74, wins: 14, places_2: 10, places_3: 9, win_rate: 18.9, quinella_rate: 32.4, place_rate: 44.6, win_payback: 107.3, place_payback: 87.3, avg_popularity: 3.3, avg_rank: 4.8, median_popularity: 2, median_rank: 4 },
+    { rank: 18, name: '田中博康', link: '/trainers/1162', races: 83, wins: 14, places_2: 15, places_3: 8, win_rate: 16.9, quinella_rate: 34.9, place_rate: 44.6, win_payback: 41.8, place_payback: 60.5, avg_popularity: 3.4, avg_rank: 5.0, median_popularity: 2, median_rank: 4 },
+    { rank: 19, name: '加藤征弘', link: '/trainers/1059', races: 94, wins: 14, places_2: 11, places_3: 12, win_rate: 14.9, quinella_rate: 26.6, place_rate: 39.4, win_payback: 47.0, place_payback: 88.8, avg_popularity: 4.7, avg_rank: 6.0, median_popularity: 4, median_rank: 5 },
+    { rank: 20, name: '武井亮', link: '/trainers/1147', races: 94, wins: 14, places_2: 13, places_3: 10, win_rate: 14.9, quinella_rate: 28.7, place_rate: 39.4, win_payback: 70.7, place_payback: 75.2, avg_popularity: 5.8, avg_rank: 5.9, median_popularity: 4, median_rank: 4 },
+    { rank: 21, name: '池添学', link: '/trainers/1144', races: 69, wins: 13, places_2: 8, places_3: 9, win_rate: 18.8, quinella_rate: 30.4, place_rate: 43.5, win_payback: 123.8, place_payback: 101.7, avg_popularity: 4.0, avg_rank: 5.0, median_popularity: 4, median_rank: 4 },
+    { rank: 22, name: '松永幹夫', link: '/trainers/1092', races: 94, wins: 13, places_2: 10, places_3: 13, win_rate: 13.8, quinella_rate: 24.5, place_rate: 38.3, win_payback: 89.9, place_payback: 87.3, avg_popularity: 4.5, avg_rank: 5.6, median_popularity: 4, median_rank: 5 },
+    { rank: 23, name: '西園正都', link: '/trainers/1028', races: 99, wins: 13, places_2: 10, places_3: 11, win_rate: 13.1, quinella_rate: 23.2, place_rate: 34.3, win_payback: 97.2, place_payback: 71.9, avg_popularity: 5.0, avg_rank: 5.6, median_popularity: 4, median_rank: 5 },
+    { rank: 24, name: '橋口慎介', link: '/trainers/1154', races: 74, wins: 12, places_2: 9, places_3: 3, win_rate: 16.2, quinella_rate: 28.4, place_rate: 32.4, win_payback: 89.9, place_payback: 57.8, avg_popularity: 4.4, avg_rank: 5.6, median_popularity: 3, median_rank: 5 },
+    { rank: 25, name: '武幸四郎', link: '/trainers/1160', races: 78, wins: 12, places_2: 11, places_3: 9, win_rate: 15.4, quinella_rate: 29.5, place_rate: 41.0, win_payback: 89.0, place_payback: 72.2, avg_popularity: 4.1, avg_rank: 5.1, median_popularity: 4, median_rank: 4 },
+    { rank: 26, name: '吉村圭司', link: '/trainers/1130', races: 76, wins: 11, places_2: 11, places_3: 7, win_rate: 14.5, quinella_rate: 28.9, place_rate: 38.2, win_payback: 107.0, place_payback: 96.1, avg_popularity: 6.1, avg_rank: 6.0, median_popularity: 5, median_rank: 5 },
+    { rank: 27, name: '斉藤崇史', link: '/trainers/1151', races: 95, wins: 11, places_2: 13, places_3: 15, win_rate: 11.6, quinella_rate: 25.3, place_rate: 41.1, win_payback: 39.2, place_payback: 86.2, avg_popularity: 4.6, avg_rank: 5.9, median_popularity: 4, median_rank: 4 },
+    { rank: 28, name: '上原佑紀', link: '/trainers/1192', races: 68, wins: 10, places_2: 11, places_3: 9, win_rate: 14.7, quinella_rate: 30.9, place_rate: 44.1, win_payback: 63.1, place_payback: 109.0, avg_popularity: 4.9, avg_rank: 5.8, median_popularity: 4, median_rank: 4 },
+    { rank: 29, name: '池江泰寿', link: '/trainers/1071', races: 74, wins: 10, places_2: 8, places_3: 6, win_rate: 13.5, quinella_rate: 24.3, place_rate: 32.4, win_payback: 51.8, place_payback: 53.0, avg_popularity: 3.4, avg_rank: 5.7, median_popularity: 3, median_rank: 5 },
+    { rank: 30, name: '宮田敬介', link: '/trainers/1175', races: 79, wins: 10, places_2: 10, places_3: 8, win_rate: 12.7, quinella_rate: 25.3, place_rate: 35.4, win_payback: 40.6, place_payback: 48.4, avg_popularity: 3.8, avg_rank: 5.6, median_popularity: 3, median_rank: 5 },
+    { rank: 31, name: '大竹正博', link: '/trainers/1102', races: 80, wins: 10, places_2: 13, places_3: 7, win_rate: 12.5, quinella_rate: 28.7, place_rate: 37.5, win_payback: 74.0, place_payback: 77.9, avg_popularity: 5.3, avg_rank: 5.7, median_popularity: 5, median_rank: 5 },
+    { rank: 32, name: '鈴木孝志', link: '/trainers/1111', races: 98, wins: 10, places_2: 11, places_3: 6, win_rate: 10.2, quinella_rate: 21.4, place_rate: 27.6, win_payback: 99.9, place_payback: 87.0, avg_popularity: 6.9, avg_rank: 6.5, median_popularity: 7, median_rank: 5 },
+    { rank: 33, name: '清水久詞', link: '/trainers/1110', races: 109, wins: 10, places_2: 11, places_3: 12, win_rate: 9.2, quinella_rate: 19.3, place_rate: 30.3, win_payback: 58.7, place_payback: 61.1, avg_popularity: 4.3, avg_rank: 6.2, median_popularity: 4, median_rank: 6 },
+    { rank: 34, name: '牧光二', link: '/trainers/1106', races: 141, wins: 10, places_2: 11, places_3: 9, win_rate: 7.1, quinella_rate: 14.9, place_rate: 21.3, win_payback: 71.6, place_payback: 84.1, avg_popularity: 7.3, avg_rank: 7.9, median_popularity: 7, median_rank: 8 },
+    { rank: 35, name: '森秀行', link: '/trainers/427', races: 63, wins: 9, places_2: 7, places_3: 13, win_rate: 14.3, quinella_rate: 25.4, place_rate: 46.0, win_payback: 48.1, place_payback: 140.5, avg_popularity: 3.9, avg_rank: 5.3, median_popularity: 3, median_rank: 4 },
+    { rank: 36, name: '吉岡辰弥', link: '/trainers/1176', races: 75, wins: 9, places_2: 11, places_3: 9, win_rate: 12.0, quinella_rate: 26.7, place_rate: 38.7, win_payback: 45.7, place_payback: 76.5, avg_popularity: 4.3, avg_rank: 5.0, median_popularity: 3, median_rank: 5 },
+    { rank: 37, name: '安田翔伍', link: '/trainers/1164', races: 78, wins: 9, places_2: 8, places_3: 8, win_rate: 11.5, quinella_rate: 21.8, place_rate: 32.1, win_payback: 53.1, place_payback: 68.3, avg_popularity: 4.7, avg_rank: 6.3, median_popularity: 4, median_rank: 6 },
+    { rank: 38, name: '石坂公一', link: '/trainers/1166', races: 80, wins: 9, places_2: 8, places_3: 10, win_rate: 11.3, quinella_rate: 21.3, place_rate: 33.8, win_payback: 201.9, place_payback: 113.5, avg_popularity: 6.2, avg_rank: 6.7, median_popularity: 6, median_rank: 7 },
+    { rank: 39, name: '四位洋文', link: '/trainers/1184', races: 87, wins: 9, places_2: 7, places_3: 7, win_rate: 10.3, quinella_rate: 18.4, place_rate: 26.4, win_payback: 90.3, place_payback: 66.9, avg_popularity: 5.9, avg_rank: 6.3, median_popularity: 6, median_rank: 6 },
+    { rank: 40, name: '武英智', link: '/trainers/1161', races: 93, wins: 9, places_2: 8, places_3: 13, win_rate: 9.7, quinella_rate: 18.3, place_rate: 32.3, win_payback: 33.0, place_payback: 92.9, avg_popularity: 5.9, avg_rank: 6.0, median_popularity: 5, median_rank: 5 },
+    { rank: 41, name: '伊藤圭三', link: '/trainers/1023', races: 115, wins: 9, places_2: 11, places_3: 19, win_rate: 7.8, quinella_rate: 17.4, place_rate: 33.9, win_payback: 94.7, place_payback: 70.5, avg_popularity: 4.7, avg_rank: 6.4, median_popularity: 4, median_rank: 5 },
+    { rank: 42, name: '斎藤誠', link: '/trainers/1086', races: 127, wins: 9, places_2: 10, places_3: 9, win_rate: 7.1, quinella_rate: 15.0, place_rate: 22.0, win_payback: 39.4, place_payback: 48.6, avg_popularity: 5.9, avg_rank: 7.2, median_popularity: 5, median_rank: 7 },
+    { rank: 43, name: '昆貢', link: '/trainers/1044', races: 53, wins: 8, places_2: 2, places_3: 8, win_rate: 15.1, quinella_rate: 18.9, place_rate: 34.0, win_payback: 114.7, place_payback: 67.5, avg_popularity: 4.8, avg_rank: 5.7, median_popularity: 4, median_rank: 5 },
+    { rank: 44, name: '萩原清', link: '/trainers/1017', races: 64, wins: 8, places_2: 6, places_3: 10, win_rate: 12.5, quinella_rate: 21.9, place_rate: 37.5, win_payback: 48.9, place_payback: 72.8, avg_popularity: 4.7, avg_rank: 5.2, median_popularity: 4, median_rank: 4 },
+    { rank: 45, name: '小林真也', link: '/trainers/1185', races: 70, wins: 8, places_2: 2, places_3: 3, win_rate: 11.4, quinella_rate: 14.3, place_rate: 18.6, win_payback: 88.7, place_payback: 47.4, avg_popularity: 7.6, avg_rank: 7.7, median_popularity: 7, median_rank: 7 },
+    { rank: 46, name: '藤岡健一', link: '/trainers/1062', races: 73, wins: 8, places_2: 11, places_3: 8, win_rate: 11.0, quinella_rate: 26.0, place_rate: 37.0, win_payback: 149.3, place_payback: 96.8, avg_popularity: 4.7, avg_rank: 5.6, median_popularity: 4, median_rank: 5 },
+    { rank: 47, name: '竹内正洋', link: '/trainers/1152', races: 82, wins: 8, places_2: 6, places_3: 6, win_rate: 9.8, quinella_rate: 17.1, place_rate: 24.4, win_payback: 290.6, place_payback: 109.3, avg_popularity: 7.7, avg_rank: 7.1, median_popularity: 7, median_rank: 7 },
+    { rank: 48, name: '高柳大輔', link: '/trainers/1159', races: 84, wins: 8, places_2: 11, places_3: 8, win_rate: 9.5, quinella_rate: 22.6, place_rate: 32.1, win_payback: 126.0, place_payback: 82.9, avg_popularity: 5.2, avg_rank: 6.3, median_popularity: 4, median_rank: 5 },
+    { rank: 49, name: '松下武士', link: '/trainers/1149', races: 85, wins: 8, places_2: 5, places_3: 6, win_rate: 9.4, quinella_rate: 15.3, place_rate: 22.4, win_payback: 62.0, place_payback: 64.5, avg_popularity: 6.4, avg_rank: 7.0, median_popularity: 5, median_rank: 6 },
+    { rank: 50, name: '栗田徹', link: '/trainers/1127', races: 108, wins: 8, places_2: 10, places_3: 20, win_rate: 7.4, quinella_rate: 16.7, place_rate: 35.2, win_payback: 27.0, place_payback: 79.4, avg_popularity: 4.9, avg_rank: 6.0, median_popularity: 4, median_rank: 5 },
+    { rank: 51, name: '武市康男', link: '/trainers/1089', races: 117, wins: 8, places_2: 7, places_3: 7, win_rate: 6.8, quinella_rate: 12.8, place_rate: 18.8, win_payback: 105.8, place_payback: 64.1, avg_popularity: 9.5, avg_rank: 8.2, median_popularity: 9, median_rank: 9 },
+    { rank: 52, name: '小栗実', link: '/trainers/1194', races: 64, wins: 7, places_2: 4, places_3: 6, win_rate: 10.9, quinella_rate: 17.2, place_rate: 26.6, win_payback: 58.0, place_payback: 44.5, avg_popularity: 7.0, avg_rank: 6.6, median_popularity: 7, median_rank: 7 },
+    { rank: 53, name: '石橋守', link: '/trainers/1140', races: 73, wins: 7, places_2: 2, places_3: 7, win_rate: 9.6, quinella_rate: 12.3, place_rate: 21.9, win_payback: 81.2, place_payback: 61.9, avg_popularity: 7.4, avg_rank: 7.3, median_popularity: 7, median_rank: 7 },
+    { rank: 54, name: '坂口智康', link: '/trainers/1170', races: 74, wins: 7, places_2: 5, places_3: 7, win_rate: 9.5, quinella_rate: 16.2, place_rate: 25.7, win_payback: 183.6, place_payback: 113.1, avg_popularity: 7.6, avg_rank: 7.3, median_popularity: 7, median_rank: 7 },
+    { rank: 55, name: '西村真幸', link: '/trainers/1148', races: 74, wins: 7, places_2: 8, places_3: 5, win_rate: 9.5, quinella_rate: 20.3, place_rate: 27.0, win_payback: 70.0, place_payback: 53.9, avg_popularity: 5.0, avg_rank: 6.4, median_popularity: 4, median_rank: 6 },
+    { rank: 56, name: '嘉藤貴行', link: '/trainers/1195', races: 75, wins: 7, places_2: 3, places_3: 6, win_rate: 9.3, quinella_rate: 13.3, place_rate: 21.3, win_payback: 56.0, place_payback: 50.1, avg_popularity: 6.8, avg_rank: 7.5, median_popularity: 6, median_rank: 7 },
+    { rank: 57, name: '高橋亮', link: '/trainers/1136', races: 87, wins: 7, places_2: 3, places_3: 7, win_rate: 8.0, quinella_rate: 11.5, place_rate: 19.5, win_payback: 57.5, place_payback: 55.9, avg_popularity: 7.6, avg_rank: 7.7, median_popularity: 7, median_rank: 8 },
+    { rank: 58, name: '角田晃一', link: '/trainers/1121', races: 91, wins: 7, places_2: 5, places_3: 11, win_rate: 7.7, quinella_rate: 13.2, place_rate: 25.3, win_payback: 46.6, place_payback: 93.3, avg_popularity: 7.9, avg_rank: 7.3, median_popularity: 7, median_rank: 7 },
+    { rank: 59, name: '岩戸孝樹', link: '/trainers/1051', races: 94, wins: 7, places_2: 2, places_3: 4, win_rate: 7.4, quinella_rate: 9.6, place_rate: 13.8, win_payback: 44.5, place_payback: 33.1, avg_popularity: 6.9, avg_rank: 7.3, median_popularity: 7, median_rank: 7 },
+    { rank: 60, name: '渡辺薫彦', link: '/trainers/1155', races: 97, wins: 7, places_2: 7, places_3: 12, win_rate: 7.2, quinella_rate: 14.4, place_rate: 26.8, win_payback: 52.2, place_payback: 78.7, avg_popularity: 6.9, avg_rank: 6.7, median_popularity: 7, median_rank: 6 },
+    { rank: 61, name: '小島茂之', link: '/trainers/1068', races: 59, wins: 6, places_2: 5, places_3: 4, win_rate: 10.2, quinella_rate: 18.6, place_rate: 25.4, win_payback: 181.4, place_payback: 105.4, avg_popularity: 7.6, avg_rank: 7.3, median_popularity: 7, median_rank: 6 },
+    { rank: 62, name: '西園翔太', link: '/trainers/1196', races: 59, wins: 6, places_2: 6, places_3: 6, win_rate: 10.2, quinella_rate: 20.3, place_rate: 30.5, win_payback: 57.5, place_payback: 73.6, avg_popularity: 6.2, avg_rank: 6.4, median_popularity: 5, median_rank: 6 },
+    { rank: 63, name: '今野貞一', link: '/trainers/1128', races: 69, wins: 6, places_2: 4, places_3: 3, win_rate: 8.7, quinella_rate: 14.5, place_rate: 18.8, win_payback: 163.5, place_payback: 71.7, avg_popularity: 6.7, avg_rank: 7.8, median_popularity: 6, median_rank: 7 },
+    { rank: 64, name: '岡田稲男', link: '/trainers/1066', races: 70, wins: 6, places_2: 4, places_3: 2, win_rate: 8.6, quinella_rate: 14.3, place_rate: 17.1, win_payback: 224.6, place_payback: 94.6, avg_popularity: 7.8, avg_rank: 7.2, median_popularity: 7, median_rank: 7 },
+    { rank: 65, name: '畠山吉宏', link: '/trainers/1048', races: 70, wins: 6, places_2: 2, places_3: 3, win_rate: 8.6, quinella_rate: 11.4, place_rate: 15.7, win_payback: 59.9, place_payback: 54.6, avg_popularity: 7.6, avg_rank: 7.7, median_popularity: 7, median_rank: 7 },
+    { rank: 66, name: '小西一男', link: '/trainers/405', races: 71, wins: 6, places_2: 0, places_3: 5, win_rate: 8.5, quinella_rate: 8.5, place_rate: 15.5, win_payback: 211.1, place_payback: 66.9, avg_popularity: 9.7, avg_rank: 8.7, median_popularity: 10, median_rank: 8 },
+    { rank: 67, name: '菊沢隆徳', link: '/trainers/1115', races: 74, wins: 6, places_2: 10, places_3: 10, win_rate: 8.1, quinella_rate: 21.6, place_rate: 35.1, win_payback: 48.1, place_payback: 86.8, avg_popularity: 5.3, avg_rank: 5.9, median_popularity: 4, median_rank: 5 },
+    { rank: 68, name: '和田勇介', link: '/trainers/1165', races: 76, wins: 6, places_2: 4, places_3: 7, win_rate: 7.9, quinella_rate: 13.2, place_rate: 22.4, win_payback: 76.3, place_payback: 55.5, avg_popularity: 7.3, avg_rank: 6.8, median_popularity: 7, median_rank: 6 },
+    { rank: 69, name: '鈴木伸尋', link: '/trainers/1026', races: 77, wins: 6, places_2: 6, places_3: 7, win_rate: 7.8, quinella_rate: 15.6, place_rate: 24.7, win_payback: 78.7, place_payback: 64.5, avg_popularity: 7.5, avg_rank: 7.5, median_popularity: 7, median_rank: 7 },
+    { rank: 70, name: '牧浦充徳', link: '/trainers/1113', races: 85, wins: 6, places_2: 9, places_3: 6, win_rate: 7.1, quinella_rate: 17.6, place_rate: 24.7, win_payback: 43.5, place_payback: 72.0, avg_popularity: 7.0, avg_rank: 7.8, median_popularity: 7, median_rank: 7 },
+    { rank: 71, name: '久保田貴士', link: '/trainers/1067', races: 86, wins: 6, places_2: 9, places_3: 7, win_rate: 7.0, quinella_rate: 17.4, place_rate: 25.6, win_payback: 108.5, place_payback: 65.6, avg_popularity: 6.3, avg_rank: 6.8, median_popularity: 6, median_rank: 5 },
+    { rank: 72, name: '高柳瑞樹', link: '/trainers/1118', races: 86, wins: 6, places_2: 10, places_3: 7, win_rate: 7.0, quinella_rate: 18.6, place_rate: 26.7, win_payback: 67.1, place_payback: 66.2, avg_popularity: 6.1, avg_rank: 6.6, median_popularity: 6, median_rank: 6 },
+    { rank: 73, name: '中舘英二', link: '/trainers/1153', races: 89, wins: 6, places_2: 9, places_3: 9, win_rate: 6.7, quinella_rate: 16.9, place_rate: 27.0, win_payback: 148.2, place_payback: 74.2, avg_popularity: 5.6, avg_rank: 6.6, median_popularity: 5, median_rank: 6 },
+    { rank: 74, name: '中竹和也', link: '/trainers/1039', races: 93, wins: 6, places_2: 13, places_3: 6, win_rate: 6.5, quinella_rate: 20.4, place_rate: 26.9, win_payback: 38.3, place_payback: 71.9, avg_popularity: 7.2, avg_rank: 7.3, median_popularity: 6, median_rank: 7 },
+    { rank: 75, name: '相沢郁', link: '/trainers/1020', races: 96, wins: 6, places_2: 6, places_3: 9, win_rate: 6.2, quinella_rate: 12.5, place_rate: 21.9, win_payback: 44.2, place_payback: 56.4, avg_popularity: 7.5, avg_rank: 7.2, median_popularity: 7, median_rank: 6 },
+    { rank: 76, name: '加藤士津八', link: '/trainers/1169', races: 98, wins: 6, places_2: 8, places_3: 9, win_rate: 6.1, quinella_rate: 14.3, place_rate: 23.5, win_payback: 66.1, place_payback: 104.6, avg_popularity: 7.8, avg_rank: 7.5, median_popularity: 8, median_rank: 7 },
+    { rank: 77, name: '伊藤大士', link: '/trainers/1109', races: 100, wins: 6, places_2: 4, places_3: 4, win_rate: 6.0, quinella_rate: 10.0, place_rate: 14.0, win_payback: 37.5, place_payback: 45.1, avg_popularity: 7.7, avg_rank: 7.6, median_popularity: 7, median_rank: 7 },
+    { rank: 78, name: '尾形和幸', link: '/trainers/1141', races: 102, wins: 6, places_2: 3, places_3: 8, win_rate: 5.9, quinella_rate: 8.8, place_rate: 16.7, win_payback: 54.8, place_payback: 78.5, avg_popularity: 8.6, avg_rank: 8.5, median_popularity: 8, median_rank: 8 },
+    { rank: 79, name: '新谷功一', link: '/trainers/1172', races: 105, wins: 6, places_2: 11, places_3: 8, win_rate: 5.7, quinella_rate: 16.2, place_rate: 23.8, win_payback: 45.4, place_payback: 67.1, avg_popularity: 6.5, avg_rank: 6.9, median_popularity: 6, median_rank: 6 },
+    { rank: 80, name: '田村康仁', link: '/trainers/1027', races: 111, wins: 6, places_2: 6, places_3: 9, win_rate: 5.4, quinella_rate: 10.8, place_rate: 18.9, win_payback: 101.0, place_payback: 113.4, avg_popularity: 7.6, avg_rank: 8.2, median_popularity: 8, median_rank: 8 },
+    { rank: 81, name: '辻哲英', link: '/trainers/1182', races: 45, wins: 5, places_2: 2, places_3: 6, win_rate: 11.1, quinella_rate: 15.6, place_rate: 28.9, win_payback: 260.0, place_payback: 112.4, avg_popularity: 7.5, avg_rank: 6.8, median_popularity: 7, median_rank: 7 },
+    { rank: 82, name: '野中賢二', link: '/trainers/1098', races: 59, wins: 5, places_2: 10, places_3: 7, win_rate: 8.5, quinella_rate: 25.4, place_rate: 37.3, win_payback: 53.1, place_payback: 92.4, avg_popularity: 4.9, avg_rank: 5.8, median_popularity: 5, median_rank: 5 },
+    { rank: 83, name: '音無秀孝', link: '/trainers/1002', races: 66, wins: 5, places_2: 3, places_3: 8, win_rate: 7.6, quinella_rate: 12.1, place_rate: 24.2, win_payback: 79.1, place_payback: 43.6, avg_popularity: 6.2, avg_rank: 7.5, median_popularity: 4, median_rank: 6 },
+    { rank: 84, name: '吉田直弘', link: '/trainers/1101', races: 75, wins: 5, places_2: 3, places_3: 8, win_rate: 6.7, quinella_rate: 10.7, place_rate: 21.3, win_payback: 180.7, place_payback: 119.1, avg_popularity: 7.7, avg_rank: 7.4, median_popularity: 7, median_rank: 7 },
+    { rank: 85, name: '大根田裕之', link: '/trainers/1032', races: 76, wins: 5, places_2: 2, places_3: 4, win_rate: 6.6, quinella_rate: 9.2, place_rate: 14.5, win_payback: 194.6, place_payback: 103.6, avg_popularity: 9.8, avg_rank: 8.1, median_popularity: 9, median_rank: 8 },
+    { rank: 86, name: '金成貴史', link: '/trainers/1132', races: 76, wins: 5, places_2: 4, places_3: 3, win_rate: 6.6, quinella_rate: 11.8, place_rate: 15.8, win_payback: 85.5, place_payback: 46.1, avg_popularity: 7.8, avg_rank: 7.9, median_popularity: 8, median_rank: 8 },
+    { rank: 87, name: '伊坂重信', link: '/trainers/1177', races: 81, wins: 5, places_2: 3, places_3: 7, win_rate: 6.2, quinella_rate: 9.9, place_rate: 18.5, win_payback: 83.3, place_payback: 99.9, avg_popularity: 9.4, avg_rank: 8.5, median_popularity: 10, median_rank: 8 },
+    { rank: 88, name: '大橋勇樹', link: '/trainers/1065', races: 82, wins: 5, places_2: 6, places_3: 5, win_rate: 6.1, quinella_rate: 13.4, place_rate: 19.5, win_payback: 131.7, place_payback: 69.5, avg_popularity: 8.0, avg_rank: 6.8, median_popularity: 8, median_rank: 6 },
+    { rank: 89, name: '宗像義忠', link: '/trainers/420', races: 82, wins: 5, places_2: 3, places_3: 5, win_rate: 6.1, quinella_rate: 9.8, place_rate: 15.9, win_payback: 366.5, place_payback: 145.0, avg_popularity: 10.0, avg_rank: 8.2, median_popularity: 10, median_rank: 8 },
+    { rank: 90, name: '小笠倫弘', link: '/trainers/1076', races: 85, wins: 5, places_2: 12, places_3: 2, win_rate: 5.9, quinella_rate: 20.0, place_rate: 22.4, win_payback: 336.8, place_payback: 121.8, avg_popularity: 8.8, avg_rank: 8.0, median_popularity: 9, median_rank: 8 },
+    { rank: 91, name: '鈴木慎太郎', link: '/trainers/1179', races: 94, wins: 5, places_2: 4, places_3: 11, win_rate: 5.3, quinella_rate: 9.6, place_rate: 21.3, win_payback: 146.8, place_payback: 203.5, avg_popularity: 9.3, avg_rank: 8.1, median_popularity: 8, median_rank: 7 },
+    { rank: 92, name: '田島俊明', link: '/trainers/1112', races: 97, wins: 5, places_2: 8, places_3: 10, win_rate: 5.2, quinella_rate: 13.4, place_rate: 23.7, win_payback: 105.8, place_payback: 89.8, avg_popularity: 8.3, avg_rank: 7.2, median_popularity: 8, median_rank: 7 },
+    { rank: 93, name: '安田隆行', link: '/trainers/438', races: 41, wins: 4, places_2: 3, places_3: 4, win_rate: 9.8, quinella_rate: 17.1, place_rate: 26.8, win_payback: 38.8, place_payback: 39.0, avg_popularity: 4.9, avg_rank: 7.0, median_popularity: 4, median_rank: 7 },
+    { rank: 94, name: '佐々木晶三', link: '/trainers/429', races: 48, wins: 4, places_2: 4, places_3: 4, win_rate: 8.3, quinella_rate: 16.7, place_rate: 25.0, win_payback: 81.0, place_payback: 54.6, avg_popularity: 6.8, avg_rank: 6.9, median_popularity: 6, median_rank: 6 },
+    { rank: 95, name: '笹田和秀', link: '/trainers/1104', races: 61, wins: 4, places_2: 5, places_3: 3, win_rate: 6.6, quinella_rate: 14.8, place_rate: 19.7, win_payback: 37.4, place_payback: 62.1, avg_popularity: 7.7, avg_rank: 7.8, median_popularity: 7, median_rank: 7 },
+    { rank: 96, name: '新開幸一', link: '/trainers/1116', races: 62, wins: 4, places_2: 7, places_3: 1, win_rate: 6.5, quinella_rate: 17.7, place_rate: 19.4, win_payback: 49.2, place_payback: 74.4, avg_popularity: 8.4, avg_rank: 8.0, median_popularity: 9, median_rank: 8 },
+    { rank: 97, name: '安達昭夫', link: '/trainers/1042', races: 63, wins: 4, places_2: 2, places_3: 5, win_rate: 6.3, quinella_rate: 9.5, place_rate: 17.5, win_payback: 47.1, place_payback: 98.9, avg_popularity: 9.0, avg_rank: 8.8, median_popularity: 9, median_rank: 9 },
+    { rank: 98, name: '奥村武', link: '/trainers/1145', races: 65, wins: 4, places_2: 6, places_3: 4, win_rate: 6.2, quinella_rate: 15.4, place_rate: 21.5, win_payback: 44.0, place_payback: 71.5, avg_popularity: 7.7, avg_rank: 8.0, median_popularity: 8, median_rank: 7 },
+    { rank: 99, name: '千田輝彦', link: '/trainers/1120', races: 68, wins: 4, places_2: 5, places_3: 9, win_rate: 5.9, quinella_rate: 13.2, place_rate: 26.5, win_payback: 142.1, place_payback: 160.7, avg_popularity: 8.9, avg_rank: 7.8, median_popularity: 8, median_rank: 7 },
+    { rank: 100, name: '森田直行', link: '/trainers/1142', races: 74, wins: 4, places_2: 3, places_3: 4, win_rate: 5.4, quinella_rate: 9.5, place_rate: 14.9, win_payback: 47.6, place_payback: 55.7, avg_popularity: 10.0, avg_rank: 8.8, median_popularity: 10, median_rank: 9 },
+    { rank: 101, name: '清水英克', link: '/trainers/1080', races: 76, wins: 4, places_2: 6, places_3: 3, win_rate: 5.3, quinella_rate: 13.2, place_rate: 17.1, win_payback: 55.9, place_payback: 56.8, avg_popularity: 9.2, avg_rank: 8.5, median_popularity: 10, median_rank: 8 },
+    { rank: 102, name: '西田雄一郎', link: '/trainers/1187', races: 77, wins: 4, places_2: 7, places_3: 2, win_rate: 5.2, quinella_rate: 14.3, place_rate: 16.9, win_payback: 19.4, place_payback: 47.5, avg_popularity: 8.4, avg_rank: 7.8, median_popularity: 8, median_rank: 7 },
+    { rank: 103, name: '高橋康之', link: '/trainers/1135', races: 77, wins: 4, places_2: 1, places_3: 8, win_rate: 5.2, quinella_rate: 6.5, place_rate: 16.9, win_payback: 88.7, place_payback: 64.4, avg_popularity: 8.2, avg_rank: 8.0, median_popularity: 8, median_rank: 7 },
+    { rank: 104, name: '北出成人', link: '/trainers/1078', races: 80, wins: 4, places_2: 5, places_3: 6, win_rate: 5.0, quinella_rate: 11.2, place_rate: 18.8, win_payback: 62.3, place_payback: 72.8, avg_popularity: 7.7, avg_rank: 6.9, median_popularity: 7, median_rank: 6 },
+    { rank: 105, name: '奥平雅士', link: '/trainers/1074', races: 81, wins: 4, places_2: 2, places_3: 4, win_rate: 4.9, quinella_rate: 7.4, place_rate: 12.3, win_payback: 41.7, place_payback: 86.8, avg_popularity: 10.2, avg_rank: 9.2, median_popularity: 11, median_rank: 9 },
+    { rank: 106, name: '尾関知人', link: '/trainers/1103', races: 87, wins: 4, places_2: 6, places_3: 4, win_rate: 4.6, quinella_rate: 11.5, place_rate: 16.1, win_payback: 95.4, place_payback: 47.8, avg_popularity: 6.4, avg_rank: 8.1, median_popularity: 6, median_rank: 9 },
+    { rank: 107, name: '上原博之', link: '/trainers/423', races: 91, wins: 4, places_2: 5, places_3: 11, win_rate: 4.4, quinella_rate: 9.9, place_rate: 22.0, win_payback: 87.4, place_payback: 70.8, avg_popularity: 8.1, avg_rank: 8.0, median_popularity: 8, median_rank: 8 },
+    { rank: 108, name: '大和田成', link: '/trainers/1124', races: 90, wins: 4, places_2: 4, places_3: 7, win_rate: 4.4, quinella_rate: 8.9, place_rate: 16.7, win_payback: 165.2, place_payback: 104.7, avg_popularity: 9.5, avg_rank: 8.4, median_popularity: 10, median_rank: 9 },
+    { rank: 109, name: '奥村豊', link: '/trainers/1146', races: 90, wins: 4, places_2: 11, places_3: 13, win_rate: 4.4, quinella_rate: 16.7, place_rate: 31.1, win_payback: 31.9, place_payback: 109.2, avg_popularity: 6.9, avg_rank: 6.7, median_popularity: 7, median_rank: 6 },
+    { rank: 110, name: '牧田和弥', link: '/trainers/1123', races: 101, wins: 4, places_2: 9, places_3: 5, win_rate: 4.0, quinella_rate: 12.9, place_rate: 17.8, win_payback: 92.1, place_payback: 99.2, avg_popularity: 8.2, avg_rank: 8.2, median_popularity: 8, median_rank: 9 },
+    { rank: 111, name: '小手川準', link: '/trainers/1171', races: 102, wins: 4, places_2: 2, places_3: 4, win_rate: 3.9, quinella_rate: 5.9, place_rate: 9.8, win_payback: 194.7, place_payback: 65.0, avg_popularity: 9.3, avg_rank: 8.4, median_popularity: 9, median_rank: 8 },
+    { rank: 112, name: '福永祐一', link: '/trainers/1203', races: 38, wins: 3, places_2: 6, places_3: 4, win_rate: 7.9, quinella_rate: 23.7, place_rate: 34.2, win_payback: 28.4, place_payback: 44.2, avg_popularity: 3.1, avg_rank: 5.8, median_popularity: 2, median_rank: 5 },
+    { rank: 113, name: '蛯名正義', link: '/trainers/1191', races: 58, wins: 3, places_2: 7, places_3: 3, win_rate: 5.2, quinella_rate: 17.2, place_rate: 22.4, win_payback: 79.0, place_payback: 88.8, avg_popularity: 6.1, avg_rank: 6.7, median_popularity: 5, median_rank: 6 },
+    { rank: 114, name: '村山明', link: '/trainers/1107', races: 59, wins: 3, places_2: 3, places_3: 3, win_rate: 5.1, quinella_rate: 10.2, place_rate: 15.3, win_payback: 287.6, place_payback: 132.9, avg_popularity: 10.3, avg_rank: 9.1, median_popularity: 11, median_rank: 9 },
+    { rank: 115, name: '古賀慎明', link: '/trainers/1079', races: 60, wins: 3, places_2: 1, places_3: 3, win_rate: 5.0, quinella_rate: 6.7, place_rate: 11.7, win_payback: 32.8, place_payback: 31.2, avg_popularity: 7.4, avg_rank: 8.1, median_popularity: 7, median_rank: 9 },
+    { rank: 116, name: '平田修', link: '/trainers/1082', races: 60, wins: 3, places_2: 6, places_3: 4, win_rate: 5.0, quinella_rate: 15.0, place_rate: 21.7, win_payback: 146.2, place_payback: 87.5, avg_popularity: 7.1, avg_rank: 7.3, median_popularity: 6, median_rank: 7 },
+    { rank: 117, name: '畑端省吾', link: '/trainers/1188', races: 61, wins: 3, places_2: 3, places_3: 3, win_rate: 4.9, quinella_rate: 9.8, place_rate: 14.8, win_payback: 123.1, place_payback: 56.9, avg_popularity: 10.1, avg_rank: 8.8, median_popularity: 10, median_rank: 9 },
+    { rank: 118, name: '谷潔', link: '/trainers/431', races: 65, wins: 3, places_2: 4, places_3: 6, win_rate: 4.6, quinella_rate: 10.8, place_rate: 20.0, win_payback: 13.5, place_payback: 88.2, avg_popularity: 9.4, avg_rank: 7.5, median_popularity: 9, median_rank: 7 },
+    { rank: 119, name: '梅田智之', link: '/trainers/1084', races: 70, wins: 3, places_2: 3, places_3: 3, win_rate: 4.3, quinella_rate: 8.6, place_rate: 12.9, win_payback: 65.3, place_payback: 38.0, avg_popularity: 8.4, avg_rank: 8.1, median_popularity: 9, median_rank: 8 },
+    { rank: 120, name: '中尾秀正', link: '/trainers/1069', races: 72, wins: 3, places_2: 3, places_3: 7, win_rate: 4.2, quinella_rate: 8.3, place_rate: 18.1, win_payback: 24.3, place_payback: 71.7, avg_popularity: 8.8, avg_rank: 7.9, median_popularity: 9, median_rank: 8 },
+    { rank: 121, name: '宮本博', link: '/trainers/1073', races: 71, wins: 3, places_2: 6, places_3: 4, win_rate: 4.2, quinella_rate: 12.7, place_rate: 18.3, win_payback: 22.4, place_payback: 56.6, avg_popularity: 7.6, avg_rank: 7.3, median_popularity: 8, median_rank: 7 },
+    { rank: 122, name: '庄野靖志', link: '/trainers/1087', races: 82, wins: 3, places_2: 7, places_3: 14, win_rate: 3.7, quinella_rate: 12.2, place_rate: 29.3, win_payback: 58.5, place_payback: 89.3, avg_popularity: 7.0, avg_rank: 6.7, median_popularity: 6, median_rank: 6 },
+    { rank: 123, name: '茶木太樹', link: '/trainers/1181', races: 84, wins: 3, places_2: 13, places_3: 6, win_rate: 3.6, quinella_rate: 19.0, place_rate: 26.2, win_payback: 10.6, place_payback: 60.0, avg_popularity: 6.8, avg_rank: 7.0, median_popularity: 7, median_rank: 6 },
+    { rank: 124, name: '高木登', link: '/trainers/1088', races: 84, wins: 3, places_2: 7, places_3: 8, win_rate: 3.6, quinella_rate: 11.9, place_rate: 21.4, win_payback: 51.5, place_payback: 55.1, avg_popularity: 6.7, avg_rank: 8.0, median_popularity: 6, median_rank: 7 },
+    { rank: 125, name: '小崎憲', link: '/trainers/1085', races: 86, wins: 3, places_2: 1, places_3: 7, win_rate: 3.5, quinella_rate: 4.7, place_rate: 12.8, win_payback: 36.9, place_payback: 28.7, avg_popularity: 8.2, avg_rank: 8.6, median_popularity: 7, median_rank: 8 },
+    { rank: 126, name: '村田一誠', link: '/trainers/1190', races: 85, wins: 3, places_2: 3, places_3: 4, win_rate: 3.5, quinella_rate: 7.1, place_rate: 11.8, win_payback: 20.5, place_payback: 26.6, avg_popularity: 8.4, avg_rank: 8.7, median_popularity: 8, median_rank: 9 },
+    { rank: 127, name: '池上昌和', link: '/trainers/1150', races: 85, wins: 3, places_2: 3, places_3: 9, win_rate: 3.5, quinella_rate: 7.1, place_rate: 17.6, win_payback: 62.9, place_payback: 95.1, avg_popularity: 9.2, avg_rank: 9.4, median_popularity: 9, median_rank: 10 },
+    { rank: 128, name: '稲垣幸雄', link: '/trainers/1167', races: 85, wins: 3, places_2: 7, places_3: 7, win_rate: 3.5, quinella_rate: 11.8, place_rate: 20.0, win_payback: 70.1, place_payback: 62.8, avg_popularity: 8.7, avg_rank: 7.8, median_popularity: 9, median_rank: 7 },
+    { rank: 129, name: '杉山佳明', link: '/trainers/1178', races: 89, wins: 3, places_2: 5, places_3: 10, win_rate: 3.4, quinella_rate: 9.0, place_rate: 20.2, win_payback: 25.6, place_payback: 110.4, avg_popularity: 7.4, avg_rank: 7.0, median_popularity: 8, median_rank: 7 },
+    { rank: 130, name: '田中剛', link: '/trainers/1119', races: 87, wins: 3, places_2: 4, places_3: 3, win_rate: 3.4, quinella_rate: 8.0, place_rate: 11.5, win_payback: 11.8, place_payback: 55.4, avg_popularity: 9.5, avg_rank: 9.8, median_popularity: 10, median_rank: 10 },
+    { rank: 131, name: '長谷川浩大', link: '/trainers/1173', races: 87, wins: 3, places_2: 15, places_3: 9, win_rate: 3.4, quinella_rate: 20.7, place_rate: 31.0, win_payback: 35.9, place_payback: 104.4, avg_popularity: 6.9, avg_rank: 6.6, median_popularity: 6, median_rank: 6 },
+    { rank: 132, name: '萱野浩二', link: '/trainers/1024', races: 96, wins: 3, places_2: 0, places_3: 2, win_rate: 3.1, quinella_rate: 3.1, place_rate: 5.2, win_payback: 58.1, place_payback: 18.6, avg_popularity: 10.5, avg_rank: 9.3, median_popularity: 10, median_rank: 9 },
+    { rank: 133, name: '高橋裕', link: '/trainers/412', races: 38, wins: 2, places_2: 2, places_3: 3, win_rate: 5.3, quinella_rate: 10.5, place_rate: 18.4, win_payback: 46.3, place_payback: 34.7, avg_popularity: 5.8, avg_rank: 7.7, median_popularity: 5, median_rank: 7 },
+    { rank: 134, name: '河内洋', link: '/trainers/1072', races: 48, wins: 2, places_2: 5, places_3: 3, win_rate: 4.2, quinella_rate: 14.6, place_rate: 20.8, win_payback: 68.8, place_payback: 106.5, avg_popularity: 8.0, avg_rank: 7.2, median_popularity: 8, median_rank: 7 },
+    { rank: 135, name: '川村禎彦', link: '/trainers/1003', races: 50, wins: 2, places_2: 3, places_3: 1, win_rate: 4.0, quinella_rate: 10.0, place_rate: 12.0, win_payback: 92.0, place_payback: 41.6, avg_popularity: 9.0, avg_rank: 8.4, median_popularity: 8, median_rank: 8 },
+    { rank: 136, name: '田中克典', link: '/trainers/1180', races: 51, wins: 2, places_2: 5, places_3: 3, win_rate: 3.9, quinella_rate: 13.7, place_rate: 19.6, win_payback: 37.3, place_payback: 44.9, avg_popularity: 6.4, avg_rank: 6.5, median_popularity: 6, median_rank: 6 },
+    { rank: 137, name: '辻野泰之', link: '/trainers/1183', races: 56, wins: 2, places_2: 10, places_3: 6, win_rate: 3.6, quinella_rate: 21.4, place_rate: 32.1, win_payback: 35.9, place_payback: 147.3, avg_popularity: 6.2, avg_rank: 6.1, median_popularity: 6, median_rank: 5 },
+    { rank: 138, name: '堀内岳志', link: '/trainers/1189', races: 63, wins: 2, places_2: 2, places_3: 8, win_rate: 3.2, quinella_rate: 6.3, place_rate: 19.0, win_payback: 44.0, place_payback: 158.3, avg_popularity: 10.0, avg_rank: 8.2, median_popularity: 10, median_rank: 8 },
+    { rank: 139, name: '本間忍', link: '/trainers/1056', races: 67, wins: 2, places_2: 6, places_3: 1, win_rate: 3.0, quinella_rate: 11.9, place_rate: 13.4, win_payback: 155.8, place_payback: 158.1, avg_popularity: 11.1, avg_rank: 8.8, median_popularity: 12, median_rank: 9 },
+    { rank: 140, name: '本田優', link: '/trainers/1099', races: 69, wins: 2, places_2: 5, places_3: 6, win_rate: 2.9, quinella_rate: 10.1, place_rate: 18.8, win_payback: 141.2, place_payback: 152.6, avg_popularity: 8.5, avg_rank: 8.0, median_popularity: 8, median_rank: 8 },
+    { rank: 141, name: '中村直也', link: '/trainers/1186', races: 71, wins: 2, places_2: 7, places_3: 5, win_rate: 2.8, quinella_rate: 12.7, place_rate: 19.7, win_payback: 34.1, place_payback: 72.3, avg_popularity: 6.2, avg_rank: 6.9, median_popularity: 6, median_rank: 7 },
+    { rank: 142, name: '南田美知雄', link: '/trainers/437', races: 71, wins: 2, places_2: 1, places_3: 2, win_rate: 2.8, quinella_rate: 4.2, place_rate: 7.0, win_payback: 133.0, place_payback: 91.1, avg_popularity: 11.9, avg_rank: 9.8, median_popularity: 12, median_rank: 10 },
+    { rank: 143, name: '松山将樹', link: '/trainers/1100', races: 72, wins: 2, places_2: 2, places_3: 4, win_rate: 2.8, quinella_rate: 5.6, place_rate: 11.1, win_payback: 124.6, place_payback: 53.3, avg_popularity: 10.8, avg_rank: 8.9, median_popularity: 11, median_rank: 9 },
+    { rank: 144, name: '飯田祐史', link: '/trainers/1139', races: 71, wins: 2, places_2: 2, places_3: 6, win_rate: 2.8, quinella_rate: 5.6, place_rate: 14.1, win_payback: 11.0, place_payback: 40.7, avg_popularity: 8.0, avg_rank: 8.6, median_popularity: 8, median_rank: 8 },
+    { rank: 145, name: '伊藤伸一', link: '/trainers/1031', races: 74, wins: 2, places_2: 0, places_3: 3, win_rate: 2.7, quinella_rate: 2.7, place_rate: 6.8, win_payback: 95.4, place_payback: 37.6, avg_popularity: 11.5, avg_rank: 9.2, median_popularity: 12, median_rank: 9 },
+    { rank: 146, name: '宮徹', link: '/trainers/1018', races: 77, wins: 2, places_2: 7, places_3: 3, win_rate: 2.6, quinella_rate: 11.7, place_rate: 15.6, win_payback: 8.4, place_payback: 46.1, avg_popularity: 8.0, avg_rank: 8.2, median_popularity: 8, median_rank: 8 },
+    { rank: 147, name: '羽月友彦', link: '/trainers/1091', races: 81, wins: 2, places_2: 2, places_3: 3, win_rate: 2.5, quinella_rate: 4.9, place_rate: 8.6, win_payback: 96.5, place_payback: 56.9, avg_popularity: 10.0, avg_rank: 8.9, median_popularity: 10, median_rank: 9 },
+    { rank: 148, name: '和田雄二', link: '/trainers/1143', races: 88, wins: 2, places_2: 2, places_3: 4, win_rate: 2.3, quinella_rate: 4.5, place_rate: 9.1, win_payback: 227.3, place_payback: 71.4, avg_popularity: 11.3, avg_rank: 9.6, median_popularity: 12, median_rank: 10 },
+    { rank: 149, name: '水野貴広', link: '/trainers/1094', races: 86, wins: 2, places_2: 1, places_3: 2, win_rate: 2.3, quinella_rate: 3.5, place_rate: 5.8, win_payback: 31.6, place_payback: 23.7, avg_popularity: 9.6, avg_rank: 8.8, median_popularity: 10, median_rank: 9 },
+    { rank: 150, name: '矢野英一', link: '/trainers/1108', races: 86, wins: 2, places_2: 4, places_3: 7, win_rate: 2.3, quinella_rate: 7.0, place_rate: 15.1, win_payback: 11.4, place_payback: 50.1, avg_popularity: 7.2, avg_rank: 8.1, median_popularity: 6, median_rank: 8 },
+    { rank: 151, name: '小野次郎', link: '/trainers/1125', races: 90, wins: 2, places_2: 2, places_3: 7, win_rate: 2.2, quinella_rate: 4.4, place_rate: 12.2, win_payback: 142.3, place_payback: 81.6, avg_popularity: 10.6, avg_rank: 9.4, median_popularity: 11, median_rank: 10 },
+    { rank: 152, name: '浜田多実雄', link: '/trainers/1138', races: 92, wins: 2, places_2: 7, places_3: 3, win_rate: 2.2, quinella_rate: 9.8, place_rate: 13.0, win_payback: 24.0, place_payback: 51.5, avg_popularity: 8.9, avg_rank: 8.2, median_popularity: 9, median_rank: 7 },
+    { rank: 153, name: '杉浦宏昭', link: '/trainers/1008', races: 94, wins: 2, places_2: 4, places_3: 2, win_rate: 2.1, quinella_rate: 6.4, place_rate: 8.5, win_payback: 38.3, place_payback: 48.1, avg_popularity: 10.1, avg_rank: 9.0, median_popularity: 10, median_rank: 9 },
+    { rank: 154, name: '千葉直人', link: '/trainers/1199', races: 35, wins: 1, places_2: 5, places_3: 2, win_rate: 2.9, quinella_rate: 17.1, place_rate: 22.9, win_payback: 91.7, place_payback: 84.9, avg_popularity: 7.6, avg_rank: 7.0, median_popularity: 7, median_rank: 7 },
+    { rank: 155, name: '高橋一哉', link: '/trainers/1206', races: 34, wins: 1, places_2: 1, places_3: 4, win_rate: 2.9, quinella_rate: 5.9, place_rate: 17.6, win_payback: 58.2, place_payback: 64.7, avg_popularity: 7.4, avg_rank: 7.4, median_popularity: 6, median_rank: 7 },
+    { rank: 156, name: '小椋研介', link: '/trainers/1197', races: 36, wins: 1, places_2: 2, places_3: 2, win_rate: 2.8, quinella_rate: 8.3, place_rate: 13.9, win_payback: 13.9, place_payback: 26.1, avg_popularity: 8.6, avg_rank: 8.3, median_popularity: 8, median_rank: 8 },
+    { rank: 157, name: '矢嶋大樹', link: '/trainers/1202', races: 37, wins: 1, places_2: 2, places_3: 4, win_rate: 2.7, quinella_rate: 8.1, place_rate: 18.9, win_payback: 117.3, place_payback: 49.7, avg_popularity: 8.8, avg_rank: 7.5, median_popularity: 9, median_rank: 7 },
+    { rank: 158, name: '加用正', link: '/trainers/425', races: 39, wins: 1, places_2: 0, places_3: 3, win_rate: 2.6, quinella_rate: 2.6, place_rate: 10.3, win_payback: 11.3, place_payback: 22.6, avg_popularity: 8.6, avg_rank: 8.1, median_popularity: 8, median_rank: 8 },
+    { rank: 159, name: '石毛善彦', link: '/trainers/428', races: 40, wins: 1, places_2: 0, places_3: 2, win_rate: 2.5, quinella_rate: 2.5, place_rate: 7.5, win_payback: 67.3, place_payback: 55.3, avg_popularity: 12.5, avg_rank: 10.6, median_popularity: 13, median_rank: 11 },
+    { rank: 160, name: '中野栄治', link: '/trainers/1010', races: 42, wins: 1, places_2: 4, places_3: 2, win_rate: 2.4, quinella_rate: 11.9, place_rate: 16.7, win_payback: 31.9, place_payback: 61.7, avg_popularity: 8.0, avg_rank: 8.1, median_popularity: 8, median_rank: 8 },
+    { rank: 161, name: '鮫島一歩', link: '/trainers/1046', races: 42, wins: 1, places_2: 3, places_3: 4, win_rate: 2.4, quinella_rate: 9.5, place_rate: 19.0, win_payback: 74.5, place_payback: 105.7, avg_popularity: 8.1, avg_rank: 7.5, median_popularity: 8, median_rank: 7 },
+    { rank: 162, name: '松永康利', link: '/trainers/1093', races: 62, wins: 1, places_2: 1, places_3: 1, win_rate: 1.6, quinella_rate: 3.2, place_rate: 4.8, win_payback: 6.5, place_payback: 26.0, avg_popularity: 11.2, avg_rank: 10.0, median_popularity: 11, median_rank: 10 },
+    { rank: 163, name: '粕谷昌央', link: '/trainers/1096', races: 62, wins: 1, places_2: 1, places_3: 2, win_rate: 1.6, quinella_rate: 3.2, place_rate: 6.5, win_payback: 71.0, place_payback: 40.8, avg_popularity: 11.6, avg_rank: 10.0, median_popularity: 12, median_rank: 10 },
+    { rank: 164, name: '中川公成', link: '/trainers/1081', races: 67, wins: 1, places_2: 4, places_3: 4, win_rate: 1.5, quinella_rate: 7.5, place_rate: 13.4, win_payback: 6.0, place_payback: 51.0, avg_popularity: 8.7, avg_rank: 8.8, median_popularity: 8, median_rank: 10 },
+    { rank: 165, name: '和田正一郎', link: '/trainers/1114', races: 71, wins: 1, places_2: 3, places_3: 4, win_rate: 1.4, quinella_rate: 5.6, place_rate: 11.3, win_payback: 8.3, place_payback: 32.0, avg_popularity: 9.2, avg_rank: 9.5, median_popularity: 9, median_rank: 10 },
+    { rank: 166, name: '勢司和浩', link: '/trainers/1047', races: 76, wins: 1, places_2: 5, places_3: 5, win_rate: 1.3, quinella_rate: 7.9, place_rate: 14.5, win_payback: 5.3, place_payback: 172.9, avg_popularity: 10.8, avg_rank: 9.2, median_popularity: 11, median_rank: 10 },
+    { rank: 167, name: '佐藤吉勝', link: '/trainers/1035', races: 84, wins: 1, places_2: 1, places_3: 2, win_rate: 1.2, quinella_rate: 2.4, place_rate: 4.8, win_payback: 22.6, place_payback: 36.9, avg_popularity: 11.5, avg_rank: 10.7, median_popularity: 12, median_rank: 11 },
+    { rank: 168, name: '蛯名利弘', link: '/trainers/1131', races: 82, wins: 1, places_2: 4, places_3: 0, win_rate: 1.2, quinella_rate: 6.1, place_rate: 6.1, win_payback: 7.6, place_payback: 61.8, avg_popularity: 12.2, avg_rank: 10.4, median_popularity: 13, median_rank: 11 },
+    { rank: 169, name: '武藤善則', link: '/trainers/1064', races: 90, wins: 1, places_2: 2, places_3: 8, win_rate: 1.1, quinella_rate: 3.3, place_rate: 12.2, win_payback: 7.1, place_payback: 57.6, avg_popularity: 9.0, avg_rank: 8.3, median_popularity: 9, median_rank: 8 },
+    { rank: 170, name: '高橋義忠', link: '/trainers/1129', races: 94, wins: 1, places_2: 4, places_3: 5, win_rate: 1.1, quinella_rate: 5.3, place_rate: 10.6, win_payback: 31.3, place_payback: 40.5, avg_popularity: 7.9, avg_rank: 7.7, median_popularity: 7, median_rank: 7 },
+    { rank: 171, name: '菊川正達', link: '/trainers/1052', races: 97, wins: 1, places_2: 5, places_3: 3, win_rate: 1.0, quinella_rate: 6.2, place_rate: 9.3, win_payback: 5.1, place_payback: 36.5, avg_popularity: 8.6, avg_rank: 8.5, median_popularity: 8, median_rank: 8 },
+    { rank: 172, name: '加藤和宏', link: '/trainers/1077', races: 68, wins: 0, places_2: 0, places_3: 1, win_rate: 0.0, quinella_rate: 0.0, place_rate: 1.5, win_payback: 0.0, place_payback: 2.4, avg_popularity: 12.7, avg_rank: 11.0, median_popularity: 14, median_rank: 12 },
+    { rank: 173, name: '土田稔', link: '/trainers/417', races: 63, wins: 0, places_2: 0, places_3: 1, win_rate: 0.0, quinella_rate: 0.0, place_rate: 1.6, win_payback: 0.0, place_payback: 11.3, avg_popularity: 11.5, avg_rank: 10.3, median_popularity: 12, median_rank: 11 },
+    { rank: 174, name: '天間昭一', link: '/trainers/1090', races: 64, wins: 0, places_2: 0, places_3: 0, win_rate: 0.0, quinella_rate: 0.0, place_rate: 0.0, win_payback: 0.0, place_payback: 0.0, avg_popularity: 11.9, avg_rank: 11.4, median_popularity: 12, median_rank: 11 },
+    { rank: 175, name: '小桧山悟', link: '/trainers/1005', races: 67, wins: 0, places_2: 0, places_3: 1, win_rate: 0.0, quinella_rate: 0.0, place_rate: 1.5, win_payback: 0.0, place_payback: 0.0, avg_popularity: 11.4, avg_rank: 10.9, median_popularity: 12, median_rank: 11 },
+    { rank: 176, name: '戸田博文', link: '/trainers/1054', races: 57, wins: 0, places_2: 3, places_3: 4, win_rate: 0.0, quinella_rate: 5.3, place_rate: 12.3, win_payback: 0.0, place_payback: 43.9, avg_popularity: 7.3, avg_rank: 8.2, median_popularity: 7, median_rank: 8 },
+    { rank: 177, name: '木原一良', link: '/trainers/1033', races: 50, wins: 0, places_2: 1, places_3: 1, win_rate: 0.0, quinella_rate: 2.0, place_rate: 4.0, win_payback: 0.0, place_payback: 15.4, avg_popularity: 10.1, avg_rank: 9.1, median_popularity: 10, median_rank: 8 },
+    { rank: 178, name: '根本康広', link: '/trainers/1029', races: 68, wins: 0, places_2: 2, places_3: 3, win_rate: 0.0, quinella_rate: 2.9, place_rate: 7.4, win_payback: 0.0, place_payback: 64.9, avg_popularity: 12.0, avg_rank: 10.5, median_popularity: 12, median_rank: 11 },
+    { rank: 179, name: '河嶋宏樹', link: '/trainers/1198', races: 39, wins: 0, places_2: 3, places_3: 0, win_rate: 0.0, quinella_rate: 7.7, place_rate: 7.7, win_payback: 0.0, place_payback: 19.0, avg_popularity: 6.8, avg_rank: 8.3, median_popularity: 7, median_rank: 8 },
+    { rank: 180, name: '深山雅史', link: '/trainers/1174', races: 87, wins: 0, places_2: 4, places_3: 4, win_rate: 0.0, quinella_rate: 4.6, place_rate: 9.2, win_payback: 0.0, place_payback: 58.7, avg_popularity: 9.9, avg_rank: 8.3, median_popularity: 10, median_rank: 8 },
+    { rank: 181, name: '的場均', link: '/trainers/1063', races: 56, wins: 0, places_2: 0, places_3: 1, win_rate: 0.0, quinella_rate: 0.0, place_rate: 1.8, win_payback: 0.0, place_payback: 10.2, avg_popularity: 12.6, avg_rank: 11.3, median_popularity: 13, median_rank: 12 },
+    { rank: 182, name: '石栗龍彦', link: '/trainers/1043', races: 56, wins: 0, places_2: 1, places_3: 2, win_rate: 0.0, quinella_rate: 1.8, place_rate: 5.4, win_payback: 0.0, place_payback: 57.3, avg_popularity: 12.2, avg_rank: 10.8, median_popularity: 13, median_rank: 12 },
+    { rank: 183, name: '緒方努', link: '/trainers/1193', races: 48, wins: 0, places_2: 2, places_3: 2, win_rate: 0.0, quinella_rate: 4.2, place_rate: 8.3, win_payback: 0.0, place_payback: 16.3, avg_popularity: 9.5, avg_rank: 8.1, median_popularity: 10, median_rank: 8 },
+    { rank: 184, name: '荒川義之', link: '/trainers/1095', races: 72, wins: 0, places_2: 1, places_3: 2, win_rate: 0.0, quinella_rate: 1.4, place_rate: 4.2, win_payback: 0.0, place_payback: 12.8, avg_popularity: 10.6, avg_rank: 8.8, median_popularity: 11, median_rank: 8 },
+    { rank: 185, name: '藤沢則雄', link: '/trainers/1041', races: 42, wins: 0, places_2: 0, places_3: 1, win_rate: 0.0, quinella_rate: 0.0, place_rate: 2.4, win_payback: 0.0, place_payback: 27.4, avg_popularity: 11.6, avg_rank: 9.9, median_popularity: 12, median_rank: 10 },
+    { rank: 186, name: '藤野健太', link: '/trainers/1200', races: 30, wins: 0, places_2: 2, places_3: 0, win_rate: 0.0, quinella_rate: 6.7, place_rate: 6.7, win_payback: 0.0, place_payback: 23.7, avg_popularity: 8.4, avg_rank: 8.1, median_popularity: 8, median_rank: 8 },
+    { rank: 187, name: '青木孝文', link: '/trainers/1156', races: 98, wins: 0, places_2: 7, places_3: 4, win_rate: 0.0, quinella_rate: 7.1, place_rate: 11.2, win_payback: 0.0, place_payback: 29.1, avg_popularity: 9.1, avg_rank: 8.9, median_popularity: 9, median_rank: 9 },
+    { rank: 188, name: '高橋文雅', link: '/trainers/1134', races: 69, wins: 0, places_2: 4, places_3: 5, win_rate: 0.0, quinella_rate: 5.8, place_rate: 13.0, win_payback: 0.0, place_payback: 114.3, avg_popularity: 10.6, avg_rank: 9.0, median_popularity: 11, median_rank: 9 }
+  ]}
+  nameLabel="調教師"
+  initialShow={10}
+/>
+
+複勝率70%以上の調教師から、馬券内があるかないかといった調教師まで、<strong>かなり成績が分かれそう</strong>ですね。
+
+勝ち数TOPは<strong>矢作先生</strong>で<strong>29勝</strong>と頭ひとつ抜けています。
+
+そして何より<strong>堀先生の成績ヤバい</strong>ですね...<br />
+<strong>勝率・連帯率・複勝率いずれもTOP</strong>で、<strong>単勝回収率・複勝回収率ともに100%を超えています</strong>。<br />
+
+新馬戦は予想なんていらないです🤦‍♂️堀厩舎の馬を買いましょう。
+
+## 新馬戦の種牡馬成績は？
+さらに種牡馬別でもみてみましょう。
+
+ここでは期間内で50回以上出走した種牡馬を対象とし、同様に勝ち数の多い順に並べています。<br />
+
+<DataTable
+  data={[
+    { rank: 1, name: 'エピファネイア', link: '/sires/37724', races: 395, wins: 67, places_2: 53, places_3: 52, win_rate: 17.0, quinella_rate: 30.4, place_rate: 43.5, win_payback: 86.5, place_payback: 104.6, avg_popularity: 4.8, avg_rank: 5.1, median_popularity: 4, median_rank: 4 },
+    { rank: 2, name: 'キズナ', link: '/sires/99556', races: 346, wins: 54, places_2: 43, places_3: 33, win_rate: 15.6, quinella_rate: 28.0, place_rate: 37.6, win_payback: 87.1, place_payback: 74.2, avg_popularity: 4.9, avg_rank: 5.8, median_popularity: 4, median_rank: 5 },
+    { rank: 3, name: 'モーリス', link: '/sires/36694', races: 312, wins: 40, places_2: 22, places_3: 42, win_rate: 12.8, quinella_rate: 19.9, place_rate: 33.3, win_payback: 115.5, place_payback: 92.2, avg_popularity: 5.4, avg_rank: 6.1, median_popularity: 5, median_rank: 5 },
+    { rank: 4, name: 'ロードカナロア', link: '/sires/88034', races: 335, wins: 35, places_2: 37, places_3: 31, win_rate: 10.4, quinella_rate: 21.5, place_rate: 30.7, win_payback: 37.9, place_payback: 49.5, avg_popularity: 4.2, avg_rank: 6.9, median_popularity: 3, median_rank: 7 },
+    { rank: 5, name: 'ドゥラメンテ', link: '/sires/12180', races: 247, wins: 32, places_2: 32, places_3: 24, win_rate: 13.0, quinella_rate: 25.9, place_rate: 35.6, win_payback: 58.6, place_payback: 75.2, avg_popularity: 4.6, avg_rank: 6.2, median_popularity: 4, median_rank: 5 },
+    { rank: 6, name: 'キタサンブラック', link: '/sires/62458', races: 204, wins: 29, places_2: 30, places_3: 17, win_rate: 14.2, quinella_rate: 28.9, place_rate: 37.3, win_payback: 59.5, place_payback: 86.3, avg_popularity: 4.8, avg_rank: 6.1, median_popularity: 4, median_rank: 5 },
+    { rank: 7, name: 'ヘニーヒューズ', link: '/sires/67587', races: 165, wins: 26, places_2: 11, places_3: 21, win_rate: 15.8, quinella_rate: 22.4, place_rate: 35.2, win_payback: 101.5, place_payback: 71.9, avg_popularity: 5.1, avg_rank: 6.4, median_popularity: 4, median_rank: 5 },
+    { rank: 8, name: 'リアルスティール', link: '/sires/53147', races: 251, wins: 26, places_2: 31, places_3: 22, win_rate: 10.4, quinella_rate: 22.7, place_rate: 31.5, win_payback: 143.5, place_payback: 104.0, avg_popularity: 6.5, avg_rank: 6.5, median_popularity: 6, median_rank: 6 },
+    { rank: 9, name: 'シルバーステート', link: '/sires/12916', races: 256, wins: 24, places_2: 19, places_3: 28, win_rate: 9.4, quinella_rate: 16.8, place_rate: 27.7, win_payback: 88.8, place_payback: 69.5, avg_popularity: 6.9, avg_rank: 7.0, median_popularity: 6, median_rank: 6 },
+    { rank: 10, name: 'ハービンジャー', link: '/sires/1781', races: 218, wins: 22, places_2: 20, places_3: 18, win_rate: 10.1, quinella_rate: 19.3, place_rate: 27.5, win_payback: 104.5, place_payback: 77.4, avg_popularity: 7.2, avg_rank: 6.8, median_popularity: 7, median_rank: 6 },
+    { rank: 11, name: 'ドレフォン', link: '/sires/87469', races: 319, wins: 20, places_2: 24, places_3: 25, win_rate: 6.3, quinella_rate: 13.8, place_rate: 21.6, win_payback: 40.8, place_payback: 50.1, avg_popularity: 6.3, avg_rank: 7.4, median_popularity: 5, median_rank: 7 },
+    { rank: 12, name: 'サートゥルナーリア', link: '/sires/52183', races: 133, wins: 19, places_2: 11, places_3: 9, win_rate: 14.3, quinella_rate: 22.6, place_rate: 29.3, win_payback: 49.6, place_payback: 50.3, avg_popularity: 5.1, avg_rank: 6.4, median_popularity: 4, median_rank: 6 },
+    { rank: 13, name: 'ルーラーシップ', link: '/sires/76228', races: 255, wins: 19, places_2: 16, places_3: 17, win_rate: 7.5, quinella_rate: 13.7, place_rate: 20.4, win_payback: 94.0, place_payback: 67.8, avg_popularity: 7.3, avg_rank: 7.2, median_popularity: 7, median_rank: 7 },
+    { rank: 14, name: 'ナダル', link: '/sires/453', races: 90, wins: 17, places_2: 15, places_3: 4, win_rate: 18.9, quinella_rate: 35.6, place_rate: 40.0, win_payback: 72.6, place_payback: 68.6, avg_popularity: 4.0, avg_rank: 6.0, median_popularity: 3, median_rank: 5 },
+    { rank: 15, name: 'シニスターミニスター', link: '/sires/52308', races: 133, wins: 17, places_2: 15, places_3: 19, win_rate: 12.8, quinella_rate: 24.1, place_rate: 38.3, win_payback: 110.9, place_payback: 121.2, avg_popularity: 5.8, avg_rank: 6.1, median_popularity: 5, median_rank: 5 },
+    { rank: 16, name: 'ハーツクライ', link: '/sires/18600', races: 135, wins: 17, places_2: 18, places_3: 15, win_rate: 12.6, quinella_rate: 25.9, place_rate: 37.0, win_payback: 54.0, place_payback: 75.9, avg_popularity: 4.6, avg_rank: 6.1, median_popularity: 3, median_rank: 5 },
+    { rank: 17, name: 'ジャスタウェイ', link: '/sires/99278', races: 180, wins: 17, places_2: 14, places_3: 8, win_rate: 9.4, quinella_rate: 17.2, place_rate: 21.7, win_payback: 87.0, place_payback: 57.4, avg_popularity: 7.6, avg_rank: 7.5, median_popularity: 8, median_rank: 7 },
+    { rank: 18, name: 'サトノダイヤモンド', link: '/sires/81686', races: 220, wins: 17, places_2: 17, places_3: 21, win_rate: 7.7, quinella_rate: 15.5, place_rate: 25.0, win_payback: 60.0, place_payback: 70.9, avg_popularity: 6.7, avg_rank: 7.1, median_popularity: 6, median_rank: 7 },
+    { rank: 19, name: 'ダノンレジェンド', link: '/sires/25578', races: 114, wins: 16, places_2: 13, places_3: 11, win_rate: 14.0, quinella_rate: 25.4, place_rate: 35.1, win_payback: 187.0, place_payback: 128.5, avg_popularity: 7.6, avg_rank: 7.1, median_popularity: 7, median_rank: 6 },
+    { rank: 20, name: 'ルヴァンスレーヴ', link: '/sires/48441', races: 126, wins: 15, places_2: 13, places_3: 12, win_rate: 11.9, quinella_rate: 22.2, place_rate: 31.7, win_payback: 123.7, place_payback: 180.4, avg_popularity: 6.9, avg_rank: 6.1, median_popularity: 6, median_rank: 6 },
+    { rank: 21, name: 'スワーヴリチャード', link: '/sires/15423', races: 140, wins: 15, places_2: 10, places_3: 14, win_rate: 10.7, quinella_rate: 17.9, place_rate: 27.9, win_payback: 47.4, place_payback: 53.2, avg_popularity: 5.1, avg_rank: 6.7, median_popularity: 4, median_rank: 6 },
+    { rank: 22, name: 'ホッコータルマエ', link: '/sires/5219', races: 168, wins: 15, places_2: 11, places_3: 6, win_rate: 8.9, quinella_rate: 15.5, place_rate: 19.0, win_payback: 96.8, place_payback: 74.3, avg_popularity: 8.1, avg_rank: 7.6, median_popularity: 8, median_rank: 7 },
+    { rank: 23, name: 'サトノクラウン', link: '/sires/48128', races: 178, wins: 15, places_2: 12, places_3: 11, win_rate: 8.4, quinella_rate: 15.2, place_rate: 21.3, win_payback: 119.7, place_payback: 76.6, avg_popularity: 8.5, avg_rank: 7.4, median_popularity: 8, median_rank: 7 },
+    { rank: 24, name: 'イスラボニータ', link: '/sires/88925', races: 219, wins: 15, places_2: 15, places_3: 24, win_rate: 6.8, quinella_rate: 13.7, place_rate: 24.7, win_payback: 113.3, place_payback: 75.0, avg_popularity: 7.1, avg_rank: 7.2, median_popularity: 7, median_rank: 7 },
+    { rank: 25, name: 'レイデオロ', link: '/sires/72149', races: 195, wins: 14, places_2: 17, places_3: 10, win_rate: 7.2, quinella_rate: 15.9, place_rate: 21.0, win_payback: 55.4, place_payback: 54.8, avg_popularity: 7.2, avg_rank: 7.5, median_popularity: 6, median_rank: 7 },
+    { rank: 26, name: 'リオンディーズ', link: '/sires/34206', races: 243, wins: 14, places_2: 17, places_3: 27, win_rate: 5.8, quinella_rate: 12.8, place_rate: 23.9, win_payback: 48.4, place_payback: 72.8, avg_popularity: 7.2, avg_rank: 6.8, median_popularity: 7, median_rank: 6 },
+    { rank: 27, name: 'ニューイヤーズデイ', link: '/sires/54564', races: 130, wins: 13, places_2: 16, places_3: 16, win_rate: 10.0, quinella_rate: 22.3, place_rate: 34.6, win_payback: 108.1, place_payback: 112.6, avg_popularity: 6.4, avg_rank: 6.4, median_popularity: 6, median_rank: 5 },
+    { rank: 28, name: 'ビッグアーサー', link: '/sires/80004', races: 176, wins: 13, places_2: 12, places_3: 19, win_rate: 7.4, quinella_rate: 14.2, place_rate: 25.0, win_payback: 42.9, place_payback: 68.9, avg_popularity: 7.3, avg_rank: 7.4, median_popularity: 7, median_rank: 7 },
+    { rank: 29, name: 'パイロ', link: '/sires/70205', races: 117, wins: 12, places_2: 11, places_3: 14, win_rate: 10.3, quinella_rate: 19.7, place_rate: 31.6, win_payback: 59.9, place_payback: 83.0, avg_popularity: 6.2, avg_rank: 6.1, median_popularity: 5, median_rank: 5 },
+    { rank: 30, name: 'ダイワメジャー', link: '/sires/3945', races: 165, wins: 12, places_2: 13, places_3: 18, win_rate: 7.3, quinella_rate: 15.2, place_rate: 26.1, win_payback: 48.8, place_payback: 59.2, avg_popularity: 5.9, avg_rank: 6.7, median_popularity: 5, median_rank: 6 },
+    { rank: 31, name: 'マインドユアビスケッツ', link: '/sires/39730', races: 182, wins: 12, places_2: 14, places_3: 12, win_rate: 6.6, quinella_rate: 14.3, place_rate: 20.9, win_payback: 153.1, place_payback: 81.0, avg_popularity: 7.4, avg_rank: 7.4, median_popularity: 7, median_rank: 7 },
+    { rank: 32, name: 'グレーターロンドン', link: '/sires/4005', races: 58, wins: 11, places_2: 4, places_3: 4, win_rate: 19.0, quinella_rate: 25.9, place_rate: 32.8, win_payback: 172.8, place_payback: 123.6, avg_popularity: 7.1, avg_rank: 6.0, median_popularity: 7, median_rank: 5 },
+    { rank: 33, name: 'ファインニードル', link: '/sires/50346', races: 116, wins: 11, places_2: 9, places_3: 10, win_rate: 9.5, quinella_rate: 17.2, place_rate: 25.9, win_payback: 93.4, place_payback: 79.3, avg_popularity: 7.7, avg_rank: 7.4, median_popularity: 7, median_rank: 7 },
+    { rank: 34, name: 'マジェスティックウォリアー', link: '/sires/5462', races: 179, wins: 11, places_2: 15, places_3: 14, win_rate: 6.1, quinella_rate: 14.5, place_rate: 22.3, win_payback: 39.1, place_payback: 86.2, avg_popularity: 7.3, avg_rank: 7.3, median_popularity: 7, median_rank: 7 },
+    { rank: 35, name: 'アドマイヤマーズ', link: '/sires/78402', races: 80, wins: 10, places_2: 10, places_3: 4, win_rate: 12.5, quinella_rate: 25.0, place_rate: 30.0, win_payback: 65.9, place_payback: 63.1, avg_popularity: 5.4, avg_rank: 6.0, median_popularity: 5, median_rank: 6 },
+    { rank: 36, name: 'サンダースノー', link: '/sires/36652', races: 126, wins: 10, places_2: 3, places_3: 2, win_rate: 7.9, quinella_rate: 10.3, place_rate: 11.9, win_payback: 310.0, place_payback: 80.8, avg_popularity: 9.4, avg_rank: 8.8, median_popularity: 10, median_rank: 9 },
+    { rank: 37, name: 'オルフェーヴル', link: '/sires/83703', races: 179, wins: 9, places_2: 8, places_3: 18, win_rate: 5.0, quinella_rate: 9.5, place_rate: 19.6, win_payback: 73.5, place_payback: 63.5, avg_popularity: 7.5, avg_rank: 7.9, median_popularity: 7, median_rank: 8 },
+    { rank: 38, name: 'デクラレーションオブウォー', link: '/sires/81284', races: 189, wins: 9, places_2: 14, places_3: 10, win_rate: 4.8, quinella_rate: 12.2, place_rate: 17.5, win_payback: 108.6, place_payback: 69.6, avg_popularity: 8.1, avg_rank: 7.9, median_popularity: 7, median_rank: 8 },
+    { rank: 39, name: 'ブラックタイド', link: '/sires/50992', races: 87, wins: 8, places_2: 3, places_3: 6, win_rate: 9.2, quinella_rate: 12.6, place_rate: 19.5, win_payback: 79.9, place_payback: 48.7, avg_popularity: 8.3, avg_rank: 7.4, median_popularity: 8, median_rank: 6 },
+    { rank: 40, name: 'モズアスコット', link: '/sires/66837', races: 88, wins: 8, places_2: 7, places_3: 11, win_rate: 9.1, quinella_rate: 17.0, place_rate: 29.5, win_payback: 189.1, place_payback: 140.6, avg_popularity: 7.2, avg_rank: 6.9, median_popularity: 7, median_rank: 6 },
+    { rank: 41, name: 'シャンハイボビー', link: '/sires/2552', races: 121, wins: 8, places_2: 6, places_3: 10, win_rate: 6.6, quinella_rate: 11.6, place_rate: 19.8, win_payback: 162.0, place_payback: 68.9, avg_popularity: 7.7, avg_rank: 7.7, median_popularity: 8, median_rank: 7 },
+    { rank: 42, name: 'コパノリッキー', link: '/sires/31634', races: 147, wins: 8, places_2: 6, places_3: 10, win_rate: 5.4, quinella_rate: 9.5, place_rate: 16.3, win_payback: 135.2, place_payback: 75.3, avg_popularity: 8.5, avg_rank: 8.3, median_popularity: 9, median_rank: 9 },
+    { rank: 43, name: 'ブリックスアンドモルタル', link: '/sires/41633', races: 186, wins: 8, places_2: 20, places_3: 11, win_rate: 4.3, quinella_rate: 15.1, place_rate: 21.0, win_payback: 14.6, place_payback: 48.9, avg_popularity: 6.7, avg_rank: 7.8, median_popularity: 6, median_rank: 7 },
+    { rank: 44, name: 'ミッキーアイル', link: '/sires/66553', races: 197, wins: 8, places_2: 18, places_3: 16, win_rate: 4.1, quinella_rate: 13.2, place_rate: 21.3, win_payback: 40.9, place_payback: 69.7, avg_popularity: 6.5, avg_rank: 7.6, median_popularity: 6, median_rank: 7 },
+    { rank: 45, name: 'ゴールドシップ', link: '/sires/25899', races: 203, wins: 8, places_2: 13, places_3: 13, win_rate: 3.9, quinella_rate: 10.3, place_rate: 16.7, win_payback: 69.1, place_payback: 58.1, avg_popularity: 8.3, avg_rank: 7.8, median_popularity: 8, median_rank: 7 },
+    { rank: 46, name: 'コントレイル', link: '/sires/42800', races: 56, wins: 7, places_2: 9, places_3: 6, win_rate: 12.5, quinella_rate: 28.6, place_rate: 39.3, win_payback: 59.1, place_payback: 66.8, avg_popularity: 4.1, avg_rank: 5.3, median_popularity: 3, median_rank: 5 },
+    { rank: 47, name: 'ディスクリートキャット', link: '/sires/20274', races: 100, wins: 7, places_2: 4, places_3: 10, win_rate: 7.0, quinella_rate: 11.0, place_rate: 21.0, win_payback: 84.4, place_payback: 60.1, avg_popularity: 7.7, avg_rank: 7.8, median_popularity: 7, median_rank: 7 },
+    { rank: 48, name: 'リアルインパクト', link: '/sires/39476', races: 104, wins: 7, places_2: 5, places_3: 7, win_rate: 6.7, quinella_rate: 11.5, place_rate: 18.3, win_payback: 84.7, place_payback: 47.9, avg_popularity: 8.1, avg_rank: 7.5, median_popularity: 8, median_rank: 7 },
+    { rank: 49, name: 'サトノアラジン', link: '/sires/62850', races: 135, wins: 7, places_2: 6, places_3: 8, win_rate: 5.2, quinella_rate: 9.6, place_rate: 15.6, win_payback: 46.4, place_payback: 47.7, avg_popularity: 7.7, avg_rank: 7.7, median_popularity: 7, median_rank: 7 },
+    { rank: 50, name: 'エスポワールシチー', link: '/sires/86461', races: 55, wins: 6, places_2: 2, places_3: 4, win_rate: 10.9, quinella_rate: 14.5, place_rate: 21.8, win_payback: 236.4, place_payback: 76.4, avg_popularity: 7.6, avg_rank: 6.9, median_popularity: 7, median_rank: 7 },
+    { rank: 51, name: 'ロジャーバローズ', link: '/sires/53562', races: 79, wins: 6, places_2: 6, places_3: 7, win_rate: 7.6, quinella_rate: 15.2, place_rate: 24.1, win_payback: 34.1, place_payback: 69.1, avg_popularity: 7.9, avg_rank: 7.2, median_popularity: 9, median_rank: 7 },
+    { rank: 52, name: 'カレンブラックヒル', link: '/sires/12734', races: 95, wins: 6, places_2: 7, places_3: 5, win_rate: 6.3, quinella_rate: 13.7, place_rate: 18.9, win_payback: 138.4, place_payback: 78.4, avg_popularity: 8.9, avg_rank: 7.8, median_popularity: 9, median_rank: 8 },
+    { rank: 53, name: 'キンシャサノキセキ', link: '/sires/88795', races: 110, wins: 6, places_2: 8, places_3: 7, win_rate: 5.5, quinella_rate: 12.7, place_rate: 19.1, win_payback: 82.7, place_payback: 71.6, avg_popularity: 7.3, avg_rank: 7.4, median_popularity: 7, median_rank: 7 },
+    { rank: 54, name: 'ダノンバラード', link: '/sires/1510', races: 127, wins: 6, places_2: 7, places_3: 11, win_rate: 4.7, quinella_rate: 10.2, place_rate: 18.9, win_payback: 242.0, place_payback: 203.2, avg_popularity: 8.9, avg_rank: 7.7, median_popularity: 9, median_rank: 7 },
+    { rank: 55, name: 'アメリカンペイトリオット', link: '/sires/17569', races: 134, wins: 6, places_2: 5, places_3: 10, win_rate: 4.5, quinella_rate: 8.2, place_rate: 15.7, win_payback: 176.0, place_payback: 67.3, avg_popularity: 9.3, avg_rank: 8.3, median_popularity: 9, median_rank: 9 },
+    { rank: 56, name: 'ディーマジェスティ', link: '/sires/60827', races: 71, wins: 5, places_2: 5, places_3: 1, win_rate: 7.0, quinella_rate: 14.1, place_rate: 15.5, win_payback: 24.2, place_payback: 51.1, avg_popularity: 8.4, avg_rank: 8.3, median_popularity: 8, median_rank: 8 },
+    { rank: 57, name: 'アジアエクスプレス', link: '/sires/90870', races: 127, wins: 5, places_2: 10, places_3: 7, win_rate: 3.9, quinella_rate: 11.8, place_rate: 17.3, win_payback: 33.9, place_payback: 51.7, avg_popularity: 7.8, avg_rank: 7.9, median_popularity: 8, median_rank: 8 },
+    { rank: 58, name: 'マクフィ', link: '/sires/62397', races: 136, wins: 5, places_2: 10, places_3: 6, win_rate: 3.7, quinella_rate: 11.0, place_rate: 15.4, win_payback: 49.1, place_payback: 59.9, avg_popularity: 8.5, avg_rank: 8.1, median_popularity: 9, median_rank: 8 },
+    { rank: 59, name: 'ミッキーロケット', link: '/sires/74125', races: 52, wins: 4, places_2: 4, places_3: 2, win_rate: 7.7, quinella_rate: 15.4, place_rate: 19.2, win_payback: 141.2, place_payback: 46.0, avg_popularity: 9.7, avg_rank: 8.0, median_popularity: 9, median_rank: 9 },
+    { rank: 60, name: 'ディープブリランテ', link: '/sires/35906', races: 53, wins: 4, places_2: 3, places_3: 1, win_rate: 7.5, quinella_rate: 13.2, place_rate: 15.1, win_payback: 76.0, place_payback: 34.5, avg_popularity: 9.8, avg_rank: 9.2, median_popularity: 11, median_rank: 9 },
+    { rank: 61, name: 'モーニン', link: '/sires/48408', races: 74, wins: 4, places_2: 3, places_3: 4, win_rate: 5.4, quinella_rate: 9.5, place_rate: 14.9, win_payback: 128.6, place_payback: 117.0, avg_popularity: 8.5, avg_rank: 8.0, median_popularity: 7, median_rank: 7 },
+    { rank: 62, name: 'ヴィクトワールピサ', link: '/sires/98605', races: 86, wins: 4, places_2: 6, places_3: 4, win_rate: 4.7, quinella_rate: 11.6, place_rate: 16.3, win_payback: 50.9, place_payback: 134.7, avg_popularity: 9.0, avg_rank: 8.1, median_popularity: 9, median_rank: 8 },
+    { rank: 63, name: 'レッドファルクス', link: '/sires/22614', races: 104, wins: 4, places_2: 8, places_3: 10, win_rate: 3.8, quinella_rate: 11.5, place_rate: 21.2, win_payback: 57.7, place_payback: 67.4, avg_popularity: 8.8, avg_rank: 7.8, median_popularity: 9, median_rank: 8 },
+    { rank: 64, name: 'アルアイン', link: '/sires/55312', races: 109, wins: 4, places_2: 7, places_3: 4, win_rate: 3.7, quinella_rate: 10.1, place_rate: 13.8, win_payback: 20.8, place_payback: 51.2, avg_popularity: 8.6, avg_rank: 8.1, median_popularity: 8, median_rank: 8 },
+    { rank: 65, name: 'バゴ', link: '/sires/79522', races: 113, wins: 4, places_2: 6, places_3: 8, win_rate: 3.5, quinella_rate: 8.8, place_rate: 15.9, win_payback: 18.7, place_payback: 65.7, avg_popularity: 8.9, avg_rank: 8.0, median_popularity: 9, median_rank: 8 },
+    { rank: 66, name: 'カリフォルニアクローム', link: '/sires/14727', races: 127, wins: 4, places_2: 7, places_3: 3, win_rate: 3.1, quinella_rate: 8.7, place_rate: 11.0, win_payback: 32.4, place_payback: 51.6, avg_popularity: 9.0, avg_rank: 8.9, median_popularity: 9, median_rank: 9 },
+    { rank: 67, name: 'ゴールドドリーム', link: '/sires/44336', races: 68, wins: 3, places_2: 2, places_3: 6, win_rate: 4.4, quinella_rate: 7.4, place_rate: 16.2, win_payback: 18.4, place_payback: 44.1, avg_popularity: 8.2, avg_rank: 7.0, median_popularity: 8, median_rank: 6 },
+    { rank: 68, name: 'ダンカーク', link: '/sires/51160', races: 86, wins: 3, places_2: 6, places_3: 4, win_rate: 3.5, quinella_rate: 10.5, place_rate: 15.1, win_payback: 44.8, place_payback: 53.6, avg_popularity: 10.4, avg_rank: 9.3, median_popularity: 11, median_rank: 9 },
+    { rank: 69, name: 'ロゴタイプ', link: '/sires/11899', races: 91, wins: 3, places_2: 2, places_3: 5, win_rate: 3.3, quinella_rate: 5.5, place_rate: 11.0, win_payback: 31.0, place_payback: 32.3, avg_popularity: 9.5, avg_rank: 9.5, median_popularity: 10, median_rank: 9 },
+    { rank: 70, name: 'エイシンフラッシュ', link: '/sires/35586', races: 59, wins: 2, places_2: 1, places_3: 1, win_rate: 3.4, quinella_rate: 5.1, place_rate: 6.8, win_payback: 165.6, place_payback: 38.3, avg_popularity: 10.2, avg_rank: 10.0, median_popularity: 11, median_rank: 10 },
+    { rank: 71, name: 'ベストウォーリア', link: '/sires/62747', races: 63, wins: 2, places_2: 2, places_3: 4, win_rate: 3.2, quinella_rate: 6.3, place_rate: 12.7, win_payback: 263.5, place_payback: 88.9, avg_popularity: 8.8, avg_rank: 8.3, median_popularity: 9, median_rank: 8 },
+    { rank: 72, name: 'フィエールマン', link: '/sires/75240', races: 66, wins: 2, places_2: 12, places_3: 3, win_rate: 3.0, quinella_rate: 21.2, place_rate: 25.8, win_payback: 6.8, place_payback: 136.4, avg_popularity: 7.8, avg_rank: 6.4, median_popularity: 8, median_rank: 5 },
+    { rank: 73, name: 'フォーウィールドライブ', link: '/sires/79269', races: 71, wins: 2, places_2: 1, places_3: 7, win_rate: 2.8, quinella_rate: 4.2, place_rate: 14.1, win_payback: 19.0, place_payback: 89.2, avg_popularity: 8.6, avg_rank: 7.9, median_popularity: 9, median_rank: 8 },
+    { rank: 74, name: 'ストロングリターン', link: '/sires/22519', races: 80, wins: 2, places_2: 4, places_3: 2, win_rate: 2.5, quinella_rate: 7.5, place_rate: 10.0, win_payback: 11.5, place_payback: 38.9, avg_popularity: 9.2, avg_rank: 8.6, median_popularity: 9, median_rank: 8 },
+    { rank: 75, name: 'タリスマニック', link: '/sires/84648', races: 92, wins: 2, places_2: 3, places_3: 1, win_rate: 2.2, quinella_rate: 5.4, place_rate: 6.5, win_payback: 14.8, place_payback: 44.0, avg_popularity: 9.6, avg_rank: 8.5, median_popularity: 9, median_rank: 8 },
+    { rank: 76, name: 'タワーオブロンドン', link: '/sires/36052', races: 95, wins: 2, places_2: 6, places_3: 3, win_rate: 2.1, quinella_rate: 8.4, place_rate: 11.6, win_payback: 6.3, place_payback: 31.4, avg_popularity: 8.0, avg_rank: 7.5, median_popularity: 8, median_rank: 7 },
+    { rank: 77, name: 'ビーチパトロール', link: '/sires/35278', races: 105, wins: 2, places_2: 1, places_3: 2, win_rate: 1.9, quinella_rate: 2.9, place_rate: 4.8, win_payback: 34.1, place_payback: 22.5, avg_popularity: 10.6, avg_rank: 9.5, median_popularity: 11, median_rank: 9 },
+    { rank: 78, name: 'ノーブルミッション', link: '/sires/41432', races: 57, wins: 1, places_2: 0, places_3: 3, win_rate: 1.8, quinella_rate: 1.8, place_rate: 7.0, win_payback: 17.2, place_payback: 10.9, avg_popularity: 10.2, avg_rank: 9.7, median_popularity: 10, median_rank: 10 },
+    { rank: 79, name: 'トーセンラー', link: '/sires/40028', races: 64, wins: 1, places_2: 5, places_3: 3, win_rate: 1.6, quinella_rate: 9.4, place_rate: 14.1, win_payback: 3.9, place_payback: 62.7, avg_popularity: 11.1, avg_rank: 8.9, median_popularity: 12, median_rank: 9 },
+    { rank: 80, name: 'アドマイヤムーン', link: '/sires/5525', races: 67, wins: 1, places_2: 3, places_3: 4, win_rate: 1.5, quinella_rate: 6.0, place_rate: 11.9, win_payback: 4.2, place_payback: 32.2, avg_popularity: 9.5, avg_rank: 9.1, median_popularity: 10, median_rank: 8 },
+    { rank: 81, name: 'ミスターメロディ', link: '/sires/56029', races: 66, wins: 1, places_2: 6, places_3: 3, win_rate: 1.5, quinella_rate: 10.6, place_rate: 15.2, win_payback: 3.5, place_payback: 36.7, avg_popularity: 8.0, avg_rank: 7.6, median_popularity: 7, median_rank: 7 },
+    { rank: 82, name: 'ウインブライト', link: '/sires/46295', races: 75, wins: 1, places_2: 2, places_3: 7, win_rate: 1.3, quinella_rate: 4.0, place_rate: 13.3, win_payback: 7.7, place_payback: 32.9, avg_popularity: 9.0, avg_rank: 8.2, median_popularity: 9, median_rank: 8 },
+    { rank: 83, name: 'スクリーンヒーロー', link: '/sires/30113', races: 79, wins: 1, places_2: 2, places_3: 5, win_rate: 1.3, quinella_rate: 3.8, place_rate: 10.1, win_payback: 4.3, place_payback: 22.5, avg_popularity: 7.5, avg_rank: 7.6, median_popularity: 8, median_rank: 7 },
+    { rank: 84, name: 'ワールドエース', link: '/sires/25233', races: 86, wins: 1, places_2: 5, places_3: 8, win_rate: 1.2, quinella_rate: 7.0, place_rate: 16.3, win_payback: 37.3, place_payback: 55.9, avg_popularity: 10.1, avg_rank: 8.6, median_popularity: 10, median_rank: 9 },
+    { rank: 85, name: 'ラブリーデイ', link: '/sires/50990', races: 88, wins: 1, places_2: 6, places_3: 12, win_rate: 1.1, quinella_rate: 8.0, place_rate: 21.6, win_payback: 149.9, place_payback: 201.6, avg_popularity: 9.8, avg_rank: 7.9, median_popularity: 11, median_rank: 8 },
+    { rank: 86, name: 'シュヴァルグラン', link: '/sires/45650', races: 93, wins: 1, places_2: 4, places_3: 9, win_rate: 1.1, quinella_rate: 5.4, place_rate: 15.1, win_payback: 7.2, place_payback: 87.0, avg_popularity: 9.8, avg_rank: 9.0, median_popularity: 10, median_rank: 9 },
+    { rank: 87, name: 'アニマルキングダム', link: '/sires/49', races: 55, wins: 0, places_2: 0, places_3: 5, win_rate: 0.0, quinella_rate: 0.0, place_rate: 9.1, win_payback: 0.0, place_payback: 50.0, avg_popularity: 10.1, avg_rank: 8.9, median_popularity: 10, median_rank: 8 },
+    { rank: 88, name: 'メイショウボーラー', link: '/sires/35848', races: 50, wins: 0, places_2: 2, places_3: 1, win_rate: 0.0, quinella_rate: 4.0, place_rate: 6.0, win_payback: 0.0, place_payback: 20.6, avg_popularity: 10.2, avg_rank: 9.3, median_popularity: 10, median_rank: 9 },
+  ]}
+  nameLabel="種牡馬"
+  initialShow={10}
+/>
+
+出走頭数が多いこともありますが、1着数〜3着数のTOPはいずれも<strong>エピファネイア</strong>。回収率も優秀ですね。
+
+そして勝率のTOPは、そのエピファネイア（17%）やナダル（18.9%）を抑えてなんと<strong>グレーターロンドン</strong>（19%）。<br />
+出走数は58と比較的少ないですが、<strong>11勝</strong>を挙げており、<strong>回収率も100%を超えています</strong>。<br />
+
+仕上がりが早いみたいな特徴があるんですかね？🧐<br />
+ぜひ<strong>新馬戦のグレーターロンドン産駒</strong>は注目してみてください！
+
+## 新馬戦の性別成績は？
+新馬戦で「小柄な牝馬なので仕上がりは早い」という厩舎コメントをよく目にする気がしますが、性別や馬体重でも傾向があるのでしょうか？
+
+まずは性別ごとの新馬戦の成績を確認してみましょう。
+
+<GenderTable
+  data={[
+    { name: '牡馬', races: 7549, wins: 646, places_2: 627, places_3: 589, win_rate: 8.6, quinella_rate: 16.9, place_rate: 24.7, win_payback: 76.8, place_payback: 73.7, avg_popularity: 7.1, avg_rank: 7.2, median_popularity: 7, median_rank: 7 },
+    { name: '牝馬', races: 7002, wins: 479, places_2: 498, places_3: 533, win_rate: 6.8, quinella_rate: 14.0, place_rate: 21.6, win_payback: 76.7, place_payback: 71.3, avg_popularity: 7.8, avg_rank: 7.6, median_popularity: 7, median_rank: 7 },
+    { name: 'セン馬', races: 87, wins: 1, places_2: 4, places_3: 3, win_rate: 1.1, quinella_rate: 5.7, place_rate: 9.2, win_payback: 2.1, place_payback: 61.4, avg_popularity: 9.5, avg_rank: 9.3, median_popularity: 10, median_rank: 10 }
+  ]}
+/>
+
+若干ですが牡馬の方が成績が良さそうですね。<br />
+（本題からは逸れますが、新馬戦からセン馬の馬の成績はなかなか厳しい...）
+
+では、逆に新馬戦以外だとどうなるのかをみてみます。
+
+<GenderTable
+  wideColumns={true}
+  data={[
+    { name: '牡馬', races: 88416, wins: 7287, places_2: 7026, places_3: 7033, win_rate: 8.2, quinella_rate: 16.2, place_rate: 24.1, win_payback: 72.3, place_payback: 74.4, avg_popularity: 7.2, avg_rank: 7.3, median_popularity: 7, median_rank: 7 },
+    { name: '牝馬', races: 68347, wins: 4356, places_2: 4515, places_3: 4508, win_rate: 6.4, quinella_rate: 13.0, place_rate: 19.6, win_payback: 68.4, place_payback: 70.5, avg_popularity: 8.1, avg_rank: 8.0, median_popularity: 8, median_rank: 8 },
+    { name: 'セン馬', races: 8791, wins: 494, places_2: 580, places_3: 580, win_rate: 5.6, quinella_rate: 12.2, place_rate: 18.8, win_payback: 72.4, place_payback: 77.7, avg_popularity: 8.4, avg_rank: 7.9, median_popularity: 8, median_rank: 8 }
+  ]}
+/>
+
+新馬戦以外でも牡馬が優勢な傾向は変わりませんが、2つの表を見比べてみると、新馬戦の方が牡馬と牝馬の差は少ないことが分かります。
+
+結論として、新馬戦では若干牡馬優勢だが、牝馬だけの比較では新馬は走りやすい傾向にあると言えそうです。
+
+（またまた本題からは逸れますが、新馬戦以外だとセン馬の成績が良くなるのが面白いですね...どこかで深掘りしてみたいです）
+
+## 新馬戦の馬体重別成績は？
+続いて馬体重別の成績を確認してみます。
+<HorseWeightTable
+  data={[
+    { weight_category: '400kg未満', races: 290, wins: 5, places_2: 7, places_3: 11, win_rate: 1.7, quinella_rate: 4.1, place_rate: 7.9, win_payback: 57.9, place_payback: 68.1, avg_popularity: 10.5, avg_rank: 9.3, median_popularity: 10, median_rank: 9 },
+    { weight_category: '400-419kg', races: 898, wins: 45, places_2: 37, places_3: 59, win_rate: 5.0, quinella_rate: 9.1, place_rate: 15.7, win_payback: 81.4, place_payback: 62.4, avg_popularity: 9.0, avg_rank: 8.1, median_popularity: 9, median_rank: 8 },
+    { weight_category: '420-439kg', races: 2209, wins: 130, places_2: 165, places_3: 154, win_rate: 5.9, quinella_rate: 13.4, place_rate: 20.3, win_payback: 63.9, place_payback: 71.2, avg_popularity: 8.3, avg_rank: 7.7, median_popularity: 8, median_rank: 7 },
+    { weight_category: '440-459kg', races: 3419, wins: 231, places_2: 264, places_3: 267, win_rate: 6.8, quinella_rate: 14.5, place_rate: 22.3, win_payback: 72.7, place_payback: 71.5, avg_popularity: 7.7, avg_rank: 7.4, median_popularity: 7, median_rank: 7 },
+    { weight_category: '460-479kg', races: 3501, wins: 308, places_2: 297, places_3: 273, win_rate: 8.8, quinella_rate: 17.3, place_rate: 25.1, win_payback: 96.1, place_payback: 79.7, avg_popularity: 7.1, avg_rank: 7.2, median_popularity: 7, median_rank: 7 },
+    { weight_category: '480-499kg', races: 2514, wins: 224, places_2: 218, places_3: 220, win_rate: 8.9, quinella_rate: 17.6, place_rate: 26.3, win_payback: 65.0, place_payback: 72.6, avg_popularity: 6.6, avg_rank: 7.1, median_popularity: 6, median_rank: 7 },
+    { weight_category: '500-519kg', races: 1190, wins: 123, places_2: 93, places_3: 102, win_rate: 10.3, quinella_rate: 18.2, place_rate: 26.7, win_payback: 75.1, place_payback: 68.6, avg_popularity: 6.1, avg_rank: 7.0, median_popularity: 5, median_rank: 6 },
+    { weight_category: '520kg以上', races: 617, wins: 60, places_2: 48, places_3: 39, win_rate: 9.7, quinella_rate: 17.5, place_rate: 23.8, win_payback: 77.8, place_payback: 64.2, avg_popularity: 6.7, avg_rank: 7.6, median_popularity: 6, median_rank: 7 }
+  ]}
+/>
+
+新馬戦だと「大型馬なので叩いてから〜」という厩舎コメントもよくみられますが、それでも基本的には馬体重が重い馬の成績が良さそうですね。
+
+性別と同様に、新馬戦以外の馬体重データも確認してみます。
+
+<HorseWeightTable
+  wideColumns={true}
+  data={[
+    { weight_category: '400kg未満', races: 1435, wins: 19, places_2: 33, places_3: 48, win_rate: 1.3, quinella_rate: 3.6, place_rate: 7.0, win_payback: 26.9, place_payback: 42.1, avg_popularity: 11.2, avg_rank: 10.4, median_popularity: 12, median_rank: 11 },
+    { weight_category: '400-419kg', races: 5622, wins: 202, places_2: 224, places_3: 287, win_rate: 3.6, quinella_rate: 7.6, place_rate: 12.7, win_payback: 62.3, place_payback: 65.5, avg_popularity: 9.7, avg_rank: 9.0, median_popularity: 10, median_rank: 9 },
+    { weight_category: '420-439kg', races: 16765, wins: 872, places_2: 1015, places_3: 1102, win_rate: 5.2, quinella_rate: 11.3, place_rate: 17.8, win_payback: 57.7, place_payback: 71.5, avg_popularity: 8.5, avg_rank: 8.2, median_popularity: 8, median_rank: 8 },
+    { weight_category: '440-459kg', races: 31645, wins: 2016, places_2: 2262, places_3: 2247, win_rate: 6.4, quinella_rate: 13.5, place_rate: 20.6, win_payback: 68.9, place_payback: 71.3, avg_popularity: 7.9, avg_rank: 7.7, median_popularity: 8, median_rank: 7 },
+    { weight_category: '460-479kg', races: 42322, wins: 3159, places_2: 3205, places_3: 3165, win_rate: 7.5, quinella_rate: 15.0, place_rate: 22.5, win_payback: 72.1, place_payback: 74.0, avg_popularity: 7.6, avg_rank: 7.5, median_popularity: 7, median_rank: 7 },
+    { weight_category: '480-499kg', races: 36493, wins: 3075, places_2: 2858, places_3: 2867, win_rate: 8.4, quinella_rate: 16.3, place_rate: 24.1, win_payback: 76.0, place_payback: 74.8, avg_popularity: 7.2, avg_rank: 7.4, median_popularity: 7, median_rank: 7 },
+    { weight_category: '500-519kg', races: 21336, wins: 1894, places_2: 1744, places_3: 1638, win_rate: 8.9, quinella_rate: 17.1, place_rate: 24.7, win_payback: 75.1, place_payback: 74.4, avg_popularity: 7.0, avg_rank: 7.3, median_popularity: 7, median_rank: 7 },
+    { weight_category: '520kg以上', races: 9936, wins: 900, places_2: 780, places_3: 767, win_rate: 9.1, quinella_rate: 16.9, place_rate: 24.6, win_payback: 74.4, place_payback: 75.7, avg_popularity: 7.0, avg_rank: 7.5, median_popularity: 6, median_rank: 7 }
+  ]}
+/>
+
+全体の傾向として、競馬はそもそも馬体重が重い馬の方が有利だと分かります。
+
+一方で、馬体重が軽い馬（420kg未満）に限ると、新馬戦の方が若干成績が良い傾向があります。<br />
+よく言われる**「馬体重が軽い馬は仕上がりが早く新馬戦で走りやすい」という定説は、データからも裏付けられそう**ですね。
+
+
+## まとめ
+
+新馬戦の傾向を様々な角度から分析しました。
+
+- **新馬戦は意外と堅い**：配当中央値は新馬戦以外のレースより低く、思ったほど荒れない
+- **注目騎手**：津村騎手・鮫島駿騎手
+- **注目調教師**：堀宣行調教師
+- **注目血統**：グレーターロンドン産駒
+- **性別**：牡馬の方が若干有利だが、牝馬は新馬戦で仕上がりが早い
+- **馬体重**: 重い方が有利だが、軽い馬（特に420kg未満）は新馬戦で仕上がりが早い
+
+予想に役立てていただければ幸いです！
+
+---
+
+## 競馬データ.comについて
+
+競馬の予想がさらに楽しくなようなコンテンツを提供しています！
+
+### 提供データ
+- **[コース別データ](/courses)** - 全国の競馬場・コース別の人気別成績、枠順別、脚質別データ
+- **[騎手データ](/jockeys)** - 騎手別の詳細成績、得意コース、血統相性
+- **[種牡馬データ](/sires)** - 種牡馬別の産駒成績、コース適性、配合データ
+- **[調教師データ](/trainers)** - 調教師別の成績、得意条件、厩舎傾向
+
+### こんな使い方ができます
+- レース前に該当コースの人気別傾向をチェック
+- 騎手・血統の相性を確認して穴馬を発見
+- 過去データから回収率の高い条件を見つける
+
+すべて**無料**でご利用いただけます！ぜひ予想の参考にしてください🙌

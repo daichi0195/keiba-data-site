@@ -21,11 +21,12 @@ type HorseWeightRow = {
 };
 
 type Props = {
-  title: string;
+  title?: string;
   data: HorseWeightRow[];
+  wideColumns?: boolean;
 };
 
-export default function HorseWeightTable({ title, data }: Props) {
+export default function HorseWeightTable({ title = '', data, wideColumns = false }: Props) {
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -58,9 +59,9 @@ export default function HorseWeightTable({ title, data }: Props) {
 
   return (
     <div className="section">
-      <h2 className="section-title">{title}</h2>
+      {title && <h2 className="section-title">{title}</h2>}
 
-      <div className={styles.tableContainer}>
+      <div className={`${styles.tableContainer} ${wideColumns ? styles.wideTable : ''}`}>
         <div className={styles.tableScroll} ref={scrollRef}>
           <table className={styles.table}>
             <thead>

@@ -209,6 +209,8 @@ export function getAllTags(): string[] {
 
 /**
  * 前後の記事を取得
+ * prev: より古い記事（時系列で前）
+ * next: より新しい記事（時系列で次）
  */
 export function getAdjacentArticles(currentSlug: string): {
   prev: Article | null;
@@ -222,8 +224,8 @@ export function getAdjacentArticles(currentSlug: string): {
   }
 
   return {
-    prev: currentIndex > 0 ? allArticles[currentIndex - 1] : null,
-    next: currentIndex < allArticles.length - 1 ? allArticles[currentIndex + 1] : null,
+    prev: currentIndex < allArticles.length - 1 ? allArticles[currentIndex + 1] : null,
+    next: currentIndex > 0 ? allArticles[currentIndex - 1] : null,
   };
 }
 
