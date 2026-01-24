@@ -23,7 +23,7 @@ type DataRow = {
 };
 
 type Props = {
-  title: string;
+  title?: string;
   data: DataRow[];
   initialShow?: number;
   nameLabel?: string;
@@ -33,9 +33,10 @@ type Props = {
   showGradeBadge?: boolean; // G1/G2/G3のバッジ表示
   showCourseBadge?: boolean; // コース名をバッジ表示
   courseBadgeType?: 'good' | 'bad'; // バッジの種類
+  wideRacesColumn?: boolean; // 出走数カラムを広げる
 };
 
-export default function DataTable({ title, data, initialShow = 10, nameLabel = '名前', note, disableHighlight = false, showRank = true, showGradeBadge = false, showCourseBadge = false, courseBadgeType = 'good' }: Props) {
+export default function DataTable({ title = '', data, initialShow = 10, nameLabel = '名前', note, disableHighlight = false, showRank = true, showGradeBadge = false, showCourseBadge = false, courseBadgeType = 'good', wideRacesColumn = false }: Props) {
   const [showAll, setShowAll] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -219,7 +220,7 @@ export default function DataTable({ title, data, initialShow = 10, nameLabel = '
                 </th>
                 
                 {/* スクロール列 */}
-                <th className="mobile-scroll-col">出走数</th>
+                <th className="mobile-scroll-col" style={wideRacesColumn ? { width: '80px', minWidth: '80px' } : undefined}>出走数</th>
                 <th className="mobile-scroll-col">1着</th>
                 <th className="mobile-scroll-col">2着</th>
                 <th className="mobile-scroll-col">3着</th>
@@ -287,7 +288,7 @@ export default function DataTable({ title, data, initialShow = 10, nameLabel = '
                   </td>
                   
                   {/* スクロール列 - 数値のみハイライト */}
-                  <td className="mobile-scroll-col">
+                  <td className="mobile-scroll-col" style={wideRacesColumn ? { width: '80px', minWidth: '80px' } : undefined}>
                     <span className={isHighlight(row.races, maxRaces) ? 'mobile-highlight' : ''}>
                       {formatNumber(row.races)}
                     </span>

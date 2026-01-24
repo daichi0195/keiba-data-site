@@ -13,7 +13,7 @@ priority: 1
 # 新馬戦の予想のポイントは？騎手や調教師、血統などのデータを分析！
 
 新馬戦の予想って難しいですよね...<br />
-過去のレース実績がないため、自分を含め何を基準に予想すればいいか迷う方も多いのではないでしょうか。
+過去のレース実績がないため、何を基準に予想すればいいか迷う方も多いのではないでしょうか。
 
 ということで今回は、新馬戦の予想のポイントをさまざまな切り口で考えてみたいと思います！
 
@@ -26,7 +26,7 @@ priority: 1
 
 まずは新馬戦の配当傾向を確認してみましょう。
 
-レースを新馬戦と新馬戦以外に区別して、配当の中央値を比較してみました。<br />
+レースを新馬戦と新馬戦以外に区別して、<strong>配当の中央値</strong>を比較してみました。<br />
 なお同着の場合は配当の計算がややこしくなるので、この対象からは除外しています。
 
 <div style={{ overflowX: 'auto' }}>
@@ -68,7 +68,7 @@ priority: 1
   </table>
 </div>
 
-結果を見ると、**新馬戦の配当は全体的に新馬戦以外より若干低い**ことがわかります。<br />
+結果を見ると、<strong>新馬戦の配当は全体的に新馬戦以外より若干低い</strong>ことがわかります。<br />
 予想が難しいイメージがある新馬戦ですが、思ったほど荒れないんですね🧐
 
 では、全体の傾向が見えてきたところで、いくつかの観点に分けて分析してみます。
@@ -76,8 +76,6 @@ priority: 1
 ## 新馬戦の騎手成績は？
 
 最初に騎手別の新馬戦成績を見てみましょう。
-
-かなり数が多くなってしまったので期間内で50回以上騎乗した騎手を対象とし、勝ち数の多い順に並べています。
 
 <DataTable
   data={[
@@ -181,6 +179,8 @@ priority: 1
   initialShow={10}
 />
 
+<p style={{ fontSize: '0.85rem', color: '#666', marginTop: '8px', marginBottom: '16px' }}>※期間内で50回以上騎乗した騎手を対象</p>
+
 勝率のTOPは<strong>川田騎手</strong>で<strong>27.4%</strong>、連帯率・複勝率のTOPは<strong>ルメール騎手</strong>で、それぞれ<strong>50.2%</strong>・<strong>61.5%</strong>。<br />
 そしてなんと平均人気はどちらも<strong>1.9倍</strong>！<br />
 2倍台の騎手が1人もいないことからも、<strong>この2人に人気が集中する</strong>傾向が見て取れます。<br />
@@ -195,8 +195,6 @@ priority: 1
 ## 新馬戦の調教師成績は？
 では続いて調教師別でもみてみましょう。
 
-ここでは期間内で30回以上出走させた調教師を対象とし、同様に勝ち数の多い順に並べています。<br />
-ちょっと表が縦長ですがお許しを...🙏
 <DataTable
   data={[
     { rank: 1, name: '矢作芳人', link: '/trainers/1075', races: 114, wins: 29, places_2: 13, places_3: 8, win_rate: 25.4, quinella_rate: 36.8, place_rate: 43.9, win_payback: 138.5, place_payback: 75.1, avg_popularity: 3.9, avg_rank: 5.0, median_popularity: 3, median_rank: 4 },
@@ -392,6 +390,8 @@ priority: 1
   initialShow={10}
 />
 
+<p style={{ fontSize: '0.85rem', color: '#666', marginTop: '8px', marginBottom: '16px' }}>※期間内で30回以上出走させた調教師を対象</p>
+
 複勝率70%以上の調教師から、馬券内があるかないかといった調教師まで、<strong>かなり成績が分かれそう</strong>ですね。
 
 勝ち数TOPは<strong>矢作先生</strong>で<strong>29勝</strong>と頭ひとつ抜けています。
@@ -403,8 +403,6 @@ priority: 1
 
 ## 新馬戦の種牡馬成績は？
 さらに種牡馬別でもみてみましょう。
-
-ここでは期間内で50回以上出走した種牡馬を対象とし、同様に勝ち数の多い順に並べています。<br />
 
 <DataTable
   data={[
@@ -501,6 +499,8 @@ priority: 1
   initialShow={10}
 />
 
+<p style={{ fontSize: '0.85rem', color: '#666', marginTop: '8px', marginBottom: '16px' }}>※期間内で50回以上出走した種牡馬を対象</p>
+
 出走頭数が多いこともありますが、1着数〜3着数のTOPはいずれも<strong>エピファネイア</strong>。回収率も優秀ですね。
 
 そして勝率のTOPは、そのエピファネイア（17%）やナダル（18.9%）を抑えてなんと<strong>グレーターロンドン</strong>（19%）。<br />
@@ -509,10 +509,125 @@ priority: 1
 仕上がりが早いみたいな特徴があるんですかね？🧐<br />
 ぜひ<strong>新馬戦のグレーターロンドン産駒</strong>は注目してみてください！
 
-## 新馬戦の性別成績は？
-新馬戦で「小柄な牝馬なので仕上がりは早い」という厩舎コメントをよく目にする気がしますが、性別や馬体重でも傾向があるのでしょうか？
+## 新馬戦の生産者別成績は？
+続いて、生産者別の新馬戦成績を確認してみましょう。
 
-まずは性別ごとの新馬戦の成績を確認してみましょう。
+最近の競馬界は<strong>社台グループ</strong>（ノーザンファーム・社台ファームなど）が席巻しているイメージが強いですが、新馬戦ではどうでしょうか？
+
+<DataTable
+  initialShow={10}
+  wideRacesColumn={true}
+  data={[
+    { rank: 1, name: 'ノーザンファーム', races: 1623, wins: 297, places_2: 244, places_3: 189, win_rate: 18.3, quinella_rate: 33.3, place_rate: 45.0, win_payback: 82.1, place_payback: 82.1, avg_popularity: 3.7, avg_rank: 5.0, median_popularity: 3, median_rank: 4 },
+    { rank: 2, name: '社台ファーム', races: 970, wins: 105, places_2: 119, places_3: 87, win_rate: 10.8, quinella_rate: 23.1, place_rate: 32.1, win_payback: 110.6, place_payback: 89.6, avg_popularity: 5.8, avg_rank: 6.3, median_popularity: 5, median_rank: 5 },
+    { rank: 3, name: '社台コーポレーション白老ファーム', races: 296, wins: 34, places_2: 39, places_3: 39, win_rate: 11.5, quinella_rate: 24.7, place_rate: 37.8, win_payback: 78.1, place_payback: 83.8, avg_popularity: 5.2, avg_rank: 5.9, median_popularity: 4, median_rank: 5 },
+    { rank: 4, name: 'ダーレー・ジャパン・ファーム', races: 197, wins: 22, places_2: 15, places_3: 21, win_rate: 11.2, quinella_rate: 18.8, place_rate: 29.4, win_payback: 110.1, place_payback: 78.8, avg_popularity: 6.6, avg_rank: 6.4, median_popularity: 6, median_rank: 6 },
+    { rank: 5, name: '下河辺牧場', races: 198, wins: 21, places_2: 23, places_3: 14, win_rate: 10.6, quinella_rate: 22.2, place_rate: 29.3, win_payback: 85.0, place_payback: 79.4, avg_popularity: 5.8, avg_rank: 6.3, median_popularity: 5, median_rank: 5 },
+    { rank: 6, name: '三嶋牧場', races: 200, wins: 19, places_2: 21, places_3: 18, win_rate: 9.5, quinella_rate: 20.0, place_rate: 29.0, win_payback: 111.7, place_payback: 84.9, avg_popularity: 5.7, avg_rank: 6.3, median_popularity: 5, median_rank: 6 },
+    { rank: 7, name: 'ノースヒルズ', races: 155, wins: 18, places_2: 12, places_3: 18, win_rate: 11.6, quinella_rate: 19.4, place_rate: 31.0, win_payback: 96.8, place_payback: 67.6, avg_popularity: 5.6, avg_rank: 6.3, median_popularity: 5, median_rank: 6 },
+    { rank: 8, name: 'レイクヴィラファーム', races: 102, wins: 14, places_2: 8, places_3: 11, win_rate: 13.7, quinella_rate: 21.6, place_rate: 32.4, win_payback: 72.4, place_payback: 57.4, avg_popularity: 4.8, avg_rank: 5.5, median_popularity: 4, median_rank: 5 },
+    { rank: 9, name: '追分ファーム', races: 168, wins: 13, places_2: 13, places_3: 16, win_rate: 7.7, quinella_rate: 15.5, place_rate: 25.0, win_payback: 28.6, place_payback: 52.3, avg_popularity: 5.7, avg_rank: 6.8, median_popularity: 5, median_rank: 7 },
+    { rank: 10, name: 'ビッグレッドファーム', races: 222, wins: 13, places_2: 9, places_3: 14, win_rate: 5.9, quinella_rate: 9.9, place_rate: 16.2, win_payback: 89.7, place_payback: 86.6, avg_popularity: 8.3, avg_rank: 7.4, median_popularity: 9, median_rank: 7 },
+    { rank: 11, name: 'チャンピオンズファーム', races: 122, wins: 11, places_2: 5, places_3: 13, win_rate: 9.0, quinella_rate: 13.1, place_rate: 23.8, win_payback: 50.8, place_payback: 61.1, avg_popularity: 6.7, avg_rank: 7.8, median_popularity: 6, median_rank: 8 },
+    { rank: 12, name: '千代田牧場', races: 199, wins: 11, places_2: 22, places_3: 17, win_rate: 5.5, quinella_rate: 16.6, place_rate: 25.1, win_payback: 96.8, place_payback: 85.7, avg_popularity: 7.6, avg_rank: 7.1, median_popularity: 7, median_rank: 7 },
+    { rank: 13, name: 'フジワラファーム', races: 102, wins: 10, places_2: 11, places_3: 10, win_rate: 9.8, quinella_rate: 20.6, place_rate: 30.4, win_payback: 66.4, place_payback: 92.1, avg_popularity: 7.0, avg_rank: 6.6, median_popularity: 6, median_rank: 6 },
+    { rank: 14, name: 'ケイアイファーム', races: 122, wins: 10, places_2: 16, places_3: 6, win_rate: 8.2, quinella_rate: 21.3, place_rate: 26.2, win_payback: 75.5, place_payback: 75.7, avg_popularity: 5.8, avg_rank: 6.3, median_popularity: 5, median_rank: 6 },
+    { rank: 15, name: '新冠タガノファーム', races: 58, wins: 8, places_2: 3, places_3: 5, win_rate: 13.8, quinella_rate: 19.0, place_rate: 27.6, win_payback: 66.7, place_payback: 70.2, avg_popularity: 7.2, avg_rank: 6.7, median_popularity: 7, median_rank: 6 },
+    { rank: 16, name: '杵臼牧場', races: 81, wins: 8, places_2: 2, places_3: 10, win_rate: 9.9, quinella_rate: 12.3, place_rate: 24.7, win_payback: 184.4, place_payback: 81.4, avg_popularity: 5.9, avg_rank: 6.8, median_popularity: 5, median_rank: 6 },
+    { rank: 17, name: '岡田牧場', races: 98, wins: 8, places_2: 4, places_3: 1, win_rate: 8.2, quinella_rate: 12.2, place_rate: 13.3, win_payback: 70.5, place_payback: 47.3, avg_popularity: 8.0, avg_rank: 7.9, median_popularity: 8, median_rank: 7 },
+    { rank: 18, name: 'グランド牧場', races: 94, wins: 7, places_2: 10, places_3: 10, win_rate: 7.4, quinella_rate: 18.1, place_rate: 28.7, win_payback: 98.0, place_payback: 60.6, avg_popularity: 5.8, avg_rank: 7.1, median_popularity: 5, median_rank: 7 },
+    { rank: 19, name: '岡田スタッド', races: 240, wins: 7, places_2: 14, places_3: 13, win_rate: 2.9, quinella_rate: 8.8, place_rate: 14.2, win_payback: 32.0, place_payback: 43.7, avg_popularity: 8.1, avg_rank: 8.2, median_popularity: 8, median_rank: 8 },
+    { rank: 20, name: '川島牧場', races: 34, wins: 6, places_2: 3, places_3: 1, win_rate: 17.6, quinella_rate: 26.5, place_rate: 29.4, win_payback: 585.0, place_payback: 147.9, avg_popularity: 7.6, avg_rank: 6.7, median_popularity: 7, median_rank: 6 },
+    { rank: 21, name: '服部牧場', races: 59, wins: 6, places_2: 5, places_3: 10, win_rate: 10.2, quinella_rate: 18.6, place_rate: 35.6, win_payback: 95.1, place_payback: 129.3, avg_popularity: 6.7, avg_rank: 6.0, median_popularity: 7, median_rank: 6 },
+    { rank: 22, name: '谷川牧場', races: 73, wins: 6, places_2: 8, places_3: 3, win_rate: 8.2, quinella_rate: 19.2, place_rate: 23.3, win_payback: 139.0, place_payback: 95.5, avg_popularity: 6.8, avg_rank: 7.2, median_popularity: 7, median_rank: 7 },
+    { rank: 23, name: '坂東牧場', races: 75, wins: 6, places_2: 9, places_3: 5, win_rate: 8.0, quinella_rate: 20.0, place_rate: 26.7, win_payback: 89.6, place_payback: 74.9, avg_popularity: 6.8, avg_rank: 6.7, median_popularity: 7, median_rank: 6 },
+    { rank: 24, name: '飛野牧場', races: 30, wins: 5, places_2: 4, places_3: 5, win_rate: 16.7, quinella_rate: 30.0, place_rate: 46.7, win_payback: 92.0, place_payback: 144.3, avg_popularity: 5.8, avg_rank: 5.5, median_popularity: 5, median_rank: 4 },
+    { rank: 25, name: 'ハシモトファーム', races: 39, wins: 5, places_2: 2, places_3: 0, win_rate: 12.8, quinella_rate: 17.9, place_rate: 17.9, win_payback: 79.0, place_payback: 33.1, avg_popularity: 7.2, avg_rank: 8.1, median_popularity: 7, median_rank: 7 },
+    { rank: 26, name: '村田牧場', races: 41, wins: 5, places_2: 4, places_3: 3, win_rate: 12.2, quinella_rate: 22.0, place_rate: 29.3, win_payback: 51.0, place_payback: 107.8, avg_popularity: 5.6, avg_rank: 7.3, median_popularity: 4, median_rank: 7 },
+    { rank: 27, name: 'ビクトリーホースランチ', races: 43, wins: 5, places_2: 2, places_3: 6, win_rate: 11.6, quinella_rate: 16.3, place_rate: 30.2, win_payback: 58.8, place_payback: 95.6, avg_popularity: 7.3, avg_rank: 6.3, median_popularity: 7, median_rank: 6 },
+    { rank: 28, name: '富田牧場', races: 47, wins: 5, places_2: 5, places_3: 4, win_rate: 10.6, quinella_rate: 21.3, place_rate: 29.8, win_payback: 47.7, place_payback: 88.7, avg_popularity: 6.6, avg_rank: 6.2, median_popularity: 6, median_rank: 5 },
+    { rank: 29, name: 'ヒダカファーム', races: 52, wins: 5, places_2: 1, places_3: 2, win_rate: 9.6, quinella_rate: 11.5, place_rate: 15.4, win_payback: 168.5, place_payback: 63.1, avg_popularity: 9.0, avg_rank: 8.9, median_popularity: 8, median_rank: 9 },
+    { rank: 30, name: 'ヤナガワ牧場', races: 93, wins: 5, places_2: 6, places_3: 9, win_rate: 5.4, quinella_rate: 11.8, place_rate: 21.5, win_payback: 19.6, place_payback: 67.4, avg_popularity: 7.4, avg_rank: 7.6, median_popularity: 7, median_rank: 7 },
+    { rank: 31, name: '辻牧場', races: 131, wins: 5, places_2: 9, places_3: 11, win_rate: 3.8, quinella_rate: 10.7, place_rate: 19.1, win_payback: 72.1, place_payback: 101.8, avg_popularity: 7.7, avg_rank: 7.5, median_popularity: 7, median_rank: 7 },
+    { rank: 32, name: '高昭牧場', races: 135, wins: 5, places_2: 5, places_3: 6, win_rate: 3.7, quinella_rate: 7.4, place_rate: 11.9, win_payback: 37.3, place_payback: 26.6, avg_popularity: 8.1, avg_rank: 7.9, median_popularity: 8, median_rank: 8 },
+    { rank: 33, name: 'オリオンファーム', races: 35, wins: 4, places_2: 1, places_3: 0, win_rate: 11.4, quinella_rate: 14.3, place_rate: 14.3, win_payback: 126.6, place_payback: 53.7, avg_popularity: 7.9, avg_rank: 7.7, median_popularity: 8, median_rank: 8 },
+    { rank: 34, name: '小泉牧場', races: 36, wins: 4, places_2: 3, places_3: 0, win_rate: 11.1, quinella_rate: 19.4, place_rate: 19.4, win_payback: 140.6, place_payback: 70.0, avg_popularity: 8.5, avg_rank: 7.7, median_popularity: 8, median_rank: 8 },
+    { rank: 35, name: '錦岡牧場', races: 36, wins: 4, places_2: 1, places_3: 4, win_rate: 11.1, quinella_rate: 13.9, place_rate: 25.0, win_payback: 38.1, place_payback: 69.4, avg_popularity: 8.2, avg_rank: 7.8, median_popularity: 7, median_rank: 8 },
+    { rank: 36, name: '笠松牧場', races: 40, wins: 4, places_2: 1, places_3: 4, win_rate: 10.0, quinella_rate: 12.5, place_rate: 22.5, win_payback: 87.0, place_payback: 59.8, avg_popularity: 5.8, avg_rank: 7.0, median_popularity: 5, median_rank: 7 },
+    { rank: 37, name: '桑田牧場', races: 59, wins: 4, places_2: 3, places_3: 7, win_rate: 6.8, quinella_rate: 11.9, place_rate: 23.7, win_payback: 48.8, place_payback: 42.7, avg_popularity: 6.0, avg_rank: 6.6, median_popularity: 5, median_rank: 6 },
+    { rank: 38, name: '白井牧場', races: 63, wins: 4, places_2: 3, places_3: 5, win_rate: 6.3, quinella_rate: 11.1, place_rate: 19.0, win_payback: 179.0, place_payback: 78.4, avg_popularity: 8.0, avg_rank: 8.7, median_popularity: 8, median_rank: 9 },
+    { rank: 39, name: '村上欽哉', races: 91, wins: 4, places_2: 4, places_3: 6, win_rate: 4.4, quinella_rate: 8.8, place_rate: 15.4, win_payback: 88.4, place_payback: 57.1, avg_popularity: 8.2, avg_rank: 8.3, median_popularity: 8, median_rank: 8 },
+    { rank: 40, name: '静内フジカワ牧場', races: 31, wins: 3, places_2: 2, places_3: 1, win_rate: 9.7, quinella_rate: 16.1, place_rate: 19.4, win_payback: 85.8, place_payback: 61.0, avg_popularity: 8.5, avg_rank: 7.8, median_popularity: 8, median_rank: 7 },
+    { rank: 41, name: 'スマイルファーム', races: 36, wins: 3, places_2: 2, places_3: 2, win_rate: 8.3, quinella_rate: 13.9, place_rate: 19.4, win_payback: 88.1, place_payback: 67.2, avg_popularity: 7.7, avg_rank: 7.7, median_popularity: 6, median_rank: 8 },
+    { rank: 42, name: 'シンボリ牧場', races: 36, wins: 3, places_2: 1, places_3: 6, win_rate: 8.3, quinella_rate: 11.1, place_rate: 27.8, win_payback: 50.0, place_payback: 70.0, avg_popularity: 7.8, avg_rank: 7.9, median_popularity: 8, median_rank: 8 },
+    { rank: 43, name: 'サンデーヒルズ', races: 38, wins: 3, places_2: 4, places_3: 2, win_rate: 7.9, quinella_rate: 18.4, place_rate: 23.7, win_payback: 83.4, place_payback: 59.5, avg_popularity: 6.7, avg_rank: 6.2, median_popularity: 6, median_rank: 6 },
+    { rank: 44, name: '藤原牧場', races: 42, wins: 3, places_2: 1, places_3: 0, win_rate: 7.1, quinella_rate: 9.5, place_rate: 9.5, win_payback: 138.3, place_payback: 56.0, avg_popularity: 8.6, avg_rank: 8.0, median_popularity: 8, median_rank: 8 },
+    { rank: 45, name: '天羽禮治', races: 44, wins: 3, places_2: 1, places_3: 1, win_rate: 6.8, quinella_rate: 9.1, place_rate: 11.4, win_payback: 40.5, place_payback: 46.6, avg_popularity: 8.5, avg_rank: 8.0, median_popularity: 9, median_rank: 8 },
+    { rank: 46, name: 'タイヘイ牧場', races: 50, wins: 3, places_2: 8, places_3: 3, win_rate: 6.0, quinella_rate: 22.0, place_rate: 28.0, win_payback: 49.6, place_payback: 63.2, avg_popularity: 5.9, avg_rank: 6.8, median_popularity: 5, median_rank: 6 },
+    { rank: 47, name: '新冠橋本牧場', races: 71, wins: 3, places_2: 4, places_3: 4, win_rate: 4.2, quinella_rate: 9.9, place_rate: 15.5, win_payback: 17.0, place_payback: 52.8, avg_popularity: 7.2, avg_rank: 7.2, median_popularity: 7, median_rank: 7 },
+    { rank: 48, name: 'コスモヴューファーム', races: 94, wins: 3, places_2: 8, places_3: 5, win_rate: 3.2, quinella_rate: 11.7, place_rate: 17.0, win_payback: 8.7, place_payback: 48.9, avg_popularity: 8.3, avg_rank: 8.5, median_popularity: 8, median_rank: 8 },
+    { rank: 49, name: '本田土寿', races: 30, wins: 2, places_2: 1, places_3: 2, win_rate: 6.7, quinella_rate: 10.0, place_rate: 16.7, win_payback: 17.7, place_payback: 26.7, avg_popularity: 7.1, avg_rank: 7.9, median_popularity: 6, median_rank: 8 },
+    { rank: 50, name: '三石川上牧場', races: 31, wins: 2, places_2: 1, places_3: 0, win_rate: 6.5, quinella_rate: 9.7, place_rate: 9.7, win_payback: 99.4, place_payback: 80.3, avg_popularity: 9.4, avg_rank: 10.0, median_popularity: 9, median_rank: 11 },
+    { rank: 51, name: '友田牧場', races: 32, wins: 2, places_2: 1, places_3: 8, win_rate: 6.3, quinella_rate: 9.4, place_rate: 34.4, win_payback: 84.1, place_payback: 83.8, avg_popularity: 7.9, avg_rank: 6.4, median_popularity: 7, median_rank: 5 },
+    { rank: 52, name: '大作ステーブル', races: 32, wins: 2, places_2: 1, places_3: 0, win_rate: 6.3, quinella_rate: 9.4, place_rate: 9.4, win_payback: 82.8, place_payback: 52.5, avg_popularity: 8.8, avg_rank: 9.9, median_popularity: 8, median_rank: 10 },
+    { rank: 53, name: '静内ファーム', races: 33, wins: 2, places_2: 0, places_3: 2, win_rate: 6.1, quinella_rate: 6.1, place_rate: 12.1, win_payback: 63.9, place_payback: 33.6, avg_popularity: 7.8, avg_rank: 7.8, median_popularity: 7, median_rank: 8 },
+    { rank: 54, name: '前田ファーム', races: 35, wins: 2, places_2: 2, places_3: 1, win_rate: 5.7, quinella_rate: 11.4, place_rate: 14.3, win_payback: 73.4, place_payback: 49.4, avg_popularity: 9.7, avg_rank: 8.5, median_popularity: 10, median_rank: 9 },
+    { rank: 55, name: '上水牧場', races: 36, wins: 2, places_2: 2, places_3: 4, win_rate: 5.6, quinella_rate: 11.1, place_rate: 22.2, win_payback: 44.2, place_payback: 75.6, avg_popularity: 7.6, avg_rank: 7.3, median_popularity: 7, median_rank: 7 },
+    { rank: 56, name: '木村牧場', races: 36, wins: 2, places_2: 2, places_3: 5, win_rate: 5.6, quinella_rate: 11.1, place_rate: 25.0, win_payback: 59.2, place_payback: 75.3, avg_popularity: 7.6, avg_rank: 7.0, median_popularity: 7, median_rank: 6 },
+    { rank: 57, name: '松田牧場', races: 37, wins: 2, places_2: 4, places_3: 3, win_rate: 5.4, quinella_rate: 16.2, place_rate: 24.3, win_payback: 473.5, place_payback: 190.5, avg_popularity: 9.5, avg_rank: 8.7, median_popularity: 10, median_rank: 9 },
+    { rank: 58, name: '明治牧場', races: 38, wins: 2, places_2: 2, places_3: 2, win_rate: 5.3, quinella_rate: 10.5, place_rate: 15.8, win_payback: 44.2, place_payback: 27.4, avg_popularity: 6.8, avg_rank: 7.3, median_popularity: 7, median_rank: 6 },
+    { rank: 59, name: 'ハクレイファーム', races: 38, wins: 2, places_2: 2, places_3: 1, win_rate: 5.3, quinella_rate: 10.5, place_rate: 13.2, win_payback: 14.7, place_payback: 15.3, avg_popularity: 7.6, avg_rank: 7.4, median_popularity: 7, median_rank: 8 },
+    { rank: 60, name: '高橋ファーム', races: 41, wins: 2, places_2: 3, places_3: 2, win_rate: 4.9, quinella_rate: 12.2, place_rate: 17.1, win_payback: 25.6, place_payback: 41.0, avg_popularity: 8.8, avg_rank: 8.5, median_popularity: 9, median_rank: 9 },
+    { rank: 61, name: 'ナカノファーム', races: 44, wins: 2, places_2: 0, places_3: 4, win_rate: 4.5, quinella_rate: 4.5, place_rate: 13.6, win_payback: 25.2, place_payback: 35.0, avg_popularity: 8.6, avg_rank: 8.1, median_popularity: 9, median_rank: 8 },
+    { rank: 62, name: '沖田牧場', races: 45, wins: 2, places_2: 2, places_3: 4, win_rate: 4.4, quinella_rate: 8.9, place_rate: 17.8, win_payback: 147.6, place_payback: 119.6, avg_popularity: 10.2, avg_rank: 8.1, median_popularity: 11, median_rank: 8 },
+    { rank: 63, name: '矢野牧場', races: 50, wins: 2, places_2: 6, places_3: 6, win_rate: 4.0, quinella_rate: 16.0, place_rate: 28.0, win_payback: 74.4, place_payback: 102.0, avg_popularity: 6.7, avg_rank: 6.8, median_popularity: 6, median_rank: 7 },
+    { rank: 64, name: 'リョーケンファーム', races: 51, wins: 2, places_2: 4, places_3: 2, win_rate: 3.9, quinella_rate: 11.8, place_rate: 15.7, win_payback: 111.6, place_payback: 91.6, avg_popularity: 8.7, avg_rank: 8.9, median_popularity: 9, median_rank: 10 },
+    { rank: 65, name: 'クラウン日高牧場', races: 54, wins: 2, places_2: 2, places_3: 2, win_rate: 3.7, quinella_rate: 7.4, place_rate: 11.1, win_payback: 13.5, place_payback: 21.5, avg_popularity: 9.8, avg_rank: 8.5, median_popularity: 10, median_rank: 9 },
+    { rank: 66, name: '浜本牧場', races: 58, wins: 2, places_2: 1, places_3: 5, win_rate: 3.4, quinella_rate: 5.2, place_rate: 13.8, win_payback: 9.5, place_payback: 35.5, avg_popularity: 8.3, avg_rank: 8.1, median_popularity: 8, median_rank: 8 },
+    { rank: 67, name: '宮内牧場', races: 61, wins: 2, places_2: 5, places_3: 2, win_rate: 3.3, quinella_rate: 11.5, place_rate: 14.8, win_payback: 17.0, place_payback: 30.7, avg_popularity: 7.6, avg_rank: 8.2, median_popularity: 8, median_rank: 9 },
+    { rank: 68, name: '松浦牧場', races: 65, wins: 2, places_2: 1, places_3: 4, win_rate: 3.1, quinella_rate: 4.6, place_rate: 10.8, win_payback: 10.8, place_payback: 35.2, avg_popularity: 8.8, avg_rank: 8.5, median_popularity: 9, median_rank: 9 },
+    { rank: 69, name: 'ミルファーム', races: 70, wins: 2, places_2: 2, places_3: 6, win_rate: 2.9, quinella_rate: 5.7, place_rate: 14.3, win_payback: 51.9, place_payback: 101.6, avg_popularity: 10.2, avg_rank: 8.4, median_popularity: 11, median_rank: 8 },
+    { rank: 70, name: '本間牧場', races: 30, wins: 1, places_2: 2, places_3: 4, win_rate: 3.3, quinella_rate: 10.0, place_rate: 23.3, win_payback: 306.7, place_payback: 85.7, avg_popularity: 8.6, avg_rank: 7.6, median_popularity: 8, median_rank: 7 },
+    { rank: 71, name: 'いとう牧場', races: 30, wins: 1, places_2: 2, places_3: 3, win_rate: 3.3, quinella_rate: 10.0, place_rate: 20.0, win_payback: 33.0, place_payback: 83.3, avg_popularity: 8.4, avg_rank: 8.0, median_popularity: 8, median_rank: 8 },
+    { rank: 72, name: 'へいはた牧場', races: 30, wins: 1, places_2: 1, places_3: 3, win_rate: 3.3, quinella_rate: 6.7, place_rate: 16.7, win_payback: 16.0, place_payback: 61.3, avg_popularity: 9.7, avg_rank: 9.0, median_popularity: 10, median_rank: 9 },
+    { rank: 73, name: 'ヴェルサイユファーム', races: 31, wins: 1, places_2: 1, places_3: 2, win_rate: 3.2, quinella_rate: 6.5, place_rate: 12.9, win_payback: 44.5, place_payback: 43.2, avg_popularity: 8.6, avg_rank: 8.0, median_popularity: 9, median_rank: 7 },
+    { rank: 74, name: '日高大洋牧場', races: 32, wins: 1, places_2: 1, places_3: 5, win_rate: 3.1, quinella_rate: 6.3, place_rate: 21.9, win_payback: 4.7, place_payback: 66.9, avg_popularity: 8.0, avg_rank: 7.6, median_popularity: 9, median_rank: 6 },
+    { rank: 75, name: '宝寄山拓樹', races: 33, wins: 1, places_2: 2, places_3: 1, win_rate: 3.0, quinella_rate: 9.1, place_rate: 12.1, win_payback: 56.7, place_payback: 37.9, avg_popularity: 11.0, avg_rank: 9.9, median_popularity: 12, median_rank: 10 },
+    { rank: 76, name: '田中裕之', races: 33, wins: 1, places_2: 1, places_3: 2, win_rate: 3.0, quinella_rate: 6.1, place_rate: 12.1, win_payback: 13.3, place_payback: 60.6, avg_popularity: 8.2, avg_rank: 9.0, median_popularity: 7, median_rank: 9 },
+    { rank: 77, name: '大北牧場', races: 36, wins: 1, places_2: 2, places_3: 3, win_rate: 2.8, quinella_rate: 8.3, place_rate: 16.7, win_payback: 12.2, place_payback: 30.6, avg_popularity: 7.8, avg_rank: 7.8, median_popularity: 9, median_rank: 8 },
+    { rank: 78, name: '大狩部牧場', races: 36, wins: 1, places_2: 0, places_3: 3, win_rate: 2.8, quinella_rate: 2.8, place_rate: 11.1, win_payback: 447.5, place_payback: 88.3, avg_popularity: 9.6, avg_rank: 8.7, median_popularity: 10, median_rank: 8 },
+    { rank: 79, name: '中村雅明', races: 36, wins: 1, places_2: 2, places_3: 1, win_rate: 2.8, quinella_rate: 8.3, place_rate: 11.1, win_payback: 49.4, place_payback: 66.1, avg_popularity: 8.3, avg_rank: 7.2, median_popularity: 8, median_rank: 6 },
+    { rank: 80, name: 'パカパカファーム', races: 36, wins: 1, places_2: 2, places_3: 6, win_rate: 2.8, quinella_rate: 8.3, place_rate: 25.0, win_payback: 16.9, place_payback: 58.6, avg_popularity: 6.9, avg_rank: 6.8, median_popularity: 6, median_rank: 6 },
+    { rank: 81, name: '須崎牧場', races: 39, wins: 1, places_2: 5, places_3: 6, win_rate: 2.6, quinella_rate: 15.4, place_rate: 30.8, win_payback: 112.1, place_payback: 112.6, avg_popularity: 7.3, avg_rank: 6.5, median_popularity: 7, median_rank: 5 },
+    { rank: 82, name: '木村秀則', races: 39, wins: 1, places_2: 5, places_3: 3, win_rate: 2.6, quinella_rate: 15.4, place_rate: 23.1, win_payback: 55.4, place_payback: 171.5, avg_popularity: 7.4, avg_rank: 8.0, median_popularity: 6, median_rank: 7 },
+    { rank: 83, name: '二風谷ファーム', races: 41, wins: 1, places_2: 1, places_3: 1, win_rate: 2.4, quinella_rate: 4.9, place_rate: 7.3, win_payback: 54.9, place_payback: 21.5, avg_popularity: 8.4, avg_rank: 8.4, median_popularity: 8, median_rank: 8 },
+    { rank: 84, name: '本桐牧場', races: 46, wins: 1, places_2: 2, places_3: 3, win_rate: 2.2, quinella_rate: 6.5, place_rate: 13.0, win_payback: 5.9, place_payback: 38.0, avg_popularity: 10.6, avg_rank: 9.3, median_popularity: 12, median_rank: 10 },
+    { rank: 85, name: '日西牧場', races: 47, wins: 1, places_2: 1, places_3: 1, win_rate: 2.1, quinella_rate: 4.3, place_rate: 6.4, win_payback: 8.5, place_payback: 25.5, avg_popularity: 11.3, avg_rank: 11.3, median_popularity: 11, median_rank: 12 },
+    { rank: 86, name: '静内山田牧場', races: 49, wins: 1, places_2: 4, places_3: 7, win_rate: 2.0, quinella_rate: 10.2, place_rate: 24.5, win_payback: 37.3, place_payback: 94.5, avg_popularity: 8.1, avg_rank: 7.4, median_popularity: 8, median_rank: 7 },
+    { rank: 87, name: 'エスティファーム', races: 63, wins: 1, places_2: 3, places_3: 2, win_rate: 1.6, quinella_rate: 6.3, place_rate: 9.5, win_payback: 73.2, place_payback: 55.4, avg_popularity: 9.8, avg_rank: 9.2, median_popularity: 10, median_rank: 10 },
+    { rank: 88, name: 'ディアレストクラブ', races: 82, wins: 1, places_2: 3, places_3: 3, win_rate: 1.2, quinella_rate: 4.9, place_rate: 8.5, win_payback: 5.2, place_payback: 37.9, avg_popularity: 9.0, avg_rank: 9.3, median_popularity: 9, median_rank: 9 },
+    { rank: 89, name: 'メイタイファーム', races: 38, wins: 0, places_2: 2, places_3: 3, win_rate: 0.0, quinella_rate: 5.3, place_rate: 13.2, win_payback: 0.0, place_payback: 32.9, avg_popularity: 8.1, avg_rank: 8.1, median_popularity: 7, median_rank: 8 },
+    { rank: 90, name: '佐竹学', races: 32, wins: 0, places_2: 1, places_3: 2, win_rate: 0.0, quinella_rate: 3.1, place_rate: 9.4, win_payback: 0.0, place_payback: 63.1, avg_popularity: 9.0, avg_rank: 9.4, median_popularity: 8, median_rank: 9 },
+    { rank: 91, name: '坂本智広', races: 39, wins: 0, places_2: 2, places_3: 4, win_rate: 0.0, quinella_rate: 5.1, place_rate: 15.4, win_payback: 0.0, place_payback: 61.5, avg_popularity: 8.4, avg_rank: 8.5, median_popularity: 9, median_rank: 9 },
+    { rank: 92, name: '鮫川啓一', races: 44, wins: 0, places_2: 1, places_3: 3, win_rate: 0.0, quinella_rate: 2.3, place_rate: 9.1, win_payback: 0.0, place_payback: 22.5, avg_popularity: 9.0, avg_rank: 9.0, median_popularity: 9, median_rank: 9 },
+    { rank: 93, name: 'マリオステーブル', races: 39, wins: 0, places_2: 1, places_3: 1, win_rate: 0.0, quinella_rate: 2.6, place_rate: 5.1, win_payback: 0.0, place_payback: 25.9, avg_popularity: 10.3, avg_rank: 10.0, median_popularity: 11, median_rank: 11 },
+    { rank: 94, name: 'ブルースターズファーム', races: 30, wins: 0, places_2: 1, places_3: 3, win_rate: 0.0, quinella_rate: 3.3, place_rate: 13.3, win_payback: 0.0, place_payback: 92.0, avg_popularity: 8.5, avg_rank: 7.3, median_popularity: 8, median_rank: 6 }
+  ]}
+/>
+
+<p style={{ fontSize: '0.85rem', color: '#666', marginTop: '8px', marginBottom: '16px' }}>※期間内で30回以上出走させた生産者を対象</p>
+
+出走数や1着数は、<strong>ノーザンファーム</strong>・<strong>社台ファーム</strong>が他を大きく離してのワンツー。
+
+特にノーザンファームは、<strong>勝率（18.3%）</strong>、<strong>連帯率（33.3%）</strong>、<strong>複勝率（45%）</strong>いずれも非常に高い成績を残しています。<br />
+人気している分回収率は80%そこそこですが、やはり新馬戦からきっちり仕上げてくることが分かりますね。
+
+その他にも、ノーザンファームを抑えて複勝率TOP（46.7%）の<strong>飛野牧場</strong>をはじめ、個人系の生産牧場の活躍も目立ちます。<br />
+
+## 新馬戦の性別成績は？
+新馬戦で「<strong>小柄な牝馬なので仕上がりが早い</strong>」という厩舎コメントをよく目にする気がしますが、<strong>性別</strong>や<strong>馬体重</strong>でも傾向があるのでしょうか？
+
+ということで、まずは性別ごとの新馬戦の成績を確認してみましょう。
 
 <GenderTable
   data={[
@@ -522,7 +637,7 @@ priority: 1
   ]}
 />
 
-若干ですが牡馬の方が成績が良さそうですね。<br />
+若干ですが<strong>牡馬の方が成績が良さそう</strong>ですね。<br />
 （本題からは逸れますが、新馬戦からセン馬の馬の成績はなかなか厳しい...）
 
 では、逆に新馬戦以外だとどうなるのかをみてみます。
@@ -536,9 +651,9 @@ priority: 1
   ]}
 />
 
-新馬戦以外でも牡馬が優勢な傾向は変わりませんが、2つの表を見比べてみると、新馬戦の方が牡馬と牝馬の差は少ないことが分かります。
+新馬戦以外でも牡馬が優勢な傾向は変わりませんが、2つの表を見比べてみると、<strong>新馬戦の方が牡馬と牝馬の差が小さい</strong>ことが分かります。
 
-結論として、新馬戦では若干牡馬優勢だが、牝馬だけの比較では新馬は走りやすい傾向にあると言えそうです。
+結論として、新馬戦では（でも）<strong>若干牡馬優勢</strong>だが、<strong>牝馬だけの比較では新馬は走りやすい傾向にある</strong>と言えそうです。
 
 （またまた本題からは逸れますが、新馬戦以外だとセン馬の成績が良くなるのが面白いですね...どこかで深掘りしてみたいです）
 
@@ -557,9 +672,9 @@ priority: 1
   ]}
 />
 
-新馬戦だと「大型馬なので叩いてから〜」という厩舎コメントもよくみられますが、それでも基本的には馬体重が重い馬の成績が良さそうですね。
+新馬戦だと「<strong>大型馬なので叩いてから〜</strong>」という厩舎コメントがよくみられますが、それでも<strong>基本的には馬体重が重い馬の成績が良い</strong>ことが分かります。
 
-性別と同様に、新馬戦以外の馬体重データも確認してみます。
+性別と同様に、新馬戦以外の馬体重データも確認してみましょう。
 
 <HorseWeightTable
   wideColumns={true}
@@ -575,11 +690,11 @@ priority: 1
   ]}
 />
 
-全体の傾向として、競馬はそもそも馬体重が重い馬の方が有利だと分かります。
+全体の傾向として、<strong>競馬はそもそも馬体重が重い馬の方が有利</strong>なのは明白ですね。
 
-一方で、馬体重が軽い馬（420kg未満）に限ると、新馬戦の方が若干成績が良い傾向があります。<br />
-よく言われる**「馬体重が軽い馬は仕上がりが早く新馬戦で走りやすい」という定説は、データからも裏付けられそう**ですね。
+一方で、2つの表を比較してみると、<strong>馬体重が軽い馬（420kg未満）に限れば、新馬戦の方が若干成績が良い</strong>傾向にあることが分かります。
 
+よく言われる「馬体重が軽い馬は仕上がりが早く新馬戦で走りやすい」という定説は、データからも裏付けられそうですね。
 
 ## まとめ
 
@@ -587,7 +702,8 @@ priority: 1
 
 - **新馬戦は意外と堅い**：配当中央値は新馬戦以外のレースより低く、思ったほど荒れない
 - **注目騎手**：津村騎手・鮫島駿騎手
-- **注目調教師**：堀宣行調教師
+- **注目調教師**：堀調教師
+- **注目生産者**：ノーザンファーム
 - **注目血統**：グレーターロンドン産駒
 - **性別**：牡馬の方が若干有利だが、牝馬は新馬戦で仕上がりが早い
 - **馬体重**: 重い方が有利だが、軽い馬（特に420kg未満）は新馬戦で仕上がりが早い
