@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import RaceTabs from '@/components/RaceTabs';
 import TableOfContents from '@/components/TableOfContents';
 import ArticleCarousel from '@/components/ArticleCarousel';
+import ThisWeekVenues from '@/components/ThisWeekVenues';
 import { getJockeyLeading, getTrainerLeading, getSireLeading } from '@/lib/getLeadingData';
 import { getAllArticles } from '@/lib/articles';
 
@@ -52,6 +53,8 @@ export default async function HomePage() {
           <section className="section section-full-width">
             <ArticleCarousel articles={articles} />
           </section>
+
+          <ThisWeekVenues />
 
           <RaceTabs
             jockeyLeading={jockeyLeading}
