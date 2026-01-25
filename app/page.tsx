@@ -1,7 +1,9 @@
 import { Metadata } from 'next';
 import RaceTabs from '@/components/RaceTabs';
 import TableOfContents from '@/components/TableOfContents';
+import ArticleCarousel from '@/components/ArticleCarousel';
 import { getJockeyLeading, getTrainerLeading, getSireLeading } from '@/lib/getLeadingData';
+import { getAllArticles } from '@/lib/articles';
 
 // ISR: 1日1回（86400秒）再生成
 export const revalidate = 86400;
@@ -20,10 +22,11 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  // サーバー側でリーディングデータを読み込む
+  // サーバー側でリーディングデータと記事を読み込む
   const jockeyLeading = await getJockeyLeading();
   const trainerLeading = await getTrainerLeading();
   const sireLeading = await getSireLeading();
+  const articles = getAllArticles();
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
@@ -45,6 +48,11 @@ export default async function HomePage() {
       />
       <main style={{ padding: 0 }}>
         <article style={{ backgroundColor: '#fbfcfd' }}>
+          {/* 記事セクション */}
+          <section className="section section-full-width">
+            <ArticleCarousel articles={articles} />
+          </section>
+
           <RaceTabs
             jockeyLeading={jockeyLeading}
             trainerLeading={trainerLeading}

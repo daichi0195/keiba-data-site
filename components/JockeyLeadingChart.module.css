@@ -1,15 +1,9 @@
 .container {
   background: #fff;
-  border-radius: 14px;
+  border-radius: 12px;
   padding: 1.25rem;
   margin-bottom: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  border: 1px solid #d1f0e5;
-  transition: all 0.3s ease;
-}
-
-.container:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 /* 凡例 */

@@ -56,6 +56,7 @@
   transition: all 0.2s ease;
   border: 1px solid;
   text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .variantGroup {
