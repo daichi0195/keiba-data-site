@@ -12,7 +12,7 @@ priority: 2
 
 # 「初仔（はつご）は走らない」「初仔の牝馬は避けるべき」は本当か？3年分のデータから分析
 
-特に一口馬主界隈でよく目にする「初仔（はつご）は走らない」というジンクス。
+特に一口馬主界隈でよく目にする「<strong>初仔（はつご）は走らない</strong>」というジンクス。
 
 私も最近一口馬主デビューだったのですが、もしこの説が本当であれば、これから出資馬を検討する際の判断材料になりそうです。<br />
 
@@ -41,7 +41,9 @@ priority: 2
 とはいえ、ある程度正確性が担保されたデータになっているのではないかと思います。
 
 ## 「初仔は走らない」は本当なのか？
-前置きが長くなってしまいましたが、上記の定義で初仔・初仔以外に分け、成績を比較した結果がこちらです。
+前置きが長くなってしまいましたが、上記の定義に基づいて初仔・初仔以外に分類し、成績を比較してみました。
+
+結果がこちらです。
 
 <div style={{ overflowX: 'auto' }}>
   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
@@ -112,18 +114,171 @@ priority: 2
   </table>
 </div>
 
-勝ち上がり率で最も差が大きく、初仔の方が4％も低くなっています😥<br />
-とはいえ初仔でG1勝ってる馬たくさんいるしな...と思い2勝馬率〜重賞馬率まで集計しましたが、上のクラスでも初仔が苦戦する傾向は変わりません。
+やはり<strong>全ての指標で初仔の方が低い</strong>結果となりました。
 
-全ての指標で初仔の方が低い結果となったため、「初仔は走らない」という定説はデータで裏付けられそうです。
+勝ち上がり率で最も差が大きく、初仔の方が約4％も低くなっています😥<br />
+とはいえ初仔でもG1勝ってる馬たくさんいるしな...と思い2勝馬率〜重賞馬率まで集計しましたが、<strong>上のクラスでも初仔が苦戦する傾向は変わりません</strong>。
 
-## 初仔は性別ごとに差が出るのか？
+「初仔は走らない」はデータで裏付けられそうですね。
+
+## 初仔は性別で成績に差が出るのか？
+
+また、「<strong>初仔の牝馬は避けたほうがいい</strong>」「<strong>初仔でも牡馬は影響がない</strong>」という説もよく目にする気がします。
+
+検証のために、性別ごとに初仔の成績を比較してみましょう。<br />
+なお、デビュー時にセン馬だった馬は集計から除外しています。
+
+### 牡馬の成績比較
+
+<div style={{ overflowX: 'auto' }}>
+  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
+    <thead>
+      <tr style={{ backgroundColor: '#f5f7fa' }}>
+        <th style={{ padding: '12px', textAlign: 'left', borderBottom: '2px solid #e2e8f0' }}></th>
+        <th style={{ padding: '12px', textAlign: 'center', borderBottom: '2px solid #e2e8f0' }}>初仔</th>
+        <th style={{ padding: '12px', textAlign: 'center', borderBottom: '2px solid #e2e8f0' }}>初仔以外</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>頭数</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>1,150頭</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>5,845頭</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>勝ち上がり頭数</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>382頭</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>2,136頭</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>勝ち上がり率</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>33.2%</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>36.5%</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>2勝馬頭数</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>199頭</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>1,141頭</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>2勝馬率</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>17.3%</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>19.5%</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>3勝馬頭数</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>87頭</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>540頭</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>3勝馬率</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>7.6%</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>9.2%</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>オープン馬頭数</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>43頭</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>222頭</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>オープン馬率</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>3.7%</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>3.8%</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>重賞馬頭数</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>16頭</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>86頭</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>重賞馬率</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>1.4%</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>1.5%</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+### 牝馬の成績比較
+
+<div style={{ overflowX: 'auto' }}>
+  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
+    <thead>
+      <tr style={{ backgroundColor: '#f5f7fa' }}>
+        <th style={{ padding: '12px', textAlign: 'left', borderBottom: '2px solid #e2e8f0' }}></th>
+        <th style={{ padding: '12px', textAlign: 'center', borderBottom: '2px solid #e2e8f0' }}>初仔</th>
+        <th style={{ padding: '12px', textAlign: 'center', borderBottom: '2px solid #e2e8f0' }}>初仔以外</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>頭数</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>1,134頭</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>5,717頭</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>勝ち上がり頭数</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>261頭</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>1,559頭</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>勝ち上がり率</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>23.0%</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>27.3%</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>2勝馬頭数</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>132頭</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>706頭</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>2勝馬率</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>11.6%</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>12.3%</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>3勝馬頭数</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>53頭</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>275頭</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>3勝馬率</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>4.7%</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>4.8%</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>オープン馬頭数</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>11頭</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>93頭</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>オープン馬率</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>1.0%</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>1.6%</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>重賞馬頭数</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>4頭</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>60頭</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>重賞馬率</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>0.4%</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>1.0%</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+勝ち上がり率でみると、初仔の方が牡馬で3.3%、牝馬で4.3%低い結果になりました。
+
+やや牝馬の方が振るわない印象は受けますが、<strong>牡馬・牝馬ともに初仔の方が成績が低い</strong>ことが分かります。
 
 ## 「初仔は走らない」理由は？
-では、なぜ初仔は走らないのでしょうか？
+では、<strong>なぜ初仔は走らない</strong>のかをさらに分析していきます。
 
-一つの仮説として、**初仔は馬体重が軽い傾向がある**のではないかと考えられます。<br />
-実際にデビュー時の馬体重分布を比較してみましょう。
+定説として「**初仔は馬体重が軽いから**」がありますが、実際はどうでしょうか。<br />
+デビュー時の馬体重分布を比較してみましょう。
 
 <style>{`
   .histogram-x-label-mobile { display: inline; }
@@ -152,11 +307,11 @@ priority: 2
       {/* 凡例（右上） */}
       <div style={{ position: 'absolute', top: '10px', right: '10px', display: 'flex', gap: '0.75rem', fontSize: '0.8rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-          <div style={{ width: '16px', height: '10px', backgroundColor: 'rgba(244, 114, 182, 0.6)' }}></div>
+          <div style={{ width: '16px', height: '10px', backgroundColor: 'rgba(251, 146, 60, 0.6)' }}></div>
           <span>初仔</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-          <div style={{ width: '16px', height: '10px', backgroundColor: 'rgba(94, 234, 212, 0.6)' }}></div>
+          <div style={{ width: '16px', height: '10px', backgroundColor: 'rgba(134, 239, 172, 0.6)' }}></div>
           <span>初仔以外</span>
         </div>
       </div>
@@ -168,43 +323,43 @@ priority: 2
       <div style={{ display: 'flex', height: '100%', alignItems: 'flex-end' }}>
         {/* 400kg未満 */}
         <div style={{ flex: 1, position: 'relative', height: '100%', display: 'flex', alignItems: 'flex-end' }}>
-          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(244, 114, 182, 0.6)', height: `${3.1 * 8}px` }} title="初仔: 3.1%"></div>
-          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(94, 234, 212, 0.6)', height: `${1.9 * 8}px` }} title="初仔以外: 1.9%"></div>
+          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(251, 146, 60, 0.6)', height: `${3.1 * 8}px` }} title="初仔: 3.1%"></div>
+          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(134, 239, 172, 0.6)', height: `${1.9 * 8}px` }} title="初仔以外: 1.9%"></div>
         </div>
         {/* 400-419kg */}
         <div style={{ flex: 1, position: 'relative', height: '100%', display: 'flex', alignItems: 'flex-end' }}>
-          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(244, 114, 182, 0.6)', height: `${9.4 * 8}px` }} title="初仔: 9.4%"></div>
-          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(94, 234, 212, 0.6)', height: `${5.7 * 8}px` }} title="初仔以外: 5.7%"></div>
+          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(251, 146, 60, 0.6)', height: `${9.4 * 8}px` }} title="初仔: 9.4%"></div>
+          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(134, 239, 172, 0.6)', height: `${5.7 * 8}px` }} title="初仔以外: 5.7%"></div>
         </div>
         {/* 420-439kg */}
         <div style={{ flex: 1, position: 'relative', height: '100%', display: 'flex', alignItems: 'flex-end' }}>
-          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(244, 114, 182, 0.6)', height: `${17.2 * 8}px` }} title="初仔: 17.2%"></div>
-          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(94, 234, 212, 0.6)', height: `${14.0 * 8}px` }} title="初仔以外: 14.0%"></div>
+          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(251, 146, 60, 0.6)', height: `${17.2 * 8}px` }} title="初仔: 17.2%"></div>
+          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(134, 239, 172, 0.6)', height: `${14.0 * 8}px` }} title="初仔以外: 14.0%"></div>
         </div>
         {/* 440-459kg */}
         <div style={{ flex: 1, position: 'relative', height: '100%', display: 'flex', alignItems: 'flex-end' }}>
-          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(244, 114, 182, 0.6)', height: `${25.7 * 8}px` }} title="初仔: 25.7%"></div>
-          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(94, 234, 212, 0.6)', height: `${22.0 * 8}px` }} title="初仔以外: 22.0%"></div>
+          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(251, 146, 60, 0.6)', height: `${25.7 * 8}px` }} title="初仔: 25.7%"></div>
+          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(134, 239, 172, 0.6)', height: `${22.0 * 8}px` }} title="初仔以外: 22.0%"></div>
         </div>
         {/* 460-479kg */}
         <div style={{ flex: 1, position: 'relative', height: '100%', display: 'flex', alignItems: 'flex-end' }}>
-          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(244, 114, 182, 0.6)', height: `${20.6 * 8}px` }} title="初仔: 20.6%"></div>
-          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(94, 234, 212, 0.6)', height: `${24.3 * 8}px` }} title="初仔以外: 24.3%"></div>
+          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(251, 146, 60, 0.6)', height: `${20.6 * 8}px` }} title="初仔: 20.6%"></div>
+          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(134, 239, 172, 0.6)', height: `${24.3 * 8}px` }} title="初仔以外: 24.3%"></div>
         </div>
         {/* 480-499kg */}
         <div style={{ flex: 1, position: 'relative', height: '100%', display: 'flex', alignItems: 'flex-end' }}>
-          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(244, 114, 182, 0.6)', height: `${14.3 * 8}px` }} title="初仔: 14.3%"></div>
-          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(94, 234, 212, 0.6)', height: `${17.5 * 8}px` }} title="初仔以外: 17.5%"></div>
+          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(251, 146, 60, 0.6)', height: `${14.3 * 8}px` }} title="初仔: 14.3%"></div>
+          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(134, 239, 172, 0.6)', height: `${17.5 * 8}px` }} title="初仔以外: 17.5%"></div>
         </div>
         {/* 500-519kg */}
         <div style={{ flex: 1, position: 'relative', height: '100%', display: 'flex', alignItems: 'flex-end' }}>
-          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(244, 114, 182, 0.6)', height: `${6.2 * 8}px` }} title="初仔: 6.2%"></div>
-          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(94, 234, 212, 0.6)', height: `${9.3 * 8}px` }} title="初仔以外: 9.3%"></div>
+          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(251, 146, 60, 0.6)', height: `${6.2 * 8}px` }} title="初仔: 6.2%"></div>
+          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(134, 239, 172, 0.6)', height: `${9.3 * 8}px` }} title="初仔以外: 9.3%"></div>
         </div>
         {/* 520kg以上 */}
         <div style={{ flex: 1, position: 'relative', height: '100%', display: 'flex', alignItems: 'flex-end' }}>
-          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(244, 114, 182, 0.6)', height: `${3.5 * 8}px` }} title="初仔: 3.5%"></div>
-          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(94, 234, 212, 0.6)', height: `${5.2 * 8}px` }} title="初仔以外: 5.2%"></div>
+          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(251, 146, 60, 0.6)', height: `${3.5 * 8}px` }} title="初仔: 3.5%"></div>
+          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(134, 239, 172, 0.6)', height: `${5.2 * 8}px` }} title="初仔以外: 5.2%"></div>
         </div>
       </div>
     </div>
@@ -250,27 +405,104 @@ priority: 2
   <div style={{ fontSize: '0.85rem', color: '#666', textAlign: 'center', lineHeight: '1.5' }}>
     縦軸：割合（%） 横軸：馬体重（kg）
   </div>
-
-  <div style={{ fontSize: '0.9rem', color: '#666', marginTop: '1rem', lineHeight: '1.6' }}>
-    初仔は440-459kgにピークがあり、初仔以外は460-479kgにピークがあります。全体的に初仔の方が軽い傾向が見られ、これが成績に影響している可能性があります。
-  </div>
 </div>
+
+初仔は440-459kg、初仔以外は460-479kgに分布のピークがありますね。
+
+全体的に<strong>初仔の方が軽い傾向があることは明らか</strong>で、これが成績に影響している可能性が高いですね。
+
+では馬体重が同程度の馬同士で比較して、初仔と初仔以外の成績差がなくなれば、馬体重が理由であると証明できそうです。
+
+ということで、デビュー時の馬体重が480kg以上の馬に限定して比較してみました。
+
+<div style={{ overflowX: 'auto' }}>
+  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
+    <thead>
+      <tr style={{ backgroundColor: '#f5f7fa' }}>
+        <th style={{ padding: '12px', textAlign: 'left', borderBottom: '2px solid #e2e8f0' }}></th>
+        <th style={{ padding: '12px', textAlign: 'center', borderBottom: '2px solid #e2e8f0' }}>初仔</th>
+        <th style={{ padding: '12px', textAlign: 'center', borderBottom: '2px solid #e2e8f0' }}>初仔以外</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>頭数</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>554頭</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>3,740頭</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>勝ち上がり頭数</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>206頭</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>1,375頭</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>勝ち上がり率</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>37.2%</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>36.8%</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>2勝馬頭数</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>110頭</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>771頭</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>2勝馬率</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>19.9%</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>20.6%</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>3勝馬頭数</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>49頭</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>341頭</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>3勝馬率</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>8.8%</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>9.1%</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>オープン馬頭数</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>21頭</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>147頭</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>オープン馬率</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>3.8%</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>3.9%</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>重賞馬頭数</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>9頭</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>59頭</td>
+      </tr>
+      <tr>
+        <td style={{ padding: '12px', borderBottom: '1px solid #e2e8f0' }}>重賞馬率</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>1.6%</td>
+        <td style={{ padding: '12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>1.6%</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<strong>初仔と初仔以外の成績差がなくなりましたね</strong>。
+
+勝ち上がり率は初仔が上回り、重賞馬率に至っては全く同じ1.6%です。
+
+つまり、<strong>「初仔は走らない」の主要因は馬体重</strong>であり、初仔だから走らないのではなく、<strong>初仔は軽い傾向があるから走らない</strong>のです。
+
+初仔であるかどうかではなく、馬体重で判断すればいいということが分かりましたね。<br />
+個人的にもすごく勉強になりました！
 
 ## まとめ
 
-新馬戦の傾向を様々な角度から分析しました。
-
 <ul>
-  <li><strong>新馬戦は意外と堅い</strong>：配当中央値は新馬戦以外のレースより低く、思ったほど荒れない</li>
-  <li><strong>注目騎手</strong>：津村騎手・鮫島駿騎手</li>
-  <li><strong>注目調教師</strong>：堀調教師</li>
-  <li><strong>注目生産者</strong>：ノーザンファーム</li>
-  <li><strong>注目血統</strong>：グレーターロンドン産駒</li>
-  <li><strong>性別</strong>：牡馬の方が若干有利だが、牝馬は新馬戦で仕上がりが早い</li>
-  <li><strong>馬体重</strong>: 重い方が有利だが、軽い馬（特に420kg未満）は新馬戦で仕上がりが早い</li>
+  <li><strong>全体傾向でみれば「初仔は走らない」は正しい</strong></li>
+  <li><strong>牡馬でも牝馬でも「初仔は走らない」傾向にある</strong></li>
+  <li><strong>初仔は馬体重が軽い傾向にあり、これが成績差の要因</strong></li>
+  <li><strong>馬体重が重い馬同士あれば、初仔でも成績は変わらない</strong></li>
 </ul>
 
-予想に役立てていただければ幸いです！
+ぜひXのシェア・フォローもよろしくお願いします🙏
 
 ---
 
