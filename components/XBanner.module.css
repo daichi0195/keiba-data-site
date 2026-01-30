@@ -7,8 +7,9 @@
   padding: 12px 20px;
   text-decoration: none;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   margin-top: 20px;
+  margin-bottom: 16px;
   margin-left: 20px;
   margin-right: 20px;
   width: calc(100% - 40px);
@@ -16,7 +17,7 @@
 }
 
 .banner.loaded {
-  animation: fadeIn 0.4s ease-out forwards;
+  animation: fadeIn 0.3s ease-out forwards;
 }
 
 @keyframes fadeIn {

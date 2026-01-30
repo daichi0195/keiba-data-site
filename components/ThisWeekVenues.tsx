@@ -2,6 +2,8 @@
 
 import { useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCalendarWeek } from '@fortawesome/free-solid-svg-icons';
 import styles from './FeaturedVenues.module.css';
 
 interface Course {
@@ -109,7 +111,10 @@ export default function ThisWeekVenues() {
   return (
     <section className="section section-this-week-venues">
       <div style={{ width: '100%' }}>
-        <h2 ref={titleRef} className="section-title">今週開催の競馬場</h2>
+        <h2 ref={titleRef} className="section-title">
+          <FontAwesomeIcon icon={faCalendarWeek} style={{ marginRight: '8px' }} />
+          今週開催の競馬場
+        </h2>
 
         <div className={styles.venueGrid}>
         {mockVenues.map((venue, index) => (
@@ -118,7 +123,7 @@ export default function ThisWeekVenues() {
             ref={(el) => {
               cardRefs.current[index] = el;
             }}
-            className={`${styles.venueCard} fade-in-card fade-in-stagger-${index + 1}`}
+            className={`${styles.venueCard} fade-in-card fade-in-stagger-${(index % 10) + 1}`}
           >
             <h3 className={styles.venueName}>{venue.name}</h3>
 
