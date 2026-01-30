@@ -2,8 +2,10 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFlag } from '@fortawesome/free-solid-svg-icons';
 import styles from './AllVenues.module.css';
-import { getCoursesByRacecourse, getCourseUrl, getCourseDisplayName } from '@/lib/courses';
+import { getCoursesByRacecourse, getCourseUrl } from '@/lib/courses';
 
 const racecoursesData = getCoursesByRacecourse().map(group => ({
   name: group.racecourse_ja,
@@ -17,7 +19,7 @@ interface ExpandedState {
 
 export default function AllVenues() {
   const [expandedRacecourse, setExpandedRacecourse] = useState<ExpandedState>({});
-  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const titleRef = useRef<HTMLHeadingElement>(null);
 
   const toggleRacecourse = (racecourseNameEn: string) => {
@@ -40,128 +42,109 @@ export default function AllVenues() {
     );
 
     if (titleRef.current) observer.observe(titleRef.current);
-    itemRefs.current.forEach((item) => {
-      if (item) observer.observe(item);
+    cardRefs.current.forEach((card) => {
+      if (card) observer.observe(card);
     });
 
     return () => {
       if (titleRef.current) observer.unobserve(titleRef.current);
-      itemRefs.current.forEach((item) => {
-        if (item) observer.unobserve(item);
+      cardRefs.current.forEach((card) => {
+        if (card) observer.unobserve(card);
       });
     };
   }, []);
 
   return (
     <section className="section">
-      <h2 ref={titleRef} className="section-title">競馬場別データ</h2>
+      <h2 ref={titleRef} className="section-title">
+        <FontAwesomeIcon icon={faFlag} style={{ marginRight: '8px' }} />
+        競馬場別データ
+      </h2>
 
       <div className={styles.accordionList}>
-        {racecoursesData.map((racecourse, index) => (
-          <div
-            key={racecourse.nameEn}
-            ref={(el) => {
-              itemRefs.current[index] = el;
-            }}
-            className={`${styles.accordionItem} fade-in-card fade-in-stagger-${(index % 10) + 1}`}
-          >
-            <button
-              className={styles.accordionTrigger}
-              onClick={() => toggleRacecourse(racecourse.nameEn)}
+        {racecoursesData.map((racecourse, index) => {
+          const turfCourses = racecourse.courses.filter((c) => c.surface === 'turf');
+          const dirtCourses = racecourse.courses.filter((c) => c.surface === 'dirt');
+          const steeplechaseCourses = racecourse.courses.filter((c) => c.surface === 'steeplechase');
+
+          return (
+            <div
+              key={racecourse.nameEn}
+              ref={(el) => {
+                cardRefs.current[index] = el;
+              }}
+              className={`${styles.accordionItem} fade-in-card fade-in-stagger-${(index % 10) + 1}`}
             >
-              <span className={styles.accordionIcon}>
-                {expandedRacecourse[racecourse.nameEn] ? '▼' : '▶'}
-              </span>
-              {racecourse.name}
-            </button>
+              <button
+                className={`${styles.accordionTrigger} ${expandedRacecourse[racecourse.nameEn] ? styles.expanded : ''}`}
+                onClick={() => toggleRacecourse(racecourse.nameEn)}
+              >
+                <span className={styles.accordionIcon}>
+                  {expandedRacecourse[racecourse.nameEn] ? '▼' : '▶'}
+                </span>
+                <span className={styles.venueName}>{racecourse.name}</span>
+              </button>
 
-            {expandedRacecourse[racecourse.nameEn] && (
-              <div className={styles.accordionContent}>
-                {/* Turf courses */}
-                <div className={`${styles.surfaceGroup} ${styles.turfGroup}`}>
-                  <ul className={styles.courseList}>
-                    {(() => {
-                      const turfCourses = racecourse.courses.filter((c) => c.surface === 'turf');
-                      const items = [];
-                      let i = 0;
-                      while (i < turfCourses.length) {
-                        const current = turfCourses[i];
-                        const next = turfCourses[i + 1];
+              {expandedRacecourse[racecourse.nameEn] && (
+                <div className={styles.accordionContent}>
+                  {/* Turf courses */}
+                  {turfCourses.length > 0 && (
+                    <div className={styles.surfaceGroup}>
+                      <div className={styles.distanceLinks}>
+                        {turfCourses.map((course, idx) => (
+                          <Link
+                            key={`${course.racecourse}-${course.surface}-${course.distance}-${course.variant || idx}`}
+                            href={getCourseUrl(course)}
+                            className={`${styles.distanceLink} ${styles.turfLink}`}
+                          >
+                            {course.variant
+                              ? `芝${course.distance}m(${course.variant === 'inner' ? '内' : '外'})`
+                              : `芝${course.distance}m`
+                            }
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
-                        // 内外のペアをチェック
-                        if (
-                          current.variant === 'inner' &&
-                          next?.distance === current.distance &&
-                          next?.variant === 'outer'
-                        ) {
-                          items.push(
-                            <li key={`${current.distance}-pair`} className={styles.variantGroup}>
-                              <Link
-                                href={getCourseUrl(current)}
-                                className={`${styles.courseLink} ${styles.turfLink}`}
-                              >
-                                {`芝${current.distance}m(内)`}
-                              </Link>
-                              <Link
-                                href={getCourseUrl(next)}
-                                className={`${styles.courseLink} ${styles.turfLink}`}
-                              >
-                                {`芝${next.distance}m(外)`}
-                              </Link>
-                            </li>
-                          );
-                          i += 2;
-                        } else {
-                          items.push(
-                            <li key={`${racecourse.nameEn}-${current.racecourse}-${current.surface}-${current.distance}${current.variant || ''}`}>
-                              <Link href={getCourseUrl(current)} className={`${styles.courseLink} ${styles.turfLink}`}>
-                                {`芝${current.distance}m`}
-                              </Link>
-                            </li>
-                          );
-                          i += 1;
-                        }
-                      }
-                      return items;
-                    })()}
-                  </ul>
-                </div>
-
-                {/* Dirt courses */}
-                <div className={`${styles.surfaceGroup} ${styles.dirtGroup}`}>
-                  <ul className={styles.courseList}>
-                    {racecourse.courses
-                      .filter((c) => c.surface === 'dirt')
-                      .map((course) => (
-                        <li key={`${racecourse.nameEn}-${course.racecourse}-${course.surface}-${course.distance}${course.variant || ''}`}>
-                          <Link href={getCourseUrl(course)} className={`${styles.courseLink} ${styles.dirtLink}`}>
+                  {/* Dirt courses */}
+                  {dirtCourses.length > 0 && (
+                    <div className={styles.surfaceGroup}>
+                      <div className={styles.distanceLinks}>
+                        {dirtCourses.map((course, idx) => (
+                          <Link
+                            key={`${course.racecourse}-${course.surface}-${course.distance}-${course.variant || idx}`}
+                            href={getCourseUrl(course)}
+                            className={`${styles.distanceLink} ${styles.dirtLink}`}
+                          >
                             {`ダート${course.distance}m`}
                           </Link>
-                        </li>
-                      ))}
-                  </ul>
-                </div>
-
-                {/* Steeplechase courses */}
-                {racecourse.courses.some((c) => c.surface === 'steeplechase') && (
-                  <div className={`${styles.surfaceGroup} ${styles.steeplechaseGroup}`}>
-                    <ul className={styles.courseList}>
-                      {racecourse.courses
-                        .filter((c) => c.surface === 'steeplechase')
-                        .map((course) => (
-                          <li key={`${racecourse.nameEn}-${course.racecourse}-${course.surface}-${course.distance}${course.variant || ''}`}>
-                            <Link href={getCourseUrl(course)} className={`${styles.courseLink} ${styles.steeplechaseLink}`}>
-                              {`障害${course.distance}m`}
-                            </Link>
-                          </li>
                         ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Steeplechase courses */}
+                  {steeplechaseCourses.length > 0 && (
+                    <div className={styles.surfaceGroup}>
+                      <div className={styles.distanceLinks}>
+                        {steeplechaseCourses.map((course, idx) => (
+                          <Link
+                            key={`${course.racecourse}-${course.surface}-${course.distance}-${course.variant || idx}`}
+                            href={getCourseUrl(course)}
+                            className={`${styles.distanceLink} ${styles.steeplechaseLink}`}
+                          >
+                            {`障害${course.distance}m`}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </section>
   );

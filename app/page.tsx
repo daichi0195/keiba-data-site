@@ -1,9 +1,12 @@
 import { Metadata } from 'next';
-import RaceTabs from '@/components/RaceTabs';
 import TableOfContents from '@/components/TableOfContents';
 import ArticleCarousel from '@/components/ArticleCarousel';
 import XBanner from '@/components/XBanner';
 import ThisWeekVenues from '@/components/ThisWeekVenues';
+import AllVenues from '@/components/AllVenues';
+import JockeyLeading from '@/components/JockeyLeading';
+import SireLeading from '@/components/SireLeading';
+import TrainerLeading from '@/components/TrainerLeading';
 import { getJockeyLeading, getTrainerLeading, getSireLeading } from '@/lib/getLeadingData';
 import { getAllArticles } from '@/lib/articles';
 
@@ -58,11 +61,13 @@ export default async function HomePage() {
 
           <ThisWeekVenues />
 
-          <RaceTabs
-            jockeyLeading={jockeyLeading}
-            trainerLeading={trainerLeading}
-            sireLeading={sireLeading}
-          />
+          <AllVenues />
+
+          <JockeyLeading data={jockeyLeading} />
+
+          <SireLeading data={sireLeading} />
+
+          <TrainerLeading data={trainerLeading} />
         </article>
         <TableOfContents />
       </main>

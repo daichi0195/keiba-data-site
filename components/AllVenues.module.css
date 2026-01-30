@@ -1,18 +1,14 @@
 .accordionList {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0;
 }
 
 .accordionItem {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  background: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 10px 12px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  border-bottom: 1px solid #e0e0e0;
+  padding: 12px 0;
 }
 
 .accordionTrigger {
@@ -23,27 +19,36 @@
   padding: 0;
   background: none;
   border: none;
-  font-size: 14px;
-  font-weight: 700;
-  color: #2d3748;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: opacity 0.2s ease;
   text-align: left;
 }
 
-.accordionTrigger:hover {
-  background: #ffffff;
+.accordionTrigger:hover:not(.expanded) {
+  opacity: 0.7;
+}
+
+.accordionTrigger.expanded .venueName {
+  color: #52af77;
 }
 
 .accordionIcon {
-  font-size: 10px;
+  font-size: 12px;
   color: #666;
   transition: transform 0.2s ease;
+  flex-shrink: 0;
+  min-width: 16px;
+}
+
+.venueName {
+  font-size: 16px;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0;
 }
 
 .accordionContent {
-  padding: 0;
-  padding-top: 8px;
+  padding-top: 12px;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -52,29 +57,18 @@
 .surfaceGroup {
   display: flex;
   flex-direction: column;
+  gap: 8px;
+}
+
+.distanceLinks {
+  display: flex;
+  flex-wrap: wrap;
   gap: 6px;
 }
 
-.surfaceLabel {
-  font-size: 13px;
-  font-weight: 600;
-  color: #666;
-}
-
-.courseList {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  grid-auto-flow: dense;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.courseLink {
-  display: block;
-  width: 100%;
-  padding: 6px 12px;
+.distanceLink {
+  display: inline-block;
+  padding: 5px 10px;
   text-decoration: none;
   border-radius: 4px;
   font-size: 13px;
@@ -82,77 +76,49 @@
   transition: all 0.2s ease;
   border: 1px solid;
   text-align: center;
-  box-sizing: border-box;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.variantGroup {
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-  grid-column: span 2;
-}
-
-.variantGroup .courseLink {
-  flex: 1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }
 
 /* 芝コースのスタイル */
-.turfGroup .surfaceLabel {
-  color: #0d5c2f;
-}
-
 .turfLink {
-  background: #e2f7eb;
-  border-color: #bbe7d3;
-  color: #0c532a;
+  background: #3db866;
+  border-color: #3db866;
+  color: #fff;
 }
 
 .turfLink:hover {
-  background: #d4f1e1;
-  border-color: #1db854;
+  background: #2ea358;
+  border-color: #2ea358;
 }
 
 /* ダートコースのスタイル */
-.dirtGroup .surfaceLabel {
-  color: #6b4423;
-}
-
 .dirtLink {
-  background: #fde9d7;
-  border-color: #ffd7ae;
-  color: #633d1e;
+  background: #b89066;
+  border-color: #b89066;
+  color: #fff;
 }
 
 .dirtLink:hover {
-  background: #fcdfc5;
+  background: #a67c52;
   border-color: #a67c52;
 }
 
 /* 障害コースのスタイル */
-.steeplechaseGroup .surfaceLabel {
-  color: #4a4a4a;
-}
-
 .steeplechaseLink {
-  background: #f2f2f2;
-  border-color: #c0c0c0;
-  color: #4a4a4a;
+  background: #838b97;
+  border-color: #838b97;
+  color: #fff;
 }
 
 .steeplechaseLink:hover {
-  background: #e0e0e0;
-  border-color: #9a9a9a;
+  background: #6b7280;
+  border-color: #6b7280;
 }
 
 /* レスポンシブ */
 @media (max-width: 768px) {
-  .courseList {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .courseLink {
+  .distanceLink {
     font-size: 12px;
-    padding: 6px 8px;
+    padding: 5px 8px;
   }
 }
