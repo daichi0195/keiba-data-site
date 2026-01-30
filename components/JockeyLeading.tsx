@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHelmetSafety } from '@fortawesome/free-solid-svg-icons';
 import styles from './JockeyLeading.module.css';
 import AllJockeys from './AllJockeys';
 import { LeadingData } from '@/lib/getLeadingData';
@@ -14,6 +16,7 @@ export default function JockeyLeading({ data }: JockeyLeadingProps) {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -34,6 +37,9 @@ export default function JockeyLeading({ data }: JockeyLeadingProps) {
     if (titleRef.current) {
       observer.observe(titleRef.current);
     }
+    cardRefs.current.forEach((card) => {
+      if (card) observer.observe(card);
+    });
 
     return () => {
       if (sectionRef.current) {
@@ -42,12 +48,14 @@ export default function JockeyLeading({ data }: JockeyLeadingProps) {
       if (titleRef.current) {
         observer.unobserve(titleRef.current);
       }
+      cardRefs.current.forEach((card) => {
+        if (card) observer.unobserve(card);
+      });
     };
   }, []);
 
   const maxWins = Math.max(...data.map((j) => j.wins));
 
-  // 順位に応じた背景色を返す関数
   const getRankBadgeColor = (rank: number) => {
     if (rank === 1) return '#FCF080';
     if (rank === 2) return '#CCDFFF';
@@ -57,20 +65,31 @@ export default function JockeyLeading({ data }: JockeyLeadingProps) {
 
   return (
     <section ref={sectionRef} className="section fade-in-card">
-      <h2 ref={titleRef} className="section-title">騎手別データ</h2>
+      <h2 ref={titleRef} className="section-title">
+        <FontAwesomeIcon icon={faHelmetSafety} style={{ marginRight: '8px' }} />
+        騎手別データ
+      </h2>
 
       <div className="gate-place-rate-detail">
         <div className="gate-detail-title">騎手リーディング</div>
         <div className="gate-chart">
-          {data.map((jockey) => (
-            <div key={jockey.rank} className="gate-chart-item">
+          {data.map((jockey, index) => (
+            <div
+              key={jockey.rank}
+              ref={(el) => {
+                cardRefs.current[index] = el;
+              }}
+              className={`gate-chart-item fade-in-card fade-in-stagger-${(index % 10) + 1}`}
+            >
               <div
                 className="gate-number-badge"
                 style={{ backgroundColor: getRankBadgeColor(jockey.rank), color: '#333333' }}
               >
                 {jockey.rank}
               </div>
-              <Link href={`/jockeys/${jockey.id}`} className={styles.nameLink}>{jockey.name}</Link>
+              <Link href={`/jockeys/${jockey.id}`} className={styles.nameLink}>
+                {jockey.name}
+              </Link>
               <div className="gate-bar-container" style={{ background: 'transparent', boxShadow: 'none' }}>
                 <div
                   className={`gate-bar ${isVisible ? 'visible' : ''}`}
@@ -80,7 +99,6 @@ export default function JockeyLeading({ data }: JockeyLeadingProps) {
               <div className="gate-rate">{jockey.wins}勝</div>
             </div>
           ))}
-
         </div>
       </div>
 

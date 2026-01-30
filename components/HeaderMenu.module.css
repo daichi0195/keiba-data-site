@@ -2,9 +2,15 @@
 
 /* ===== PC用メニュー ===== */
 .pcMenu {
-  display: flex;
+  display: none;
   align-items: center;
   gap: 0;
+}
+
+@media (min-width: 769px) {
+  .pcMenu {
+    display: flex;
+  }
 }
 
 .pcMenuLink {
@@ -56,7 +62,7 @@
 
 /* ===== SP用メニュー ===== */
 .spMenu {
-  display: flex;
+  display: flex !important;
   position: fixed;
   bottom: 0;
   left: 0;
@@ -71,6 +77,15 @@
   align-items: stretch;
   justify-content: space-evenly;
   padding-bottom: env(safe-area-inset-bottom);
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+@media (min-width: 769px) {
+  .spMenu {
+    display: none !important;
+  }
 }
 
 .menuButton {

@@ -1,13 +1,13 @@
 .venueGrid {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
 }
 
 .venueCard {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 10px;
   padding: 0;
 }
 
@@ -21,13 +21,13 @@
 .courseList {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .surfaceGroup {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 6px;
 }
 
 .surfaceLabel {
@@ -39,7 +39,7 @@
 .distanceLinks {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
+  gap: 6px;
 }
 
 .distanceLink {
@@ -58,7 +58,7 @@
 .variantGroup {
   display: flex;
   flex-direction: row;
-  gap: 5px;
+  gap: 6px;
 }
 
 .variantGroup .distanceLink {

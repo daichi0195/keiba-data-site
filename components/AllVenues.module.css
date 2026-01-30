@@ -8,7 +8,7 @@
   display: flex;
   flex-direction: column;
   border-bottom: 1px solid #e0e0e0;
-  padding: 12px 0;
+  padding: 16px 0;
 }
 
 .accordionTrigger {
@@ -48,16 +48,16 @@
 }
 
 .accordionContent {
-  padding-top: 12px;
+  padding-top: 16px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 10px;
 }
 
 .surfaceGroup {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .distanceLinks {

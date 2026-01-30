@@ -1,3 +1,50 @@
+.accordionItem {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 12px 0;
+}
+
+.accordionTrigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  text-align: left;
+}
+
+.accordionTrigger:hover:not(.expanded) {
+  opacity: 0.7;
+}
+
+.accordionTrigger.expanded .sectionName {
+  color: #52af77;
+}
+
+.accordionIcon {
+  font-size: 12px;
+  color: #666;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+  min-width: 16px;
+}
+
+.sectionName {
+  font-size: 16px;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0;
+}
+
+.accordionContent {
+  padding-top: 12px;
+}
+
 .chartContainer {
   background: #fff;
   padding: 12px;

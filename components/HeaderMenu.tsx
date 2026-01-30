@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import styles from './HeaderMenu.module.css';
 import { getCoursesByRacecourse, getCourseUrl, getCourseDisplayName } from '@/lib/courses';
@@ -304,7 +304,6 @@ type MenuType = 'course' | 'jockey' | 'sire' | 'trainer' | null;
 export default function HeaderMenu() {
   const [openMenu, setOpenMenu] = useState<MenuType>(null);
   const [expandedRacecourse, setExpandedRacecourse] = useState<Record<string, boolean>>({});
-  const [isPCView, setIsPCView] = useState(false);
 
   const toggleRacecourse = (racecourseNameEn: string) => {
     setExpandedRacecourse((prev) => ({
@@ -315,24 +314,10 @@ export default function HeaderMenu() {
 
   const closeMenu = () => setOpenMenu(null);
 
-  // getCourseUrl はlib/courses.tsからインポートしたものを使用
-
-  // 画面幅を監視してPC/SP表示を切り替え
-  useEffect(() => {
-    const handleResize = () => {
-      setIsPCView(window.innerWidth >= 769);
-    };
-
-    handleResize(); // 初回実行
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
   return (
     <>
       {/* ===== PC：ヘッダー用リンクメニュー ===== */}
-      {isPCView && (
-        <nav className={styles.pcMenu}>
+      <nav className={styles.pcMenu}>
           <Link href="/courses" className={styles.pcMenuLink}>
             <i className="fa-solid fa-flag"></i>
             <span>コースデータ</span>
@@ -350,10 +335,8 @@ export default function HeaderMenu() {
             <span>調教師データ</span>
           </Link>
         </nav>
-      )}
 
       {/* ===== モバイル：下部固定メニューボタン（5つ） ===== */}
-      {!isPCView && (
       <div className={styles.spMenu}>
         <button
           className={styles.menuButton}
@@ -396,9 +379,8 @@ export default function HeaderMenu() {
           <span className={styles.menuText}>コラム</span>
         </Link>
       </div>
-      )}
 
-      {!isPCView && openMenu && (
+      {openMenu && (
         <>
           <div
             className={styles.menuOverlay}

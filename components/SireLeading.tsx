@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHorse } from '@fortawesome/free-solid-svg-icons';
 import styles from './SireLeading.module.css';
 import AllSires from './AllSires';
 import { LeadingData } from '@/lib/getLeadingData';
@@ -14,6 +16,7 @@ export default function SireLeading({ data }: SireLeadingProps) {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -34,6 +37,9 @@ export default function SireLeading({ data }: SireLeadingProps) {
     if (titleRef.current) {
       observer.observe(titleRef.current);
     }
+    cardRefs.current.forEach((card) => {
+      if (card) observer.observe(card);
+    });
 
     return () => {
       if (sectionRef.current) {
@@ -42,12 +48,14 @@ export default function SireLeading({ data }: SireLeadingProps) {
       if (titleRef.current) {
         observer.unobserve(titleRef.current);
       }
+      cardRefs.current.forEach((card) => {
+        if (card) observer.unobserve(card);
+      });
     };
   }, []);
 
   const maxWins = Math.max(...data.map((s) => s.wins));
 
-  // 順位に応じた背景色を返す関数
   const getRankBadgeColor = (rank: number) => {
     if (rank === 1) return '#FCF080';
     if (rank === 2) return '#CCDFFF';
@@ -55,16 +63,24 @@ export default function SireLeading({ data }: SireLeadingProps) {
     return '#F0F0F0';
   };
 
-
   return (
     <section ref={sectionRef} className="section fade-in-card">
-      <h2 ref={titleRef} className="section-title">血統（種牡馬）別データ</h2>
+      <h2 ref={titleRef} className="section-title">
+        <FontAwesomeIcon icon={faHorse} style={{ marginRight: '8px' }} />
+        血統（種牡馬）別データ
+      </h2>
 
       <div className="gate-place-rate-detail">
         <div className="gate-detail-title">種牡馬リーディング</div>
         <div className="gate-chart">
-          {data.map((sire) => (
-            <div key={sire.rank} className="gate-chart-item">
+          {data.map((sire, index) => (
+            <div
+              key={sire.rank}
+              ref={(el) => {
+                cardRefs.current[index] = el;
+              }}
+              className={`gate-chart-item fade-in-card fade-in-stagger-${(index % 10) + 1}`}
+            >
               <div
                 className="gate-number-badge"
                 style={{ backgroundColor: getRankBadgeColor(sire.rank), color: '#333333' }}

@@ -69,7 +69,7 @@ export default async function HomePage() {
 
           <TrainerLeading data={trainerLeading} />
         </article>
-        <TableOfContents />
+        {/* <TableOfContents /> */}
       </main>
     </>
   );
