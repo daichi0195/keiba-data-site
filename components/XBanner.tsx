@@ -9,7 +9,7 @@ export default function XBanner() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoaded(true);
-    }, 200);
+    }, 300);
     return () => clearTimeout(timer);
   }, []);
 
