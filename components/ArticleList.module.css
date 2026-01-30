@@ -43,18 +43,19 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 1rem 0;
-  border-bottom: 1px solid #f5f7fa;
+  padding: 1.25rem 1rem;
+  margin-bottom: 0.75rem;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
   text-decoration: none;
-  transition: opacity 0.2s ease;
-}
-
-.articleItem:last-child {
-  border-bottom: none;
+  transition: all 0.2s ease;
 }
 
 .articleItem:hover {
-  opacity: 0.7;
+  border-color: #1db854;
+  box-shadow: 0 2px 8px rgba(29, 184, 84, 0.1);
+  transform: translateY(-2px);
 }
 
 .thumbnailWrapper {
@@ -91,7 +92,8 @@
 /* モバイル対応 */
 @media (max-width: 768px) {
   .articleItem {
-    padding: 0.75rem 0;
+    padding: 1rem 0.75rem;
+    margin-bottom: 0.5rem;
   }
 
   .thumbnailWrapper {

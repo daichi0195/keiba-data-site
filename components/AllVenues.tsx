@@ -18,6 +18,7 @@ interface ExpandedState {
 export default function AllVenues() {
   const [expandedRacecourse, setExpandedRacecourse] = useState<ExpandedState>({});
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const titleRef = useRef<HTMLHeadingElement>(null);
 
   const toggleRacecourse = (racecourseNameEn: string) => {
     setExpandedRacecourse((prev) => ({
@@ -38,11 +39,13 @@ export default function AllVenues() {
       { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
     );
 
+    if (titleRef.current) observer.observe(titleRef.current);
     itemRefs.current.forEach((item) => {
       if (item) observer.observe(item);
     });
 
     return () => {
+      if (titleRef.current) observer.unobserve(titleRef.current);
       itemRefs.current.forEach((item) => {
         if (item) observer.unobserve(item);
       });
@@ -51,7 +54,7 @@ export default function AllVenues() {
 
   return (
     <section className="section">
-      <h2 className="section-title">競馬場別データ</h2>
+      <h2 ref={titleRef} className="section-title">競馬場別データ</h2>
 
       <div className={styles.accordionList}>
         {racecoursesData.map((racecourse, index) => (

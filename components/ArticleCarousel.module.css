@@ -2,7 +2,7 @@
   text-align: center;
   color: #666;
   font-size: 1.125rem;
-  padding: 3rem 0;
+  padding: 2rem 0;
 }
 
 /* カルーセルコンテナ */
@@ -53,12 +53,12 @@
   border-radius: 12px;
   overflow: hidden;
   text-decoration: none;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
   transition: all 0.3s ease;
 }
 
 .carouselItem:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
   transform: translateY(-4px);
 }
 
@@ -155,7 +155,8 @@
   display: flex;
   justify-content: center;
   gap: 0.5rem;
-  margin-top: 12px;
+  margin-top: 8px;
+  margin-bottom: 0;
 }
 
 .indicator {
@@ -169,14 +170,18 @@
   padding: 0;
 }
 
-.indicator:hover {
-  background: #d1d5db;
+.indicator:hover:not(.indicatorActive) {
+  background: #9ca3af;
 }
 
 .indicatorActive {
-  background: #d1d5db;
+  background: #52af77;
   width: 24px;
   border-radius: 4px;
+}
+
+.indicatorActive:hover {
+  background: #52af77;
 }
 
 /* モバイル対応 */
@@ -208,5 +213,10 @@
 
   .navButton {
     display: none;
+  }
+
+  .indicators {
+    margin-top: 8px;
+    margin-bottom: 0;
   }
 }

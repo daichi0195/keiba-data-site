@@ -165,3 +165,51 @@ a.secondary {
     filter: invert();
   }
 }
+
+/* TOPページの記事セクション用スタイル */
+.articleSection {
+  max-width: 1200px;
+  margin: 2rem auto 1.5rem auto;
+  padding: 0 0.75rem;
+}
+
+.articleHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  padding: 0;
+  gap: 0.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  background: transparent;
+}
+
+.articleTitle {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0 0 0.25rem 0;
+}
+
+/* モバイル対応 */
+@media (max-width: 768px) {
+  .articleSection {
+    margin: 1rem auto 1.5rem auto;
+    padding: 0 0.75rem;
+  }
+
+  .articleHeader {
+    margin-bottom: 1.5rem;
+    padding: 0;
+    padding-bottom: 0.75rem;
+    gap: 0.5rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .articleTitle {
+    font-size: 1.5rem;
+    margin: 0;
+    line-height: 1;
+  }
+}

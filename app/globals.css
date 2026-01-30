@@ -229,25 +229,41 @@ main:not(.page_articleMain__GmN3G) {
 
   /* セクション間の余白を統一 */
   section {
-    margin-bottom: 1rem;
+    margin-bottom: 0.625rem;
   }
 
   /* セクションのメリハリを強化 */
   .section {
-    padding: 3rem 2rem;
-    margin-bottom: 2rem;
-    background: #ffffff;
+    padding: 1.25rem 20px 1.5rem 20px;
+    margin-bottom: 1rem;
+    background: transparent;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     border-radius: 12px;
   }
 
+  /* 記事カルーセルセクション（PC） */
+  .section-article-carousel {
+    background: transparent;
+    box-shadow: none;
+  }
+
+  /* 今週開催の競馬場セクション（PC） */
+  .section-this-week-venues {
+    background: transparent;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    padding: 1.25rem 20px 1.5rem 20px;
+  }
+
   /* 見出しを強調 */
   .section-title {
-    font-size: 1.75rem;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
+    font-size: 22px;
+    margin-top: 4px;
+    margin-bottom: 6px;
+    padding-bottom: 0.625rem;
     border-bottom: 3px solid var(--primary-green);
     position: relative;
+    font-weight: 600;
+    color: #4b5563;
   }
 
   .section-title::before {
@@ -1658,12 +1674,24 @@ details[open] .evaluation-content {
 /* セクション */
 .section {
   background: transparent;
-  padding: 16px 12px 3rem 12px;
+  padding: 16px 20px 3rem 20px;
   margin-bottom: 0;
 }
 
+/* 記事カルーセルセクション */
+.section-article-carousel {
+  background: transparent;
+}
+
+/* 今週開催の競馬場セクション */
+.section-this-week-venues {
+  background: transparent;
+  border-radius: 12px;
+  padding: 1.25rem 20px 1.5rem 20px;
+}
+
 .section-full-width {
-  padding-bottom: 16px;
+  padding-bottom: 6px;
   margin-bottom: 0;
 }
 
@@ -1678,12 +1706,21 @@ details[open] .evaluation-content {
 }
 
 .section-title {
-  font-size: 1.3rem;
-  margin-top: 0;
-  margin-bottom: 1rem;
-  color: var(--text-dark);
-  font-weight: 700;
+  font-size: 22px;
+  margin-top: 4px;
+  margin-bottom: 8px;
+  color: #4b5563;
+  font-weight: 600;
   letter-spacing: 0.01em;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.section-title.is-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* グラフエリア */
@@ -2756,20 +2793,32 @@ h3.subsection-title:first-of-type {
 /* SPで少し小さく＋さらにタイト */
 @media (max-width: 768px) {
   .section {
-    padding: 16px 8px 1.25rem 8px;
+    padding: 10px 20px 1rem 20px;
     margin-bottom: 0;
   }
 
   .section-full-width {
     padding-left: 0;
     padding-right: 0;
-    padding-bottom: 16px;
+    padding-bottom: 6px;
     margin-bottom: 0;
   }
 
+  .section-article-carousel {
+    background: transparent;
+  }
+
+  .section-this-week-venues {
+    padding: 10px 20px 1rem 20px;
+    border-radius: 8px;
+    background: transparent;
+  }
+
   h2.section-title {
-    font-size: 1.2rem;
-    margin: 6px 0 16px;
+    font-size: 22px;
+    margin: 4px 0 6px;
+    font-weight: 600;
+    color: #4b5563;
   }
 
   h3.subsection-title {

@@ -13,14 +13,17 @@ interface TrainerLeadingProps {
 export default function TrainerLeading({ data }: TrainerLeadingProps) {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          entry.target.classList.add('is-visible');
-        }
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+            entry.target.classList.add('is-visible');
+          }
+        });
       },
       { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
     );
@@ -28,10 +31,16 @@ export default function TrainerLeading({ data }: TrainerLeadingProps) {
     if (sectionRef.current) {
       observer.observe(sectionRef.current);
     }
+    if (titleRef.current) {
+      observer.observe(titleRef.current);
+    }
 
     return () => {
       if (sectionRef.current) {
         observer.unobserve(sectionRef.current);
+      }
+      if (titleRef.current) {
+        observer.unobserve(titleRef.current);
       }
     };
   }, []);
@@ -48,7 +57,7 @@ export default function TrainerLeading({ data }: TrainerLeadingProps) {
 
   return (
     <section ref={sectionRef} className="section fade-in-card">
-      <h2 className="section-title">調教師別データ</h2>
+      <h2 ref={titleRef} className="section-title">調教師別データ</h2>
 
       <div className="gate-place-rate-detail">
         <div className="gate-detail-title">調教師リーディング</div>

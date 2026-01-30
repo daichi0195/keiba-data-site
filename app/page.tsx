@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import RaceTabs from '@/components/RaceTabs';
 import TableOfContents from '@/components/TableOfContents';
 import ArticleCarousel from '@/components/ArticleCarousel';
+import XBanner from '@/components/XBanner';
 import ThisWeekVenues from '@/components/ThisWeekVenues';
 import { getJockeyLeading, getTrainerLeading, getSireLeading } from '@/lib/getLeadingData';
 import { getAllArticles } from '@/lib/articles';
@@ -50,8 +51,9 @@ export default async function HomePage() {
       <main style={{ padding: 0 }}>
         <article style={{ backgroundColor: '#fbfcfd' }}>
           {/* 記事セクション */}
-          <section className="section section-full-width">
+          <section className="section section-full-width section-article-carousel">
             <ArticleCarousel articles={articles} />
+            <XBanner />
           </section>
 
           <ThisWeekVenues />

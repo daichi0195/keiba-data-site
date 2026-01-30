@@ -79,6 +79,7 @@ const mockVenues: Venue[] = [
 
 export default function ThisWeekVenues() {
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const titleRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -92,11 +93,13 @@ export default function ThisWeekVenues() {
       { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
     );
 
+    if (titleRef.current) observer.observe(titleRef.current);
     cardRefs.current.forEach((card) => {
       if (card) observer.observe(card);
     });
 
     return () => {
+      if (titleRef.current) observer.unobserve(titleRef.current);
       cardRefs.current.forEach((card) => {
         if (card) observer.unobserve(card);
       });
@@ -104,9 +107,9 @@ export default function ThisWeekVenues() {
   }, []);
 
   return (
-    <section className="section">
-      <div style={{ width: '100%', padding: '0 12px' }}>
-        <h2 className="section-title">今週開催の競馬場</h2>
+    <section className="section section-this-week-venues">
+      <div style={{ width: '100%' }}>
+        <h2 ref={titleRef} className="section-title">今週開催の競馬場</h2>
 
         <div className={styles.venueGrid}>
         {mockVenues.map((venue, index) => (
@@ -122,50 +125,15 @@ export default function ThisWeekVenues() {
             <div className={styles.courseList}>
               <div className={styles.surfaceGroup}>
                 <div className={styles.distanceLinks}>
-                  {(() => {
-                    const items = [];
-                    let i = 0;
-                    while (i < venue.courses.turf.length) {
-                      const current = venue.courses.turf[i];
-                      const next = venue.courses.turf[i + 1];
-
-                      if (
-                        current.variant === 'inner' &&
-                        next?.distance === current.distance &&
-                        next?.variant === 'outer'
-                      ) {
-                        items.push(
-                          <div key={`${current.distance}-pair`} className={styles.variantGroup}>
-                            <Link
-                              href={`/courses/${venue.id}/turf/${current.distance}-inner`}
-                              className={`${styles.distanceLink} ${styles.turfLink}`}
-                            >
-                              {current.label}
-                            </Link>
-                            <Link
-                              href={`/courses/${venue.id}/turf/${next.distance}-outer`}
-                              className={`${styles.distanceLink} ${styles.turfLink}`}
-                            >
-                              {next.label}
-                            </Link>
-                          </div>
-                        );
-                        i += 2;
-                      } else {
-                        items.push(
-                          <Link
-                            key={`${current.distance}-${current.variant || i}`}
-                            href={`/courses/${venue.id}/turf/${current.distance}`}
-                            className={`${styles.distanceLink} ${styles.turfLink}`}
-                          >
-                            {current.label || `芝${current.distance}m`}
-                          </Link>
-                        );
-                        i += 1;
-                      }
-                    }
-                    return items;
-                  })()}
+                  {venue.courses.turf.map((course, idx) => (
+                    <Link
+                      key={`${course.distance}-${course.variant || idx}`}
+                      href={`/courses/${venue.id}/turf/${course.distance}${course.variant ? `-${course.variant}` : ''}`}
+                      className={`${styles.distanceLink} ${styles.turfLink}`}
+                    >
+                      {course.label || `芝${course.distance}m`}
+                    </Link>
+                  ))}
                 </div>
               </div>
 
