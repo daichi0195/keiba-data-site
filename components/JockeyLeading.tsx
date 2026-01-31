@@ -53,8 +53,9 @@ export default function JockeyLeading({ data }: JockeyLeadingProps) {
         騎手別データ
       </h2>
 
+      <h3 className={styles.leadingTitle}>騎手リーディング</h3>
+
       <div className="gate-place-rate-detail">
-        <div className="gate-detail-title">騎手リーディング</div>
         <div className="gate-chart">
           {data.map((jockey, index) => (
             <div
@@ -63,7 +64,7 @@ export default function JockeyLeading({ data }: JockeyLeadingProps) {
             >
               <div
                 className="gate-number-badge"
-                style={{ backgroundColor: getRankBadgeColor(jockey.rank), color: '#333333' }}
+                style={{ backgroundColor: getRankBadgeColor(jockey.rank), color: '#2d3748' }}
               >
                 {jockey.rank}
               </div>

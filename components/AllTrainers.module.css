@@ -1,7 +1,7 @@
 .subsectionTitle {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #0f172a;
+  color: #2d3748;
   margin: 24px 0 12px 0;
   padding: 0;
 }
@@ -91,7 +91,7 @@
   text-align: center;
   box-sizing: border-box;
   background: #fff;
-  color: #374151;
+  color: #2d3748;
   white-space: nowrap;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }

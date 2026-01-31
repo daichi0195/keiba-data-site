@@ -67,8 +67,9 @@ export default function SireLeading({ data }: SireLeadingProps) {
         血統（種牡馬）別データ
       </h2>
 
+      <h3 className={styles.leadingTitle}>種牡馬リーディング</h3>
+
       <div className="gate-place-rate-detail">
-        <div className="gate-detail-title">種牡馬リーディング</div>
         <div className="gate-chart">
           {data.map((sire, index) => (
             <div
@@ -80,7 +81,7 @@ export default function SireLeading({ data }: SireLeadingProps) {
             >
               <div
                 className="gate-number-badge"
-                style={{ backgroundColor: getRankBadgeColor(sire.rank), color: '#333333' }}
+                style={{ backgroundColor: getRankBadgeColor(sire.rank), color: '#2d3748' }}
               >
                 {sire.rank}
               </div>

@@ -81,7 +81,7 @@
   border-radius: 4px;
   font-size: 0.75rem;
   font-weight: 700;
-  color: #333333;
+  color: #2d3748;
   flex-shrink: 0;
   border: 1px solid #ddd;
 }
@@ -159,6 +159,14 @@
   text-align: right;
 }
 
+.leadingTitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 24px 0 12px 0;
+  padding: 0;
+}
+
 /* レスポンシブ */
 @media (max-width: 768px) {
   .name {
@@ -168,5 +176,9 @@
 
   .value {
     min-width: 45px;
+  }
+
+  .leadingTitle {
+    font-size: 1rem;
   }
 }

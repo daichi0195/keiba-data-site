@@ -67,8 +67,9 @@ export default function TrainerLeading({ data }: TrainerLeadingProps) {
         調教師別データ
       </h2>
 
+      <h3 className={styles.leadingTitle}>調教師リーディング</h3>
+
       <div className="gate-place-rate-detail">
-        <div className="gate-detail-title">調教師リーディング</div>
         <div className="gate-chart">
           {data.map((trainer, index) => (
             <div
@@ -80,7 +81,7 @@ export default function TrainerLeading({ data }: TrainerLeadingProps) {
             >
               <div
                 className="gate-number-badge"
-                style={{ backgroundColor: getRankBadgeColor(trainer.rank), color: '#333333' }}
+                style={{ backgroundColor: getRankBadgeColor(trainer.rank), color: '#2d3748' }}
               >
                 {trainer.rank}
               </div>
