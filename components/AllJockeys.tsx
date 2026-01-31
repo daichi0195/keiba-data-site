@@ -66,7 +66,7 @@ export default function AllJockeys() {
   return (
     <div>
       <h3 className={styles.subsectionTitle}>全騎手データ</h3>
-      <p className={styles.dataDescription}>過去3年間に30レース以上出走している現役中央騎手のみを掲載しています。</p>
+      <p className={styles.dataDescription}>過去3年間に30レース以上出走している現役中央騎手のデータを集計しています。</p>
 
       <div className={styles.accordionList}>
         {jockeysData.map((group, index) => (

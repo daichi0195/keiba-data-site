@@ -66,7 +66,7 @@ export default function AllTrainers() {
   return (
     <div>
       <h3 className={styles.subsectionTitle}>全調教師データ</h3>
-      <p className={styles.dataDescription}>過去3年間に30レース以上出走している現役中央調教師のみを掲載しています。</p>
+      <p className={styles.dataDescription}>過去3年間に30レース以上出走している現役中央調教師のデータを集計しています。</p>
 
       <div className={styles.accordionList}>
         {trainersData.map((group, index) => (

@@ -66,7 +66,7 @@ export default function AllSires() {
   return (
     <div>
       <h3 className={styles.subsectionTitle}>全血統（種牡馬）データ</h3>
-      <p className={styles.dataDescription}>過去3年間に産駒が50レース以上出走し、かつ産駒が10頭以上いる種牡馬を掲載しています。</p>
+      <p className={styles.dataDescription}>過去3年間に産駒が50レース以上出走し、かつ産駒が10頭以上いる種牡馬のデータを集計しています。</p>
 
       <div className={styles.accordionList}>
         {siresData.map((group, index) => (

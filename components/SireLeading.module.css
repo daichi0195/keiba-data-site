@@ -103,7 +103,7 @@
 }
 
 .name {
-  width: 100px;
+  width: 130px;
   font-size: 0.85rem;
   font-weight: 600;
   color: #2d3748;
@@ -113,14 +113,14 @@
 }
 
 .nameLink {
-  width: 100px;
+  width: 130px;
   font-size: 0.85rem;
   font-weight: 600;
   color: #2563eb;
   text-decoration: underline;
   flex-shrink: 0;
   white-space: nowrap;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .nameLink:hover {
@@ -181,8 +181,9 @@
 
 /* レスポンシブ */
 @media (max-width: 768px) {
-  .name {
-    width: 88px;
+  .name,
+  .nameLink {
+    width: 115px;
     font-size: 0.8rem;
   }
 
