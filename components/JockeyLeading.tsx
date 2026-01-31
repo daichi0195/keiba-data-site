@@ -15,7 +15,6 @@ interface JockeyLeadingProps {
 export default function JockeyLeading({ data }: JockeyLeadingProps) {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -24,9 +23,6 @@ export default function JockeyLeading({ data }: JockeyLeadingProps) {
           if (entry.isIntersecting) {
             setIsVisible(true);
             entry.target.classList.add('is-visible');
-            if (titleRef.current) {
-              titleRef.current.classList.add('is-visible');
-            }
           }
         });
       },
@@ -55,7 +51,7 @@ export default function JockeyLeading({ data }: JockeyLeadingProps) {
 
   return (
     <section ref={sectionRef} className="section fade-in-card">
-      <h2 ref={titleRef} className="section-title">
+      <h2 className="section-title is-visible">
         <FontAwesomeIcon icon={faHelmetSafety} style={{ marginRight: '8px' }} />
         騎手別データ
       </h2>

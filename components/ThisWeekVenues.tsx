@@ -102,7 +102,6 @@ const mockVenues: Venue[] = [
 
 export default function ThisWeekVenues() {
   const sectionRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -110,9 +109,6 @@ export default function ThisWeekVenues() {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('is-visible');
-            if (titleRef.current) {
-              titleRef.current.classList.add('is-visible');
-            }
           }
         });
       },
@@ -133,7 +129,7 @@ export default function ThisWeekVenues() {
   return (
     <section ref={sectionRef} className="section section-this-week-venues fade-in-card">
       <div style={{ width: '100%' }}>
-        <h2 ref={titleRef} className="section-title">
+        <h2 className="section-title is-visible">
           <FontAwesomeIcon icon={faCalendarWeek} style={{ marginRight: '8px' }} />
           今週開催の競馬場
         </h2>

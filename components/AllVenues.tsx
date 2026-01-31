@@ -20,7 +20,6 @@ interface ExpandedState {
 export default function AllVenues() {
   const [expandedRacecourse, setExpandedRacecourse] = useState<ExpandedState>({});
   const sectionRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
 
   const toggleRacecourse = (racecourseNameEn: string) => {
     setExpandedRacecourse((prev) => ({
@@ -35,9 +34,6 @@ export default function AllVenues() {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('is-visible');
-            if (titleRef.current) {
-              titleRef.current.classList.add('is-visible');
-            }
           }
         });
       },
@@ -57,7 +53,7 @@ export default function AllVenues() {
 
   return (
     <section ref={sectionRef} className="section fade-in-card">
-      <h2 ref={titleRef} className="section-title">
+      <h2 className="section-title is-visible">
         <FontAwesomeIcon icon={faFlag} style={{ marginRight: '8px' }} />
         競馬場別データ
       </h2>
