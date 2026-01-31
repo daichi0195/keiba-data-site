@@ -66,31 +66,31 @@
 
 .dataCard {
   display: inline-block;
-  padding: 5px 10px;
+  padding: 10px 16px;
   text-decoration: none;
   border-radius: 4px;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 500;
   transition: all 0.2s ease;
-  border: 1px solid #1db854;
+  border: 1.5px solid #1db854;
   text-align: center;
   box-sizing: border-box;
   background: #fff;
   color: #374151;
   white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .dataCard:hover {
   border-color: #1a9f47;
-  box-shadow: 0 2px 8px rgba(29, 184, 84, 0.2);
+  box-shadow: 0 1px 3px rgba(29, 184, 84, 0.15);
 }
 
 /* レスポンシブ */
 @media (max-width: 768px) {
   .dataCard {
-    font-size: 12px;
-    padding: 5px 8px;
+    font-size: 13px;
+    padding: 7px 10px;
   }
 
   .subsectionTitle {
