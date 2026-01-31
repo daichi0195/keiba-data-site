@@ -75,12 +75,14 @@ export default function JockeyLeading({ data }: JockeyLeadingProps) {
                 <div
                   className={`gate-bar ${isVisible ? 'visible' : ''}`}
                   style={{ width: `${(jockey.wins / maxWins) * 100}%` }}
-                />
+                >
+                  <div className="gate-bar-label">{jockey.wins}勝</div>
+                </div>
               </div>
-              <div className="gate-rate">{jockey.wins}勝</div>
             </div>
           ))}
         </div>
+        <div className="gate-chart-note">2026年/勝ち数順</div>
       </div>
 
       <AllJockeys />

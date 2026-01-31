@@ -1311,6 +1311,14 @@ details[open] .evaluation-content {
   gap: 0.35rem;
 }
 
+.gate-chart-note {
+  margin: 0;
+  padding: 0;
+  text-align: right;
+  font-size: 0.7rem;
+  color: #666;
+}
+
 .gate-chart-item {
   display: flex;
   align-items: center;
@@ -1349,6 +1357,7 @@ details[open] .evaluation-content {
 }
 
 .gate-bar-container {
+  position: relative;
   flex: 1;
   height: 18px;
   background: #e2e8f0;
@@ -1363,6 +1372,10 @@ details[open] .evaluation-content {
   background: var(--primary-green);
   transition: width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   opacity: 0.85;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 8px;
 }
 
 .gate-bar:not(.visible) {
@@ -1371,6 +1384,14 @@ details[open] .evaluation-content {
 
 .gate-bar.visible {
   animation: expandWidth 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.gate-bar-label {
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+  pointer-events: none;
 }
 
 .gate-rate {
@@ -2782,7 +2803,7 @@ h2.section-title {
   letter-spacing: 0.02em;
   padding: 0 0 0 0.75rem;
   text-align: left;
-  border-left: 4px solid #52af77;
+  border-left: 4px solid #1db854;
 }
 
 /* 念のため、どこかで定義されている ::before を全無効化 */

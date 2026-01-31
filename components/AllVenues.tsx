@@ -73,7 +73,7 @@ export default function AllVenues() {
                 <span className={styles.accordionIcon}>
                   {expandedRacecourse[racecourse.nameEn] ? '▼' : '▶'}
                 </span>
-                <span className={styles.venueName}>{racecourse.name}</span>
+                <h3 className={styles.venueName}>{racecourse.name}</h3>
               </button>
 
               <div className={`${styles.accordionContent} ${expandedRacecourse[racecourse.nameEn] ? '' : styles.hidden}`}>

@@ -106,7 +106,7 @@
   transform: translateY(calc(-50% - 1.5rem));
   width: 42px;
   height: 42px;
-  background: rgba(128, 128, 128, 0.5);
+  background: rgba(29, 184, 84, 0.5);
   border: 2px solid rgba(255, 255, 255, 0.8);
   border-radius: 50%;
   color: transparent;
@@ -138,7 +138,7 @@
 }
 
 .navButton:hover {
-  background: rgba(128, 128, 128, 0.7);
+  background: rgba(29, 184, 84, 0.7);
   border-color: rgba(255, 255, 255, 1);
 }
 
@@ -175,13 +175,13 @@
 }
 
 .indicatorActive {
-  background: #52af77;
+  background: #1db854;
   width: 24px;
   border-radius: 4px;
 }
 
 .indicatorActive:hover {
-  background: #52af77;
+  background: #1db854;
 }
 
 /* モバイル対応 */

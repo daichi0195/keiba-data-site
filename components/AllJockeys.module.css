@@ -6,6 +6,13 @@
   padding: 0;
 }
 
+.dataDescription {
+  font-size: 0.75rem;
+  color: #666;
+  margin: 0 0 12px 0;
+  padding: 0;
+}
+
 .accordionList {
   display: flex;
   flex-direction: column;
@@ -51,7 +58,7 @@
 }
 
 .accordionTrigger.expanded {
-  color: #52af77;
+  color: #1db854;
 }
 
 .accordionIcon {

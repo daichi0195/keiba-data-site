@@ -13,8 +13,6 @@ interface SireLeadingProps {
 export default function SireLeading({ data }: SireLeadingProps) {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -32,23 +30,11 @@ export default function SireLeading({ data }: SireLeadingProps) {
     if (sectionRef.current) {
       observer.observe(sectionRef.current);
     }
-    if (titleRef.current) {
-      observer.observe(titleRef.current);
-    }
-    cardRefs.current.forEach((card) => {
-      if (card) observer.observe(card);
-    });
 
     return () => {
       if (sectionRef.current) {
         observer.unobserve(sectionRef.current);
       }
-      if (titleRef.current) {
-        observer.unobserve(titleRef.current);
-      }
-      cardRefs.current.forEach((card) => {
-        if (card) observer.unobserve(card);
-      });
     };
   }, []);
 
@@ -63,7 +49,7 @@ export default function SireLeading({ data }: SireLeadingProps) {
 
   return (
     <section ref={sectionRef} className="section fade-in-card">
-      <h2 ref={titleRef} className="section-title">
+      <h2 className="section-title is-visible">
         血統（種牡馬）別データ
       </h2>
 
@@ -74,10 +60,7 @@ export default function SireLeading({ data }: SireLeadingProps) {
           {data.map((sire, index) => (
             <div
               key={sire.rank}
-              ref={(el) => {
-                cardRefs.current[index] = el;
-              }}
-              className={`gate-chart-item fade-in-card fade-in-stagger-${(index % 10) + 1}`}
+              className="gate-chart-item"
             >
               <div
                 className="gate-number-badge"
@@ -86,9 +69,9 @@ export default function SireLeading({ data }: SireLeadingProps) {
                 {sire.rank}
               </div>
               <Link href={`/sires/${sire.id}`} className={styles.nameLink}>
-                {sire.name.length > 6 ? (
+                {sire.name.length >= 10 ? (
                   <>
-                    {sire.name.slice(0, 6)}
+                    {sire.name.slice(0, 8)}
                     <span className={styles.ellipsis}>...</span>
                   </>
                 ) : (
@@ -99,12 +82,14 @@ export default function SireLeading({ data }: SireLeadingProps) {
                 <div
                   className={`gate-bar ${isVisible ? 'visible' : ''}`}
                   style={{ width: `${(sire.wins / maxWins) * 100}%` }}
-                />
+                >
+                  <div className="gate-bar-label">{sire.wins}勝</div>
+                </div>
               </div>
-              <div className="gate-rate">{sire.wins}勝</div>
             </div>
           ))}
         </div>
+        <div className="gate-chart-note">2026年/勝ち数順</div>
       </div>
 
       <AllSires />

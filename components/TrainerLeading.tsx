@@ -13,8 +13,6 @@ interface TrainerLeadingProps {
 export default function TrainerLeading({ data }: TrainerLeadingProps) {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -32,23 +30,11 @@ export default function TrainerLeading({ data }: TrainerLeadingProps) {
     if (sectionRef.current) {
       observer.observe(sectionRef.current);
     }
-    if (titleRef.current) {
-      observer.observe(titleRef.current);
-    }
-    cardRefs.current.forEach((card) => {
-      if (card) observer.observe(card);
-    });
 
     return () => {
       if (sectionRef.current) {
         observer.unobserve(sectionRef.current);
       }
-      if (titleRef.current) {
-        observer.unobserve(titleRef.current);
-      }
-      cardRefs.current.forEach((card) => {
-        if (card) observer.unobserve(card);
-      });
     };
   }, []);
 
@@ -63,7 +49,7 @@ export default function TrainerLeading({ data }: TrainerLeadingProps) {
 
   return (
     <section ref={sectionRef} className="section fade-in-card">
-      <h2 ref={titleRef} className="section-title">
+      <h2 className="section-title is-visible">
         調教師別データ
       </h2>
 
@@ -74,10 +60,7 @@ export default function TrainerLeading({ data }: TrainerLeadingProps) {
           {data.map((trainer, index) => (
             <div
               key={trainer.rank}
-              ref={(el) => {
-                cardRefs.current[index] = el;
-              }}
-              className={`gate-chart-item fade-in-card fade-in-stagger-${(index % 10) + 1}`}
+              className="gate-chart-item"
             >
               <div
                 className="gate-number-badge"
@@ -92,12 +75,14 @@ export default function TrainerLeading({ data }: TrainerLeadingProps) {
                 <div
                   className={`gate-bar ${isVisible ? 'visible' : ''}`}
                   style={{ width: `${(trainer.wins / maxWins) * 100}%` }}
-                />
+                >
+                  <div className="gate-bar-label">{trainer.wins}勝</div>
+                </div>
               </div>
-              <div className="gate-rate">{trainer.wins}勝</div>
             </div>
           ))}
         </div>
+        <div className="gate-chart-note">2026年/勝ち数順</div>
       </div>
 
       <AllTrainers />
