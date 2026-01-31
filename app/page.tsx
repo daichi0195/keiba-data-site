@@ -7,8 +7,7 @@ import AllVenues from '@/components/AllVenues';
 import JockeyLeading from '@/components/JockeyLeading';
 import SireLeading from '@/components/SireLeading';
 import TrainerLeading from '@/components/TrainerLeading';
-import ArticleList from '@/components/ArticleList';
-import Link from 'next/link';
+import ColumnSection from '@/components/ColumnSection';
 import { getJockeyLeading, getTrainerLeading, getSireLeading } from '@/lib/getLeadingData';
 import { getAllArticles } from '@/lib/articles';
 
@@ -71,36 +70,7 @@ export default async function HomePage() {
 
           <TrainerLeading data={trainerLeading} />
 
-          <section className="section fade-in-card is-visible">
-            <h2 className="section-title is-visible">
-              コラム
-            </h2>
-            <div style={{ marginTop: '12px' }}>
-              <ArticleList articles={articles} />
-            </div>
-            <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-              <Link
-                href="/articles"
-                style={{
-                  display: 'block',
-                  width: '100%',
-                  marginTop: '16px',
-                  padding: '10px',
-                  background: 'white',
-                  border: '1px solid #e0e0e0',
-                  borderRadius: '4px',
-                  fontSize: '13px',
-                  fontWeight: 500,
-                  color: '#333',
-                  textAlign: 'center',
-                  textDecoration: 'none',
-                  boxSizing: 'border-box',
-                }}
-              >
-                もっとみる
-              </Link>
-            </div>
-          </section>
+          <ColumnSection articles={articles} />
         </article>
         {/* <TableOfContents /> */}
       </main>
