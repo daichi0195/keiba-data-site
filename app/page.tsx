@@ -75,8 +75,9 @@ export default async function HomePage() {
             <h2 className="section-title is-visible">
               コラム
             </h2>
-            <p style={{ fontSize: '14px', color: '#666', margin: '16px 0 16px 0' }}>データを活用した分析記事や一口馬主のコラムなどを掲載しています。</p>
-            <ArticleList articles={articles} />
+            <div style={{ marginTop: '12px' }}>
+              <ArticleList articles={articles} />
+            </div>
             <div style={{ maxWidth: '800px', margin: '0 auto' }}>
               <Link
                 href="/articles"
