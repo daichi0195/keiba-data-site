@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import styles from './AllTrainers.module.css';
 import { ALL_TRAINERS, type TrainerInfo } from '@/lib/trainers';
@@ -55,7 +55,6 @@ interface ExpandedState {
 
 export default function AllTrainers() {
   const [expandedKana, setExpandedKana] = useState<ExpandedState>({});
-  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const toggleKana = (kana: string) => {
     setExpandedKana((prev) => ({
@@ -63,29 +62,6 @@ export default function AllTrainers() {
       [kana]: !prev[kana],
     }));
   };
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-          }
-        });
-      },
-      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
-    );
-
-    itemRefs.current.forEach((item) => {
-      if (item) observer.observe(item);
-    });
-
-    return () => {
-      itemRefs.current.forEach((item) => {
-        if (item) observer.unobserve(item);
-      });
-    };
-  }, []);
 
   return (
     <div>
@@ -95,10 +71,7 @@ export default function AllTrainers() {
         {trainersData.map((group, index) => (
           <div
             key={group.kana}
-            ref={(el) => {
-              itemRefs.current[index] = el;
-            }}
-            className={`${styles.accordionItem} fade-in-card fade-in-stagger-${(index % 10) + 1}`}
+            className={styles.accordionItem}
           >
             <button
               className={`${styles.accordionTrigger} ${expandedKana[group.kana] ? styles.expanded : ''}`}
