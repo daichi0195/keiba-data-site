@@ -2,8 +2,6 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHorse } from '@fortawesome/free-solid-svg-icons';
 import styles from './SireLeading.module.css';
 import AllSires from './AllSires';
 import { LeadingData } from '@/lib/getLeadingData';
@@ -66,7 +64,6 @@ export default function SireLeading({ data }: SireLeadingProps) {
   return (
     <section ref={sectionRef} className="section fade-in-card">
       <h2 ref={titleRef} className="section-title">
-        <FontAwesomeIcon icon={faHorse} style={{ marginRight: '8px' }} />
         血統（種牡馬）別データ
       </h2>
 

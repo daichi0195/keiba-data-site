@@ -2,8 +2,6 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser } from '@fortawesome/free-solid-svg-icons';
 import styles from './JockeyLeading.module.css';
 import AllTrainers from './AllTrainers';
 import { LeadingData } from '@/lib/getLeadingData';
@@ -66,7 +64,6 @@ export default function TrainerLeading({ data }: TrainerLeadingProps) {
   return (
     <section ref={sectionRef} className="section fade-in-card">
       <h2 ref={titleRef} className="section-title">
-        <FontAwesomeIcon icon={faUser} style={{ marginRight: '8px' }} />
         調教師別データ
       </h2>
 

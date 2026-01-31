@@ -83,21 +83,19 @@ export default function AllJockeys() {
               {group.kana}
             </button>
 
-            {expandedKana[group.kana] && (
-              <div className={styles.accordionContent}>
-                <div className={styles.dataCardGrid}>
-                  {group.jockeys.map((jockey) => (
-                    <Link
-                      key={jockey.id}
-                      href={`/jockeys/${jockey.id}`}
-                      className={styles.dataCard}
-                    >
-                      {jockey.name}
-                    </Link>
-                  ))}
-                </div>
+            <div className={`${styles.accordionContent} ${expandedKana[group.kana] ? '' : styles.hidden}`}>
+              <div className={styles.dataCardGrid}>
+                {group.jockeys.map((jockey) => (
+                  <Link
+                    key={jockey.id}
+                    href={`/jockeys/${jockey.id}`}
+                    className={styles.dataCard}
+                  >
+                    {jockey.name}
+                  </Link>
+                ))}
               </div>
-            )}
+            </div>
           </div>
         ))}
       </div>

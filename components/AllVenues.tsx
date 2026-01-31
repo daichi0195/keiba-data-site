@@ -2,8 +2,6 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFlag } from '@fortawesome/free-solid-svg-icons';
 import styles from './AllVenues.module.css';
 import { getCoursesByRacecourse, getCourseUrl } from '@/lib/courses';
 
@@ -54,7 +52,6 @@ export default function AllVenues() {
   return (
     <section ref={sectionRef} className="section fade-in-card">
       <h2 className="section-title is-visible">
-        <FontAwesomeIcon icon={faFlag} style={{ marginRight: '8px' }} />
         競馬場別データ
       </h2>
 
@@ -79,63 +76,58 @@ export default function AllVenues() {
                 <span className={styles.venueName}>{racecourse.name}</span>
               </button>
 
-              {expandedRacecourse[racecourse.nameEn] && (
-                <div className={styles.accordionContent}>
-                  {/* Turf courses */}
-                  {turfCourses.length > 0 && (
-                    <div className={styles.surfaceGroup}>
-                      <div className={styles.distanceLinks}>
-                        {turfCourses.map((course, idx) => (
-                          <Link
-                            key={`${course.racecourse}-${course.surface}-${course.distance}-${course.variant || idx}`}
-                            href={getCourseUrl(course)}
-                            className={`${styles.distanceLink} ${styles.turfLink}`}
-                          >
-                            {course.variant
-                              ? `芝${course.distance}m(${course.variant === 'inner' ? '内' : '外'})`
-                              : `芝${course.distance}m`
-                            }
-                          </Link>
-                        ))}
-                      </div>
+              <div className={`${styles.accordionContent} ${expandedRacecourse[racecourse.nameEn] ? '' : styles.hidden}`}>
+                {turfCourses.length > 0 && (
+                  <div className={styles.surfaceGroup}>
+                    <div className={styles.distanceLinks}>
+                      {turfCourses.map((course, idx) => (
+                        <Link
+                          key={`${course.racecourse}-${course.surface}-${course.distance}-${course.variant || idx}`}
+                          href={getCourseUrl(course)}
+                          className={`${styles.distanceLink} ${styles.turfLink}`}
+                        >
+                          {course.variant
+                            ? `芝${course.distance}m(${course.variant === 'inner' ? '内' : '外'})`
+                            : `芝${course.distance}m`
+                          }
+                        </Link>
+                      ))}
                     </div>
-                  )}
+                  </div>
+                )}
 
-                  {/* Dirt courses */}
-                  {dirtCourses.length > 0 && (
-                    <div className={styles.surfaceGroup}>
-                      <div className={styles.distanceLinks}>
-                        {dirtCourses.map((course, idx) => (
-                          <Link
-                            key={`${course.racecourse}-${course.surface}-${course.distance}-${course.variant || idx}`}
-                            href={getCourseUrl(course)}
-                            className={`${styles.distanceLink} ${styles.dirtLink}`}
-                          >
-                            {`ダート${course.distance}m`}
-                          </Link>
-                        ))}
-                      </div>
+                {dirtCourses.length > 0 && (
+                  <div className={styles.surfaceGroup}>
+                    <div className={styles.distanceLinks}>
+                      {dirtCourses.map((course, idx) => (
+                        <Link
+                          key={`${course.racecourse}-${course.surface}-${course.distance}-${course.variant || idx}`}
+                          href={getCourseUrl(course)}
+                          className={`${styles.distanceLink} ${styles.dirtLink}`}
+                        >
+                          {`ダート${course.distance}m`}
+                        </Link>
+                      ))}
                     </div>
-                  )}
+                  </div>
+                )}
 
-                  {/* Steeplechase courses */}
-                  {steeplechaseCourses.length > 0 && (
-                    <div className={styles.surfaceGroup}>
-                      <div className={styles.distanceLinks}>
-                        {steeplechaseCourses.map((course, idx) => (
-                          <Link
-                            key={`${course.racecourse}-${course.surface}-${course.distance}-${course.variant || idx}`}
-                            href={getCourseUrl(course)}
-                            className={`${styles.distanceLink} ${styles.steeplechaseLink}`}
-                          >
-                            {`障害${course.distance}m`}
-                          </Link>
-                        ))}
-                      </div>
+                {steeplechaseCourses.length > 0 && (
+                  <div className={styles.surfaceGroup}>
+                    <div className={styles.distanceLinks}>
+                      {steeplechaseCourses.map((course, idx) => (
+                        <Link
+                          key={`${course.racecourse}-${course.surface}-${course.distance}-${course.variant || idx}`}
+                          href={getCourseUrl(course)}
+                          className={`${styles.distanceLink} ${styles.steeplechaseLink}`}
+                        >
+                          {`障害${course.distance}m`}
+                        </Link>
+                      ))}
                     </div>
-                  )}
-                </div>
-              )}
+                  </div>
+                )}
+              </div>
             </div>
           );
         })}

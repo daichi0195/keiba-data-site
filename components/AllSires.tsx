@@ -83,21 +83,19 @@ export default function AllSires() {
               {group.kana}
             </button>
 
-            {expandedKana[group.kana] && (
-              <div className={styles.accordionContent}>
-                <div className={styles.dataCardGrid}>
-                  {group.sires.map((sire) => (
-                    <Link
-                      key={sire.id}
-                      href={`/sires/${sire.id}`}
-                      className={styles.dataCard}
-                    >
-                      {sire.name}
-                    </Link>
-                  ))}
-                </div>
+            <div className={`${styles.accordionContent} ${expandedKana[group.kana] ? '' : styles.hidden}`}>
+              <div className={styles.dataCardGrid}>
+                {group.sires.map((sire) => (
+                  <Link
+                    key={sire.id}
+                    href={`/sires/${sire.id}`}
+                    className={styles.dataCard}
+                  >
+                    {sire.name}
+                  </Link>
+                ))}
               </div>
-            )}
+            </div>
           </div>
         ))}
       </div>

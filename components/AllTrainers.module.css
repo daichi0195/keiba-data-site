@@ -17,6 +17,7 @@
   flex-direction: column;
   border-bottom: 1px solid #e0e0e0;
   padding: 16px 0;
+  background: #fbfcfd;
 }
 
 .accordionTrigger {
@@ -33,10 +34,20 @@
   cursor: pointer;
   transition: opacity 0.2s ease;
   text-align: left;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+  outline: none;
 }
 
-.accordionTrigger:hover:not(.expanded) {
-  opacity: 0.7;
+.accordionTrigger:focus,
+.accordionTrigger:focus-visible {
+  outline: none;
+  background: transparent;
+}
+
+.accordionTrigger:active {
+  background: transparent;
 }
 
 .accordionTrigger.expanded {
@@ -56,6 +67,10 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.hidden {
+  display: none;
 }
 
 .dataCardGrid {

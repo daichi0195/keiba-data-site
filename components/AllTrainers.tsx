@@ -83,21 +83,19 @@ export default function AllTrainers() {
               {group.kana}
             </button>
 
-            {expandedKana[group.kana] && (
-              <div className={styles.accordionContent}>
-                <div className={styles.dataCardGrid}>
-                  {group.trainers.map((trainer) => (
-                    <Link
-                      key={trainer.id}
-                      href={`/trainers/${trainer.id}`}
-                      className={styles.dataCard}
-                    >
-                      {trainer.name}
-                    </Link>
-                  ))}
-                </div>
+            <div className={`${styles.accordionContent} ${expandedKana[group.kana] ? '' : styles.hidden}`}>
+              <div className={styles.dataCardGrid}>
+                {group.trainers.map((trainer) => (
+                  <Link
+                    key={trainer.id}
+                    href={`/trainers/${trainer.id}`}
+                    className={styles.dataCard}
+                  >
+                    {trainer.name}
+                  </Link>
+                ))}
               </div>
-            )}
+            </div>
           </div>
         ))}
       </div>

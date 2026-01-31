@@ -2,8 +2,6 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHelmetSafety } from '@fortawesome/free-solid-svg-icons';
 import styles from './JockeyLeading.module.css';
 import AllJockeys from './AllJockeys';
 import { LeadingData } from '@/lib/getLeadingData';
@@ -52,7 +50,6 @@ export default function JockeyLeading({ data }: JockeyLeadingProps) {
   return (
     <section ref={sectionRef} className="section fade-in-card">
       <h2 className="section-title is-visible">
-        <FontAwesomeIcon icon={faHelmetSafety} style={{ marginRight: '8px' }} />
         騎手別データ
       </h2>
 
