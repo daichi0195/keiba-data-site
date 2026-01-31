@@ -77,10 +77,31 @@ const mockVenues: Venue[] = [
       ],
     },
   },
+  {
+    id: 'kokura',
+    name: '小倉競馬場',
+    courses: {
+      turf: [
+        { distance: 1200 },
+        { distance: 1800 },
+        { distance: 2000 },
+        { distance: 2600 },
+      ],
+      dirt: [
+        { distance: 1000 },
+        { distance: 1700 },
+        { distance: 2400 },
+      ],
+      steeplechase: [
+        { distance: 2860 },
+        { distance: 3390 },
+      ],
+    },
+  },
 ];
 
 export default function ThisWeekVenues() {
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
@@ -89,27 +110,28 @@ export default function ThisWeekVenues() {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('is-visible');
+            if (titleRef.current) {
+              titleRef.current.classList.add('is-visible');
+            }
           }
         });
       },
       { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
     );
 
-    if (titleRef.current) observer.observe(titleRef.current);
-    cardRefs.current.forEach((card) => {
-      if (card) observer.observe(card);
-    });
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
 
     return () => {
-      if (titleRef.current) observer.unobserve(titleRef.current);
-      cardRefs.current.forEach((card) => {
-        if (card) observer.unobserve(card);
-      });
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
     };
   }, []);
 
   return (
-    <section className="section section-this-week-venues">
+    <section ref={sectionRef} className="section section-this-week-venues fade-in-card">
       <div style={{ width: '100%' }}>
         <h2 ref={titleRef} className="section-title">
           <FontAwesomeIcon icon={faCalendarWeek} style={{ marginRight: '8px' }} />
@@ -120,10 +142,7 @@ export default function ThisWeekVenues() {
         {mockVenues.map((venue, index) => (
           <div
             key={venue.id}
-            ref={(el) => {
-              cardRefs.current[index] = el;
-            }}
-            className={`${styles.venueCard} fade-in-card fade-in-stagger-${(index % 10) + 1}`}
+            className={styles.venueCard}
           >
             <h3 className={styles.venueName}>{venue.name}</h3>
 

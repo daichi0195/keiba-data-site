@@ -16,7 +16,6 @@ export default function JockeyLeading({ data }: JockeyLeadingProps) {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -25,6 +24,9 @@ export default function JockeyLeading({ data }: JockeyLeadingProps) {
           if (entry.isIntersecting) {
             setIsVisible(true);
             entry.target.classList.add('is-visible');
+            if (titleRef.current) {
+              titleRef.current.classList.add('is-visible');
+            }
           }
         });
       },
@@ -34,23 +36,11 @@ export default function JockeyLeading({ data }: JockeyLeadingProps) {
     if (sectionRef.current) {
       observer.observe(sectionRef.current);
     }
-    if (titleRef.current) {
-      observer.observe(titleRef.current);
-    }
-    cardRefs.current.forEach((card) => {
-      if (card) observer.observe(card);
-    });
 
     return () => {
       if (sectionRef.current) {
         observer.unobserve(sectionRef.current);
       }
-      if (titleRef.current) {
-        observer.unobserve(titleRef.current);
-      }
-      cardRefs.current.forEach((card) => {
-        if (card) observer.unobserve(card);
-      });
     };
   }, []);
 
@@ -76,10 +66,7 @@ export default function JockeyLeading({ data }: JockeyLeadingProps) {
           {data.map((jockey, index) => (
             <div
               key={jockey.rank}
-              ref={(el) => {
-                cardRefs.current[index] = el;
-              }}
-              className={`gate-chart-item fade-in-card fade-in-stagger-${(index % 10) + 1}`}
+              className="gate-chart-item"
             >
               <div
                 className="gate-number-badge"

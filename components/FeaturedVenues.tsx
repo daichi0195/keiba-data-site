@@ -75,6 +75,27 @@ const mockVenues: Venue[] = [
       ],
     },
   },
+  {
+    id: 'kokura',
+    name: '小倉競馬場',
+    courses: {
+      turf: [
+        { distance: 1200 },
+        { distance: 1800 },
+        { distance: 2000 },
+        { distance: 2600 },
+      ],
+      dirt: [
+        { distance: 1000 },
+        { distance: 1700 },
+        { distance: 2400 },
+      ],
+      steeplechase: [
+        { distance: 2860 },
+        { distance: 3390 },
+      ],
+    },
+  },
 ];
 
 export default function FeaturedVenues() {

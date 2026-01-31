@@ -19,7 +19,7 @@ interface ExpandedState {
 
 export default function AllVenues() {
   const [expandedRacecourse, setExpandedRacecourse] = useState<ExpandedState>({});
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
 
   const toggleRacecourse = (racecourseNameEn: string) => {
@@ -35,27 +35,28 @@ export default function AllVenues() {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('is-visible');
+            if (titleRef.current) {
+              titleRef.current.classList.add('is-visible');
+            }
           }
         });
       },
       { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
     );
 
-    if (titleRef.current) observer.observe(titleRef.current);
-    cardRefs.current.forEach((card) => {
-      if (card) observer.observe(card);
-    });
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
 
     return () => {
-      if (titleRef.current) observer.unobserve(titleRef.current);
-      cardRefs.current.forEach((card) => {
-        if (card) observer.unobserve(card);
-      });
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
     };
   }, []);
 
   return (
-    <section className="section">
+    <section ref={sectionRef} className="section fade-in-card">
       <h2 ref={titleRef} className="section-title">
         <FontAwesomeIcon icon={faFlag} style={{ marginRight: '8px' }} />
         競馬場別データ
@@ -70,10 +71,7 @@ export default function AllVenues() {
           return (
             <div
               key={racecourse.nameEn}
-              ref={(el) => {
-                cardRefs.current[index] = el;
-              }}
-              className={`${styles.accordionItem} fade-in-card fade-in-stagger-${(index % 10) + 1}`}
+              className={styles.accordionItem}
             >
               <button
                 className={`${styles.accordionTrigger} ${expandedRacecourse[racecourse.nameEn] ? styles.expanded : ''}`}
