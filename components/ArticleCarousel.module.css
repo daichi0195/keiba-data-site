@@ -84,18 +84,23 @@
   pointer-events: none;
 }
 
-.articleTitle {
+.articleTitleWrapper {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
   padding: 1.5rem;
+  z-index: 2;
+}
+
+.articleTitle {
   font-size: 1.25rem;
   font-weight: 700;
   color: #fff;
   line-height: 1.4;
   margin: 0;
-  z-index: 2;
+  max-height: 3.5rem;
+  overflow: hidden;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6), 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 
@@ -206,9 +211,13 @@
     scroll-snap-stop: always;
   }
 
+  .articleTitleWrapper {
+    padding: 1rem;
+  }
+
   .articleTitle {
     font-size: 1rem;
-    padding: 1rem;
+    max-height: 2.8rem;
   }
 
   .navButton {
