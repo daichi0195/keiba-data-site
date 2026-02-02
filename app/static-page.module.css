@@ -1,0 +1,142 @@
+/* 固定ページ用スタイル */
+
+.staticPageContainer {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 0.75rem 24px 0.75rem;
+}
+
+/* パンくずリスト */
+.staticPageBreadcrumb {
+  font-size: 0.875rem;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+.staticPageBreadcrumb a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.staticPageBreadcrumb a:hover {
+  color: var(--primary-green);
+}
+
+.staticPageBreadcrumb span {
+  color: #999;
+}
+
+/* コンテンツカード */
+.staticPageCard {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px 0.75rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* ヘッダー */
+.staticPageHeader {
+  margin: 0 0 2rem 0;
+  padding: 6px 0 12px 0;
+  border-bottom: 2px solid #f5f7fa;
+  display: block;
+  line-height: 1 !important;
+}
+
+.staticPageTitle {
+  font-size: 20px !important;
+  font-weight: 700;
+  line-height: 1 !important;
+  color: #2d3748;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100%;
+  display: block;
+  vertical-align: top;
+}
+
+/* コンテンツ本文のベーススタイル */
+.staticPageCard {
+  font-size: 1rem;
+  line-height: 1.9;
+  color: #2d3748;
+}
+
+/* H2スタイル統一 */
+.staticPageCard :global(h2) {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 2.5rem 0 1rem 0;
+  padding-left: 0.75rem;
+  border-left: 4px solid #52af77;
+  line-height: 1.4;
+}
+
+/* 最初のH2は上マージンなし */
+.staticPageCard :global(h2:first-of-type) {
+  margin-top: 0;
+}
+
+/* 段落 */
+.staticPageCard :global(p) {
+  margin: 1.5rem 0;
+  line-height: 1.9;
+}
+
+.staticPageCard :global(p:last-child) {
+  margin-bottom: 0;
+}
+
+/* リンク */
+.staticPageCard :global(a) {
+  color: #2563eb;
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+.staticPageCard :global(a:hover) {
+  color: #1d4ed8;
+}
+
+/* リスト */
+.staticPageCard :global(ul),
+.staticPageCard :global(ol) {
+  margin: 1.5rem 0;
+  padding-left: 2rem;
+}
+
+.staticPageCard :global(li) {
+  margin: 0.5rem 0;
+}
+
+
+/* モバイル対応 */
+@media (max-width: 768px) {
+  .staticPageContainer {
+    padding: 1rem 0.75rem 24px 0.75rem;
+  }
+
+  .staticPageCard {
+    padding: 24px 0.75rem;
+    border-radius: 8px;
+  }
+
+  .staticPageHeader {
+    margin: 0 0 1.5rem 0;
+    padding: 6px 0 12px 0;
+    display: block;
+    line-height: 1 !important;
+  }
+
+  .staticPageTitle {
+    font-size: 20px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+    display: block;
+    vertical-align: top;
+  }
+}

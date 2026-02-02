@@ -2,7 +2,7 @@ import styles from '@/components/article-content.module.css';
 
 export default function RacingHistory() {
   return (
-    <section className={styles.section}>
+    <>
       <h2 className={styles.heading}>競馬歴について</h2>
       <p className={styles.text}>
         2020年のアイビスサマーダッシュが競馬デビューです！<br />
@@ -29,6 +29,6 @@ export default function RacingHistory() {
           allowFullScreen
         />
       </div>
-    </section>
+    </>
   );
 }

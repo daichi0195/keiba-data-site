@@ -4,7 +4,7 @@ import SiteAbout from './content/site-about';
 import OperatorInfo from './content/operator-info';
 import RacingHistory from './content/racing-history';
 import ContactSection from './content/contact-section';
-import styles from './page.module.css';
+import styles from '../static-page.module.css';
 
 export const metadata: Metadata = {
   title: 'サイト情報・運営者情報 | 競馬データ.com',
@@ -13,20 +13,20 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <div className={styles.container}>
+    <div className={styles.staticPageContainer}>
       {/* パンくずリスト */}
-      <nav className={styles.breadcrumb}>
+      <nav className={styles.staticPageBreadcrumb}>
         <Link href="/">HOME</Link>
         <span> &gt; </span>
         <span>サイト情報・運営者情報</span>
       </nav>
 
       {/* コンテンツカード */}
-      <div className={styles.content}>
+      <div className={styles.staticPageCard}>
         {/* ヘッダー */}
-        <header className={styles.header}>
-          <h1 className={styles.title}>サイト情報・運営者情報</h1>
-        </header>
+        <div className={styles.staticPageHeader}>
+          <h1 className={styles.staticPageTitle}>サイト情報・運営者情報</h1>
+        </div>
 
         <SiteAbout />
         <OperatorInfo />
