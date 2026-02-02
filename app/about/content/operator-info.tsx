@@ -5,10 +5,10 @@ export default function OperatorInfo() {
     <>
       <h2 className={styles.heading}>運営者について</h2>
       <p className={styles.text}>
-        田舎に住んでいる競馬好きの27歳🐴
+        競馬とサウナが好きな27歳🧖
       </p>
       <p className={styles.text}>
-        現在は個人でマーケター（<del>とは名ばかりのなんでも屋</del>）として活動しています。
+        現在は個人でマーケターとして活動しています！
       </p>
     </>
   );
