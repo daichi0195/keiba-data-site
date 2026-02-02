@@ -3,14 +3,20 @@
   margin-bottom: 1.5rem;
 }
 
+/* 最初のセクションのH2は上マージンなし */
+.section:first-of-type .heading {
+  margin-top: 0;
+}
+
 /* 記事内見出し（H2） */
 .heading {
-  font-size: 1.5rem;
+  font-size: 18px;
   font-weight: 700;
-  color: #1db854;
-  margin-bottom: 1rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid #e2e8f0;
+  color: #2d3748;
+  margin: 2.5rem 0 1rem 0;
+  padding-left: 0.75rem;
+  border-left: 4px solid #52af77;
+  line-height: 1.4;
 }
 
 /* 記事内テキスト */
@@ -79,10 +85,6 @@
 
 /* レスポンシブ */
 @media (max-width: 768px) {
-  .heading {
-    font-size: 1.25rem;
-  }
-
   .text,
   .list li {
     font-size: 0.95rem;

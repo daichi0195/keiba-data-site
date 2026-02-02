@@ -1,10 +1,10 @@
 import { Metadata } from 'next';
-import ArticleLayout from '@/components/ArticleLayout';
-import TableOfContents from '@/components/TableOfContents';
+import Link from 'next/link';
 import SiteAbout from './content/site-about';
 import OperatorInfo from './content/operator-info';
 import RacingHistory from './content/racing-history';
 import ContactSection from './content/contact-section';
+import styles from './page.module.css';
 
 export const metadata: Metadata = {
   title: 'サイト情報・運営者情報 | 競馬データ.com',
@@ -13,17 +13,26 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <main>
-      <ArticleLayout
-        title="サイト情報・運営者情報"
-        showDateIcon={false}
-      >
+    <div className={styles.container}>
+      {/* パンくずリスト */}
+      <nav className={styles.breadcrumb}>
+        <Link href="/">HOME</Link>
+        <span> &gt; </span>
+        <span>サイト情報・運営者情報</span>
+      </nav>
+
+      {/* コンテンツカード */}
+      <div className={styles.content}>
+        {/* ヘッダー */}
+        <header className={styles.header}>
+          <h1 className={styles.title}>サイト情報・運営者情報</h1>
+        </header>
+
         <SiteAbout />
         <OperatorInfo />
         <RacingHistory />
         <ContactSection />
-      </ArticleLayout>
-      <TableOfContents />
-    </main>
+      </div>
+    </div>
   );
 }
