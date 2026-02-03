@@ -24,7 +24,7 @@ export default function SiresPage() {
         </div>
 
         <p className={contentStyles.text}>
-          過去3年間に産駒が出走している主要種牡馬を対象としています。
+          過去3年間に産駒が50レース以上出走し、かつ産駒が10頭以上いる種牡馬のデータを集計しています。
         </p>
         <AllSiresList />
       </div>

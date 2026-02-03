@@ -24,7 +24,7 @@ export default function TrainersPage() {
         </div>
 
         <p className={contentStyles.text}>
-          過去3年間に30レース以上出走している現役中央調教師を対象としています。
+          過去3年間に30レース以上出走している現役中央調教師のデータを集計しています。
         </p>
         <AllTrainersList />
       </div>

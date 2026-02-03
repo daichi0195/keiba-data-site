@@ -101,6 +101,7 @@
   border-radius: 4px;
   font-size: 16px;
   font-weight: 500;
+  line-height: 1;
   transition: all 0.2s ease;
   border: 1.5px solid #1db854;
   text-align: center;

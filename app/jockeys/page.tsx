@@ -24,7 +24,7 @@ export default function JockeysPage() {
         </div>
 
         <p className={contentStyles.text}>
-          過去3年間に30レース以上出走している現役中央騎手を対象としています。
+          過去3年間に30レース以上出走している現役中央騎手のデータを集計しています。
         </p>
         <AllJockeysList />
       </div>
