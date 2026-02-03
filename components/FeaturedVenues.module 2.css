@@ -14,9 +14,8 @@
 .venueName {
   font-size: 18px;
   font-weight: 700;
-  color: #2d3748;
-  margin: 4px 0 0 0;
-  padding: 0;
+  color: #4b5563;
+  margin-bottom: 0;
 }
 
 .courseList {
@@ -44,19 +43,16 @@
 }
 
 .distanceLink {
-  display: inline-block !important;
-  padding: 9px 14px !important;
-  text-decoration: none !important;
+  display: inline-block;
+  padding: 5px 10px;
+  text-decoration: none;
   border-radius: 4px;
-  font-size: 16px !important;
-  font-weight: 500 !important;
+  font-size: 13px;
+  font-weight: 500;
   transition: all 0.2s ease;
   border: 1px solid;
   text-align: center;
-  box-sizing: border-box;
-  white-space: nowrap;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-  line-height: 1 !important;
 }
 
 .variantGroup {
@@ -73,48 +69,42 @@
 .turfLink {
   background: #3db866;
   border-color: #3db866;
-  color: #fff !important;
+  color: #fff;
 }
 
 .turfLink:hover {
   background: #2ea358;
   border-color: #2ea358;
-  color: #fff !important;
-  text-decoration: none !important;
 }
 
 /* ダートコースのスタイル */
 .dirtLink {
   background: #b89066;
   border-color: #b89066;
-  color: #fff !important;
+  color: #fff;
 }
 
 .dirtLink:hover {
   background: #a67c52;
   border-color: #a67c52;
-  color: #fff !important;
-  text-decoration: none !important;
 }
 
 /* 障害コースのスタイル */
 .steeplechaseLink {
   background: #838b97;
   border-color: #838b97;
-  color: #fff !important;
+  color: #fff;
 }
 
 .steeplechaseLink:hover {
   background: #6b7280;
   border-color: #6b7280;
-  color: #fff !important;
-  text-decoration: none !important;
 }
 
 /* レスポンシブ */
 @media (max-width: 768px) {
   .distanceLink {
-    font-size: 14px !important;
-    padding: 6px 10px !important;
+    font-size: 12px;
+    padding: 5px 8px;
   }
 }
