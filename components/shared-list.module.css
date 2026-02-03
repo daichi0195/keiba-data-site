@@ -25,10 +25,10 @@
 
 .dataCard {
   display: inline-block;
-  padding: 7px 12px;
+  padding: 9px 14px;
   text-decoration: none;
   border-radius: 4px;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 500;
   transition: all 0.2s ease;
   border: 1px solid #1db854;
@@ -50,8 +50,8 @@
 
 @media (max-width: 768px) {
   .dataCard {
-    font-size: 13px;
-    padding: 5px 9px;
+    font-size: 14px;
+    padding: 6px 10px;
   }
 }
 
