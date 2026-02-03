@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import styles from './AllJockeys.module.css';
 import listStyles from './shared-list.module.css';
 import { ALL_JOCKEYS, type JockeyInfo } from '@/lib/jockeys';
 
@@ -52,7 +51,7 @@ export default function AllJockeysList() {
               <Link
                 key={jockey.id}
                 href={`/jockeys/${jockey.id}`}
-                className={styles.dataCard}
+                className={listStyles.dataCard}
               >
                 {jockey.name}
               </Link>

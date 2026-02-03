@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import styles from './AllSires.module.css';
 import listStyles from './shared-list.module.css';
 import { ALL_SIRES, type SireInfo } from '@/lib/sires';
 
@@ -52,7 +51,7 @@ export default function AllSiresList() {
               <Link
                 key={sire.id}
                 href={`/sires/${sire.id}`}
-                className={styles.dataCard}
+                className={listStyles.dataCard}
               >
                 {sire.name}
               </Link>

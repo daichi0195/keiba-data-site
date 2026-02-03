@@ -23,6 +23,12 @@
   gap: 6px;
 }
 
+.surfaceGroups {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .courseLink {
   display: inline-block !important;
   padding: 7px 12px !important;

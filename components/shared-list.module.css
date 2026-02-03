@@ -23,3 +23,35 @@
   gap: 6px;
 }
 
+.dataCard {
+  display: inline-block;
+  padding: 7px 12px;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: 1px solid #1db854;
+  text-align: center;
+  box-sizing: border-box;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  line-height: 1;
+  background: #1db854;
+  color: #fff;
+}
+
+.dataCard:hover {
+  background: #1a9f47;
+  border-color: #1a9f47;
+  color: #fff;
+  text-decoration: none;
+}
+
+@media (max-width: 768px) {
+  .dataCard {
+    font-size: 13px;
+    padding: 5px 9px;
+  }
+}
+

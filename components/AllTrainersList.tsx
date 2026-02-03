@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import styles from './AllTrainers.module.css';
 import listStyles from './shared-list.module.css';
 import { ALL_TRAINERS, type TrainerInfo } from '@/lib/trainers';
 
@@ -52,7 +51,7 @@ export default function AllTrainersList() {
               <Link
                 key={trainer.id}
                 href={`/trainers/${trainer.id}`}
-                className={styles.dataCard}
+                className={listStyles.dataCard}
               >
                 {trainer.name}
               </Link>
