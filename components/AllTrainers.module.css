@@ -13,6 +13,14 @@
   padding: 0;
 }
 
+.kanaTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0 0 12px 0 !important;
+  padding: 0;
+}
+
 .accordionList {
   display: flex;
   flex-direction: column;

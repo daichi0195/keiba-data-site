@@ -32,7 +32,7 @@
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem 0.75rem !important;
+  padding: 2rem 0.75rem 24px 0.75rem !important;
   overflow: visible;
 }
 
@@ -52,7 +52,7 @@
     gap: 2rem;
     align-items: flex-start;
     justify-content: center;
-    padding: 2rem 0 !important;
+    padding: 2rem 0 24px 0 !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
   }

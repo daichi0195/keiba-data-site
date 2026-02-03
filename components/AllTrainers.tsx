@@ -5,11 +5,6 @@ import Link from 'next/link';
 import styles from './AllTrainers.module.css';
 import { ALL_TRAINERS, type TrainerInfo } from '@/lib/trainers';
 
-interface TrainerGroup {
-  kana: string;
-  trainers: TrainerInfo[];
-}
-
 // 五十音順グループ化関数（HeaderMenuと同じロジック）
 const getKanaGroup = (kana: string): string => {
   if (!kana) return 'その他';
@@ -69,7 +64,7 @@ export default function AllTrainers() {
       <p className={styles.dataDescription}>過去3年間に30レース以上出走している現役中央調教師のデータを集計しています。</p>
 
       <div className={styles.accordionList}>
-        {trainersData.map((group, index) => (
+        {trainersData.map((group) => (
           <div
             key={group.kana}
             className={styles.accordionItem}

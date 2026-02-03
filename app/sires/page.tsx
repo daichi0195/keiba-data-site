@@ -1,9 +1,8 @@
 import { Metadata } from 'next';
-import ArticleLayout from '@/components/ArticleLayout';
-import SiresList, { siresGroupedByKana } from '@/components/SiresList';
-import BottomNav from '@/components/BottomNav';
-import TableOfContents from '@/components/TableOfContents';
-import styles from '@/components/article-content.module.css';
+import Link from 'next/link';
+import AllSiresList from '@/components/AllSiresList';
+import styles from '@/app/static-page.module.css';
+import contentStyles from '@/components/article-content.module.css';
 
 export const metadata: Metadata = {
   title: '種牡馬別データ一覧｜種牡馬の成績・特徴がまるわかり！- 競馬データ.com',
@@ -11,24 +10,24 @@ export const metadata: Metadata = {
 };
 
 export default function SiresPage() {
-  const navigationItems = siresGroupedByKana.map(group => ({
-    id: group.id,
-    label: group.label
-  }));
-
   return (
-    <main>
-      <ArticleLayout
-        title="種牡馬データ一覧"
-        showDateIcon={false}
-      >
-        <p className={styles.text}>
+    <div className={styles.staticPageContainer}>
+      <nav className={styles.staticPageBreadcrumb}>
+        <Link href="/">HOME</Link>
+        <span> &gt; </span>
+        <span>種牡馬データ一覧</span>
+      </nav>
+
+      <div className={styles.staticPageCard}>
+        <div className={styles.staticPageHeader}>
+          <h1 className={styles.staticPageTitle}>種牡馬データ一覧</h1>
+        </div>
+
+        <p className={contentStyles.text}>
           過去3年間に産駒が出走している主要種牡馬を対象としています。
         </p>
-        <SiresList />
-      </ArticleLayout>
-      <TableOfContents items={navigationItems} />
-      <BottomNav items={navigationItems} />
-    </main>
+        <AllSiresList />
+      </div>
+    </div>
   );
 }

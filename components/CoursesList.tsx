@@ -1,109 +1,63 @@
 import Link from 'next/link';
 import styles from './CoursesList.module.css';
-import articleStyles from './article-content.module.css';
+import listStyles from './shared-list.module.css';
 import { getCoursesByRacecourse, getCourseUrl } from '@/lib/courses';
 
-export const racecoursesData = getCoursesByRacecourse().map(group => ({
-  name: group.racecourse_ja.replace('競馬場', ''),
-  fullName: group.racecourse_ja,
+const racecoursesData = getCoursesByRacecourse().map(group => ({
+  name: group.racecourse_ja,
   nameEn: group.racecourse,
   courses: group.courses
 }));
 
 export default function CoursesList() {
   return (
-    <div className={styles.venueList}>
-        {racecoursesData.map((racecourse) => (
-          <section key={racecourse.nameEn} id={racecourse.nameEn} className={articleStyles.section}>
-            <h2 className={articleStyles.heading}>
-              {racecourse.fullName}
-            </h2>
+    <div className={listStyles.groupList}>
+      {racecoursesData.map((racecourse) => {
+        const turfCourses = racecourse.courses.filter((c) => c.surface === 'turf');
+        const dirtCourses = racecourse.courses.filter((c) => c.surface === 'dirt');
+        const steeplechaseCourses = racecourse.courses.filter((c) => c.surface === 'steeplechase');
 
-          <div className={styles.venueContent}>
-            {/* Turf courses */}
-            <div className={`${styles.surfaceGroup} ${styles.turfGroup}`}>
-              <ul className={styles.courseList}>
-                {(() => {
-                  const turfCourses = racecourse.courses.filter((c) => c.surface === 'turf');
-                  const items = [];
-                  let i = 0;
-                  while (i < turfCourses.length) {
-                    const current = turfCourses[i];
-                    const next = turfCourses[i + 1];
+        return (
+          <div key={racecourse.nameEn} className={listStyles.groupSection}>
+            <h2 className={listStyles.groupTitle}>{racecourse.name}</h2>
 
-                    // 内外のペアをチェック
-                    if (
-                      current.variant === 'inner' &&
-                      next?.distance === current.distance &&
-                      next?.variant === 'outer'
-                    ) {
-                      items.push(
-                        <li key={`${current.distance}-pair`} className={styles.variantGroup}>
-                          <Link
-                            href={getCourseUrl(current)}
-                            className={`${styles.courseLink} ${styles.turfLink}`}
-                          >
-                            {`芝${current.distance}m(内)`}
-                          </Link>
-                          <Link
-                            href={getCourseUrl(next)}
-                            className={`${styles.courseLink} ${styles.turfLink}`}
-                          >
-                            {`芝${next.distance}m(外)`}
-                          </Link>
-                        </li>
-                      );
-                      i += 2;
-                    } else {
-                      items.push(
-                        <li key={`${racecourse.nameEn}-${current.racecourse}-${current.surface}-${current.distance}${current.variant || ''}`}>
-                          <Link href={getCourseUrl(current)} className={`${styles.courseLink} ${styles.turfLink}`}>
-                            {`芝${current.distance}m`}
-                          </Link>
-                        </li>
-                      );
-                      i += 1;
-                    }
+            <div className={listStyles.dataCardGrid}>
+              {turfCourses.map((course, idx) => (
+                <Link
+                  key={`${course.racecourse}-${course.surface}-${course.distance}-${course.variant || idx}`}
+                  href={getCourseUrl(course)}
+                  className={`${styles.courseLink} ${styles.turfLink}`}
+                >
+                  {course.variant
+                    ? `芝${course.distance}m(${course.variant === 'inner' ? '内' : '外'})`
+                    : `芝${course.distance}m`
                   }
-                  return items;
-                })()}
-              </ul>
-            </div>
+                </Link>
+              ))}
 
-            {/* Dirt courses */}
-            <div className={`${styles.surfaceGroup} ${styles.dirtGroup}`}>
-              <ul className={styles.courseList}>
-                {racecourse.courses
-                  .filter((c) => c.surface === 'dirt')
-                  .map((course) => (
-                    <li key={`${racecourse.nameEn}-${course.racecourse}-${course.surface}-${course.distance}${course.variant || ''}`}>
-                      <Link href={getCourseUrl(course)} className={`${styles.courseLink} ${styles.dirtLink}`}>
-                        {`ダート${course.distance}m`}
-                      </Link>
-                    </li>
-                  ))}
-              </ul>
-            </div>
+              {dirtCourses.map((course, idx) => (
+                <Link
+                  key={`${course.racecourse}-${course.surface}-${course.distance}-${course.variant || idx}`}
+                  href={getCourseUrl(course)}
+                  className={`${styles.courseLink} ${styles.dirtLink}`}
+                >
+                  {`ダート${course.distance}m`}
+                </Link>
+              ))}
 
-            {/* Steeplechase courses */}
-            {racecourse.courses.some((c) => c.surface === 'steeplechase') && (
-              <div className={`${styles.surfaceGroup} ${styles.steeplechaseGroup}`}>
-                <ul className={styles.courseList}>
-                  {racecourse.courses
-                    .filter((c) => c.surface === 'steeplechase')
-                    .map((course) => (
-                      <li key={`${racecourse.nameEn}-${course.racecourse}-${course.surface}-${course.distance}${course.variant || ''}`}>
-                        <Link href={getCourseUrl(course)} className={`${styles.courseLink} ${styles.steeplechaseLink}`}>
-                          {`障害${course.distance}m`}
-                        </Link>
-                      </li>
-                    ))}
-                </ul>
-              </div>
-            )}
+              {steeplechaseCourses.map((course, idx) => (
+                <Link
+                  key={`${course.racecourse}-${course.surface}-${course.distance}-${course.variant || idx}`}
+                  href={getCourseUrl(course)}
+                  className={`${styles.courseLink} ${styles.steeplechaseLink}`}
+                >
+                  {`障害${course.distance}m`}
+                </Link>
+              ))}
+            </div>
           </div>
-        </section>
-      ))}
+        );
+      })}
     </div>
   );
 }

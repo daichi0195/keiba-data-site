@@ -1,13 +1,8 @@
 import Link from 'next/link';
-import styles from './TrainersList.module.css';
+import styles from './AllTrainers.module.css';
+import listStyles from './shared-list.module.css';
 import { ALL_TRAINERS, type TrainerInfo } from '@/lib/trainers';
 
-interface TrainerGroup {
-  kana: string;
-  trainers: TrainerInfo[];
-}
-
-// 五十音順グループ化関数
 const getKanaGroup = (kana: string): string => {
   if (!kana) return 'その他';
   const first = kana.charAt(0);
@@ -24,7 +19,6 @@ const getKanaGroup = (kana: string): string => {
   return 'その他';
 };
 
-// 調教師データを五十音順にグループ化
 const trainersData = (() => {
   const grouped: Record<string, TrainerInfo[]> = {};
 
@@ -46,13 +40,14 @@ const trainersData = (() => {
     }));
 })();
 
-export default function TrainersList() {
+export default function AllTrainersList() {
   return (
-    <div className={styles.kanaList}>
+    <div className={listStyles.groupList}>
       {trainersData.map((group) => (
-        <div key={group.kana} className={styles.kanaSection}>
-          <h2 className={styles.kanaTitle}>{group.kana}</h2>
-          <div className={styles.dataCardGrid}>
+        <div key={group.kana} className={listStyles.groupSection}>
+          <h2 className={listStyles.groupTitle}>{group.kana}</h2>
+
+          <div className={listStyles.dataCardGrid}>
             {group.trainers.map((trainer) => (
               <Link
                 key={trainer.id}

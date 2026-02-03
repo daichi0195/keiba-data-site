@@ -1,9 +1,8 @@
 import { Metadata } from 'next';
-import ArticleLayout from '@/components/ArticleLayout';
-import CoursesList, { racecoursesData } from '@/components/CoursesList';
-import BottomNav from '@/components/BottomNav';
-import TableOfContents from '@/components/TableOfContents';
-import styles from '@/components/article-content.module.css';
+import Link from 'next/link';
+import CoursesList from '@/components/CoursesList';
+import styles from '@/app/static-page.module.css';
+import contentStyles from '@/components/article-content.module.css';
 
 export const metadata: Metadata = {
   title: 'コース別データ一覧｜コースの成績・特徴がまるわかり！- 競馬データ.com',
@@ -11,24 +10,24 @@ export const metadata: Metadata = {
 };
 
 export default function CoursesPage() {
-  const navigationItems = racecoursesData.map(racecourse => ({
-    id: racecourse.nameEn,
-    label: racecourse.fullName
-  }));
-
   return (
-    <main>
-      <ArticleLayout
-        title="コースデータ一覧"
-        showDateIcon={false}
-      >
-        <p className={styles.text}>
+    <div className={styles.staticPageContainer}>
+      <nav className={styles.staticPageBreadcrumb}>
+        <Link href="/">HOME</Link>
+        <span> &gt; </span>
+        <span>コースデータ一覧</span>
+      </nav>
+
+      <div className={styles.staticPageCard}>
+        <div className={styles.staticPageHeader}>
+          <h1 className={styles.staticPageTitle}>コースデータ一覧</h1>
+        </div>
+
+        <p className={contentStyles.text}>
           直近3年間でレースが行われた全てのコースを対象としています。
         </p>
         <CoursesList />
-      </ArticleLayout>
-      <TableOfContents items={navigationItems} />
-      <BottomNav items={navigationItems} />
-    </main>
+      </div>
+    </div>
   );
 }

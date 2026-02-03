@@ -1,9 +1,8 @@
 import { Metadata } from 'next';
-import ArticleLayout from '@/components/ArticleLayout';
-import TrainersList, { trainersGroupedByKana } from '@/components/TrainersList';
-import BottomNav from '@/components/BottomNav';
-import TableOfContents from '@/components/TableOfContents';
-import styles from '@/components/article-content.module.css';
+import Link from 'next/link';
+import AllTrainersList from '@/components/AllTrainersList';
+import styles from '@/app/static-page.module.css';
+import contentStyles from '@/components/article-content.module.css';
 
 export const metadata: Metadata = {
   title: '調教師別データ一覧｜調教師の成績・特徴がまるわかり！- 競馬データ.com',
@@ -11,24 +10,24 @@ export const metadata: Metadata = {
 };
 
 export default function TrainersPage() {
-  const navigationItems = trainersGroupedByKana.map(group => ({
-    id: group.id,
-    label: group.label
-  }));
-
   return (
-    <main>
-      <ArticleLayout
-        title="調教師データ一覧"
-        showDateIcon={false}
-      >
-        <p className={styles.text}>
+    <div className={styles.staticPageContainer}>
+      <nav className={styles.staticPageBreadcrumb}>
+        <Link href="/">HOME</Link>
+        <span> &gt; </span>
+        <span>調教師データ一覧</span>
+      </nav>
+
+      <div className={styles.staticPageCard}>
+        <div className={styles.staticPageHeader}>
+          <h1 className={styles.staticPageTitle}>調教師データ一覧</h1>
+        </div>
+
+        <p className={contentStyles.text}>
           過去3年間に30レース以上出走している現役中央調教師を対象としています。
         </p>
-        <TrainersList />
-      </ArticleLayout>
-      <TableOfContents items={navigationItems} />
-      <BottomNav items={navigationItems} />
-    </main>
+        <AllTrainersList />
+      </div>
+    </div>
   );
 }

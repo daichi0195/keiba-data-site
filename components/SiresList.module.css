@@ -1,44 +1,57 @@
-.sireList {
+.kanaList {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.kanaSection {
   display: flex;
   flex-direction: column;
 }
 
-.sireGrid {
+.kanaTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0 0 8px 0 !important;
+  padding: 0;
+}
+
+.dataCardGrid {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  list-style: none;
-  padding: 0;
-  margin: 0;
+  gap: 6px;
 }
 
-.sireLink {
-  display: block;
-  padding: 0.625rem;
-  text-decoration: none;
-  border-radius: 8px;
-  font-size: 0.85rem;
-  font-weight: 700;
+.dataCard {
+  display: inline-block !important;
+  padding: 7px 12px !important;
+  text-decoration: none !important;
+  border-radius: 4px;
+  font-size: 15px !important;
+  font-weight: 500 !important;
   transition: all 0.2s ease;
-  border: 1px solid #1db854;
-  background: #fff;
-  color: #2d3748;
+  border: 1.5px solid #1db854;
   text-align: center;
   box-sizing: border-box;
+  background: #fff;
+  color: #2d3748 !important;
   white-space: nowrap;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  line-height: 1 !important;
 }
 
-.sireLink:hover {
-  box-shadow: 0 4px 12px rgba(29, 184, 84, 0.25);
+.dataCard:hover {
   border-color: #1a9f47;
-  transform: translateY(-1px);
+  box-shadow: 0 1px 3px rgba(29, 184, 84, 0.15);
+  color: #2d3748 !important;
+  text-decoration: none !important;
 }
 
 /* レスポンシブ */
 @media (max-width: 768px) {
-  .sireLink {
-    font-size: 0.8rem;
-    padding: 0.5rem;
+  .dataCard {
+    font-size: 13px !important;
+    padding: 5px 9px !important;
   }
 }

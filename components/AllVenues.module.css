@@ -77,65 +77,74 @@
   gap: 10px;
 }
 
-.distanceLinks {
+.accordionDistanceLinks {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
 }
 
-.distanceLink {
-  display: inline-block;
-  padding: 5px 10px;
-  text-decoration: none;
-  border-radius: 4px;
-  font-size: 13px;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  border: 1px solid;
-  text-align: center;
-  box-shadow: none;
+.avCourseCard {
+  display: inline-block !important;
+  padding: 7px 12px !important;
+  text-decoration: none !important;
+  border-radius: 4px !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease !important;
+  border: 1px solid !important;
+  text-align: center !important;
+  box-sizing: border-box !important;
+  white-space: nowrap !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12) !important;
+  line-height: 1 !important;
 }
 
 /* 芝コースのスタイル */
-.turfLink {
-  background: #3db866;
-  border-color: #3db866;
-  color: #fff;
+.avTurfCard {
+  background: #3db866 !important;
+  border-color: #3db866 !important;
+  color: #fff !important;
 }
 
-.turfLink:hover {
-  background: #2ea358;
-  border-color: #2ea358;
+.avTurfCard:hover {
+  background: #2ea358 !important;
+  border-color: #2ea358 !important;
+  color: #fff !important;
+  text-decoration: none !important;
 }
 
 /* ダートコースのスタイル */
-.dirtLink {
-  background: #b89066;
-  border-color: #b89066;
-  color: #fff;
+.avDirtCard {
+  background: #b89066 !important;
+  border-color: #b89066 !important;
+  color: #fff !important;
 }
 
-.dirtLink:hover {
-  background: #a67c52;
-  border-color: #a67c52;
+.avDirtCard:hover {
+  background: #a67c52 !important;
+  border-color: #a67c52 !important;
+  color: #fff !important;
+  text-decoration: none !important;
 }
 
 /* 障害コースのスタイル */
-.steeplechaseLink {
-  background: #838b97;
-  border-color: #838b97;
-  color: #fff;
+.avSteeplechaseCard {
+  background: #838b97 !important;
+  border-color: #838b97 !important;
+  color: #fff !important;
 }
 
-.steeplechaseLink:hover {
-  background: #6b7280;
-  border-color: #6b7280;
+.avSteeplechaseCard:hover {
+  background: #6b7280 !important;
+  border-color: #6b7280 !important;
+  color: #fff !important;
+  text-decoration: none !important;
 }
 
 /* レスポンシブ */
 @media (max-width: 768px) {
-  .distanceLink {
-    font-size: 12px;
-    padding: 5px 8px;
+  .avCourseCard {
+    font-size: 13px !important;
+    padding: 5px 9px !important;
   }
 }

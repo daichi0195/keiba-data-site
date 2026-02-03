@@ -79,12 +79,12 @@ export default function AllVenues() {
               <div className={`${styles.accordionContent} ${expandedRacecourse[racecourse.nameEn] ? '' : styles.hidden}`}>
                 {turfCourses.length > 0 && (
                   <div className={styles.surfaceGroup}>
-                    <div className={styles.distanceLinks}>
+                    <div className={styles.accordionDistanceLinks}>
                       {turfCourses.map((course, idx) => (
                         <Link
                           key={`${course.racecourse}-${course.surface}-${course.distance}-${course.variant || idx}`}
                           href={getCourseUrl(course)}
-                          className={`${styles.distanceLink} ${styles.turfLink}`}
+                          className={`${styles.avCourseCard} ${styles.avTurfCard}`}
                         >
                           {course.variant
                             ? `芝${course.distance}m(${course.variant === 'inner' ? '内' : '外'})`
@@ -98,12 +98,12 @@ export default function AllVenues() {
 
                 {dirtCourses.length > 0 && (
                   <div className={styles.surfaceGroup}>
-                    <div className={styles.distanceLinks}>
+                    <div className={styles.accordionDistanceLinks}>
                       {dirtCourses.map((course, idx) => (
                         <Link
                           key={`${course.racecourse}-${course.surface}-${course.distance}-${course.variant || idx}`}
                           href={getCourseUrl(course)}
-                          className={`${styles.distanceLink} ${styles.dirtLink}`}
+                          className={`${styles.avCourseCard} ${styles.avDirtCard}`}
                         >
                           {`ダート${course.distance}m`}
                         </Link>
@@ -114,12 +114,12 @@ export default function AllVenues() {
 
                 {steeplechaseCourses.length > 0 && (
                   <div className={styles.surfaceGroup}>
-                    <div className={styles.distanceLinks}>
+                    <div className={styles.accordionDistanceLinks}>
                       {steeplechaseCourses.map((course, idx) => (
                         <Link
                           key={`${course.racecourse}-${course.surface}-${course.distance}-${course.variant || idx}`}
                           href={getCourseUrl(course)}
-                          className={`${styles.distanceLink} ${styles.steeplechaseLink}`}
+                          className={`${styles.avCourseCard} ${styles.avSteeplechaseCard}`}
                         >
                           {`障害${course.distance}m`}
                         </Link>

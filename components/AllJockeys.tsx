@@ -5,11 +5,6 @@ import Link from 'next/link';
 import styles from './AllJockeys.module.css';
 import { ALL_JOCKEYS, type JockeyInfo } from '@/lib/jockeys';
 
-interface JockeyGroup {
-  kana: string;
-  jockeys: JockeyInfo[];
-}
-
 // 五十音順グループ化関数（HeaderMenuと同じロジック）
 const getKanaGroup = (kana: string): string => {
   if (!kana) return 'その他';
@@ -69,7 +64,7 @@ export default function AllJockeys() {
       <p className={styles.dataDescription}>過去3年間に30レース以上出走している現役中央騎手のデータを集計しています。</p>
 
       <div className={styles.accordionList}>
-        {jockeysData.map((group, index) => (
+        {jockeysData.map((group) => (
           <div
             key={group.kana}
             className={styles.accordionItem}

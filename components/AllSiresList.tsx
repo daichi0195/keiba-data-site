@@ -1,13 +1,8 @@
 import Link from 'next/link';
-import styles from './SiresList.module.css';
+import styles from './AllSires.module.css';
+import listStyles from './shared-list.module.css';
 import { ALL_SIRES, type SireInfo } from '@/lib/sires';
 
-interface SireGroup {
-  kana: string;
-  sires: SireInfo[];
-}
-
-// 五十音順グループ化関数（カタカナ表記）
 const getKanaGroup = (name: string): string => {
   if (!name) return 'その他';
   const first = name.charAt(0);
@@ -24,7 +19,6 @@ const getKanaGroup = (name: string): string => {
   return 'その他';
 };
 
-// 種牡馬データを五十音順にグループ化
 const siresData = (() => {
   const grouped: Record<string, SireInfo[]> = {};
 
@@ -46,13 +40,14 @@ const siresData = (() => {
     }));
 })();
 
-export default function SiresList() {
+export default function AllSiresList() {
   return (
-    <div className={styles.kanaList}>
+    <div className={listStyles.groupList}>
       {siresData.map((group) => (
-        <div key={group.kana} className={styles.kanaSection}>
-          <h2 className={styles.kanaTitle}>{group.kana}</h2>
-          <div className={styles.dataCardGrid}>
+        <div key={group.kana} className={listStyles.groupSection}>
+          <h2 className={listStyles.groupTitle}>{group.kana}</h2>
+
+          <div className={listStyles.dataCardGrid}>
             {group.sires.map((sire) => (
               <Link
                 key={sire.id}

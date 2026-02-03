@@ -1,52 +1,69 @@
 import Link from 'next/link';
 import styles from './JockeysList.module.css';
-import articleStyles from './article-content.module.css';
-import { ALL_JOCKEYS } from '@/lib/jockeys';
+import { ALL_JOCKEYS, type JockeyInfo } from '@/lib/jockeys';
 
-// 五十音グループ定義
-const KANA_GROUPS = [
-  { id: 'a-gyo', label: 'あ行', pattern: /^[あいうえおぁぃぅぇぉ]/ },
-  { id: 'ka-gyo', label: 'か行', pattern: /^[かきくけこがぎぐげごゃゅょ]/ },
-  { id: 'sa-gyo', label: 'さ行', pattern: /^[さしすせそざじずぜぞ]/ },
-  { id: 'ta-gyo', label: 'た行', pattern: /^[たちつてとだぢづでど]/ },
-  { id: 'na-gyo', label: 'な行', pattern: /^[なにぬねの]/ },
-  { id: 'ha-gyo', label: 'は行', pattern: /^[はひふへほばびぶべぼぱぴぷぺぽ]/ },
-  { id: 'ma-gyo', label: 'ま行', pattern: /^[まみむめも]/ },
-  { id: 'ya-gyo', label: 'や行', pattern: /^[やゆよゃゅょ]/ },
-  { id: 'ra-gyo', label: 'ら行', pattern: /^[らりるれろ]/ },
-  { id: 'wa-gyo', label: 'わ行', pattern: /^[わをん]/ },
-];
+interface JockeyGroup {
+  kana: string;
+  jockeys: JockeyInfo[];
+}
 
-// 騎手を五十音順にグルーピング
-export const jockeysGroupedByKana = KANA_GROUPS.map(group => {
-  const jockeys = ALL_JOCKEYS
-    .filter(jockey => group.pattern.test(jockey.kana))
-    .sort((a, b) => a.kana.localeCompare(b.kana, 'ja'));
+// 五十音順グループ化関数
+const getKanaGroup = (kana: string): string => {
+  if (!kana) return 'その他';
+  const first = kana.charAt(0);
+  if (/[あいうえおアイウエオ]/.test(first)) return 'あ行';
+  if (/[かきくけこがぎぐげごカキクケコガギグゲゴ]/.test(first)) return 'か行';
+  if (/[さしすせそざじずぜぞサシスセソザジズゼゾ]/.test(first)) return 'さ行';
+  if (/[たちつてとだぢづでどタチツテトダヂヅデド]/.test(first)) return 'た行';
+  if (/[なにぬねのナニヌネノ]/.test(first)) return 'な行';
+  if (/[はひふへほばびぶべぼぱぴぷぺぽハヒフヘホバビブベボパピプペポ]/.test(first)) return 'は行';
+  if (/[まみむめもマミムメモ]/.test(first)) return 'ま行';
+  if (/[やゆよヤユヨ]/.test(first)) return 'や行';
+  if (/[らりるれろラリルレロ]/.test(first)) return 'ら行';
+  if (/[わをんワヲン]/.test(first)) return 'わ行';
+  return 'その他';
+};
 
-  return {
-    ...group,
-    jockeys,
-  };
-}).filter(group => group.jockeys.length > 0);
+// 騎手データを五十音順にグループ化
+const jockeysData = (() => {
+  const grouped: Record<string, JockeyInfo[]> = {};
+
+  ALL_JOCKEYS.forEach(jockey => {
+    const group = getKanaGroup(jockey.kana);
+    if (!grouped[group]) {
+      grouped[group] = [];
+    }
+    grouped[group].push(jockey);
+  });
+
+  const kanaOrder = ['あ行', 'か行', 'さ行', 'た行', 'な行', 'は行', 'ま行', 'や行', 'ら行', 'わ行', 'その他'];
+
+  return kanaOrder
+    .filter(kana => grouped[kana])
+    .map(kana => ({
+      kana,
+      jockeys: grouped[kana].sort((a, b) => a.kana.localeCompare(b.kana, 'ja'))
+    }));
+})();
 
 export default function JockeysList() {
   return (
-    <div className={styles.jockeyList}>
-      {jockeysGroupedByKana.map((group) => (
-        <section key={group.id} id={group.id} className={articleStyles.section}>
-          <h2 className={articleStyles.heading}>
-            {group.label}
-          </h2>
-          <ul className={styles.jockeyGrid}>
+    <div className={styles.kanaList}>
+      {jockeysData.map((group) => (
+        <div key={group.kana} className={styles.kanaSection}>
+          <h2 className={styles.kanaTitle}>{group.kana}</h2>
+          <div className={styles.dataCardGrid}>
             {group.jockeys.map((jockey) => (
-              <li key={jockey.id}>
-                <Link href={`/jockeys/${jockey.id}`} className={styles.jockeyLink}>
-                  {jockey.name}
-                </Link>
-              </li>
+              <Link
+                key={jockey.id}
+                href={`/jockeys/${jockey.id}`}
+                className={styles.dataCard}
+              >
+                {jockey.name}
+              </Link>
             ))}
-          </ul>
-        </section>
+          </div>
+        </div>
       ))}
     </div>
   );

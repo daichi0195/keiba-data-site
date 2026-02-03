@@ -5,11 +5,6 @@ import Link from 'next/link';
 import styles from './AllSires.module.css';
 import { ALL_SIRES, type SireInfo } from '@/lib/sires';
 
-interface SireGroup {
-  kana: string;
-  sires: SireInfo[];
-}
-
 // 五十音順グループ化関数（カタカナ表記）
 const getKanaGroup = (name: string): string => {
   if (!name) return 'その他';
@@ -69,7 +64,7 @@ export default function AllSires() {
       <p className={styles.dataDescription}>過去3年間に産駒が50レース以上出走し、かつ産駒が10頭以上いる種牡馬のデータを集計しています。</p>
 
       <div className={styles.accordionList}>
-        {siresData.map((group, index) => (
+        {siresData.map((group) => (
           <div
             key={group.kana}
             className={styles.accordionItem}
