@@ -6,54 +6,6 @@ import Image from 'next/image';
 import { Article } from '@/lib/articles';
 import styles from './ArticleCarousel.module.css';
 
-interface CarouselTitleProps {
-  title: string;
-  className: string;
-}
-
-function CarouselTitle({ title, className }: CarouselTitleProps) {
-  const ref = useRef<HTMLHeadingElement>(null);
-  const [displayTitle, setDisplayTitle] = useState(title);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    const measure = () => {
-      el.textContent = title;
-
-      if (el.scrollHeight <= el.clientHeight) {
-        setDisplayTitle(title);
-        return;
-      }
-
-      // オーバーフローある場合、二分探索で最大収まる文字数を求める
-      let low = 0;
-      let high = title.length;
-      let result = 0;
-
-      while (low <= high) {
-        const mid = Math.floor((low + high) / 2);
-        el.textContent = title.slice(0, mid) + '...';
-        if (el.scrollHeight <= el.clientHeight) {
-          result = mid;
-          low = mid + 1;
-        } else {
-          high = mid - 1;
-        }
-      }
-
-      setDisplayTitle(title.slice(0, result) + '...');
-    };
-
-    measure();
-    window.addEventListener('resize', measure);
-    return () => window.removeEventListener('resize', measure);
-  }, [title]);
-
-  return <h3 ref={ref} className={className}>{displayTitle}</h3>;
-}
-
 interface ArticleCarouselProps {
   articles: Article[];
 }
@@ -192,10 +144,6 @@ export default function ArticleCarousel({ articles }: ArticleCarouselProps) {
                   className={styles.thumbnail}
                   sizes="(max-width: 768px) 100vw, 800px"
                 />
-                <div className={styles.gradientOverlay} />
-                <div className={styles.articleTitleWrapper}>
-                  <CarouselTitle title={article.frontmatter.title} className={styles.articleTitle} />
-                </div>
               </div>
             )}
           </Link>

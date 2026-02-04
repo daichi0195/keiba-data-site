@@ -73,37 +73,6 @@
   object-fit: cover;
 }
 
-.gradientOverlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 70%;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0) 100%);
-  z-index: 1;
-  pointer-events: none;
-}
-
-.articleTitleWrapper {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 1.5rem;
-  z-index: 2;
-}
-
-.articleTitle {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #fff;
-  line-height: 1.4;
-  margin: 0;
-  max-height: 3.5rem;
-  overflow: hidden;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6), 0 1px 3px rgba(0, 0, 0, 0.8);
-}
-
 /* ナビゲーションボタン */
 .navButton {
   position: absolute;
@@ -209,15 +178,6 @@
     flex: 0 0 calc(100vw - 40px);
     scroll-snap-align: start;
     scroll-snap-stop: always;
-  }
-
-  .articleTitleWrapper {
-    padding: 1rem;
-  }
-
-  .articleTitle {
-    font-size: 1rem;
-    max-height: 2.8rem;
   }
 
   .navButton {
