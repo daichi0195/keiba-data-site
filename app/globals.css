@@ -131,22 +131,6 @@ header {
   color: #2d3748;
 }
 
-.content-card .characteristics-box,
-.content-card .chart-container {
-  border: none !important;
-  box-shadow: none !important;
-}
-
-.content-card #highlights-section > .highlights-box {
-  border: none !important;
-  box-shadow: none !important;
-}
-
-.content-card .characteristics-box:hover,
-.content-card #highlights-section > .highlights-box:hover {
-  box-shadow: none !important;
-}
-
 .content-card > :last-child {
   margin-bottom: 0;
 }

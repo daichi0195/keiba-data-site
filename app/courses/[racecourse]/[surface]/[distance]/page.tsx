@@ -788,7 +788,6 @@ export default async function CoursePage({ params }: Props) {
         {/* === コース特性セクション === */}
         <section id="characteristics-section" aria-label="コース特性">
         <BarChartAnimation>
-        <div className="characteristics-box">
           <h2 className="section-title">コース特性</h2>
 
           {/* 荒れやすさ */}
@@ -970,7 +969,6 @@ export default async function CoursePage({ params }: Props) {
               </div>
             </div>
           )}
-        </div>
         </BarChartAnimation>
         </section>
 
