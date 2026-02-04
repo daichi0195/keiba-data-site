@@ -731,24 +731,15 @@ export default async function CoursePage({ params }: Props) {
       />
       <BottomNav items={navigationItems} />
       <main>
-        <article>
-        {/* レース数が少ない場合の警告 */}
-        {course_info.total_races <= 10 && (
-          <div style={{
-            padding: '1rem 1.5rem',
-            background: '#fff3cd',
-            border: '2px solid #ffc107',
-            borderRadius: '8px',
-            color: '#856404',
-            fontSize: '0.95rem',
-            fontWeight: '600',
-            textAlign: 'center',
-            marginBottom: '1rem'
-          }}>
-            <i className="fa-solid fa-triangle-exclamation" style={{ marginRight: '0.5rem' }}></i>
-            対象レース数が少ないコースです
-          </div>
-        )}
+        <div>
+        {/* パンくずリスト */}
+        <nav className="breadcrumb">
+          <Link href="/">HOME</Link>
+          <span> &gt; </span>
+          <Link href="/courses">コース一覧</Link>
+          <span> &gt; </span>
+          <span>{racecourseJa}競馬場 {surfaceJa}{distanceDisplay}m{trackVariantLabel}</span>
+        </nav>
 
         <div className="page-header">
           <h1>{course_info.racecourse} {course_info.surface}{distanceDisplay}m{trackVariantLabel}</h1>
@@ -775,6 +766,25 @@ export default async function CoursePage({ params }: Props) {
           </div>
         </div>
 
+        {/* レース数が少ない場合の警告 */}
+        {course_info.total_races <= 10 && (
+          <div style={{
+            padding: '1rem 1.5rem',
+            background: '#fff3cd',
+            border: '2px solid #ffc107',
+            borderRadius: '8px',
+            color: '#856404',
+            fontSize: '0.95rem',
+            fontWeight: '600',
+            textAlign: 'center',
+            marginBottom: '1rem'
+          }}>
+            <i className="fa-solid fa-triangle-exclamation" style={{ marginRight: '0.5rem' }}></i>
+            対象レース数が少ないコースです
+          </div>
+        )}
+
+        <article className="content-card">
         {/* === コース特性セクション === */}
         <section id="characteristics-section" aria-label="コース特性">
         <BarChartAnimation>
@@ -1163,20 +1173,11 @@ export default async function CoursePage({ params }: Props) {
 </section>
 
         </article>
+        </div>
         {/* PC用：右サイドバー目次 */}
         <TableOfContents items={navigationItems} />
       </main>
 
-      {/* === パンくず（フルワイド） === */}
-      <nav aria-label="パンくずリスト" className="breadcrumb-footer">
-        <ol style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          <li><Link href="/">ホーム</Link></li>
-          <li aria-hidden="true">&gt;</li>
-          <li><Link href="/courses">コース一覧</Link></li>
-          <li aria-hidden="true">&gt;</li>
-          <li aria-current="page">{course_info.racecourse} {course_info.surface}{course_info.distance}m</li>
-        </ol>
-      </nav>
     </>
   );
 }
