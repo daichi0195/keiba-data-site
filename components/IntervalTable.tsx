@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import styles from './GenderTable.module.css'; // GenderTableと同じスタイルを使用
+import styles from './IntervalTable.module.css';
 
 type IntervalRow = {
   interval: string;
@@ -61,7 +61,7 @@ export default function IntervalTable({ title, data }: Props) {
           <table className={styles.table}>
             <thead>
               <tr>
-                <th className={styles.genderCol}>
+                <th className={styles.intervalCol}>
                   レース間隔
                 </th>
                 <th className={styles.scrollCol}>出走数</th>
@@ -81,8 +81,8 @@ export default function IntervalTable({ title, data }: Props) {
                   key={row.interval}
                   className={index % 2 === 0 ? styles.rowEven : styles.rowOdd}
                 >
-                  <td className={styles.genderCol}>
-                    <span className={styles.genderBadge}>
+                  <td className={styles.intervalCol}>
+                    <span className={styles.intervalBadge}>
                       {row.interval}
                     </span>
                   </td>
