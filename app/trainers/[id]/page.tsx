@@ -691,7 +691,7 @@ export default async function TrainerPage({
   }));
 
   // 馬場状態別データをテーブル形式に変換（順位なし）
-  const trackConditionStatsData = trainer.track_condition_stats.map((stat) => {
+  const trackConditionStatsData = (trainer.track_condition_stats || []).map((stat) => {
     // 馬場状態ラベルを短縮
     let shortLabel = stat.condition_label;
     if (shortLabel === '稍重') shortLabel = '稍';
