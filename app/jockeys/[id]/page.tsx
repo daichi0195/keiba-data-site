@@ -667,7 +667,7 @@ export default async function JockeyPage({
   });
 
   // 馬場状態別データ（全カテゴリを表示）
-  const trackConditionSurfaces = ['芝', 'ダート'];
+  const trackConditionSurfaces = ['芝', 'ダート', '障害'];
   const trackConditions = [
     { condition: 'good', condition_label: '良', short_label: '良' },
     { condition: 'yielding', condition_label: '稍重', short_label: '稍' },
@@ -677,13 +677,13 @@ export default async function JockeyPage({
 
   const trackConditionStatsData = trackConditionSurfaces.flatMap(surface => {
     return trackConditions.map(({ condition, condition_label, short_label }) => {
-      // surfaceの短縮形でマッチング（ダート→ダ）
-      const surfaceForMatch = surface === 'ダート' ? 'ダ' : surface;
+      // surfaceの短縮形でマッチング（ダート→ダ、障害→障）
+      const surfaceForMatch = surface === 'ダート' ? 'ダ' : (surface === '障害' ? '障' : surface);
       const existingData = jockey.track_condition_stats.find(
         stat => stat.surface === surfaceForMatch && stat.condition === short_label
       );
 
-      const shortSurface = surface === 'ダート' ? 'ダ' : surface;
+      const shortSurface = surface === 'ダート' ? 'ダ' : (surface === '障害' ? '障' : surface);
 
       if (existingData) {
         return {
