@@ -62,15 +62,17 @@ export default async function HomePage() {
 
           <ThisWeekVenues />
 
-          <AllVenues />
+          <div className="home-content-wrapper">
+            <AllVenues />
 
-          <JockeyLeading data={jockeyLeading} />
+            <JockeyLeading data={jockeyLeading} />
 
-          <SireLeading data={sireLeading} />
+            <SireLeading data={sireLeading} />
 
-          <TrainerLeading data={trainerLeading} />
+            <TrainerLeading data={trainerLeading} />
 
-          <ColumnSection articles={articles} />
+            <ColumnSection articles={articles} />
+          </div>
         </article>
         {/* <TableOfContents /> */}
       </main>

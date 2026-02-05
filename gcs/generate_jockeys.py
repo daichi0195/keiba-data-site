@@ -88,7 +88,11 @@ def get_yearly_stats(client):
       ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
       ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
       ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
-      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback,
+      ROUND(AVG(rr.popularity), 1) as avg_popularity,
+      ROUND(AVG(rr.finish_position), 1) as avg_rank,
+      APPROX_QUANTILES(rr.popularity, 100)[OFFSET(50)] as median_popularity,
+      APPROX_QUANTILES(rr.finish_position, 100)[OFFSET(50)] as median_rank
     FROM
       `{DATASET}.race_master` rm
       JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
@@ -172,7 +176,11 @@ def get_distance_stats(client):
       ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
       ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
       ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
-      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback,
+      ROUND(AVG(rr.popularity), 1) as avg_popularity,
+      ROUND(AVG(rr.finish_position), 1) as avg_rank,
+      APPROX_QUANTILES(rr.popularity, 100)[OFFSET(50)] as median_popularity,
+      APPROX_QUANTILES(rr.finish_position, 100)[OFFSET(50)] as median_rank
     FROM
       `{DATASET}.race_master` rm
       JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
@@ -210,7 +218,11 @@ def get_surface_stats(client):
       ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
       ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
       ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
-      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback,
+      ROUND(AVG(rr.popularity), 1) as avg_popularity,
+      ROUND(AVG(rr.finish_position), 1) as avg_rank,
+      APPROX_QUANTILES(rr.popularity, 100)[OFFSET(50)] as median_popularity,
+      APPROX_QUANTILES(rr.finish_position, 100)[OFFSET(50)] as median_rank
     FROM
       `{DATASET}.race_master` rm
       JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
@@ -257,7 +269,11 @@ def get_popularity_stats(client):
       ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
       ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
       ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
-      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback,
+      ROUND(AVG(rr.popularity), 1) as avg_popularity,
+      ROUND(AVG(rr.finish_position), 1) as avg_rank,
+      APPROX_QUANTILES(rr.popularity, 100)[OFFSET(50)] as median_popularity,
+      APPROX_QUANTILES(rr.finish_position, 100)[OFFSET(50)] as median_rank
     FROM
       `{DATASET}.race_master` rm
       JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
@@ -289,6 +305,7 @@ def get_running_style_stats(client):
         rr.horse_id,
         rr.jockey_id,
         rr.finish_position,
+        rr.popularity,
         rr.win,
         rr.place,
         rm.entry_count,
@@ -306,6 +323,7 @@ def get_running_style_stats(client):
         race_id,
         horse_id,
         finish_position,
+        popularity,
         win,
         place,
         entry_count,
@@ -324,6 +342,7 @@ def get_running_style_stats(client):
         race_id,
         horse_id,
         finish_position,
+        popularity,
         win,
         place,
         entry_count,
@@ -343,6 +362,7 @@ def get_running_style_stats(client):
         race_id,
         horse_id,
         finish_position,
+        popularity,
         win,
         place,
         CASE
@@ -388,7 +408,11 @@ def get_running_style_stats(client):
       ROUND(SAFE_DIVIDE(
         SUM(CASE WHEN finish_position <= 3 THEN COALESCE(place, 0) ELSE 0 END),
         COUNT(*) * 100
-      ) * 100, 1) as place_payback
+      ) * 100, 1) as place_payback,
+      ROUND(AVG(popularity), 1) as avg_popularity,
+      ROUND(AVG(finish_position), 1) as avg_rank,
+      APPROX_QUANTILES(popularity, 100)[OFFSET(50)] as median_popularity,
+      APPROX_QUANTILES(finish_position, 100)[OFFSET(50)] as median_rank
     FROM
       running_style_classified
     WHERE
@@ -427,7 +451,11 @@ def get_gate_stats(client):
       ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
       ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
       ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
-      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback,
+      ROUND(AVG(rr.popularity), 1) as avg_popularity,
+      ROUND(AVG(rr.finish_position), 1) as avg_rank,
+      APPROX_QUANTILES(rr.popularity, 100)[OFFSET(50)] as median_popularity,
+      APPROX_QUANTILES(rr.finish_position, 100)[OFFSET(50)] as median_rank
     FROM
       `{DATASET}.race_master` rm
       JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
@@ -484,7 +512,11 @@ def get_course_stats(client):
         ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
         ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
         ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
-        ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
+        ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback,
+        ROUND(AVG(rr.popularity), 1) as avg_popularity,
+        ROUND(AVG(rr.finish_position), 1) as avg_rank,
+        APPROX_QUANTILES(rr.popularity, 100)[OFFSET(50)] as median_popularity,
+        APPROX_QUANTILES(rr.finish_position, 100)[OFFSET(50)] as median_rank
       FROM
         `{DATASET}.race_master` rm
         JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
@@ -545,7 +577,11 @@ def get_course_stats(client):
       quinella_rate,
       place_rate,
       win_payback,
-      place_payback
+      place_payback,
+      avg_popularity,
+      avg_rank,
+      median_popularity,
+      median_rank
     FROM course_data
     ORDER BY
       CASE surface
@@ -589,7 +625,11 @@ def get_trainer_stats(client):
         ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
         ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
         ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
-        ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
+        ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback,
+        ROUND(AVG(rr.popularity), 1) as avg_popularity,
+        ROUND(AVG(rr.finish_position), 1) as avg_rank,
+        APPROX_QUANTILES(rr.popularity, 100)[OFFSET(50)] as median_popularity,
+        APPROX_QUANTILES(rr.finish_position, 100)[OFFSET(50)] as median_rank
       FROM
         `{DATASET}.race_master` rm
         JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
@@ -612,7 +652,11 @@ def get_trainer_stats(client):
       quinella_rate,
       place_rate,
       win_payback,
-      place_payback
+      place_payback,
+      avg_popularity,
+      avg_rank,
+      median_popularity,
+      median_rank
     FROM trainer_data
     ORDER BY wins DESC, win_rate DESC
     LIMIT 50
@@ -652,7 +696,11 @@ def get_class_stats(client):
         ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
         ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
         ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
-        ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
+        ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback,
+        ROUND(AVG(rr.popularity), 1) as avg_popularity,
+        ROUND(AVG(rr.finish_position), 1) as avg_rank,
+        APPROX_QUANTILES(rr.popularity, 100)[OFFSET(50)] as median_popularity,
+        APPROX_QUANTILES(rr.finish_position, 100)[OFFSET(50)] as median_rank
       FROM
         `{DATASET}.race_master` rm
         JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
@@ -686,7 +734,11 @@ def get_class_stats(client):
       quinella_rate,
       place_rate,
       win_payback,
-      place_payback
+      place_payback,
+      avg_popularity,
+      avg_rank,
+      median_popularity,
+      median_rank
     FROM class_data
     ORDER BY
       CASE class_name
@@ -730,7 +782,11 @@ def get_track_condition_stats(client):
       ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
       ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
       ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
-      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback,
+      ROUND(AVG(rr.popularity), 1) as avg_popularity,
+      ROUND(AVG(rr.finish_position), 1) as avg_rank,
+      APPROX_QUANTILES(rr.popularity, 100)[OFFSET(50)] as median_popularity,
+      APPROX_QUANTILES(rr.finish_position, 100)[OFFSET(50)] as median_rank
     FROM
       `{DATASET}.race_master` rm
       JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
@@ -784,7 +840,11 @@ def get_gender_stats(client):
       ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
       ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
       ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
-      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback,
+      ROUND(AVG(rr.popularity), 1) as avg_popularity,
+      ROUND(AVG(rr.finish_position), 1) as avg_rank,
+      APPROX_QUANTILES(rr.popularity, 100)[OFFSET(50)] as median_popularity,
+      APPROX_QUANTILES(rr.finish_position, 100)[OFFSET(50)] as median_rank
     FROM
       `{DATASET}.race_master` rm
       JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
@@ -836,7 +896,11 @@ def get_racecourse_stats(client):
       ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
       ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
       ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
-      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
+      ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback,
+      ROUND(AVG(rr.popularity), 1) as avg_popularity,
+      ROUND(AVG(rr.finish_position), 1) as avg_rank,
+      APPROX_QUANTILES(rr.popularity, 100)[OFFSET(50)] as median_popularity,
+      APPROX_QUANTILES(rr.finish_position, 100)[OFFSET(50)] as median_rank
     FROM
       `{DATASET}.race_master` rm
       JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
@@ -869,7 +933,11 @@ def get_owner_stats(client):
         ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
         ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
         ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
-        ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
+        ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback,
+        ROUND(AVG(rr.popularity), 1) as avg_popularity,
+        ROUND(AVG(rr.finish_position), 1) as avg_rank,
+        APPROX_QUANTILES(rr.popularity, 100)[OFFSET(50)] as median_popularity,
+        APPROX_QUANTILES(rr.finish_position, 100)[OFFSET(50)] as median_rank
       FROM
         `{DATASET}.race_master` rm
         JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
@@ -891,7 +959,11 @@ def get_owner_stats(client):
       quinella_rate,
       place_rate,
       win_payback,
-      place_payback
+      place_payback,
+      avg_popularity,
+      avg_rank,
+      median_popularity,
+      median_rank
     FROM owner_data
     ORDER BY wins DESC, win_rate DESC
     LIMIT 50
