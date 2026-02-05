@@ -284,7 +284,7 @@ export default function JockeyLeadingChart({ title, data, children }: JockeyLead
   }, [data, animationProgress]);
 
   return (
-    <div className={styles.container}>
+    <div>
       <h2 className="section-title">{title}</h2>
 
       {/* 凡例 */}

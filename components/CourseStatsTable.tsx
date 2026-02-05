@@ -22,6 +22,10 @@ type CourseData = {
   quinella_rate: number;
   win_payback: number;
   place_payback: number;
+  avg_popularity?: number;
+  avg_rank?: number;
+  median_popularity?: number;
+  median_rank?: number;
   link: string;
 };
 
@@ -151,6 +155,10 @@ export default function CourseStatsTable({ title, data }: Props) {
                           <th className={styles.scrollCol}>複勝率</th>
                           <th className={styles.scrollCol}>単勝回収率</th>
                           <th className={styles.scrollCol}>複勝回収率</th>
+                          <th className={styles.scrollCol} style={{ width: '80px', minWidth: '80px' }}>平均人気</th>
+                          <th className={styles.scrollCol} style={{ width: '80px', minWidth: '80px' }}>平均着順</th>
+                          <th className={styles.scrollCol} style={{ width: '80px', minWidth: '80px' }}>人気中央値</th>
+                          <th className={styles.scrollCol} style={{ width: '80px', minWidth: '80px' }}>着順中央値</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -208,6 +216,18 @@ export default function CourseStatsTable({ title, data }: Props) {
                               <span className={isHighlight(course.place_payback ?? 0, maxValues.maxPlacePayback) ? styles.highlight : ''}>
                                 {(course.place_payback ?? 0).toFixed(1)}%
                               </span>
+                            </td>
+                            <td className={styles.scrollCol} style={{ width: '80px', minWidth: '80px' }}>
+                              <span>{course.avg_popularity !== undefined ? course.avg_popularity.toFixed(1) : '-'}</span>
+                            </td>
+                            <td className={styles.scrollCol} style={{ width: '80px', minWidth: '80px' }}>
+                              <span>{course.avg_rank !== undefined ? course.avg_rank.toFixed(1) : '-'}</span>
+                            </td>
+                            <td className={styles.scrollCol} style={{ width: '80px', minWidth: '80px' }}>
+                              <span>{course.median_popularity !== undefined ? Math.round(course.median_popularity) : '-'}</span>
+                            </td>
+                            <td className={styles.scrollCol} style={{ width: '80px', minWidth: '80px' }}>
+                              <span>{course.median_rank !== undefined ? Math.round(course.median_rank) : '-'}</span>
                             </td>
                           </tr>
                         ))}
