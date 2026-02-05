@@ -15,7 +15,7 @@ export default function XBanner() {
 
   return (
     <a
-      href="https://x.com/your_account"
+      href="https://x.com/daichikeibadata"
       target="_blank"
       rel="noopener noreferrer"
       className={`${styles.banner} ${isLoaded ? styles.loaded : ''}`}

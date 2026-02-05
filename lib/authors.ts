@@ -21,7 +21,7 @@ export const AUTHORS: Record<string, Author> = {
     name: 'ダイチ',
     image: '/images/authors/daichi.jpg', // public/images/authors/daichi.jpg に配置
     bio: '競馬とサウナが好きな27歳🐴<br>好きな馬はグランアレグリア。菱田Jを応援しています！<br>一口馬主はじめました✌️',
-    twitter: 'https://twitter.com/your_account', // XのURLに置き換えてください
+    twitter: 'https://x.com/daichikeibadata', // XのURL
     rss: '/rss.xml', // RSSフィードのURLに置き換えてください
     aboutUrl: '/about', // サイト情報・運営者情報ページのURL
   },
