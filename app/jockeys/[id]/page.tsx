@@ -677,8 +677,10 @@ export default async function JockeyPage({
 
   const trackConditionStatsData = trackConditionSurfaces.flatMap(surface => {
     return trackConditions.map(({ condition, condition_label, short_label }) => {
+      // surfaceの短縮形でマッチング（ダート→ダ）
+      const surfaceForMatch = surface === 'ダート' ? 'ダ' : surface;
       const existingData = jockey.track_condition_stats.find(
-        stat => stat.surface === surface && stat.condition === condition
+        stat => stat.surface === surfaceForMatch && stat.condition === short_label
       );
 
       const shortSurface = surface === 'ダート' ? 'ダ' : surface;

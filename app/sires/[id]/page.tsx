@@ -231,10 +231,10 @@ export default async function SirePage({
 
   // 馬場状態別データ（全カテゴリを表示）
   const allTrackConditions = [
-    { condition: 'good', condition_label: '良' },
-    { condition: 'yielding', condition_label: '稍重' },
-    { condition: 'soft', condition_label: '重' },
-    { condition: 'heavy', condition_label: '不良' }
+    { condition: '良', condition_label: '良' },
+    { condition: '稍', condition_label: '稍重' },
+    { condition: '重', condition_label: '重' },
+    { condition: '不', condition_label: '不良' }
   ];
 
   const turfConditionStatsData = allTrackConditions.map(({ condition, condition_label }) => {
@@ -350,10 +350,10 @@ export default async function SirePage({
 
   // 芝馬場状態別傾向を計算（良 vs 重・不良の複勝率差から判定）
   const turfGoodConditions = sire.track_condition_stats.filter(s =>
-    s.surface === '芝' && s.condition === 'good'
+    s.surface === '芝' && s.condition === '良'
   );
   const turfBadConditions = sire.track_condition_stats.filter(s =>
-    s.surface === '芝' && (s.condition === 'soft' || s.condition === 'heavy')
+    s.surface === '芝' && (s.condition === '重' || s.condition === '不')
   );
 
   let turfConditionTrendPosition = 3; // デフォルトは互角
@@ -379,10 +379,10 @@ export default async function SirePage({
 
   // ダート馬場状態別傾向を計算（良 vs 重・不良の複勝率差から判定）
   const dirtGoodConditions = sire.track_condition_stats.filter(s =>
-    s.surface === 'ダート' && s.condition === 'good'
+    s.surface === 'ダート' && s.condition === '良'
   );
   const dirtBadConditions = sire.track_condition_stats.filter(s =>
-    s.surface === 'ダート' && (s.condition === 'soft' || s.condition === 'heavy')
+    s.surface === 'ダート' && (s.condition === '重' || s.condition === '不')
   );
 
   let dirtConditionTrendPosition = 3; // デフォルトは互角
@@ -409,10 +409,10 @@ export default async function SirePage({
   // 馬場状態別データをテーブル形式に変換（全ての馬場状態を表示）
   const trackConditionSurfaces = ['芝', 'ダート', '障害'];
   const trackConditions = [
-    { condition: 'good', condition_label: '良', short_label: '良' },
-    { condition: 'yielding', condition_label: '稍重', short_label: '稍' },
-    { condition: 'soft', condition_label: '重', short_label: '重' },
-    { condition: 'heavy', condition_label: '不良', short_label: '不' }
+    { condition: '良', condition_label: '良', short_label: '良' },
+    { condition: '稍', condition_label: '稍重', short_label: '稍' },
+    { condition: '重', condition_label: '重', short_label: '重' },
+    { condition: '不', condition_label: '不良', short_label: '不' }
   ];
 
   const trackConditionStatsData = trackConditionSurfaces.flatMap(surface => {
