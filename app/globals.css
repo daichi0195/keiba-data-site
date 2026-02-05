@@ -112,12 +112,22 @@ header {
 }
 
 /* コンテンツカード */
-.content-card .section,
-.content-card > section {
+.content-card {
   background: #fff;
-  border-radius: 12px;
+  border-radius: 6px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   padding: 12px;
+}
+
+.content-card .section,
+.content-card > section {
+  background: transparent;
+  padding: 0 0 12px 0;
+  margin-bottom: 12px;
+}
+
+.content-card > section:last-child {
+  margin-bottom: 0;
 }
 
 .content-card .section-title {
@@ -129,6 +139,19 @@ header {
   font-size: 16px;
   font-weight: 700;
   color: #2d3748;
+}
+
+.content-card #highlights-section > .highlights-box {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.content-card #highlights-section > .highlights-box:hover {
+  box-shadow: none !important;
 }
 
 .content-card > :last-child {
@@ -381,7 +404,7 @@ main:not(.page_articleMain__GmN3G) {
 /* ページヘッダー（コース、騎手など共通） */
 .page-header {
   background: linear-gradient(135deg, #0d5c2f 0%, #1db854 50%, #2ed963 100%);
-  border-radius: 16px;
+  border-radius: 6px;
   padding: 12px;
   margin: 0 0 1rem 0;
   box-shadow: 0 12px 48px rgba(13, 92, 47, 0.25);
@@ -433,7 +456,7 @@ main:not(.page_articleMain__GmN3G) {
 .page-header h1 {
   color: #fff;
   font-size: 2rem;
-  margin: 0 0 1.5rem 0;
+  margin: 0 0 12px 0;
   position: relative;
   z-index: 2;
   font-weight: 800;
@@ -463,7 +486,7 @@ main:not(.page_articleMain__GmN3G) {
   background: rgba(255, 255, 255, 0.12);
   padding: 1rem;
   border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 12px;
+  border-radius: 6px;
   backdrop-filter: blur(12px);
   font-size: 0.85rem;
   gap: 0.4rem;
@@ -653,7 +676,12 @@ main:not(.page_articleMain__GmN3G) {
 }
 
 .highlight-item {
-  margin-bottom: 2rem;
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
+.highlight-item:first-child {
+  margin-top: 0;
 }
 
 .highlight-item:last-child {
@@ -895,7 +923,7 @@ main:not(.page_articleMain__GmN3G) {
   display: inline-block;
   padding: 0.625rem;
   text-decoration: none;
-  border-radius: 8px;
+  border-radius: 6px;
   transition: all 0.2s ease;
   border: 1px solid;
   text-align: center;
@@ -2819,10 +2847,26 @@ h3.subsection-title:first-of-type {
 
   .content-card .section,
   .content-card > section {
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    padding: 12px;
+    background: transparent;
+    padding: 0 0 12px 0;
+    margin-bottom: 12px;
+  }
+
+  .content-card > section:last-child {
+    margin-bottom: 0;
+  }
+
+  .content-card #highlights-section > .highlights-box {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  .content-card #highlights-section > .highlights-box:hover {
+    box-shadow: none !important;
   }
 
   .section-full-width {
@@ -2861,7 +2905,7 @@ h3.subsection-title:first-of-type {
 
   .page-header h1 {
     font-size: 1.3rem;
-    margin: 0 0 1rem 0;
+    margin: 0 0 12px 0;
   }
 
   .course-meta-section {
@@ -2889,7 +2933,7 @@ h3.subsection-title:first-of-type {
     gap: 0.3rem;
     padding: 0.9rem;
     border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 12px;
+    border-radius: 6px;
     background: rgba(255, 255, 255, 0.12);
     backdrop-filter: blur(12px);
     text-align: left;
