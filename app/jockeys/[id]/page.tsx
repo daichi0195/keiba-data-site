@@ -825,7 +825,16 @@ export default async function JockeyPage({
       />
       <BottomNav items={navigationItems} />
       <main>
-        <article>
+        <div>
+          {/* パンくずリスト */}
+          <nav className="breadcrumb">
+            <Link href="/">HOME</Link>
+            <span> &gt; </span>
+            <Link href="/jockeys">騎手一覧</Link>
+            <span> &gt; </span>
+            <span>{jockey.name}</span>
+          </nav>
+
           {/* 騎手ヘッダー */}
           <div className="page-header">
             <h1>{jockey.name}騎手の成績・データ</h1>
@@ -852,6 +861,7 @@ export default async function JockeyPage({
             </div>
           </div>
 
+          <article className="content-card">
           {/* 年度別成績セクション */}
           <section id="leading" aria-label="年度別成績">
             <JockeyLeadingChart
@@ -878,7 +888,6 @@ export default async function JockeyPage({
           {/* 騎手特徴セクション */}
           <section id="characteristics" aria-label="騎手特徴">
             <BarChartAnimation>
-              <div className="characteristics-box">
                 <h2 className="section-title">{jockey.name}騎手の特徴</h2>
 
                 {/* 人気時の信頼度 */}
@@ -1123,7 +1132,6 @@ export default async function JockeyPage({
                     </div>
                 </div>
 
-              </div>
             </BarChartAnimation>
           </section>
 
@@ -1239,20 +1247,10 @@ export default async function JockeyPage({
             />
           </section>
         </article>
+        </div>
         {/* PC用：右サイドバー目次 */}
         <TableOfContents items={navigationItems} />
       </main>
-
-      {/* パンくず（フッター） */}
-      <nav aria-label="パンくずリスト" className="breadcrumb-footer">
-        <ol style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          <li><Link href="/">ホーム</Link></li>
-          <li aria-hidden="true">&gt;</li>
-          <li><Link href="/jockeys">騎手一覧</Link></li>
-          <li aria-hidden="true">&gt;</li>
-          <li aria-current="page">{jockey.name}</li>
-        </ol>
-      </nav>
     </>
   );
 }

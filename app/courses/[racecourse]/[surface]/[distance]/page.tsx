@@ -1068,10 +1068,10 @@ export default async function CoursePage({ params }: Props) {
 {/* === 他のコースデータ一覧 === */}
 <section id="other-courses-section" className="section" aria-label="他のコースデータ一覧" style={{ margin: 0 }}>
   <h2 className="section-title" style={{ marginBottom: '1rem' }}>{courseShort}競馬場のコースデータ一覧</h2>
-  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
     {/* 芝コース */}
     {ALL_COURSES.filter(course => course.racecourse === resolvedParams.racecourse && course.surface === 'turf').length > 0 && (
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
         {ALL_COURSES
           .filter(course => course.racecourse === resolvedParams.racecourse && course.surface === 'turf')
           .sort((a, b) => {
@@ -1080,23 +1080,24 @@ export default async function CoursePage({ params }: Props) {
             return (variantOrder[a.variant as keyof typeof variantOrder] || 0) - (variantOrder[b.variant as keyof typeof variantOrder] || 0);
           })
           .map(course => (
-            <Link key={`${course.surface}-${course.distance}-${course.variant || 'default'}`} href={getCourseUrl(course)} style={{ textDecoration: 'none' }}>
-              <div style={{
-                background: '#e2f7eb',
-                border: '1px solid #bbe7d3',
-                color: '#0c532a',
-                padding: '6px 12px',
-                borderRadius: '4px',
-                textAlign: 'center',
-                fontSize: '13px',
-                fontWeight: '500',
-                transition: 'all 0.2s ease',
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-                boxSizing: 'border-box'
-              }}>
-                {getCourseDisplayName(course)}
-              </div>
+            <Link key={`${course.surface}-${course.distance}-${course.variant || 'default'}`} href={getCourseUrl(course)} style={{
+              display: 'inline-block',
+              padding: '9px 14px',
+              textDecoration: 'none',
+              borderRadius: '4px',
+              fontSize: '16px',
+              fontWeight: '500',
+              transition: 'all 0.2s ease',
+              border: '1px solid #3db866',
+              textAlign: 'center',
+              boxSizing: 'border-box',
+              whiteSpace: 'nowrap',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.12)',
+              lineHeight: '1',
+              background: '#3db866',
+              color: '#fff'
+            }}>
+              {getCourseDisplayName(course)}
             </Link>
           ))}
       </div>
@@ -1104,7 +1105,7 @@ export default async function CoursePage({ params }: Props) {
 
     {/* ダートコース */}
     {ALL_COURSES.filter(course => course.racecourse === resolvedParams.racecourse && course.surface === 'dirt').length > 0 && (
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
         {ALL_COURSES
           .filter(course => course.racecourse === resolvedParams.racecourse && course.surface === 'dirt')
           .sort((a, b) => {
@@ -1113,23 +1114,24 @@ export default async function CoursePage({ params }: Props) {
             return (variantOrder[a.variant as keyof typeof variantOrder] || 0) - (variantOrder[b.variant as keyof typeof variantOrder] || 0);
           })
           .map(course => (
-            <Link key={`${course.surface}-${course.distance}-${course.variant || 'default'}`} href={getCourseUrl(course)} style={{ textDecoration: 'none' }}>
-              <div style={{
-                background: '#fde9d7',
-                border: '1px solid #ffd7ae',
-                color: '#633d1e',
-                padding: '6px 12px',
-                borderRadius: '4px',
-                textAlign: 'center',
-                fontSize: '13px',
-                fontWeight: '500',
-                transition: 'all 0.2s ease',
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-                boxSizing: 'border-box'
-              }}>
-                {getCourseDisplayName(course)}
-              </div>
+            <Link key={`${course.surface}-${course.distance}-${course.variant || 'default'}`} href={getCourseUrl(course)} style={{
+              display: 'inline-block',
+              padding: '9px 14px',
+              textDecoration: 'none',
+              borderRadius: '4px',
+              fontSize: '16px',
+              fontWeight: '500',
+              transition: 'all 0.2s ease',
+              border: '1px solid #b89066',
+              textAlign: 'center',
+              boxSizing: 'border-box',
+              whiteSpace: 'nowrap',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.12)',
+              lineHeight: '1',
+              background: '#b89066',
+              color: '#fff'
+            }}>
+              {getCourseDisplayName(course)}
             </Link>
           ))}
       </div>
@@ -1137,7 +1139,7 @@ export default async function CoursePage({ params }: Props) {
 
     {/* 障害コース */}
     {ALL_COURSES.filter(course => course.racecourse === resolvedParams.racecourse && course.surface === 'steeplechase').length > 0 && (
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
         {ALL_COURSES
           .filter(course => course.racecourse === resolvedParams.racecourse && course.surface === 'steeplechase')
           .sort((a, b) => {
@@ -1146,23 +1148,24 @@ export default async function CoursePage({ params }: Props) {
             return (variantOrder[a.variant as keyof typeof variantOrder] || 0) - (variantOrder[b.variant as keyof typeof variantOrder] || 0);
           })
           .map(course => (
-            <Link key={`${course.surface}-${course.distance}-${course.variant || 'default'}`} href={getCourseUrl(course)} style={{ textDecoration: 'none' }}>
-              <div style={{
-                background: '#f2f2f2',
-                border: '1px solid #c0c0c0',
-                color: '#4a4a4a',
-                padding: '6px 12px',
-                borderRadius: '4px',
-                textAlign: 'center',
-                fontSize: '13px',
-                fontWeight: '500',
-                transition: 'all 0.2s ease',
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-                boxSizing: 'border-box'
-              }}>
-                {getCourseDisplayName(course)}
-              </div>
+            <Link key={`${course.surface}-${course.distance}-${course.variant || 'default'}`} href={getCourseUrl(course)} style={{
+              display: 'inline-block',
+              padding: '9px 14px',
+              textDecoration: 'none',
+              borderRadius: '4px',
+              fontSize: '16px',
+              fontWeight: '500',
+              transition: 'all 0.2s ease',
+              border: '1px solid #838b97',
+              textAlign: 'center',
+              boxSizing: 'border-box',
+              whiteSpace: 'nowrap',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.12)',
+              lineHeight: '1',
+              background: '#838b97',
+              color: '#fff'
+            }}>
+              {getCourseDisplayName(course)}
             </Link>
           ))}
       </div>

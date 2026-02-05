@@ -934,7 +934,16 @@ export default async function TrainerPage({
       />
       <BottomNav items={navigationItems} />
       <main>
-        <article>
+        <div>
+          {/* パンくずリスト */}
+          <nav className="breadcrumb">
+            <Link href="/">HOME</Link>
+            <span> &gt; </span>
+            <Link href="/trainers">調教師一覧</Link>
+            <span> &gt; </span>
+            <span>{trainer.name}</span>
+          </nav>
+
           {/* 調教師ヘッダー */}
           <div className="page-header">
             <h1>{trainer.name}調教師の成績・データ</h1>
@@ -961,6 +970,7 @@ export default async function TrainerPage({
             </div>
           </div>
 
+          <article className="content-card">
           {/* 年度別成績セクション */}
           <section id="leading" aria-label="年度別成績">
             <JockeyLeadingChart
@@ -987,7 +997,6 @@ export default async function TrainerPage({
           {trainer.characteristics && (
             <section id="characteristics" aria-label="調教師特徴">
               <BarChartAnimation>
-                <div className="characteristics-box">
                 <h2 className="section-title">{trainer.name}調教師の特徴</h2>
 
                 {/* 得意なコース傾向 */}
@@ -1110,7 +1119,6 @@ export default async function TrainerPage({
                   </div>
                 )}
 
-                </div>
               </BarChartAnimation>
             </section>
           )}
@@ -1204,20 +1212,10 @@ export default async function TrainerPage({
             />
           </section>
         </article>
+        </div>
         {/* PC用：右サイドバー目次 */}
         <TableOfContents items={navigationItems} />
       </main>
-
-      {/* パンくず（フッター） */}
-      <nav aria-label="パンくずリスト" className="breadcrumb-footer">
-        <ol style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          <li><Link href="/">ホーム</Link></li>
-          <li aria-hidden="true">&gt;</li>
-          <li><Link href="/trainers">調教師データ</Link></li>
-          <li aria-hidden="true">&gt;</li>
-          <li aria-current="page">{trainer.name}</li>
-        </ol>
-      </nav>
     </>
   );
 }

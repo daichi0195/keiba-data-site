@@ -162,8 +162,7 @@ header {
 main:not(.page_articleMain__GmN3G) {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 12px;
-  padding-bottom: 2rem; /* 下部ナビゲーション分の余白 */
+  padding: 16px 12px;
 }
 
 /* PC表示時：中央配置 + 左右サイドバー */
@@ -172,8 +171,7 @@ main:not(.page_articleMain__GmN3G) {
     display: grid;
     grid-template-columns: 280px minmax(0, 700px) 280px;
     gap: 1.5rem;
-    padding: 1rem;
-    padding-bottom: 2rem;
+    padding: 16px 1rem;
     max-width: 1400px;
     margin: 0 auto; /* 中央配置 */
     width: 100%;
@@ -197,7 +195,7 @@ main:not(.page_articleMain__GmN3G) {
 
   /* ヘッダーサイズの調整 */
   .page-header h1 {
-    font-size: 2.25rem;
+    font-size: 22px;
   }
 
   h2.section-title {
@@ -455,7 +453,7 @@ main:not(.page_articleMain__GmN3G) {
 
 .page-header h1 {
   color: #fff;
-  font-size: 2rem;
+  font-size: 22px;
   margin: 0 0 12px 0;
   position: relative;
   z-index: 2;
@@ -1171,7 +1169,7 @@ main:not(.page_articleMain__GmN3G) {
   gap: 0.75rem;
   background: #f8fafc;
   padding: 1rem;
-  border-radius: 8px;
+  border-radius: 6px;
   border: none;
 }
 
@@ -1307,9 +1305,9 @@ details[open] .evaluation-content {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  background: #fff;
+  background: #f8fafc;
   padding: 24px 1rem;
-  border-radius: 12px;
+  border-radius: 6px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
@@ -1426,7 +1424,7 @@ details[open] .evaluation-content {
   gap: 0.75rem;
   background: #f8fafc;
   padding: 1rem;
-  border-radius: 8px;
+  border-radius: 6px;
 }
 
 .running-style-detail-title {
@@ -1506,7 +1504,7 @@ details[open] .evaluation-content {
   gap: 0.75rem;
   background: #f8fafc;
   padding: 1rem;
-  border-radius: 8px;
+  border-radius: 6px;
   margin-top: 1.5rem;
 }
 
@@ -2904,7 +2902,7 @@ h3.subsection-title:first-of-type {
   }
 
   .page-header h1 {
-    font-size: 1.3rem;
+    font-size: 22px;
     margin: 0 0 12px 0;
   }
 
@@ -2970,6 +2968,12 @@ h3.subsection-title:first-of-type {
 
   #highlights-section > .highlights-box {
     padding: 1.25rem;
+  }
+
+  /* 他のコースデータ一覧 - SP対応 */
+  #other-courses-section a {
+    font-size: 14px !important;
+    padding: 6px 10px !important;
   }
 }
 

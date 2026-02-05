@@ -851,7 +851,16 @@ export default async function SirePage({
     <>
       <BottomNav items={navigationItems} />
       <main>
-        <article>
+        <div>
+          {/* パンくずリスト */}
+          <nav className="breadcrumb">
+            <Link href="/">HOME</Link>
+            <span> &gt; </span>
+            <Link href="/sires">種牡馬一覧</Link>
+            <span> &gt; </span>
+            <span>{sire.name}</span>
+          </nav>
+
           {/* 種牡馬ヘッダー */}
           <div className="page-header">
             <h1>{sire.name}産駒の成績・データ</h1>
@@ -878,6 +887,7 @@ export default async function SirePage({
             </div>
           </div>
 
+          <article className="content-card">
           {/* 年度別成績セクション */}
           <section id="leading" aria-label="年度別成績">
             <JockeyLeadingChart
@@ -904,7 +914,6 @@ export default async function SirePage({
           {/* 種牡馬特徴セクション */}
           <section id="characteristics" aria-label="種牡馬特徴">
             <BarChartAnimation>
-              <div className="characteristics-box">
                 <h2 className="section-title">{sire.name}産駒の特徴</h2>
 
                 {/* 得意なコース傾向 */}
@@ -1156,7 +1165,6 @@ export default async function SirePage({
                   </div>
                 </div>
 
-              </div>
             </BarChartAnimation>
           </section>
 
@@ -1378,20 +1386,10 @@ export default async function SirePage({
             />
           </section>
         </article>
+        </div>
         {/* PC用：右サイドバー目次 */}
         <TableOfContents items={navigationItems} />
       </main>
-
-      {/* パンくず（フッター） */}
-      <nav aria-label="パンくずリスト" className="breadcrumb-footer">
-        <ol style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          <li><Link href="/">ホーム</Link></li>
-          <li aria-hidden="true">&gt;</li>
-          <li><Link href="/sires">種牡馬一覧</Link></li>
-          <li aria-hidden="true">&gt;</li>
-          <li aria-current="page">{sire.name}</li>
-        </ol>
-      </nav>
     </>
   );
 }
