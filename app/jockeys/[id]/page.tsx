@@ -316,16 +316,29 @@ export default async function JockeyPage({
     });
   })();
 
-  // 距離別データをテーブル形式に変換（全カテゴリを表示）
+  // 距離別データをテーブル形式に変換（GCSデータをそのまま使用）
   const allDistanceCategories = ['短距離', 'マイル', '中距離', '長距離'];
-  const distanceStatsRaw = allDistanceCategories.map(category => {
-    // 既存データを検索（中長距離は長距離に含める）
-    const stats = jockey.distance_stats.filter(stat => {
-      if (stat.category === '中長距離') return category === '長距離';
-      return stat.category === category;
-    });
-
-    if (stats.length === 0) {
+  const distanceStatsData = allDistanceCategories.map(category => {
+    const existingData = jockey.distance_stats.find(stat => stat.category === category);
+    if (existingData) {
+      return {
+        name: existingData.category,
+        category: existingData.category,
+        races: existingData.races,
+        wins: existingData.wins,
+        places_2: existingData.places_2,
+        places_3: existingData.places_3,
+        win_rate: existingData.win_rate,
+        quinella_rate: existingData.quinella_rate,
+        place_rate: existingData.place_rate,
+        win_payback: existingData.win_payback,
+        place_payback: existingData.place_payback,
+        avg_popularity: existingData.avg_popularity,
+        avg_rank: existingData.avg_rank,
+        median_popularity: existingData.median_popularity,
+        median_rank: existingData.median_rank,
+      };
+    } else {
       // データがない場合は0で埋める
       return {
         name: category,
@@ -339,37 +352,13 @@ export default async function JockeyPage({
         place_rate: 0,
         win_payback: 0,
         place_payback: 0,
+        avg_popularity: undefined,
+        avg_rank: undefined,
+        median_popularity: undefined,
+        median_rank: undefined,
       };
     }
-
-    // データを統合（中長距離と長距離をマージ）
-    const totalRaces = stats.reduce((sum, s) => sum + s.races, 0);
-    const totalWins = stats.reduce((sum, s) => sum + s.wins, 0);
-    const totalPlaces2 = stats.reduce((sum, s) => sum + s.places_2, 0);
-    const totalPlaces3 = stats.reduce((sum, s) => sum + s.places_3, 0);
-
-    return {
-      name: category,
-      category: category,
-      races: totalRaces,
-      wins: totalWins,
-      places_2: totalPlaces2,
-      places_3: totalPlaces3,
-      win_rate: 0, // 後で再計算
-      quinella_rate: 0,
-      place_rate: 0,
-      win_payback: totalRaces > 0 ? stats.reduce((sum, s) => sum + (s.win_payback * s.races), 0) / totalRaces : 0,
-      place_payback: totalRaces > 0 ? stats.reduce((sum, s) => sum + (s.place_payback * s.races), 0) / totalRaces : 0,
-    };
   });
-
-  // 勝率・連対率・複勝率を再計算
-  const distanceStatsData = distanceStatsRaw.map(stat => ({
-    ...stat,
-    win_rate: stat.races > 0 ? (stat.wins / stat.races) * 100 : 0,
-    quinella_rate: stat.races > 0 ? ((stat.wins + stat.places_2) / stat.races) * 100 : 0,
-    place_rate: stat.races > 0 ? ((stat.wins + stat.places_2 + stat.places_3) / stat.races) * 100 : 0,
-  }));
 
   // 芝・ダート・障害別データをテーブル形式に変換（全カテゴリを表示）
   const allSurfaces = ['芝', 'ダート', '障害'];
@@ -387,6 +376,10 @@ export default async function JockeyPage({
         place_rate: existingData.place_rate,
         win_payback: existingData.win_payback,
         place_payback: existingData.place_payback,
+        avg_popularity: existingData.avg_popularity,
+        avg_rank: existingData.avg_rank,
+        median_popularity: existingData.median_popularity,
+        median_rank: existingData.median_rank,
       };
     } else {
       return {
@@ -400,80 +393,18 @@ export default async function JockeyPage({
         place_rate: 0,
         win_payback: 0,
         place_payback: 0,
+        avg_popularity: undefined,
+        avg_rank: undefined,
+        median_popularity: undefined,
+        median_rank: undefined,
       };
     }
   });
 
-  // 芝・ダートの得意傾向を計算（複勝率の差から判定）
-  const turfStat = jockey.surface_stats.find(s => s.surface === '芝');
-  const dirtStat = jockey.surface_stats.find(s => s.surface === 'ダート');
-  let surfaceTrendPosition = 3; // デフォルトは互角
-  if (turfStat && dirtStat) {
-    const diff = turfStat.place_rate - dirtStat.place_rate;
-    if (diff >= 5) surfaceTrendPosition = 5; // 芝が得意
-    else if (diff >= 2) surfaceTrendPosition = 4; // やや芝が得意
-    else if (diff <= -5) surfaceTrendPosition = 1; // ダートが得意
-    else if (diff <= -2) surfaceTrendPosition = 2; // ややダートが得意
-    else surfaceTrendPosition = 3; // 互角
-  }
-
-  // 得意な脚質傾向を計算（逃げ・先行 vs 差し・追込の複勝率差から判定）
-  const frontRunners = jockey.running_style_stats.filter(s =>
-    s.style === 'escape' || s.style === 'lead'
-  );
-  const closers = jockey.running_style_stats.filter(s =>
-    s.style === 'pursue' || s.style === 'close'
-  );
-
-  let runningStyleTrendPosition = 3; // デフォルトは互角
-  if (frontRunners.length > 0 && closers.length > 0) {
-    // 加重平均で複勝率を計算（出走数で重み付け）
-    const frontTotalRaces = frontRunners.reduce((sum, s) => sum + s.races, 0);
-    const frontWeightedPlaceRate = frontRunners.reduce((sum, s) =>
-      sum + (s.place_rate * s.races), 0
-    ) / frontTotalRaces;
-
-    const closerTotalRaces = closers.reduce((sum, s) => sum + s.races, 0);
-    const closerWeightedPlaceRate = closers.reduce((sum, s) =>
-      sum + (s.place_rate * s.races), 0
-    ) / closerTotalRaces;
-
-    const diff = frontWeightedPlaceRate - closerWeightedPlaceRate;
-    if (diff >= 5) runningStyleTrendPosition = 1; // 逃げ・先行が得意
-    else if (diff >= 2) runningStyleTrendPosition = 2; // やや逃げ・先行が得意
-    else if (diff <= -5) runningStyleTrendPosition = 5; // 差し・追込が得意
-    else if (diff <= -2) runningStyleTrendPosition = 4; // やや差し・追込が得意
-    else runningStyleTrendPosition = 3; // 互角
-  }
-
-  // 得意な距離傾向を計算（短距離・マイル vs 中距離・長距離の複勝率差から判定）
-  const shortDistances = distanceStatsData.filter(d =>
-    d.name === '短距離' || d.name === 'マイル'
-  );
-  const longDistances = distanceStatsData.filter(d =>
-    d.name === '中距離' || d.name === '長距離'
-  );
-
-  let distanceTrendPosition = 3; // デフォルトは互角
-  if (shortDistances.length > 0 && longDistances.length > 0) {
-    // 加重平均で複勝率を計算（出走数で重み付け）
-    const shortTotalRaces = shortDistances.reduce((sum, d) => sum + d.races, 0);
-    const shortWeightedPlaceRate = shortDistances.reduce((sum, d) =>
-      sum + (d.place_rate * d.races), 0
-    ) / shortTotalRaces;
-
-    const longTotalRaces = longDistances.reduce((sum, d) => sum + d.races, 0);
-    const longWeightedPlaceRate = longDistances.reduce((sum, d) =>
-      sum + (d.place_rate * d.races), 0
-    ) / longTotalRaces;
-
-    const diff = shortWeightedPlaceRate - longWeightedPlaceRate;
-    if (diff >= 5) distanceTrendPosition = 1; // 短距離が得意
-    else if (diff >= 2) distanceTrendPosition = 2; // やや短距離が得意
-    else if (diff <= -5) distanceTrendPosition = 5; // 長距離が得意
-    else if (diff <= -2) distanceTrendPosition = 4; // やや長距離が得意
-    else distanceTrendPosition = 3; // 互角
-  }
+  // GCSから計算済みの傾向データを取得
+  const surfaceTrendPosition = jockey.characteristics?.surface_trend_position ?? 3;
+  const runningStyleTrendPosition = jockey.characteristics?.running_style_trend_position ?? 3;
+  const distanceTrendPosition = jockey.characteristics?.distance_trend_position ?? 3;
 
   // DataTableコンポーネント用にデータ整形（linkプロパティを追加）
   // 障害コースを除外
@@ -520,7 +451,8 @@ export default async function JockeyPage({
   }).filter(group => group.courses.length > 0); // コースがある競馬場のみ
 
   // 競馬場別サマリーデータをracecourse_statsから取得し、順番を整理（全競馬場を表示）
-  const racecourseSummaryData = racecourseOrder
+  // GCSから取得したデータには既に「中央」「ローカル」の集計行が含まれている
+  const individualRacecourses = racecourseOrder
     .map(racecourseItem => {
       // name フィールド(日本語)または racecourse_en フィールドで検索
       // GCSデータの name には「競馬場」が付いていないため、削除して比較
@@ -543,6 +475,10 @@ export default async function JockeyPage({
           place_rate: 0,
           win_payback: 0,
           place_payback: 0,
+          avg_popularity: undefined,
+          avg_rank: undefined,
+          median_popularity: undefined,
+          median_rank: undefined,
         };
       }
       return {
@@ -558,88 +494,20 @@ export default async function JockeyPage({
         place_rate: racecourse.place_rate,
         win_payback: racecourse.win_payback,
         place_payback: racecourse.place_payback,
+        avg_popularity: racecourse.avg_popularity,
+        avg_rank: racecourse.avg_rank,
+        median_popularity: racecourse.median_popularity,
+        median_rank: racecourse.median_rank,
       };
     });
 
-  // 中央・ローカルの集計行を追加
-  const centralRacecourses = ['tokyo', 'nakayama', 'hanshin', 'kyoto']; // 東京、中山、阪神、京都
-  const centralRacecoursesJa = ['東京', '中山', '阪神', '京都'];
-  const localRacecourses = ['sapporo', 'hakodate', 'fukushima', 'niigata', 'chukyo', 'kokura']; // 札幌、函館、福島、新潟、中京、小倉
-  const localRacecoursesJa = ['札幌', '函館', '福島', '新潟', '中京', '小倉'];
-
-  // 中央競馬場の集計
-  const centralRacecourses_data = jockey.racecourse_stats?.filter(r =>
-    centralRacecourses.includes(r.racecourse_en) || centralRacecoursesJa.includes(r.name)
-  ) || [];
-  const centralData = centralRacecourses_data.length > 0 ? (() => {
-    const totalRaces = centralRacecourses_data.reduce((sum, r) => sum + r.races, 0);
-    const totalWins = centralRacecourses_data.reduce((sum, r) => sum + r.wins, 0);
-    const totalPlaces2 = centralRacecourses_data.reduce((sum, r) => sum + r.places_2, 0);
-    const totalPlaces3 = centralRacecourses_data.reduce((sum, r) => sum + r.places_3, 0);
-
-    const winRate = totalRaces > 0 ? (totalWins / totalRaces) * 100 : 0;
-    const quinellaRate = totalRaces > 0 ? ((totalWins + totalPlaces2) / totalRaces) * 100 : 0;
-    const placeRate = totalRaces > 0 ? ((totalWins + totalPlaces2 + totalPlaces3) / totalRaces) * 100 : 0;
-
-    const winPayback = totalRaces > 0
-      ? centralRacecourses_data.reduce((sum, r) => sum + (r.win_payback * r.races), 0) / totalRaces
-      : 0;
-    const placePayback = totalRaces > 0
-      ? centralRacecourses_data.reduce((sum, r) => sum + (r.place_payback * r.races), 0) / totalRaces
-      : 0;
-
-    return {
-      name: '中央',
-      races: totalRaces,
-      wins: totalWins,
-      places_2: totalPlaces2,
-      places_3: totalPlaces3,
-      win_rate: parseFloat(winRate.toFixed(1)),
-      quinella_rate: parseFloat(quinellaRate.toFixed(1)),
-      place_rate: parseFloat(placeRate.toFixed(1)),
-      win_payback: parseFloat(winPayback.toFixed(1)),
-      place_payback: parseFloat(placePayback.toFixed(1)),
-    };
-  })() : null;
-
-  // ローカル競馬場の集計
-  const localRacecourses_data = jockey.racecourse_stats?.filter(r =>
-    localRacecourses.includes(r.racecourse_en) || localRacecoursesJa.includes(r.name)
-  ) || [];
-  const localData = localRacecourses_data.length > 0 ? (() => {
-    const totalRaces = localRacecourses_data.reduce((sum, r) => sum + r.races, 0);
-    const totalWins = localRacecourses_data.reduce((sum, r) => sum + r.wins, 0);
-    const totalPlaces2 = localRacecourses_data.reduce((sum, r) => sum + r.places_2, 0);
-    const totalPlaces3 = localRacecourses_data.reduce((sum, r) => sum + r.places_3, 0);
-
-    const winRate = totalRaces > 0 ? (totalWins / totalRaces) * 100 : 0;
-    const quinellaRate = totalRaces > 0 ? ((totalWins + totalPlaces2) / totalRaces) * 100 : 0;
-    const placeRate = totalRaces > 0 ? ((totalWins + totalPlaces2 + totalPlaces3) / totalRaces) * 100 : 0;
-
-    const winPayback = totalRaces > 0
-      ? localRacecourses_data.reduce((sum, r) => sum + (r.win_payback * r.races), 0) / totalRaces
-      : 0;
-    const placePayback = totalRaces > 0
-      ? localRacecourses_data.reduce((sum, r) => sum + (r.place_payback * r.races), 0) / totalRaces
-      : 0;
-
-    return {
-      name: 'ローカル',
-      races: totalRaces,
-      wins: totalWins,
-      places_2: totalPlaces2,
-      places_3: totalPlaces3,
-      win_rate: parseFloat(winRate.toFixed(1)),
-      quinella_rate: parseFloat(quinellaRate.toFixed(1)),
-      place_rate: parseFloat(placeRate.toFixed(1)),
-      win_payback: parseFloat(winPayback.toFixed(1)),
-      place_payback: parseFloat(placePayback.toFixed(1)),
-    };
-  })() : null;
+  // GCSから取得した「中央」「ローカル」の集計行を取得
+  const centralData = jockey.racecourse_stats?.find(r => r.name === '中央');
+  const localData = jockey.racecourse_stats?.find(r => r.name === 'ローカル');
 
   // 競馬場データの最後に中央・ローカルを追加
   const racecourseSummaryDataWithTotals = [
-    ...racecourseSummaryData,
+    ...individualRacecourses,
     ...(centralData ? [centralData] : []),
     ...(localData ? [localData] : [])
   ];
@@ -662,6 +530,10 @@ export default async function JockeyPage({
         place_rate: 0,
         win_payback: 0,
         place_payback: 0,
+        avg_popularity: undefined,
+        avg_rank: undefined,
+        median_popularity: undefined,
+        median_rank: undefined,
       };
     }
   });
@@ -700,6 +572,10 @@ export default async function JockeyPage({
           place_rate: existingData.place_rate,
           win_payback: existingData.win_payback,
           place_payback: existingData.place_payback,
+          avg_popularity: existingData.avg_popularity,
+          avg_rank: existingData.avg_rank,
+          median_popularity: existingData.median_popularity,
+          median_rank: existingData.median_rank,
         };
       } else {
         return {
@@ -716,6 +592,10 @@ export default async function JockeyPage({
           place_rate: 0,
           win_payback: 0,
           place_payback: 0,
+          avg_popularity: undefined,
+          avg_rank: undefined,
+          median_popularity: undefined,
+          median_rank: undefined,
         };
       }
     });
@@ -768,6 +648,10 @@ export default async function JockeyPage({
         place_rate: 0,
         win_payback: 0,
         place_payback: 0,
+        avg_popularity: undefined,
+        avg_rank: undefined,
+        median_popularity: undefined,
+        median_rank: undefined,
       };
     }
   });

@@ -193,16 +193,16 @@ export default function ClassTable({ title, data, showOnlyProvidedData = false }
                       </span>
                     </td>
                     <td className={styles.scrollCol} style={{ width: '80px', minWidth: '80px' }}>
-                      <span>{row.avg_popularity !== undefined ? row.avg_popularity.toFixed(1) : '-'}</span>
+                      <span>{row.avg_popularity != null ? row.avg_popularity.toFixed(1) : '-'}</span>
                     </td>
                     <td className={styles.scrollCol} style={{ width: '80px', minWidth: '80px' }}>
-                      <span>{row.avg_rank !== undefined ? row.avg_rank.toFixed(1) : '-'}</span>
+                      <span>{row.avg_rank != null ? row.avg_rank.toFixed(1) : '-'}</span>
                     </td>
                     <td className={styles.scrollCol} style={{ width: '80px', minWidth: '80px' }}>
-                      <span>{row.median_popularity !== undefined ? Math.round(row.median_popularity) : '-'}</span>
+                      <span>{row.median_popularity != null ? Math.round(row.median_popularity) : '-'}</span>
                     </td>
                     <td className={styles.scrollCol} style={{ width: '80px', minWidth: '80px' }}>
-                      <span>{row.median_rank !== undefined ? Math.round(row.median_rank) : '-'}</span>
+                      <span>{row.median_rank != null ? Math.round(row.median_rank) : '-'}</span>
                     </td>
                   </tr>
                 );

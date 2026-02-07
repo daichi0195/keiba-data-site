@@ -49,6 +49,10 @@ export async function getJockeyDataFromGCS(jockeyId: string | number) {
           quinella_rate: typeof gate.quinella_rate === 'string' ? parseFloat(gate.quinella_rate) : gate.quinella_rate,
           win_payback: typeof gate.win_payback === 'string' ? parseInt(gate.win_payback, 10) : gate.win_payback,
           place_payback: typeof gate.place_payback === 'string' ? parseInt(gate.place_payback, 10) : gate.place_payback,
+          avg_popularity: typeof gate.avg_popularity === 'string' ? parseFloat(gate.avg_popularity) : gate.avg_popularity,
+          avg_rank: typeof gate.avg_rank === 'string' ? parseFloat(gate.avg_rank) : gate.avg_rank,
+          median_popularity: typeof gate.median_popularity === 'string' ? parseInt(gate.median_popularity, 10) : gate.median_popularity,
+          median_rank: typeof gate.median_rank === 'string' ? parseInt(gate.median_rank, 10) : gate.median_rank,
         };
       });
     }
@@ -69,6 +73,10 @@ export async function getJockeyDataFromGCS(jockeyId: string | number) {
             quinella_rate: typeof item.quinella_rate === 'string' ? parseFloat(item.quinella_rate) : item.quinella_rate,
             win_payback: typeof item.win_payback === 'string' ? parseInt(item.win_payback, 10) : item.win_payback,
             place_payback: typeof item.place_payback === 'string' ? parseInt(item.place_payback, 10) : item.place_payback,
+            avg_popularity: typeof item.avg_popularity === 'string' ? parseFloat(item.avg_popularity) : item.avg_popularity,
+            avg_rank: typeof item.avg_rank === 'string' ? parseFloat(item.avg_rank) : item.avg_rank,
+            median_popularity: typeof item.median_popularity === 'string' ? parseInt(item.median_popularity, 10) : item.median_popularity,
+            median_rank: typeof item.median_rank === 'string' ? parseInt(item.median_rank, 10) : item.median_rank,
           };
         }
       });
@@ -78,7 +86,7 @@ export async function getJockeyDataFromGCS(jockeyId: string | number) {
     // running_style_stats を処理（型変換）
     if (data.running_style_stats && Array.isArray(data.running_style_stats)) {
       data.running_style_stats = data.running_style_stats.map((item: any) => ({
-        style: item.style || '',
+        style: item.style || item.running_style || '',
         style_label: item.style_label || '',
         races: typeof item.races === 'string' ? parseInt(item.races, 10) : item.races,
         wins: typeof item.wins === 'string' ? parseInt(item.wins, 10) : item.wins,
@@ -89,6 +97,10 @@ export async function getJockeyDataFromGCS(jockeyId: string | number) {
         quinella_rate: typeof item.quinella_rate === 'string' ? parseFloat(item.quinella_rate) : item.quinella_rate,
         win_payback: typeof item.win_payback === 'string' ? parseFloat(item.win_payback) : item.win_payback,
         place_payback: typeof item.place_payback === 'string' ? parseFloat(item.place_payback) : item.place_payback,
+        avg_popularity: typeof item.avg_popularity === 'string' ? parseFloat(item.avg_popularity) : item.avg_popularity,
+        avg_rank: typeof item.avg_rank === 'string' ? parseFloat(item.avg_rank) : item.avg_rank,
+        median_popularity: typeof item.median_popularity === 'string' ? parseInt(item.median_popularity, 10) : item.median_popularity,
+        median_rank: typeof item.median_rank === 'string' ? parseInt(item.median_rank, 10) : item.median_rank,
       }));
     }
 
@@ -117,6 +129,33 @@ export async function getJockeyDataFromGCS(jockeyId: string | number) {
           ? parseInt(data.characteristics.running_style_trend_position, 10)
           : data.characteristics.running_style_trend_position,
       };
+    }
+
+    // 他の統計データの処理（avg_popularity、avg_rank、median_popularity、median_rankを含める）
+    const processStatsArray = (statsArray: any[]) => {
+      return statsArray.map((item: any) => ({
+        ...item,
+        avg_popularity: typeof item.avg_popularity === 'string' ? parseFloat(item.avg_popularity) : item.avg_popularity,
+        avg_rank: typeof item.avg_rank === 'string' ? parseFloat(item.avg_rank) : item.avg_rank,
+        median_popularity: typeof item.median_popularity === 'string' ? parseInt(item.median_popularity, 10) : item.median_popularity,
+        median_rank: typeof item.median_rank === 'string' ? parseInt(item.median_rank, 10) : item.median_rank,
+      }));
+    };
+
+    if (data.distance_stats && Array.isArray(data.distance_stats)) {
+      data.distance_stats = processStatsArray(data.distance_stats);
+    }
+    if (data.surface_stats && Array.isArray(data.surface_stats)) {
+      data.surface_stats = processStatsArray(data.surface_stats);
+    }
+    if (data.track_condition_stats && Array.isArray(data.track_condition_stats)) {
+      data.track_condition_stats = processStatsArray(data.track_condition_stats);
+    }
+    if (data.racecourse_stats && Array.isArray(data.racecourse_stats)) {
+      data.racecourse_stats = processStatsArray(data.racecourse_stats);
+    }
+    if (data.gender_stats && Array.isArray(data.gender_stats)) {
+      data.gender_stats = processStatsArray(data.gender_stats);
     }
 
     console.log('✅ Jockey data loaded from GCS');

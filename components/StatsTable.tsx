@@ -58,10 +58,10 @@ export default function StatsTable({ data }: StatsTableProps) {
               <td>{data.place_rate}%</td>
               <td>{data.win_payback}%</td>
               <td>{data.place_payback}%</td>
-              <td>{data.avg_popularity !== undefined ? data.avg_popularity.toFixed(1) : '-'}</td>
-              <td>{data.avg_rank !== undefined ? data.avg_rank.toFixed(1) : '-'}</td>
-              <td>{data.median_popularity !== undefined ? data.median_popularity.toFixed(1) : '-'}</td>
-              <td>{data.median_rank !== undefined ? data.median_rank.toFixed(1) : '-'}</td>
+              <td>{data.avg_popularity != null ? data.avg_popularity.toFixed(1) : '-'}</td>
+              <td>{data.avg_rank != null ? data.avg_rank.toFixed(1) : '-'}</td>
+              <td>{data.median_popularity != null ? data.median_popularity.toFixed(1) : '-'}</td>
+              <td>{data.median_rank != null ? data.median_rank.toFixed(1) : '-'}</td>
             </tr>
           </tbody>
         </table>

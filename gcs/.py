@@ -1146,6 +1146,41 @@ def process_course(bq_client, storage_client, venue, venue_en, surface, surface_
         horse_weight_stats = get_horse_weight_stats(bq_client)
         total_races = get_total_races(bq_client)
 
+        # 傾向計算
+        # 1. 枠順傾向（内枠 vs 外枠）
+        gate_position = 3  # デフォルト: 互角
+        if gate_stats and len(gate_stats) > 0:
+            inner_gates = [g for g in gate_stats if g['gate'] >= 1 and g['gate'] <= 4]
+            outer_gates = [g for g in gate_stats if g['gate'] >= 5 and g['gate'] <= 8]
+            if inner_gates and outer_gates:
+                inner_avg_place_rate = sum(g['place_rate'] for g in inner_gates) / len(inner_gates)
+                outer_avg_place_rate = sum(g['place_rate'] for g in outer_gates) / len(outer_gates)
+                diff = inner_avg_place_rate - outer_avg_place_rate
+                if diff >= 5:
+                    gate_position = 1  # 内有利
+                elif diff >= 2:
+                    gate_position = 2  # やや内有利
+                elif diff <= -5:
+                    gate_position = 5  # 外有利
+                elif diff <= -2:
+                    gate_position = 4  # やや外有利
+
+        # 2. 脚質傾向（逃げ・先行 vs 差し・追込）
+        running_style_trend_position = 3  # デフォルト: 互角
+        if running_style_trends and len(running_style_trends) == 2:
+            early_lead = next((t for t in running_style_trends if t['trend_group'] == 'early_lead'), None)
+            comeback = next((t for t in running_style_trends if t['trend_group'] == 'comeback'), None)
+            if early_lead and comeback:
+                diff = early_lead['place_rate'] - comeback['place_rate']
+                if diff >= 5:
+                    running_style_trend_position = 1  # 逃げ・先行有利
+                elif diff >= 2:
+                    running_style_trend_position = 2  # やや逃げ・先行有利
+                elif diff <= -5:
+                    running_style_trend_position = 5  # 差し・追込有利
+                elif diff <= -2:
+                    running_style_trend_position = 4  # やや差し・追込有利
+
         # 統合データ作成
         course_data = {
             'total_races': total_races,
@@ -1161,14 +1196,16 @@ def process_course(bq_client, storage_client, venue, venue_en, surface, surface_
             'horse_weight_stats': horse_weight_stats,
         }
 
-        # volatility_statsがNoneの場合のデフォルト値を設定
+        # characteristicsにvolatility_statsと傾向を追加
         if volatility_stats:
             course_data['characteristics'] = {
                 'volatility': volatility_stats['volatility'],
                 'trifecta_median_payback': volatility_stats['trifecta_median_payback'],
                 'trifecta_all_median_payback': volatility_stats['trifecta_all_median_payback'],
                 'trifecta_avg_payback_rank': volatility_stats['trifecta_avg_payback_rank'],
-                'total_courses': volatility_stats['total_courses']
+                'total_courses': volatility_stats['total_courses'],
+                'gate_position': gate_position,
+                'running_style_trend_position': running_style_trend_position,
             }
         else:
             # データ不足の場合はデフォルト値
@@ -1177,7 +1214,9 @@ def process_course(bq_client, storage_client, venue, venue_en, surface, surface_
                 'trifecta_median_payback': 0,
                 'trifecta_all_median_payback': 0,
                 'trifecta_avg_payback_rank': 0,
-                'total_courses': 0
+                'total_courses': 0,
+                'gate_position': gate_position,
+                'running_style_trend_position': running_style_trend_position,
             }
 
         # GCSにアップロード

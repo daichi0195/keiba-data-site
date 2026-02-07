@@ -215,16 +215,16 @@ export default function RacecourseCourseTable({ title, data }: Props) {
                             </span>
                           </td>
                           <td className="mobile-scroll-col" style={{ width: '80px', minWidth: '80px' }}>
-                            <span>{course.avg_popularity !== undefined ? course.avg_popularity.toFixed(1) : '-'}</span>
+                            <span>{course.avg_popularity != null ? course.avg_popularity.toFixed(1) : '-'}</span>
                           </td>
                           <td className="mobile-scroll-col" style={{ width: '80px', minWidth: '80px' }}>
-                            <span>{course.avg_rank !== undefined ? course.avg_rank.toFixed(1) : '-'}</span>
+                            <span>{course.avg_rank != null ? course.avg_rank.toFixed(1) : '-'}</span>
                           </td>
                           <td className="mobile-scroll-col" style={{ width: '80px', minWidth: '80px' }}>
-                            <span>{course.median_popularity !== undefined ? Math.round(course.median_popularity) : '-'}</span>
+                            <span>{course.median_popularity != null ? Math.round(course.median_popularity) : '-'}</span>
                           </td>
                           <td className="mobile-scroll-col" style={{ width: '80px', minWidth: '80px' }}>
-                            <span>{course.median_rank !== undefined ? Math.round(course.median_rank) : '-'}</span>
+                            <span>{course.median_rank != null ? Math.round(course.median_rank) : '-'}</span>
                           </td>
                         </tr>
                       ))}

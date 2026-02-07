@@ -913,7 +913,101 @@ def get_racecourse_stats(client):
 
     try:
         results = client.query(query).result()
-        return [dict(row) for row in results]
+        racecourse_data = [dict(row) for row in results]
+
+        # 中央・ローカルの集計行を追加
+        central_racecourses = ['東京', '中山', '阪神', '京都']
+        local_racecourses = ['札幌', '函館', '福島', '新潟', '中京', '小倉']
+
+        # 中央競馬場の集計
+        central_data = [r for r in racecourse_data if r['name'] in central_racecourses]
+        if central_data:
+            total_races = sum(r['races'] for r in central_data)
+            total_wins = sum(r['wins'] for r in central_data)
+            total_places_2 = sum(r['places_2'] for r in central_data)
+            total_places_3 = sum(r['places_3'] for r in central_data)
+
+            # 中央値は加重平均ではなく、全レースから直接計算
+            central_median_query = f"""
+            SELECT
+              APPROX_QUANTILES(rr.popularity, 100)[OFFSET(50)] as median_popularity,
+              APPROX_QUANTILES(rr.finish_position, 100)[OFFSET(50)] as median_rank
+            FROM
+              `{DATASET}.race_master` rm
+              JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
+            WHERE
+              rr.jockey_id = {JOCKEY_ID}
+              AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+              AND rm.venue_name IN ('東京', '中山', '阪神', '京都')
+            """
+            central_median_results = client.query(central_median_query).result()
+            central_median_row = dict(list(central_median_results)[0])
+
+            central_summary = {
+                'name': '中央',
+                'racecourse_ja': '中央',
+                'racecourse_en': 'central',
+                'races': total_races,
+                'wins': total_wins,
+                'places_2': total_places_2,
+                'places_3': total_places_3,
+                'win_rate': round((total_wins / total_races * 100), 1) if total_races > 0 else 0,
+                'quinella_rate': round(((total_wins + total_places_2) / total_races * 100), 1) if total_races > 0 else 0,
+                'place_rate': round(((total_wins + total_places_2 + total_places_3) / total_races * 100), 1) if total_races > 0 else 0,
+                'win_payback': round(sum(r['win_payback'] * r['races'] for r in central_data) / total_races, 1) if total_races > 0 else 0,
+                'place_payback': round(sum(r['place_payback'] * r['races'] for r in central_data) / total_races, 1) if total_races > 0 else 0,
+                'avg_popularity': round(sum(r['avg_popularity'] * r['races'] for r in central_data) / total_races, 1) if total_races > 0 else None,
+                'avg_rank': round(sum(r['avg_rank'] * r['races'] for r in central_data) / total_races, 1) if total_races > 0 else None,
+                'median_popularity': central_median_row['median_popularity'],
+                'median_rank': central_median_row['median_rank'],
+            }
+            racecourse_data.append(central_summary)
+
+        # ローカル競馬場の集計
+        local_data = [r for r in racecourse_data if r['name'] in local_racecourses]
+        if local_data:
+            total_races = sum(r['races'] for r in local_data)
+            total_wins = sum(r['wins'] for r in local_data)
+            total_places_2 = sum(r['places_2'] for r in local_data)
+            total_places_3 = sum(r['places_3'] for r in local_data)
+
+            # 中央値は加重平均ではなく、全レースから直接計算
+            local_median_query = f"""
+            SELECT
+              APPROX_QUANTILES(rr.popularity, 100)[OFFSET(50)] as median_popularity,
+              APPROX_QUANTILES(rr.finish_position, 100)[OFFSET(50)] as median_rank
+            FROM
+              `{DATASET}.race_master` rm
+              JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
+            WHERE
+              rr.jockey_id = {JOCKEY_ID}
+              AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+              AND rm.venue_name IN ('札幌', '函館', '福島', '新潟', '中京', '小倉')
+            """
+            local_median_results = client.query(local_median_query).result()
+            local_median_row = dict(list(local_median_results)[0])
+
+            local_summary = {
+                'name': 'ローカル',
+                'racecourse_ja': 'ローカル',
+                'racecourse_en': 'local',
+                'races': total_races,
+                'wins': total_wins,
+                'places_2': total_places_2,
+                'places_3': total_places_3,
+                'win_rate': round((total_wins / total_races * 100), 1) if total_races > 0 else 0,
+                'quinella_rate': round(((total_wins + total_places_2) / total_races * 100), 1) if total_races > 0 else 0,
+                'place_rate': round(((total_wins + total_places_2 + total_places_3) / total_races * 100), 1) if total_races > 0 else 0,
+                'win_payback': round(sum(r['win_payback'] * r['races'] for r in local_data) / total_races, 1) if total_races > 0 else 0,
+                'place_payback': round(sum(r['place_payback'] * r['races'] for r in local_data) / total_races, 1) if total_races > 0 else 0,
+                'avg_popularity': round(sum(r['avg_popularity'] * r['races'] for r in local_data) / total_races, 1) if total_races > 0 else None,
+                'avg_rank': round(sum(r['avg_rank'] * r['races'] for r in local_data) / total_races, 1) if total_races > 0 else None,
+                'median_popularity': local_median_row['median_popularity'],
+                'median_rank': local_median_row['median_rank'],
+            }
+            racecourse_data.append(local_summary)
+
+        return racecourse_data
     except Exception as e:
         print(f"   ⚠️  Error fetching racecourse stats: {str(e)}", file=sys.stderr)
         raise
@@ -1175,6 +1269,67 @@ def process_jockey(bq_client, storage_client, jockey_id, jockey_name):
 
         print("  [17/17] Calculating characteristics...")
         characteristics = get_characteristics(bq_client)
+
+        # 傾向計算を追加
+        # 1. 芝・ダート傾向
+        surface_trend_position = 3  # デフォルト: 互角
+        turf_stat = next((s for s in surface_stats if s['surface'] == '芝'), None)
+        dirt_stat = next((s for s in surface_stats if s['surface'] == 'ダート'), None)
+        if turf_stat and dirt_stat:
+            diff = turf_stat['place_rate'] - dirt_stat['place_rate']
+            if diff >= 5:
+                surface_trend_position = 5  # 芝が得意
+            elif diff >= 2:
+                surface_trend_position = 4  # やや芝が得意
+            elif diff <= -5:
+                surface_trend_position = 1  # ダートが得意
+            elif diff <= -2:
+                surface_trend_position = 2  # ややダートが得意
+
+        # 2. 脚質傾向
+        running_style_trend_position = 3  # デフォルト: 互角
+        front_runners = [s for s in running_style_stats if s['style'] in ['escape', 'lead']]
+        closers = [s for s in running_style_stats if s['style'] in ['pursue', 'close']]
+        if front_runners and closers:
+            front_total_races = sum(s['races'] for s in front_runners)
+            front_weighted_place_rate = sum(s['place_rate'] * s['races'] for s in front_runners) / front_total_races if front_total_races > 0 else 0
+            closer_total_races = sum(s['races'] for s in closers)
+            closer_weighted_place_rate = sum(s['place_rate'] * s['races'] for s in closers) / closer_total_races if closer_total_races > 0 else 0
+            diff = front_weighted_place_rate - closer_weighted_place_rate
+            if diff >= 5:
+                running_style_trend_position = 1  # 逃げ・先行が得意
+            elif diff >= 2:
+                running_style_trend_position = 2  # やや逃げ・先行が得意
+            elif diff <= -5:
+                running_style_trend_position = 5  # 差し・追込が得意
+            elif diff <= -2:
+                running_style_trend_position = 4  # やや差し・追込が得意
+
+        # 3. 距離傾向
+        distance_trend_position = 3  # デフォルト: 互角
+        short_distances = [d for d in distance_stats if d['category'] in ['短距離', 'マイル']]
+        long_distances = [d for d in distance_stats if d['category'] in ['中距離', '中長距離', '長距離']]
+        if short_distances and long_distances:
+            short_total_races = sum(d['races'] for d in short_distances)
+            short_weighted_place_rate = sum(d['place_rate'] * d['races'] for d in short_distances) / short_total_races if short_total_races > 0 else 0
+            long_total_races = sum(d['races'] for d in long_distances)
+            long_weighted_place_rate = sum(d['place_rate'] * d['races'] for d in long_distances) / long_total_races if long_total_races > 0 else 0
+            diff = short_weighted_place_rate - long_weighted_place_rate
+            if diff >= 5:
+                distance_trend_position = 1  # 短距離が得意
+            elif diff >= 2:
+                distance_trend_position = 2  # やや短距離が得意
+            elif diff <= -5:
+                distance_trend_position = 5  # 長距離が得意
+            elif diff <= -2:
+                distance_trend_position = 4  # やや長距離が得意
+
+        # characteristicsに傾向を追加
+        if characteristics is None:
+            characteristics = {}
+        characteristics['surface_trend_position'] = surface_trend_position
+        characteristics['running_style_trend_position'] = running_style_trend_position
+        characteristics['distance_trend_position'] = distance_trend_position
 
         # データ期間と更新日を設定
         today = datetime.now()

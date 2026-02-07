@@ -77,8 +77,13 @@ export default function PopularityTable({
   }, []);
 
   // 列（指標）ごとの最大値を算出 → 各行のセルで一致したものをハイライト
+  // ただし、平均値・中央値のカラムは除外
   const maxByMetric: Partial<Record<MetricKey, number>> = {};
   for (const m of METRIC_COLS) {
+    // 平均値・中央値のカラムはハイライト対象外
+    if (['avg_popularity', 'avg_rank', 'median_popularity', 'median_rank'].includes(m.key)) {
+      continue;
+    }
     maxByMetric[m.key] = Math.max(
       ...BAND_ROWS.map((b) => data?.[b.key]?.[m.key] ?? Number.NEGATIVE_INFINITY)
     );
@@ -107,12 +112,16 @@ export default function PopularityTable({
                   </td>
                   {METRIC_COLS.map((col) => {
                     const v = data?.[band.key]?.[col.key];
-                    // 新しい4つのカラムはtoFixed(1)を適用、それ以外は既存のロジック
+                    // 新しい4つのカラムの表示形式
                     let disp: string;
                     if (v === undefined || v === null) {
                       disp = '-';
-                    } else if (col.key === 'avg_popularity' || col.key === 'avg_rank' || col.key === 'median_popularity' || col.key === 'median_rank') {
+                    } else if (col.key === 'avg_popularity' || col.key === 'avg_rank') {
+                      // 平均人気・平均着順は小数点1桁
                       disp = (v as number).toFixed(1);
+                    } else if (col.key === 'median_popularity' || col.key === 'median_rank') {
+                      // 中央値は整数表示
+                      disp = Math.round(v as number).toString();
                     } else {
                       disp = `${typeof v === 'number' && col.suffix === '%' ? (v).toFixed(1) : v}${col.suffix ?? ''}`;
                     }

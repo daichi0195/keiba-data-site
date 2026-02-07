@@ -64,6 +64,12 @@ interface TrainerData {
     win_rate: number;
     place_rate: number;
     quinella_rate: number;
+    win_payback: number;
+    place_payback: number;
+    avg_popularity?: number;
+    avg_rank?: number;
+    median_popularity?: number;
+    median_rank?: number;
   }>;
   distance_stats: Array<{
     category: string;
@@ -88,6 +94,10 @@ interface TrainerData {
     quinella_rate: number;
     win_payback: number;
     place_payback: number;
+    avg_popularity?: number;
+    avg_rank?: number;
+    median_popularity?: number;
+    median_rank?: number;
   }>;
   popularity_stats: {
     fav1: { races: number; wins: number; places_2: number; places_3: number; win_rate: number; quinella_rate: number; place_rate: number; win_payback: number; place_payback: number; };
@@ -142,6 +152,10 @@ interface TrainerData {
     quinella_rate: number;
     win_payback: number;
     place_payback: number;
+    avg_popularity?: number;
+    avg_rank?: number;
+    median_popularity?: number;
+    median_rank?: number;
   }>;
   jockey_stats: Array<{
     rank: number;
@@ -235,6 +249,24 @@ interface TrainerData {
     style_label: string;
     place_rate: number;
   }>;
+  racecourse_stats?: Array<{
+    name: string;
+    racecourse_ja: string;
+    racecourse_en: string;
+    races: number;
+    wins: number;
+    places_2: number;
+    places_3: number;
+    win_rate: number;
+    place_rate: number;
+    quinella_rate: number;
+    win_payback: number;
+    place_payback: number;
+    avg_popularity?: number;
+    avg_rank?: number;
+    median_popularity?: number;
+    median_rank?: number;
+  }>;
 }
 
 // 池江泰寿のモックデータ
@@ -271,7 +303,6 @@ const mockTrainerData: Record<string, TrainerData> = {
       { category: '短距離', races: 145, wins: 28, places_2: 22, places_3: 18, win_rate: 19.3, place_rate: 46.9, quinella_rate: 34.5, win_payback: 98, place_payback: 95 },
       { category: 'マイル', races: 198, wins: 38, places_2: 31, places_3: 26, win_rate: 19.2, place_rate: 48.0, quinella_rate: 34.8, win_payback: 102, place_payback: 99 },
       { category: '中距離', races: 356, wins: 68, places_2: 59, places_3: 48, win_rate: 19.1, place_rate: 49.2, quinella_rate: 35.7, win_payback: 105, place_payback: 101 },
-      { category: '中長距離', races: 289, wins: 54, places_2: 47, places_3: 39, win_rate: 18.7, place_rate: 48.4, quinella_rate: 35.0, win_payback: 107, place_payback: 103 },
       { category: '長距離', races: 267, wins: 51, places_2: 44, places_3: 36, win_rate: 19.1, place_rate: 49.1, quinella_rate: 35.8, win_payback: 106, place_payback: 102 },
     ],
     surface_stats: [
@@ -619,6 +650,10 @@ export default async function TrainerPage({
       place_rate: existingData.place_rate,
       win_payback: existingData.win_payback || 0,
       place_payback: existingData.place_payback || 0,
+      avg_popularity: existingData.avg_popularity,
+      avg_rank: existingData.avg_rank,
+      median_popularity: existingData.median_popularity,
+      median_rank: existingData.median_rank,
     } : {
       year: year,
       races: 0,
@@ -630,6 +665,10 @@ export default async function TrainerPage({
       place_rate: 0,
       win_payback: 0,
       place_payback: 0,
+      avg_popularity: undefined,
+      avg_rank: undefined,
+      median_popularity: undefined,
+      median_rank: undefined,
     };
   });
 
@@ -648,6 +687,10 @@ export default async function TrainerPage({
       place_rate: existingData.place_rate,
       win_payback: existingData.win_payback || 0,
       place_payback: existingData.place_payback || 0,
+      avg_popularity: existingData.avg_popularity,
+      avg_rank: existingData.avg_rank,
+      median_popularity: existingData.median_popularity,
+      median_rank: existingData.median_rank,
     } : {
       year: year,
       races: 0,
@@ -659,6 +702,10 @@ export default async function TrainerPage({
       place_rate: 0,
       win_payback: 0,
       place_payback: 0,
+      avg_popularity: undefined,
+      avg_rank: undefined,
+      median_popularity: undefined,
+      median_rank: undefined,
     };
   });
 
@@ -688,6 +735,10 @@ export default async function TrainerPage({
     place_rate: stat.place_rate,
     win_payback: stat.win_payback,
     place_payback: stat.place_payback,
+    avg_popularity: stat.avg_popularity,
+    avg_rank: stat.avg_rank,
+    median_popularity: stat.median_popularity,
+    median_rank: stat.median_rank,
   }));
 
   // 馬場状態別データをテーブル形式に変換（順位なし）
@@ -794,85 +845,17 @@ export default async function TrainerPage({
         place_rate: racecourse.place_rate,
         win_payback: racecourse.win_payback,
         place_payback: racecourse.place_payback,
+        avg_popularity: racecourse.avg_popularity,
+        avg_rank: racecourse.avg_rank,
+        median_popularity: racecourse.median_popularity,
+        median_rank: racecourse.median_rank,
       };
     })
     .filter((item): item is NonNullable<typeof item> => item !== null);
 
-  // 中央・ローカルの集計行を追加
-  const centralRacecourses = ['tokyo', 'nakayama', 'hanshin', 'kyoto']; // 東京、中山、阪神、京都
-  const centralRacecoursesJa = ['東京', '中山', '阪神', '京都'];
-  const localRacecourses = ['sapporo', 'hakodate', 'fukushima', 'niigata', 'chukyo', 'kokura']; // 札幌、函館、福島、新潟、中京、小倉
-  const localRacecoursesJa = ['札幌', '函館', '福島', '新潟', '中京', '小倉'];
-
-  // 中央競馬場の集計
-  const centralRacecourses_data = trainer.racecourse_stats?.filter(r =>
-    centralRacecourses.includes(r.racecourse_en) || centralRacecoursesJa.includes(r.name)
-  ) || [];
-  const centralData = centralRacecourses_data.length > 0 ? (() => {
-    const totalRaces = centralRacecourses_data.reduce((sum, r) => sum + r.races, 0);
-    const totalWins = centralRacecourses_data.reduce((sum, r) => sum + r.wins, 0);
-    const totalPlaces2 = centralRacecourses_data.reduce((sum, r) => sum + r.places_2, 0);
-    const totalPlaces3 = centralRacecourses_data.reduce((sum, r) => sum + r.places_3, 0);
-
-    const winRate = totalRaces > 0 ? (totalWins / totalRaces) * 100 : 0;
-    const quinellaRate = totalRaces > 0 ? ((totalWins + totalPlaces2) / totalRaces) * 100 : 0;
-    const placeRate = totalRaces > 0 ? ((totalWins + totalPlaces2 + totalPlaces3) / totalRaces) * 100 : 0;
-
-    const winPayback = totalRaces > 0
-      ? centralRacecourses_data.reduce((sum, r) => sum + (r.win_payback * r.races), 0) / totalRaces
-      : 0;
-    const placePayback = totalRaces > 0
-      ? centralRacecourses_data.reduce((sum, r) => sum + (r.place_payback * r.races), 0) / totalRaces
-      : 0;
-
-    return {
-      name: '中央',
-      races: totalRaces,
-      wins: totalWins,
-      places_2: totalPlaces2,
-      places_3: totalPlaces3,
-      win_rate: parseFloat(winRate.toFixed(1)),
-      quinella_rate: parseFloat(quinellaRate.toFixed(1)),
-      place_rate: parseFloat(placeRate.toFixed(1)),
-      win_payback: parseFloat(winPayback.toFixed(1)),
-      place_payback: parseFloat(placePayback.toFixed(1)),
-    };
-  })() : null;
-
-  // ローカル競馬場の集計
-  const localRacecourses_data = trainer.racecourse_stats?.filter(r =>
-    localRacecourses.includes(r.racecourse_en) || localRacecoursesJa.includes(r.name)
-  ) || [];
-  const localData = localRacecourses_data.length > 0 ? (() => {
-    const totalRaces = localRacecourses_data.reduce((sum, r) => sum + r.races, 0);
-    const totalWins = localRacecourses_data.reduce((sum, r) => sum + r.wins, 0);
-    const totalPlaces2 = localRacecourses_data.reduce((sum, r) => sum + r.places_2, 0);
-    const totalPlaces3 = localRacecourses_data.reduce((sum, r) => sum + r.places_3, 0);
-
-    const winRate = totalRaces > 0 ? (totalWins / totalRaces) * 100 : 0;
-    const quinellaRate = totalRaces > 0 ? ((totalWins + totalPlaces2) / totalRaces) * 100 : 0;
-    const placeRate = totalRaces > 0 ? ((totalWins + totalPlaces2 + totalPlaces3) / totalRaces) * 100 : 0;
-
-    const winPayback = totalRaces > 0
-      ? localRacecourses_data.reduce((sum, r) => sum + (r.win_payback * r.races), 0) / totalRaces
-      : 0;
-    const placePayback = totalRaces > 0
-      ? localRacecourses_data.reduce((sum, r) => sum + (r.place_payback * r.races), 0) / totalRaces
-      : 0;
-
-    return {
-      name: 'ローカル',
-      races: totalRaces,
-      wins: totalWins,
-      places_2: totalPlaces2,
-      places_3: totalPlaces3,
-      win_rate: parseFloat(winRate.toFixed(1)),
-      quinella_rate: parseFloat(quinellaRate.toFixed(1)),
-      place_rate: parseFloat(placeRate.toFixed(1)),
-      win_payback: parseFloat(winPayback.toFixed(1)),
-      place_payback: parseFloat(placePayback.toFixed(1)),
-    };
-  })() : null;
+  // GCSから計算済みの中央・ローカルデータを取得
+  const centralData = trainer.racecourse_stats?.find(r => r.racecourse_en === 'central' || r.name === '中央') || null;
+  const localData = trainer.racecourse_stats?.find(r => r.racecourse_en === 'local' || r.name === 'ローカル') || null;
 
   // 競馬場データの最後に中央・ローカルを追加
   const racecourseSummaryDataWithTotals = [

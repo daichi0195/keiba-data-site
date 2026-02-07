@@ -28,6 +28,40 @@ export async function getSireDataFromGCS(sireId: string | number) {
     }
 
     const data = await response.json();
+
+    // 各統計データの処理（avg_popularity、avg_rank、median_popularity、median_rankを含める）
+    const processStatsArray = (statsArray: any[]) => {
+      return statsArray.map((item: any) => ({
+        ...item,
+        avg_popularity: typeof item.avg_popularity === 'string' ? parseFloat(item.avg_popularity) : item.avg_popularity,
+        avg_rank: typeof item.avg_rank === 'string' ? parseFloat(item.avg_rank) : item.avg_rank,
+        median_popularity: typeof item.median_popularity === 'string' ? parseInt(item.median_popularity, 10) : item.median_popularity,
+        median_rank: typeof item.median_rank === 'string' ? parseInt(item.median_rank, 10) : item.median_rank,
+      }));
+    };
+
+    if (data.class_stats && Array.isArray(data.class_stats)) {
+      data.class_stats = processStatsArray(data.class_stats);
+    }
+    if (data.distance_stats && Array.isArray(data.distance_stats)) {
+      data.distance_stats = processStatsArray(data.distance_stats);
+    }
+    if (data.gender_stats && Array.isArray(data.gender_stats)) {
+      data.gender_stats = processStatsArray(data.gender_stats);
+    }
+    if (data.surface_stats && Array.isArray(data.surface_stats)) {
+      data.surface_stats = processStatsArray(data.surface_stats);
+    }
+    if (data.track_change_stats && Array.isArray(data.track_change_stats)) {
+      data.track_change_stats = processStatsArray(data.track_change_stats);
+    }
+    if (data.track_condition_stats && Array.isArray(data.track_condition_stats)) {
+      data.track_condition_stats = processStatsArray(data.track_condition_stats);
+    }
+    if (data.racecourse_stats && Array.isArray(data.racecourse_stats)) {
+      data.racecourse_stats = processStatsArray(data.racecourse_stats);
+    }
+
     return data;
   } catch (error) {
     console.error(`Error fetching sire data for ${sireId}:`, error);

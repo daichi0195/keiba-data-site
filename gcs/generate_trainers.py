@@ -985,7 +985,101 @@ def get_racecourse_stats(client):
 
     try:
         results = client.query(query).result()
-        return [dict(row) for row in results]
+        racecourse_data = [dict(row) for row in results]
+
+        # 中央・ローカルの集計行を追加（騎手と同じパターン）
+        central_racecourses = ['東京', '中山', '阪神', '京都']
+        local_racecourses = ['札幌', '函館', '福島', '新潟', '中京', '小倉']
+
+        # 中央競馬場の集計
+        central_data = [r for r in racecourse_data if r['name'] in central_racecourses]
+        if central_data:
+            total_races = sum(r['races'] for r in central_data)
+            total_wins = sum(r['wins'] for r in central_data)
+            total_places_2 = sum(r['places_2'] for r in central_data)
+            total_places_3 = sum(r['places_3'] for r in central_data)
+
+            # 中央値は加重平均ではなく、全レースから直接計算
+            central_median_query = f"""
+            SELECT
+              APPROX_QUANTILES(rr.popularity, 100)[OFFSET(50)] as median_popularity,
+              APPROX_QUANTILES(rr.finish_position, 100)[OFFSET(50)] as median_rank
+            FROM
+              `{DATASET}.race_master` rm
+              JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
+            WHERE
+              CAST(rr.trainer_id AS STRING) = CAST({TRAINER_ID} AS STRING)
+              AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+              AND rm.venue_name IN ('東京', '中山', '阪神', '京都')
+            """
+            central_median_results = client.query(central_median_query).result()
+            central_median_row = dict(list(central_median_results)[0])
+
+            central_summary = {
+                'name': '中央',
+                'racecourse_ja': '中央',
+                'racecourse_en': 'central',
+                'races': total_races,
+                'wins': total_wins,
+                'places_2': total_places_2,
+                'places_3': total_places_3,
+                'win_rate': round((total_wins / total_races * 100), 1) if total_races > 0 else 0,
+                'quinella_rate': round(((total_wins + total_places_2) / total_races * 100), 1) if total_races > 0 else 0,
+                'place_rate': round(((total_wins + total_places_2 + total_places_3) / total_races * 100), 1) if total_races > 0 else 0,
+                'win_payback': round(sum(r['win_payback'] * r['races'] for r in central_data) / total_races, 1) if total_races > 0 else 0,
+                'place_payback': round(sum(r['place_payback'] * r['races'] for r in central_data) / total_races, 1) if total_races > 0 else 0,
+                'avg_popularity': round(sum(r['avg_popularity'] * r['races'] for r in central_data) / total_races, 1) if total_races > 0 else None,
+                'avg_rank': round(sum(r['avg_rank'] * r['races'] for r in central_data) / total_races, 1) if total_races > 0 else None,
+                'median_popularity': central_median_row['median_popularity'],
+                'median_rank': central_median_row['median_rank'],
+            }
+            racecourse_data.append(central_summary)
+
+        # ローカル競馬場の集計
+        local_data = [r for r in racecourse_data if r['name'] in local_racecourses]
+        if local_data:
+            total_races = sum(r['races'] for r in local_data)
+            total_wins = sum(r['wins'] for r in local_data)
+            total_places_2 = sum(r['places_2'] for r in local_data)
+            total_places_3 = sum(r['places_3'] for r in local_data)
+
+            # 中央値は加重平均ではなく、全レースから直接計算
+            local_median_query = f"""
+            SELECT
+              APPROX_QUANTILES(rr.popularity, 100)[OFFSET(50)] as median_popularity,
+              APPROX_QUANTILES(rr.finish_position, 100)[OFFSET(50)] as median_rank
+            FROM
+              `{DATASET}.race_master` rm
+              JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
+            WHERE
+              CAST(rr.trainer_id AS STRING) = CAST({TRAINER_ID} AS STRING)
+              AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+              AND rm.venue_name IN ('札幌', '函館', '福島', '新潟', '中京', '小倉')
+            """
+            local_median_results = client.query(local_median_query).result()
+            local_median_row = dict(list(local_median_results)[0])
+
+            local_summary = {
+                'name': 'ローカル',
+                'racecourse_ja': 'ローカル',
+                'racecourse_en': 'local',
+                'races': total_races,
+                'wins': total_wins,
+                'places_2': total_places_2,
+                'places_3': total_places_3,
+                'win_rate': round((total_wins / total_races * 100), 1) if total_races > 0 else 0,
+                'quinella_rate': round(((total_wins + total_places_2) / total_races * 100), 1) if total_races > 0 else 0,
+                'place_rate': round(((total_wins + total_places_2 + total_places_3) / total_races * 100), 1) if total_races > 0 else 0,
+                'win_payback': round(sum(r['win_payback'] * r['races'] for r in local_data) / total_races, 1) if total_races > 0 else 0,
+                'place_payback': round(sum(r['place_payback'] * r['races'] for r in local_data) / total_races, 1) if total_races > 0 else 0,
+                'avg_popularity': round(sum(r['avg_popularity'] * r['races'] for r in local_data) / total_races, 1) if total_races > 0 else None,
+                'avg_rank': round(sum(r['avg_rank'] * r['races'] for r in local_data) / total_races, 1) if total_races > 0 else None,
+                'median_popularity': local_median_row['median_popularity'],
+                'median_rank': local_median_row['median_rank'],
+            }
+            racecourse_data.append(local_summary)
+
+        return racecourse_data
     except Exception as e:
         print(f"   ⚠️  Error fetching racecourse stats: {str(e)}", file=sys.stderr)
         raise

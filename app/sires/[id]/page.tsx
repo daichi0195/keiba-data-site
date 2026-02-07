@@ -85,63 +85,26 @@ export default async function SirePage({
     });
   })();
 
-  // 距離別データをテーブル形式に変換（中長距離と長距離をマージ）
-  const distanceStatsRaw = sire.distance_stats.reduce((acc, stat) => {
-    // 中長距離を長距離にマージ
-    const categoryName = stat.category === '中長距離' ? '長距離' : stat.category;
-
-    const existing = acc.find(item => item.name === categoryName);
-    if (existing) {
-      // 既存のカテゴリに統合（合計を計算）
-      existing.races += stat.races;
-      existing.wins += stat.wins;
-      existing.places_2 += stat.places_2;
-      existing.places_3 += stat.places_3;
-    } else {
-      // 新しいカテゴリを追加
-      acc.push({
-        name: categoryName,
-        races: stat.races,
-        wins: stat.wins,
-        places_2: stat.places_2,
-        places_3: stat.places_3,
-        win_rate: 0, // 後で再計算
-        quinella_rate: 0,
-        place_rate: 0,
-        win_payback: stat.win_payback,
-        place_payback: stat.place_payback,
-      });
-    }
-    return acc;
-  }, [] as Array<{
-    name: string;
-    races: number;
-    wins: number;
-    places_2: number;
-    places_3: number;
-    win_rate: number;
-    quinella_rate: number;
-    place_rate: number;
-    win_payback: number;
-    place_payback: number;
-  }>);
-
-  // 勝率・連対率・複勝率を再計算（全距離カテゴリを表示）
+  // 距離別データをテーブル形式に変換（GCSから取得したデータをそのまま使用）
   const allDistanceCategories = ['短距離', 'マイル', '中距離', '長距離'];
   const distanceStatsData = allDistanceCategories.map(category => {
-    const existingData = distanceStatsRaw.find(stat => stat.name === category);
+    const existingData = sire.distance_stats.find(stat => stat.category === category);
     if (existingData) {
       return {
-        category: existingData.name,
+        category: existingData.category,
         races: existingData.races,
         wins: existingData.wins,
         places_2: existingData.places_2,
         places_3: existingData.places_3,
-        win_rate: existingData.races > 0 ? (existingData.wins / existingData.races) * 100 : 0,
-        quinella_rate: existingData.races > 0 ? ((existingData.wins + existingData.places_2) / existingData.races) * 100 : 0,
-        place_rate: existingData.races > 0 ? ((existingData.wins + existingData.places_2 + existingData.places_3) / existingData.races) * 100 : 0,
+        win_rate: existingData.win_rate,
+        quinella_rate: existingData.quinella_rate,
+        place_rate: existingData.place_rate,
         win_payback: existingData.win_payback,
         place_payback: existingData.place_payback,
+        avg_popularity: existingData.avg_popularity,
+        avg_rank: existingData.avg_rank,
+        median_popularity: existingData.median_popularity,
+        median_rank: existingData.median_rank,
       };
     } else {
       return {
@@ -155,6 +118,10 @@ export default async function SirePage({
         place_rate: 0,
         win_payback: 0,
         place_payback: 0,
+        avg_popularity: undefined,
+        avg_rank: undefined,
+        median_popularity: undefined,
+        median_rank: undefined,
       };
     }
   });
@@ -183,6 +150,10 @@ export default async function SirePage({
       place_rate: existingData.place_rate,
       win_payback: existingData.win_payback,
       place_payback: existingData.place_payback,
+      avg_popularity: existingData.avg_popularity,
+      avg_rank: existingData.avg_rank,
+      median_popularity: existingData.median_popularity,
+      median_rank: existingData.median_rank,
     } : {
       name: surface,
       races: 0,
@@ -194,6 +165,10 @@ export default async function SirePage({
       place_rate: 0,
       win_payback: 0,
       place_payback: 0,
+      avg_popularity: undefined,
+      avg_rank: undefined,
+      median_popularity: undefined,
+      median_rank: undefined,
     };
   });
 
@@ -212,6 +187,10 @@ export default async function SirePage({
       place_rate: sire.surface_change_stats.turf_to_dirt?.place_rate || 0,
       win_payback: sire.surface_change_stats.turf_to_dirt?.win_payback || 0,
       place_payback: sire.surface_change_stats.turf_to_dirt?.place_payback || 0,
+      avg_popularity: sire.surface_change_stats.turf_to_dirt?.avg_popularity,
+      avg_rank: sire.surface_change_stats.turf_to_dirt?.avg_rank,
+      median_popularity: sire.surface_change_stats.turf_to_dirt?.median_popularity,
+      median_rank: sire.surface_change_stats.turf_to_dirt?.median_rank,
     },
     {
       name: 'ダ→芝',
@@ -226,6 +205,10 @@ export default async function SirePage({
       place_rate: sire.surface_change_stats.dirt_to_turf?.place_rate || 0,
       win_payback: sire.surface_change_stats.dirt_to_turf?.win_payback || 0,
       place_payback: sire.surface_change_stats.dirt_to_turf?.place_payback || 0,
+      avg_popularity: sire.surface_change_stats.dirt_to_turf?.avg_popularity,
+      avg_rank: sire.surface_change_stats.dirt_to_turf?.avg_rank,
+      median_popularity: sire.surface_change_stats.dirt_to_turf?.median_popularity,
+      median_rank: sire.surface_change_stats.dirt_to_turf?.median_rank,
     },
   ] : [];
 
@@ -254,6 +237,10 @@ export default async function SirePage({
       quinella_rate: 0,
       win_payback: 0,
       place_payback: 0,
+      avg_popularity: undefined,
+      avg_rank: undefined,
+      median_popularity: undefined,
+      median_rank: undefined,
     };
   });
 
@@ -274,79 +261,17 @@ export default async function SirePage({
       quinella_rate: 0,
       win_payback: 0,
       place_payback: 0,
+      avg_popularity: undefined,
+      avg_rank: undefined,
+      median_popularity: undefined,
+      median_rank: undefined,
     };
   });
 
-  // 芝・ダートの得意傾向を計算（複勝率の差から判定）
-  const turfStat = sire.surface_stats.find(s => s.surface === '芝');
-  const dirtStat = sire.surface_stats.find(s => s.surface === 'ダート');
-  let surfaceTrendPosition = 3; // デフォルトは互角
-  if (turfStat && dirtStat) {
-    const diff = turfStat.place_rate - dirtStat.place_rate;
-    if (diff >= 5) surfaceTrendPosition = 1; // 芝が得意（左端）
-    else if (diff >= 2) surfaceTrendPosition = 2; // やや芝が得意
-    else if (diff <= -5) surfaceTrendPosition = 5; // ダートが得意（右端）
-    else if (diff <= -2) surfaceTrendPosition = 4; // ややダートが得意
-    else surfaceTrendPosition = 3; // 互角
-  }
-
-  // 得意な脚質傾向を計算（逃げ・先行 vs 差し・追込の複勝率差から判定）
-  const frontRunners = sire.running_style_stats.filter(s =>
-    s.style === 'escape' || s.style === 'lead'
-  );
-  const closers = sire.running_style_stats.filter(s =>
-    s.style === 'pursue' || s.style === 'close'
-  );
-
-  let runningStyleTrendPosition = 3; // デフォルトは互角
-  if (frontRunners.length > 0 && closers.length > 0) {
-    // 加重平均で複勝率を計算（出走数で重み付け）
-    const frontTotalRaces = frontRunners.reduce((sum, s) => sum + s.races, 0);
-    const frontWeightedPlaceRate = frontRunners.reduce((sum, s) =>
-      sum + (s.place_rate * s.races), 0
-    ) / frontTotalRaces;
-
-    const closerTotalRaces = closers.reduce((sum, s) => sum + s.races, 0);
-    const closerWeightedPlaceRate = closers.reduce((sum, s) =>
-      sum + (s.place_rate * s.races), 0
-    ) / closerTotalRaces;
-
-    const diff = frontWeightedPlaceRate - closerWeightedPlaceRate;
-    if (diff >= 5) runningStyleTrendPosition = 1; // 逃げ・先行が得意
-    else if (diff >= 2) runningStyleTrendPosition = 2; // やや逃げ・先行が得意
-    else if (diff <= -5) runningStyleTrendPosition = 5; // 差し・追込が得意
-    else if (diff <= -2) runningStyleTrendPosition = 4; // やや差し・追込が得意
-    else runningStyleTrendPosition = 3; // 互角
-  }
-
-  // 得意な距離傾向を計算（短距離・マイル vs 中距離・長距離の複勝率差から判定）
-  const shortDistances = distanceStatsData.filter(d =>
-    d.name === '短距離' || d.name === 'マイル'
-  );
-  const longDistances = distanceStatsData.filter(d =>
-    d.name === '中距離' || d.name === '長距離'
-  );
-
-  let distanceTrendPosition = 3; // デフォルトは互角
-  if (shortDistances.length > 0 && longDistances.length > 0) {
-    // 加重平均で複勝率を計算（出走数で重み付け）
-    const shortTotalRaces = shortDistances.reduce((sum, d) => sum + d.races, 0);
-    const shortWeightedPlaceRate = shortDistances.reduce((sum, d) =>
-      sum + (d.place_rate * d.races), 0
-    ) / shortTotalRaces;
-
-    const longTotalRaces = longDistances.reduce((sum, d) => sum + d.races, 0);
-    const longWeightedPlaceRate = longDistances.reduce((sum, d) =>
-      sum + (d.place_rate * d.races), 0
-    ) / longTotalRaces;
-
-    const diff = shortWeightedPlaceRate - longWeightedPlaceRate;
-    if (diff >= 5) distanceTrendPosition = 1; // 短距離が得意
-    else if (diff >= 2) distanceTrendPosition = 2; // やや短距離が得意
-    else if (diff <= -5) distanceTrendPosition = 5; // 長距離が得意
-    else if (diff <= -2) distanceTrendPosition = 4; // やや長距離が得意
-    else distanceTrendPosition = 3; // 互角
-  }
+  // GCSから計算済みの傾向データを取得
+  const surfaceTrendPosition = sire.characteristics?.surface_trend_position ?? 3;
+  const runningStyleTrendPosition = sire.characteristics?.running_style_trend_position ?? 3;
+  const distanceTrendPosition = sire.characteristics?.distance_trend_position ?? 3;
 
   // 芝馬場状態別傾向を計算（良 vs 重・不良の複勝率差から判定）
   const turfGoodConditions = sire.track_condition_stats.filter(s =>
@@ -438,6 +363,10 @@ export default async function SirePage({
           place_rate: existingData.place_rate,
           win_payback: existingData.win_payback,
           place_payback: existingData.place_payback,
+          avg_popularity: existingData.avg_popularity,
+          avg_rank: existingData.avg_rank,
+          median_popularity: existingData.median_popularity,
+          median_rank: existingData.median_rank,
         };
       } else {
         return {
@@ -454,6 +383,10 @@ export default async function SirePage({
           place_rate: 0,
           win_payback: 0,
           place_payback: 0,
+          avg_popularity: undefined,
+          avg_rank: undefined,
+          median_popularity: undefined,
+          median_rank: undefined,
         };
       }
     });
@@ -476,6 +409,10 @@ export default async function SirePage({
       place_rate: existingData.place_rate,
       win_payback: existingData.win_payback,
       place_payback: existingData.place_payback,
+      avg_popularity: existingData.avg_popularity,
+      avg_rank: existingData.avg_rank,
+      median_popularity: existingData.median_popularity,
+      median_rank: existingData.median_rank,
     } : {
       rank: index + 1,
       class_name: className,
@@ -488,6 +425,10 @@ export default async function SirePage({
       place_rate: 0,
       win_payback: 0,
       place_payback: 0,
+      avg_popularity: undefined,
+      avg_rank: undefined,
+      median_popularity: undefined,
+      median_rank: undefined,
     };
   });
 
@@ -514,6 +455,10 @@ export default async function SirePage({
       quinella_rate: 0,
       win_payback: 0,
       place_payback: 0,
+      avg_popularity: undefined,
+      avg_rank: undefined,
+      median_popularity: undefined,
+      median_rank: undefined,
     };
   });
 
@@ -532,6 +477,10 @@ export default async function SirePage({
       quinella_rate: 0,
       win_payback: 0,
       place_payback: 0,
+      avg_popularity: undefined,
+      avg_rank: undefined,
+      median_popularity: undefined,
+      median_rank: undefined,
     };
   });
 
@@ -560,6 +509,10 @@ export default async function SirePage({
       quinella_rate: 0,
       win_payback: 0,
       place_payback: 0,
+      avg_popularity: undefined,
+      avg_rank: undefined,
+      median_popularity: undefined,
+      median_rank: undefined,
     };
   });
 
@@ -579,6 +532,10 @@ export default async function SirePage({
         quinella_rate: existingData.quinella_rate,
         win_payback: existingData.win_payback,
         place_payback: existingData.place_payback,
+        avg_popularity: existingData.avg_popularity,
+        avg_rank: existingData.avg_rank,
+        median_popularity: existingData.median_popularity,
+        median_rank: existingData.median_rank,
       };
     }
     return {
@@ -592,6 +549,10 @@ export default async function SirePage({
       quinella_rate: 0,
       win_payback: 0,
       place_payback: 0,
+      avg_popularity: undefined,
+      avg_rank: undefined,
+      median_popularity: undefined,
+      median_rank: undefined,
     };
   });
 
@@ -638,7 +599,13 @@ export default async function SirePage({
     };
   }).filter(group => group.courses.length > 0); // コースがある競馬場のみ
 
-  // 競馬場別サマリーデータをracecourse_statsから取得し、順番を整理（全競馬場を表示）
+  // 競馬場別サマリーデータをracecourse_statsから取得（全競馬場を表示）
+  // GCSから右回り・左回り・中央・ローカルの集計行も取得
+  const rightTurnData = sire.racecourse_stats.find(r => r.racecourse_en === 'right_turn');
+  const leftTurnData = sire.racecourse_stats.find(r => r.racecourse_en === 'left_turn');
+  const centralData = sire.racecourse_stats.find(r => r.racecourse_en === 'central');
+  const localData = sire.racecourse_stats.find(r => r.racecourse_en === 'local');
+
   const racecourseSummaryData = racecourseOrder
     .map(racecourseItem => {
       const racecourse = sire.racecourse_stats.find(r => r.racecourse_en === racecourseItem.en);
@@ -660,6 +627,10 @@ export default async function SirePage({
           place_rate: 0,
           win_payback: 0,
           place_payback: 0,
+          avg_popularity: undefined,
+          avg_rank: undefined,
+          median_popularity: undefined,
+          median_rank: undefined,
         };
       }
       return {
@@ -675,150 +646,14 @@ export default async function SirePage({
         place_rate: racecourse.place_rate,
         win_payback: racecourse.win_payback,
         place_payback: racecourse.place_payback,
+        avg_popularity: racecourse.avg_popularity,
+        avg_rank: racecourse.avg_rank,
+        median_popularity: racecourse.median_popularity,
+        median_rank: racecourse.median_rank,
       };
     });
 
-  // 右回り・左回り競馬場の定義
-  const rightTurnRacecourses = ['tokyo', 'niigata', 'chukyo', 'kokura']; // 東京、新潟、中京、小倉
-  const leftTurnRacecourses = ['sapporo', 'hakodate', 'fukushima', 'nakayama', 'hanshin', 'kyoto']; // 札幌、函館、福島、中山、阪神、京都
-
-  // 右回り競馬場の集計
-  const rightTurnRacecourses_data = sire.racecourse_stats.filter(r => rightTurnRacecourses.includes(r.racecourse_en));
-  const rightTurnData = rightTurnRacecourses_data.length > 0 ? (() => {
-    const totalRaces = rightTurnRacecourses_data.reduce((sum, r) => sum + r.races, 0);
-    const totalWins = rightTurnRacecourses_data.reduce((sum, r) => sum + r.wins, 0);
-    const totalPlaces2 = rightTurnRacecourses_data.reduce((sum, r) => sum + r.places_2, 0);
-    const totalPlaces3 = rightTurnRacecourses_data.reduce((sum, r) => sum + r.places_3, 0);
-
-    const winRate = totalRaces > 0 ? (totalWins / totalRaces) * 100 : 0;
-    const quinellaRate = totalRaces > 0 ? ((totalWins + totalPlaces2) / totalRaces) * 100 : 0;
-    const placeRate = totalRaces > 0 ? ((totalWins + totalPlaces2 + totalPlaces3) / totalRaces) * 100 : 0;
-
-    const winPayback = totalRaces > 0
-      ? rightTurnRacecourses_data.reduce((sum, r) => sum + (r.win_payback * r.races), 0) / totalRaces
-      : 0;
-    const placePayback = totalRaces > 0
-      ? rightTurnRacecourses_data.reduce((sum, r) => sum + (r.place_payback * r.races), 0) / totalRaces
-      : 0;
-
-    return {
-      name: '右回り',
-      races: totalRaces,
-      wins: totalWins,
-      places_2: totalPlaces2,
-      places_3: totalPlaces3,
-      win_rate: parseFloat(winRate.toFixed(1)),
-      quinella_rate: parseFloat(quinellaRate.toFixed(1)),
-      place_rate: parseFloat(placeRate.toFixed(1)),
-      win_payback: parseFloat(winPayback.toFixed(1)),
-      place_payback: parseFloat(placePayback.toFixed(1)),
-    };
-  })() : null;
-
-  // 左回り競馬場の集計
-  const leftTurnRacecourses_data = sire.racecourse_stats.filter(r => leftTurnRacecourses.includes(r.racecourse_en));
-  const leftTurnData = leftTurnRacecourses_data.length > 0 ? (() => {
-    const totalRaces = leftTurnRacecourses_data.reduce((sum, r) => sum + r.races, 0);
-    const totalWins = leftTurnRacecourses_data.reduce((sum, r) => sum + r.wins, 0);
-    const totalPlaces2 = leftTurnRacecourses_data.reduce((sum, r) => sum + r.places_2, 0);
-    const totalPlaces3 = leftTurnRacecourses_data.reduce((sum, r) => sum + r.places_3, 0);
-
-    const winRate = totalRaces > 0 ? (totalWins / totalRaces) * 100 : 0;
-    const quinellaRate = totalRaces > 0 ? ((totalWins + totalPlaces2) / totalRaces) * 100 : 0;
-    const placeRate = totalRaces > 0 ? ((totalWins + totalPlaces2 + totalPlaces3) / totalRaces) * 100 : 0;
-
-    const winPayback = totalRaces > 0
-      ? leftTurnRacecourses_data.reduce((sum, r) => sum + (r.win_payback * r.races), 0) / totalRaces
-      : 0;
-    const placePayback = totalRaces > 0
-      ? leftTurnRacecourses_data.reduce((sum, r) => sum + (r.place_payback * r.races), 0) / totalRaces
-      : 0;
-
-    return {
-      name: '左回り',
-      races: totalRaces,
-      wins: totalWins,
-      places_2: totalPlaces2,
-      places_3: totalPlaces3,
-      win_rate: parseFloat(winRate.toFixed(1)),
-      quinella_rate: parseFloat(quinellaRate.toFixed(1)),
-      place_rate: parseFloat(placeRate.toFixed(1)),
-      win_payback: parseFloat(winPayback.toFixed(1)),
-      place_payback: parseFloat(placePayback.toFixed(1)),
-    };
-  })() : null;
-
-  // 中央・ローカルの集計行を追加
-  const centralRacecourses = ['tokyo', 'nakayama', 'hanshin', 'kyoto']; // 東京、中山、阪神、京都
-  const localRacecourses = ['sapporo', 'hakodate', 'fukushima', 'niigata', 'chukyo', 'kokura']; // 札幌、函館、福島、新潟、中京、小倉
-
-  // 中央競馬場の集計
-  const centralRacecourses_data = sire.racecourse_stats.filter(r => centralRacecourses.includes(r.racecourse_en));
-  const centralData = centralRacecourses_data.length > 0 ? (() => {
-    const totalRaces = centralRacecourses_data.reduce((sum, r) => sum + r.races, 0);
-    const totalWins = centralRacecourses_data.reduce((sum, r) => sum + r.wins, 0);
-    const totalPlaces2 = centralRacecourses_data.reduce((sum, r) => sum + r.places_2, 0);
-    const totalPlaces3 = centralRacecourses_data.reduce((sum, r) => sum + r.places_3, 0);
-
-    const winRate = totalRaces > 0 ? (totalWins / totalRaces) * 100 : 0;
-    const quinellaRate = totalRaces > 0 ? ((totalWins + totalPlaces2) / totalRaces) * 100 : 0;
-    const placeRate = totalRaces > 0 ? ((totalWins + totalPlaces2 + totalPlaces3) / totalRaces) * 100 : 0;
-
-    const winPayback = totalRaces > 0
-      ? centralRacecourses_data.reduce((sum, r) => sum + (r.win_payback * r.races), 0) / totalRaces
-      : 0;
-    const placePayback = totalRaces > 0
-      ? centralRacecourses_data.reduce((sum, r) => sum + (r.place_payback * r.races), 0) / totalRaces
-      : 0;
-
-    return {
-      name: '中央',
-      races: totalRaces,
-      wins: totalWins,
-      places_2: totalPlaces2,
-      places_3: totalPlaces3,
-      win_rate: parseFloat(winRate.toFixed(1)),
-      quinella_rate: parseFloat(quinellaRate.toFixed(1)),
-      place_rate: parseFloat(placeRate.toFixed(1)),
-      win_payback: parseFloat(winPayback.toFixed(1)),
-      place_payback: parseFloat(placePayback.toFixed(1)),
-    };
-  })() : null;
-
-  // ローカル競馬場の集計
-  const localRacecourses_data = sire.racecourse_stats.filter(r => localRacecourses.includes(r.racecourse_en));
-  const localData = localRacecourses_data.length > 0 ? (() => {
-    const totalRaces = localRacecourses_data.reduce((sum, r) => sum + r.races, 0);
-    const totalWins = localRacecourses_data.reduce((sum, r) => sum + r.wins, 0);
-    const totalPlaces2 = localRacecourses_data.reduce((sum, r) => sum + r.places_2, 0);
-    const totalPlaces3 = localRacecourses_data.reduce((sum, r) => sum + r.places_3, 0);
-
-    const winRate = totalRaces > 0 ? (totalWins / totalRaces) * 100 : 0;
-    const quinellaRate = totalRaces > 0 ? ((totalWins + totalPlaces2) / totalRaces) * 100 : 0;
-    const placeRate = totalRaces > 0 ? ((totalWins + totalPlaces2 + totalPlaces3) / totalRaces) * 100 : 0;
-
-    const winPayback = totalRaces > 0
-      ? localRacecourses_data.reduce((sum, r) => sum + (r.win_payback * r.races), 0) / totalRaces
-      : 0;
-    const placePayback = totalRaces > 0
-      ? localRacecourses_data.reduce((sum, r) => sum + (r.place_payback * r.races), 0) / totalRaces
-      : 0;
-
-    return {
-      name: 'ローカル',
-      races: totalRaces,
-      wins: totalWins,
-      places_2: totalPlaces2,
-      places_3: totalPlaces3,
-      win_rate: parseFloat(winRate.toFixed(1)),
-      quinella_rate: parseFloat(quinellaRate.toFixed(1)),
-      place_rate: parseFloat(placeRate.toFixed(1)),
-      win_payback: parseFloat(winPayback.toFixed(1)),
-      place_payback: parseFloat(placePayback.toFixed(1)),
-    };
-  })() : null;
-
-  // 競馬場データの最後に右回り・左回り・中央・ローカルを追加
+  // 競馬場データの最後に右回り・左回り・中央・ローカルを追加（GCSから取得）
   const racecourseSummaryDataWithTotals = [
     ...racecourseSummaryData,
     ...(rightTurnData ? [rightTurnData] : []),
@@ -1271,6 +1106,10 @@ export default async function SirePage({
                             <th className="mobile-scroll-col mobile-col-rate">複勝率</th>
                             <th className="mobile-scroll-col mobile-col-payback">単勝回収率</th>
                             <th className="mobile-scroll-col mobile-col-payback">複勝回収率</th>
+                            <th className="mobile-scroll-col" style={{ width: '80px', minWidth: '80px' }}>平均人気</th>
+                            <th className="mobile-scroll-col" style={{ width: '80px', minWidth: '80px' }}>平均着順</th>
+                            <th className="mobile-scroll-col" style={{ width: '80px', minWidth: '80px' }}>人気中央値</th>
+                            <th className="mobile-scroll-col" style={{ width: '80px', minWidth: '80px' }}>着順中央値</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -1336,6 +1175,18 @@ export default async function SirePage({
                                 <span className={isHighlight(stat.place_payback, maxPlacePayback) ? 'mobile-highlight' : ''}>
                                   {stat.place_payback.toFixed(1)}%
                                 </span>
+                              </td>
+                              <td className="mobile-scroll-col" style={{ width: '80px', minWidth: '80px' }}>
+                                <span>{stat.avg_popularity !== undefined ? stat.avg_popularity.toFixed(1) : '-'}</span>
+                              </td>
+                              <td className="mobile-scroll-col" style={{ width: '80px', minWidth: '80px' }}>
+                                <span>{stat.avg_rank !== undefined ? stat.avg_rank.toFixed(1) : '-'}</span>
+                              </td>
+                              <td className="mobile-scroll-col" style={{ width: '80px', minWidth: '80px' }}>
+                                <span>{stat.median_popularity !== undefined ? Math.round(stat.median_popularity) : '-'}</span>
+                              </td>
+                              <td className="mobile-scroll-col" style={{ width: '80px', minWidth: '80px' }}>
+                                <span>{stat.median_rank !== undefined ? Math.round(stat.median_rank) : '-'}</span>
                               </td>
                             </tr>
                           ))}

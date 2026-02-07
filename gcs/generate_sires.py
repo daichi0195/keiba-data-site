@@ -696,7 +696,11 @@ def get_age_stats(client):
           ROUND(AVG(CASE WHEN rr.finish_position <= 2 THEN 1 ELSE 0 END) * 100, 1) as quinella_rate,
           ROUND(AVG(CASE WHEN rr.finish_position <= 3 THEN 1 ELSE 0 END) * 100, 1) as place_rate,
           ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position = 1 THEN rr.win ELSE 0 END), COUNT(*) * 100) * 100, 1) as win_payback,
-          ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback
+          ROUND(SAFE_DIVIDE(SUM(CASE WHEN rr.finish_position <= 3 THEN rr.place ELSE 0 END), COUNT(*) * 100) * 100, 1) as place_payback,
+          ROUND(AVG(rr.popularity), 1) as avg_popularity,
+          ROUND(AVG(rr.finish_position), 1) as avg_rank,
+          APPROX_QUANTILES(rr.popularity, 100)[OFFSET(50)] as median_popularity,
+          APPROX_QUANTILES(rr.finish_position, 100)[OFFSET(50)] as median_rank
         FROM
           `{DATASET}.race_master` rm
           JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
@@ -818,7 +822,10 @@ def get_dam_sire_stats(client):
 
 
 def get_racecourse_stats(client):
-    """競馬場別成績を取得（過去3年間）"""
+    """競馬場別成績を取得（過去3年間）
+
+    中央・ローカル・右回り・左回りの集計行も含める
+    """
     query = f"""
     SELECT
       rm.venue_name as name,
@@ -861,7 +868,196 @@ def get_racecourse_stats(client):
 
     try:
         results = client.query(query).result()
-        return [dict(row) for row in results]
+        racecourse_data = [dict(row) for row in results]
+
+        # 右回り・左回り・中央・ローカルの定義
+        right_turn_racecourses = ['tokyo', 'niigata', 'chukyo', 'kokura']
+        left_turn_racecourses = ['sapporo', 'hakodate', 'fukushima', 'nakayama', 'hanshin', 'kyoto']
+        central_racecourses = ['tokyo', 'nakayama', 'hanshin', 'kyoto']
+        local_racecourses = ['sapporo', 'hakodate', 'fukushima', 'niigata', 'chukyo', 'kokura']
+
+        # 右回り競馬場の集計（中央値は別クエリで正しく計算）
+        right_turn_data = [r for r in racecourse_data if r['racecourse_en'] in right_turn_racecourses]
+        if right_turn_data:
+            total_races = sum(r['races'] for r in right_turn_data)
+            total_wins = sum(r['wins'] for r in right_turn_data)
+            total_places_2 = sum(r['places_2'] for r in right_turn_data)
+            total_places_3 = sum(r['places_3'] for r in right_turn_data)
+
+            # 中央値を正しく計算（BigQueryで該当競馬場のレース全体から計算）
+            right_turn_median_query = f"""
+            SELECT
+              APPROX_QUANTILES(rr.popularity, 100)[OFFSET(50)] as median_popularity,
+              APPROX_QUANTILES(rr.finish_position, 100)[OFFSET(50)] as median_rank
+            FROM
+              `{DATASET}.race_master` rm
+              JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
+              JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
+            WHERE
+              h.father = '{SIRE_NAME}'
+              AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+              AND rm.venue_name IN ('東京', '新潟', '中京', '小倉')
+            """
+            median_results = client.query(right_turn_median_query).result()
+            median_row = dict(list(median_results)[0]) if median_results else {}
+
+            right_turn_summary = {
+                'name': '右回り',
+                'racecourse_ja': '右回り',
+                'racecourse_en': 'right_turn',
+                'races': total_races,
+                'wins': total_wins,
+                'places_2': total_places_2,
+                'places_3': total_places_3,
+                'win_rate': round((total_wins / total_races) * 100, 1) if total_races > 0 else 0,
+                'quinella_rate': round(((total_wins + total_places_2) / total_races) * 100, 1) if total_races > 0 else 0,
+                'place_rate': round(((total_wins + total_places_2 + total_places_3) / total_races) * 100, 1) if total_races > 0 else 0,
+                'win_payback': round(sum(r['win_payback'] * r['races'] for r in right_turn_data) / total_races, 1) if total_races > 0 else 0,
+                'place_payback': round(sum(r['place_payback'] * r['races'] for r in right_turn_data) / total_races, 1) if total_races > 0 else 0,
+                'avg_popularity': round(sum(r['avg_popularity'] * r['races'] for r in right_turn_data) / total_races, 1) if total_races > 0 else None,
+                'avg_rank': round(sum(r['avg_rank'] * r['races'] for r in right_turn_data) / total_races, 1) if total_races > 0 else None,
+                'median_popularity': median_row.get('median_popularity'),
+                'median_rank': median_row.get('median_rank'),
+            }
+            racecourse_data.append(right_turn_summary)
+
+        # 左回り競馬場の集計（中央値は別クエリで正しく計算）
+        left_turn_data = [r for r in racecourse_data if r['racecourse_en'] in left_turn_racecourses]
+        if left_turn_data:
+            total_races = sum(r['races'] for r in left_turn_data)
+            total_wins = sum(r['wins'] for r in left_turn_data)
+            total_places_2 = sum(r['places_2'] for r in left_turn_data)
+            total_places_3 = sum(r['places_3'] for r in left_turn_data)
+
+            # 中央値を正しく計算
+            left_turn_median_query = f"""
+            SELECT
+              APPROX_QUANTILES(rr.popularity, 100)[OFFSET(50)] as median_popularity,
+              APPROX_QUANTILES(rr.finish_position, 100)[OFFSET(50)] as median_rank
+            FROM
+              `{DATASET}.race_master` rm
+              JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
+              JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
+            WHERE
+              h.father = '{SIRE_NAME}'
+              AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+              AND rm.venue_name IN ('札幌', '函館', '福島', '中山', '阪神', '京都')
+            """
+            median_results = client.query(left_turn_median_query).result()
+            median_row = dict(list(median_results)[0]) if median_results else {}
+
+            left_turn_summary = {
+                'name': '左回り',
+                'racecourse_ja': '左回り',
+                'racecourse_en': 'left_turn',
+                'races': total_races,
+                'wins': total_wins,
+                'places_2': total_places_2,
+                'places_3': total_places_3,
+                'win_rate': round((total_wins / total_races) * 100, 1) if total_races > 0 else 0,
+                'quinella_rate': round(((total_wins + total_places_2) / total_races) * 100, 1) if total_races > 0 else 0,
+                'place_rate': round(((total_wins + total_places_2 + total_places_3) / total_races) * 100, 1) if total_races > 0 else 0,
+                'win_payback': round(sum(r['win_payback'] * r['races'] for r in left_turn_data) / total_races, 1) if total_races > 0 else 0,
+                'place_payback': round(sum(r['place_payback'] * r['races'] for r in left_turn_data) / total_races, 1) if total_races > 0 else 0,
+                'avg_popularity': round(sum(r['avg_popularity'] * r['races'] for r in left_turn_data) / total_races, 1) if total_races > 0 else None,
+                'avg_rank': round(sum(r['avg_rank'] * r['races'] for r in left_turn_data) / total_races, 1) if total_races > 0 else None,
+                'median_popularity': median_row.get('median_popularity'),
+                'median_rank': median_row.get('median_rank'),
+            }
+            racecourse_data.append(left_turn_summary)
+
+        # 中央競馬場の集計（中央値は別クエリで正しく計算）
+        central_data = [r for r in racecourse_data if r['racecourse_en'] in central_racecourses]
+        if central_data:
+            total_races = sum(r['races'] for r in central_data)
+            total_wins = sum(r['wins'] for r in central_data)
+            total_places_2 = sum(r['places_2'] for r in central_data)
+            total_places_3 = sum(r['places_3'] for r in central_data)
+
+            # 中央値を正しく計算
+            central_median_query = f"""
+            SELECT
+              APPROX_QUANTILES(rr.popularity, 100)[OFFSET(50)] as median_popularity,
+              APPROX_QUANTILES(rr.finish_position, 100)[OFFSET(50)] as median_rank
+            FROM
+              `{DATASET}.race_master` rm
+              JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
+              JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
+            WHERE
+              h.father = '{SIRE_NAME}'
+              AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+              AND rm.venue_name IN ('東京', '中山', '阪神', '京都')
+            """
+            median_results = client.query(central_median_query).result()
+            median_row = dict(list(median_results)[0]) if median_results else {}
+
+            central_summary = {
+                'name': '中央',
+                'racecourse_ja': '中央',
+                'racecourse_en': 'central',
+                'races': total_races,
+                'wins': total_wins,
+                'places_2': total_places_2,
+                'places_3': total_places_3,
+                'win_rate': round((total_wins / total_races) * 100, 1) if total_races > 0 else 0,
+                'quinella_rate': round(((total_wins + total_places_2) / total_races) * 100, 1) if total_races > 0 else 0,
+                'place_rate': round(((total_wins + total_places_2 + total_places_3) / total_races) * 100, 1) if total_races > 0 else 0,
+                'win_payback': round(sum(r['win_payback'] * r['races'] for r in central_data) / total_races, 1) if total_races > 0 else 0,
+                'place_payback': round(sum(r['place_payback'] * r['races'] for r in central_data) / total_races, 1) if total_races > 0 else 0,
+                'avg_popularity': round(sum(r['avg_popularity'] * r['races'] for r in central_data) / total_races, 1) if total_races > 0 else None,
+                'avg_rank': round(sum(r['avg_rank'] * r['races'] for r in central_data) / total_races, 1) if total_races > 0 else None,
+                'median_popularity': median_row.get('median_popularity'),
+                'median_rank': median_row.get('median_rank'),
+            }
+            racecourse_data.append(central_summary)
+
+        # ローカル競馬場の集計（中央値は別クエリで正しく計算）
+        local_data = [r for r in racecourse_data if r['racecourse_en'] in local_racecourses]
+        if local_data:
+            total_races = sum(r['races'] for r in local_data)
+            total_wins = sum(r['wins'] for r in local_data)
+            total_places_2 = sum(r['places_2'] for r in local_data)
+            total_places_3 = sum(r['places_3'] for r in local_data)
+
+            # 中央値を正しく計算
+            local_median_query = f"""
+            SELECT
+              APPROX_QUANTILES(rr.popularity, 100)[OFFSET(50)] as median_popularity,
+              APPROX_QUANTILES(rr.finish_position, 100)[OFFSET(50)] as median_rank
+            FROM
+              `{DATASET}.race_master` rm
+              JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
+              JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
+            WHERE
+              h.father = '{SIRE_NAME}'
+              AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+              AND rm.venue_name IN ('札幌', '函館', '福島', '新潟', '中京', '小倉')
+            """
+            median_results = client.query(local_median_query).result()
+            median_row = dict(list(median_results)[0]) if median_results else {}
+
+            local_summary = {
+                'name': 'ローカル',
+                'racecourse_ja': 'ローカル',
+                'racecourse_en': 'local',
+                'races': total_races,
+                'wins': total_wins,
+                'places_2': total_places_2,
+                'places_3': total_places_3,
+                'win_rate': round((total_wins / total_races) * 100, 1) if total_races > 0 else 0,
+                'quinella_rate': round(((total_wins + total_places_2) / total_races) * 100, 1) if total_races > 0 else 0,
+                'place_rate': round(((total_wins + total_places_2 + total_places_3) / total_races) * 100, 1) if total_races > 0 else 0,
+                'win_payback': round(sum(r['win_payback'] * r['races'] for r in local_data) / total_races, 1) if total_races > 0 else 0,
+                'place_payback': round(sum(r['place_payback'] * r['races'] for r in local_data) / total_races, 1) if total_races > 0 else 0,
+                'avg_popularity': round(sum(r['avg_popularity'] * r['races'] for r in local_data) / total_races, 1) if total_races > 0 else None,
+                'avg_rank': round(sum(r['avg_rank'] * r['races'] for r in local_data) / total_races, 1) if total_races > 0 else None,
+                'median_popularity': median_row.get('median_popularity'),
+                'median_rank': median_row.get('median_rank'),
+            }
+            racecourse_data.append(local_summary)
+
+        return racecourse_data
+
     except Exception as e:
         print(f"   ⚠️  Error fetching racecourse stats: {str(e)}", file=sys.stderr)
         raise
@@ -1199,7 +1395,64 @@ def process_sire(bq_client, storage_client, sire_id, sire_name):
         data_period = f"直近3年間分（{three_years_ago.year}年{three_years_ago.month}月{three_years_ago.day}日〜{yesterday.year}年{yesterday.month}月{yesterday.day}日）"
         last_updated = f"{today.year}年{today.month}月{today.day}日"
 
+        # 傾向計算を追加
+        print("  [18/21] Calculating trends...")
+
+        # 1. 芝・ダート傾向
+        surface_trend_position = 3  # デフォルト: 互角
+        turf_stat = next((s for s in surface_stats if s['surface'] == '芝'), None)
+        dirt_stat = next((s for s in surface_stats if s['surface'] == 'ダート'), None)
+        if turf_stat and dirt_stat:
+            diff = turf_stat['place_rate'] - dirt_stat['place_rate']
+            if diff >= 5:
+                surface_trend_position = 1  # 芝が得意
+            elif diff >= 2:
+                surface_trend_position = 2  # やや芝が得意
+            elif diff <= -5:
+                surface_trend_position = 5  # ダートが得意
+            elif diff <= -2:
+                surface_trend_position = 4  # ややダートが得意
+
+        # 2. 脚質傾向
+        running_style_trend_position = 3  # デフォルト: 互角
+        front_runners = [s for s in running_style_stats if s['style'] in ['escape', 'lead']]
+        closers = [s for s in running_style_stats if s['style'] in ['pursue', 'close']]
+        if front_runners and closers:
+            front_total_races = sum(s['races'] for s in front_runners)
+            front_weighted_place_rate = sum(s['place_rate'] * s['races'] for s in front_runners) / front_total_races if front_total_races > 0 else 0
+            closer_total_races = sum(s['races'] for s in closers)
+            closer_weighted_place_rate = sum(s['place_rate'] * s['races'] for s in closers) / closer_total_races if closer_total_races > 0 else 0
+            diff = front_weighted_place_rate - closer_weighted_place_rate
+            if diff >= 5:
+                running_style_trend_position = 1  # 逃げ・先行が得意
+            elif diff >= 2:
+                running_style_trend_position = 2  # やや逃げ・先行が得意
+            elif diff <= -5:
+                running_style_trend_position = 5  # 差し・追込が得意
+            elif diff <= -2:
+                running_style_trend_position = 4  # やや差し・追込が得意
+
+        # 3. 距離傾向
+        distance_trend_position = 3  # デフォルト: 互角
+        short_distances = [d for d in distance_stats if d['category'] in ['短距離', 'マイル']]
+        long_distances = [d for d in distance_stats if d['category'] in ['中距離', '中長距離', '長距離']]
+        if short_distances and long_distances:
+            short_total_races = sum(d['races'] for d in short_distances)
+            short_weighted_place_rate = sum(d['place_rate'] * d['races'] for d in short_distances) / short_total_races if short_total_races > 0 else 0
+            long_total_races = sum(d['races'] for d in long_distances)
+            long_weighted_place_rate = sum(d['place_rate'] * d['races'] for d in long_distances) / long_total_races if long_total_races > 0 else 0
+            diff = short_weighted_place_rate - long_weighted_place_rate
+            if diff >= 5:
+                distance_trend_position = 1  # 短距離が得意
+            elif diff >= 2:
+                distance_trend_position = 2  # やや短距離が得意
+            elif diff <= -5:
+                distance_trend_position = 5  # 長距離が得意
+            elif diff <= -2:
+                distance_trend_position = 4  # やや長距離が得意
+
         # JSONデータ構築
+        print("  [19/21] Building JSON data...")
         sire_data = {
             "id": str(sire_id).zfill(5),  # 5桁ゼロパディングのID
             "name": sire_name,
@@ -1225,18 +1478,14 @@ def process_sire(bq_client, storage_client, sire_id, sire_name):
             "course_stats": course_stats,
             "surface_change_stats": surface_change_stats,
             "characteristics": {
-                "volatility": 2,
-                "trifecta_avg_payback_rank": 35,
-                "total_courses": 120,
-                "trifecta_median_payback": 58.3,
-                "trifecta_all_median_payback": 58.3,
-                "gate_position": 0,
-                "distance_trend": 1,
+                "surface_trend_position": surface_trend_position,
+                "running_style_trend_position": running_style_trend_position,
+                "distance_trend_position": distance_trend_position,
             },
         }
 
         # GCSにアップロード
-        print("  [18/18] Uploading to GCS...")
+        print("  [20/21] Uploading to GCS...")
         bucket = storage_client.bucket(BUCKET_NAME)
 
         # ID番号を5桁のゼロパディング形式に変換（調教師・騎手と同じ形式）

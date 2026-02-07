@@ -492,15 +492,7 @@ export default async function CoursePage({ params }: Props) {
 
     // GCSデータで完全上書き
     data.gate_stats = gcsData.gate_stats || [];
-    // popularity_statsを配列からオブジェクト形式に変換
-    if (Array.isArray(gcsData.popularity_stats)) {
-      data.popularity_stats = gcsData.popularity_stats.reduce((acc: any, stat: any) => {
-        acc[stat.popularity_group] = stat;
-        return acc;
-      }, {});
-    } else {
-      data.popularity_stats = gcsData.popularity_stats || {};
-    }
+    data.popularity_stats = gcsData.popularity_stats || {};
     data.jockey_stats = gcsData.jockey_stats || [];
     data.trainer_stats = gcsData.trainer_stats || [];
     data.pedigree_stats = gcsData.pedigree_stats || [];
@@ -528,54 +520,20 @@ export default async function CoursePage({ params }: Props) {
       }
     }
 
-    // gate_position を gate_stats から計算（内枠有利〜外枠有利）
-    if (data.gate_stats && Array.isArray(data.gate_stats) && data.gate_stats.length > 0) {
-      const innerGates = data.gate_stats.filter(g => g.gate >= 1 && g.gate <= 4);
-      const outerGates = data.gate_stats.filter(g => g.gate >= 5 && g.gate <= 8);
-
-      if (innerGates.length > 0 && outerGates.length > 0) {
-        const innerAvgPlaceRate = innerGates.reduce((sum, g) => sum + (g.place_rate || 0), 0) / innerGates.length;
-        const outerAvgPlaceRate = outerGates.reduce((sum, g) => sum + (g.place_rate || 0), 0) / outerGates.length;
-
-        const diff = innerAvgPlaceRate - outerAvgPlaceRate;
-        let gatePosition = 3; // デフォルト: 互角
-
-        if (diff >= 5) gatePosition = 1;         // 内有利
-        else if (diff >= 2) gatePosition = 2;    // やや内有利
-        else if (diff <= -5) gatePosition = 5;   // 外有利
-        else if (diff <= -2) gatePosition = 4;   // やや外有利
-
-        if (!data.course_info) {
-          data.course_info = {};
-        }
-        if (!data.course_info.characteristics) {
-          data.course_info.characteristics = {};
-        }
-        data.course_info.characteristics.gate_position = gatePosition;
+    // GCSから計算済みの傾向データを取得
+    if (gcsData.characteristics) {
+      if (!data.course_info) {
+        data.course_info = {};
       }
-    }
-
-    // running_style_trend_position を running_style_trends から計算（逃げ・先行有利〜差し・追込有利）
-    if (data.running_style_trends && Array.isArray(data.running_style_trends) && data.running_style_trends.length === 2) {
-      const earlyLead = data.running_style_trends.find(t => t.trend_group === 'early_lead');
-      const comeback = data.running_style_trends.find(t => t.trend_group === 'comeback');
-
-      if (earlyLead && comeback) {
-        const diff = (earlyLead.place_rate || 0) - (comeback.place_rate || 0);
-        let runningStyleTrendPosition = 3; // デフォルト: 互角
-
-        if (diff >= 5) runningStyleTrendPosition = 1;         // 逃げ・先行有利
-        else if (diff >= 2) runningStyleTrendPosition = 2;    // やや逃げ・先行有利
-        else if (diff <= -5) runningStyleTrendPosition = 5;   // 差し・追込有利
-        else if (diff <= -2) runningStyleTrendPosition = 4;   // やや差し・追込有利
-
-        if (!data.course_info) {
-          data.course_info = {};
-        }
-        if (!data.course_info.characteristics) {
-          data.course_info.characteristics = {};
-        }
-        data.course_info.characteristics.running_style_trend_position = runningStyleTrendPosition;
+      if (!data.course_info.characteristics) {
+        data.course_info.characteristics = {};
+      }
+      // gate_position と running_style_trend_position をGCSから取得
+      if (gcsData.characteristics.gate_position !== undefined) {
+        data.course_info.characteristics.gate_position = gcsData.characteristics.gate_position;
+      }
+      if (gcsData.characteristics.running_style_trend_position !== undefined) {
+        data.course_info.characteristics.running_style_trend_position = gcsData.characteristics.running_style_trend_position;
       }
     }
     // Handle both root-level total_races and course_info.total_races
@@ -590,7 +548,6 @@ export default async function CoursePage({ params }: Props) {
       }
       data.course_info.total_races = gcsData.course_info.total_races;
     }
-    console.log('✅ All data loaded from GCS successfully');
 
   } catch (error) {
     console.error('❌ Failed to load data from GCS:', error);

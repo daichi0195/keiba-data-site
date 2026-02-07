@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import styles from './DistanceTable.module.css';
+import styles from './RacecourseTable.module.css';
 
-type DistanceRow = {
-  category: string;
+type RacecourseRow = {
+  name: string;
   races: number;
   wins: number;
   places_2: number;
@@ -18,14 +18,16 @@ type DistanceRow = {
   avg_rank?: number;
   median_popularity?: number;
   median_rank?: number;
+  is_central?: boolean; // 中央競馬場かどうか
+  is_local?: boolean;   // ローカル競馬場かどうか
 };
 
 type Props = {
   title: string;
-  data: DistanceRow[];
+  data: RacecourseRow[];
 };
 
-export default function DistanceTable({ title, data }: Props) {
+export default function RacecourseTable({ title, data }: Props) {
   const [isScrolled, setIsScrolled] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -43,16 +45,24 @@ export default function DistanceTable({ title, data }: Props) {
     }
   }, []);
 
-  // 各カラムの最大値を取得
-  const maxRaces = Math.max(...data.map(d => d.races ?? 0));
-  const maxWins = Math.max(...data.map(d => d.wins ?? 0));
-  const maxPlaces2 = Math.max(...data.map(d => d.places_2 ?? 0));
-  const maxPlaces3 = Math.max(...data.map(d => d.places_3 ?? 0));
-  const maxWinRate = Math.max(...data.map(d => d.win_rate ?? 0));
-  const maxPlaceRate = Math.max(...data.map(d => d.place_rate ?? 0));
-  const maxQuinellaRate = Math.max(...data.map(d => d.quinella_rate ?? 0));
-  const maxWinPayback = Math.max(...data.map(d => d.win_payback ?? 0));
-  const maxPlacePayback = Math.max(...data.map(d => d.place_payback ?? 0));
+  // 中央・ローカル・右回り・左回り行を除外したデータで最大値を計算
+  const racecourseData = data.filter(d =>
+    d.name !== '中央' &&
+    d.name !== 'ローカル' &&
+    d.name !== '右回り' &&
+    d.name !== '左回り'
+  );
+
+  // 各カラムの最大値を取得（競馬場のみ）
+  const maxRaces = Math.max(...racecourseData.map(d => d.races ?? 0));
+  const maxWins = Math.max(...racecourseData.map(d => d.wins ?? 0));
+  const maxPlaces2 = Math.max(...racecourseData.map(d => d.places_2 ?? 0));
+  const maxPlaces3 = Math.max(...racecourseData.map(d => d.places_3 ?? 0));
+  const maxWinRate = Math.max(...racecourseData.map(d => d.win_rate ?? 0));
+  const maxPlaceRate = Math.max(...racecourseData.map(d => d.place_rate ?? 0));
+  const maxQuinellaRate = Math.max(...racecourseData.map(d => d.quinella_rate ?? 0));
+  const maxWinPayback = Math.max(...racecourseData.map(d => d.win_payback ?? 0));
+  const maxPlacePayback = Math.max(...racecourseData.map(d => d.place_payback ?? 0));
 
   const isHighlight = (value: number, maxValue: number) => value === maxValue && value > 0;
 
@@ -65,8 +75,8 @@ export default function DistanceTable({ title, data }: Props) {
           <table className={styles.table}>
             <thead>
               <tr>
-                <th className={styles.distanceCol}>
-                  距離
+                <th className={styles.racecourseCol}>
+                  競馬場
                 </th>
                 <th className={styles.scrollCol}>出走数</th>
                 <th className={styles.scrollCol}>1着</th>
@@ -84,34 +94,38 @@ export default function DistanceTable({ title, data }: Props) {
               </tr>
             </thead>
             <tbody>
-              {data.map((row, index) => (
+              {data.map((row, index) => {
+                const isSummaryRow = row.name === '右回り' || row.name === '左回り' || row.name === '中央' || row.name === 'ローカル';
+                const isFirstSummaryRow = row.name === '中央' || row.name === '右回り';
+                const isLocalRow = row.name === 'ローカル';
+                return (
                 <tr
-                  key={row.category}
-                  className={index % 2 === 0 ? styles.rowEven : styles.rowOdd}
+                  key={row.name}
+                  className={`${index % 2 === 0 ? styles.rowEven : styles.rowOdd} ${isSummaryRow ? styles.summaryRow : ''} ${isFirstSummaryRow ? styles.firstSummaryRow : ''}`}
                 >
-                  <td className={styles.distanceCol}>
-                    <span className={styles.distanceBadge}>
-                      {row.category}
+                  <td className={styles.racecourseCol}>
+                    <span className={`${styles.racecourseBadge} ${isLocalRow ? styles.localBadge : ''}`}>
+                      {row.name}
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
                     <span className={isHighlight(row.races ?? 0, maxRaces) ? styles.highlight : ''}>
-                      {row.races ?? 0}
+                      {row.races}
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
                     <span className={isHighlight(row.wins ?? 0, maxWins) ? styles.highlight : ''}>
-                      {row.wins ?? 0}
+                      {row.wins}
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
                     <span className={isHighlight(row.places_2 ?? 0, maxPlaces2) ? styles.highlight : ''}>
-                      {row.places_2 ?? 0}
+                      {row.places_2}
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
                     <span className={isHighlight(row.places_3 ?? 0, maxPlaces3) ? styles.highlight : ''}>
-                      {row.places_3 ?? 0}
+                      {row.places_3}
                     </span>
                   </td>
                   <td className={styles.scrollCol}>
@@ -140,31 +154,23 @@ export default function DistanceTable({ title, data }: Props) {
                     </span>
                   </td>
                   <td className={styles.scrollCol} style={{ width: '80px', minWidth: '80px' }}>
-                    <span>{row.avg_popularity != null ? row.avg_popularity.toFixed(1) : '-'}</span>
+                    <span>{row.avg_popularity !== undefined ? row.avg_popularity.toFixed(1) : '-'}</span>
                   </td>
                   <td className={styles.scrollCol} style={{ width: '80px', minWidth: '80px' }}>
-                    <span>{row.avg_rank != null ? row.avg_rank.toFixed(1) : '-'}</span>
+                    <span>{row.avg_rank !== undefined ? row.avg_rank.toFixed(1) : '-'}</span>
                   </td>
                   <td className={styles.scrollCol} style={{ width: '80px', minWidth: '80px' }}>
-                    <span>{row.median_popularity != null ? Math.round(row.median_popularity) : '-'}</span>
+                    <span>{row.median_popularity !== undefined ? Math.round(row.median_popularity) : '-'}</span>
                   </td>
                   <td className={styles.scrollCol} style={{ width: '80px', minWidth: '80px' }}>
-                    <span>{row.median_rank != null ? Math.round(row.median_rank) : '-'}</span>
+                    <span>{row.median_rank !== undefined ? Math.round(row.median_rank) : '-'}</span>
                   </td>
                 </tr>
-              ))}
+              );
+              })}
             </tbody>
           </table>
         </div>
-      </div>
-
-      <div className={styles.note}>
-        <p className="note-text" style={{ fontWeight: '600', margin: '0 0 0.25rem 0' }}>距離の定義</p>
-        <p className="note-text" style={{ margin: '0.25rem 0' }}>短距離：1000m～1300m</p>
-        <p className="note-text" style={{ margin: '0.25rem 0' }}>マイル：1301m～1899m</p>
-        <p className="note-text" style={{ margin: '0.25rem 0' }}>中距離：1900m～2100m</p>
-        <p className="note-text" style={{ margin: '0.25rem 0' }}>長距離：2101m～</p>
-        <p className="note-text" style={{ margin: '0.5rem 0 0 0' }}>※IFHA（国際競馬統括機関連盟）の基準を採用<br />※長距離レースが少ないため中長距離は長距離に分類</p>
       </div>
     </div>
   );
