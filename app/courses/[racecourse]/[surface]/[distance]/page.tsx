@@ -492,7 +492,15 @@ export default async function CoursePage({ params }: Props) {
 
     // GCSデータで完全上書き
     data.gate_stats = gcsData.gate_stats || [];
-    data.popularity_stats = gcsData.popularity_stats || {};
+    // popularity_statsを配列からオブジェクト形式に変換
+    if (Array.isArray(gcsData.popularity_stats)) {
+      data.popularity_stats = gcsData.popularity_stats.reduce((acc: any, stat: any) => {
+        acc[stat.popularity_group] = stat;
+        return acc;
+      }, {});
+    } else {
+      data.popularity_stats = gcsData.popularity_stats || {};
+    }
     data.jockey_stats = gcsData.jockey_stats || [];
     data.trainer_stats = gcsData.trainer_stats || [];
     data.pedigree_stats = gcsData.pedigree_stats || [];
