@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import DataTable from '@/components/DataTable';
 import { getSireDataFromGCS } from '@/lib/getSireDataFromGCS';
@@ -60,7 +61,30 @@ export default async function SirePage({
   const { id } = await params;
 
   // GCSから種牡馬データを取得
-  const sire = await getSireDataFromGCS(id);
+  let sire;
+  try {
+    sire = await getSireDataFromGCS(id);
+
+    // 必須フィールドの存在チェック
+    if (!sire ||
+        !Array.isArray(sire.yearly_stats) ||
+        !Array.isArray(sire.distance_stats) ||
+        !Array.isArray(sire.surface_stats) ||
+        !Array.isArray(sire.track_condition_stats) ||
+        !Array.isArray(sire.class_stats) ||
+        !Array.isArray(sire.running_style_stats) ||
+        !Array.isArray(sire.age_stats) ||
+        !Array.isArray(sire.gender_stats) ||
+        !Array.isArray(sire.dam_sire_stats) ||
+        !Array.isArray(sire.course_stats) ||
+        !Array.isArray(sire.racecourse_stats)) {
+      console.error(`Incomplete data for sire ${id}`);
+      notFound();
+    }
+  } catch (error) {
+    console.error(`Failed to load sire data for ${id}:`, error);
+    notFound();
+  }
 
   // 現在の年度を取得
   const currentYear = new Date().getFullYear();

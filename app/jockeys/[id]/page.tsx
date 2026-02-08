@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import DataTable from '@/components/DataTable';
 import BottomNav from '@/components/BottomNav';
@@ -283,14 +284,26 @@ export default async function JockeyPage({
   let jockey: JockeyData;
   try {
     jockey = await getJockeyDataFromGCS(id) as JockeyData;
+
+    // 必須フィールドの存在チェック
+    if (!jockey ||
+        !Array.isArray(jockey.yearly_stats) ||
+        !Array.isArray(jockey.distance_stats) ||
+        !Array.isArray(jockey.surface_stats) ||
+        !Array.isArray(jockey.track_condition_stats) ||
+        !Array.isArray(jockey.class_stats) ||
+        !Array.isArray(jockey.running_style_stats) ||
+        !Array.isArray(jockey.gate_stats) ||
+        !Array.isArray(jockey.popularity_stats) ||
+        !Array.isArray(jockey.gender_stats) ||
+        !Array.isArray(jockey.course_stats) ||
+        !Array.isArray(jockey.racecourse_stats)) {
+      console.error(`Incomplete data for jockey ${id}`);
+      notFound();
+    }
   } catch (error) {
-    console.error('Failed to load jockey data:', error);
-    return (
-      <div style={{ padding: '2rem', textAlign: 'center' }}>
-        <h1>騎手データの読み込みに失敗しました</h1>
-        <Link href="/">トップページに戻る</Link>
-      </div>
-    );
+    console.error(`Failed to load jockey data for ${id}:`, error);
+    notFound();
   }
 
   // 現在の年度を取得

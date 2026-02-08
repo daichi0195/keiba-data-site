@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import DataTable from '@/components/DataTable';
 import BottomNav from '@/components/BottomNav';
@@ -565,6 +566,7 @@ export async function generateMetadata({
   try {
     trainer = await getTrainerDataFromGCS(id) as TrainerData;
   } catch (error) {
+    console.error(`Failed to load trainer data for ${id} in generateMetadata:`, error);
     return {
       title: '調教師データが見つかりません | 競馬データ.com',
     };
@@ -608,6 +610,20 @@ export default async function TrainerPage({
   try {
     trainer = await getTrainerDataFromGCS(id) as TrainerData;
 
+    // 必須フィールドの存在チェック
+    if (!trainer ||
+        !Array.isArray(trainer.yearly_stats) ||
+        !Array.isArray(trainer.distance_stats) ||
+        !Array.isArray(trainer.surface_stats) ||
+        !Array.isArray(trainer.class_stats) ||
+        !Array.isArray(trainer.popularity_stats) ||
+        !Array.isArray(trainer.gender_stats) ||
+        !Array.isArray(trainer.course_stats) ||
+        !Array.isArray(trainer.racecourse_stats)) {
+      console.error(`Incomplete data for trainer ${id}`);
+      notFound();
+    }
+
     // interval_statsの全カテゴリを保証（欠けているカテゴリを0で補完）
     const defaultIntervals = [
       { interval: '連闘', races: 0, wins: 0, places_2: 0, places_3: 0, win_rate: 0, place_rate: 0, quinella_rate: 0, win_payback: 0, place_payback: 0 },
@@ -623,13 +639,8 @@ export default async function TrainerPage({
       return existingData || defaultInterval;
     });
   } catch (error) {
-    console.error('Failed to load trainer data:', error);
-    return (
-      <div style={{ padding: '2rem', textAlign: 'center' }}>
-        <h1>調教師データの読み込みに失敗しました</h1>
-        <Link href="/">トップページに戻る</Link>
-      </div>
-    );
+    console.error(`Failed to load trainer data for ${id}:`, error);
+    notFound();
   }
 
   // 現在の年度を取得

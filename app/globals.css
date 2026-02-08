@@ -1305,7 +1305,7 @@ details[open] .evaluation-content {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  background: #f8fafc;
+  background: #F8FAFC;
   padding: 24px 1rem;
   border-radius: 6px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -3070,7 +3070,7 @@ h3.subsection-title:first-of-type {
 
 /* リーディングチャートの背景をグレーに */
 .gate-place-rate-detail {
-  background-color: #f5f5f5;
+  background-color: #F8FAFC;
   padding: 16px;
   border-radius: 8px;
 }
