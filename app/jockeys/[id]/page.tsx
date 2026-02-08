@@ -286,6 +286,7 @@ export default async function JockeyPage({
     jockey = await getJockeyDataFromGCS(id) as JockeyData;
 
     // 必須フィールドの存在チェック
+    // popularity_statsはオブジェクト、他は配列
     if (!jockey ||
         !Array.isArray(jockey.yearly_stats) ||
         !Array.isArray(jockey.distance_stats) ||
@@ -294,7 +295,7 @@ export default async function JockeyPage({
         !Array.isArray(jockey.class_stats) ||
         !Array.isArray(jockey.running_style_stats) ||
         !Array.isArray(jockey.gate_stats) ||
-        !Array.isArray(jockey.popularity_stats) ||
+        !jockey.popularity_stats || typeof jockey.popularity_stats !== 'object' ||
         !Array.isArray(jockey.gender_stats) ||
         !Array.isArray(jockey.course_stats) ||
         !Array.isArray(jockey.racecourse_stats)) {

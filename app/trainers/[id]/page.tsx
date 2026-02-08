@@ -611,12 +611,13 @@ export default async function TrainerPage({
     trainer = await getTrainerDataFromGCS(id) as TrainerData;
 
     // 必須フィールドの存在チェック
+    // popularity_statsはオブジェクト、他は配列
     if (!trainer ||
         !Array.isArray(trainer.yearly_stats) ||
         !Array.isArray(trainer.distance_stats) ||
         !Array.isArray(trainer.surface_stats) ||
         !Array.isArray(trainer.class_stats) ||
-        !Array.isArray(trainer.popularity_stats) ||
+        !trainer.popularity_stats || typeof trainer.popularity_stats !== 'object' ||
         !Array.isArray(trainer.gender_stats) ||
         !Array.isArray(trainer.course_stats) ||
         !Array.isArray(trainer.racecourse_stats)) {
