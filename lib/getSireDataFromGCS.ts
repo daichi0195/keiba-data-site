@@ -40,26 +40,28 @@ export async function getSireDataFromGCS(sireId: string | number) {
       }));
     };
 
-    if (data.class_stats && Array.isArray(data.class_stats)) {
-      data.class_stats = processStatsArray(data.class_stats);
-    }
-    if (data.distance_stats && Array.isArray(data.distance_stats)) {
-      data.distance_stats = processStatsArray(data.distance_stats);
-    }
-    if (data.gender_stats && Array.isArray(data.gender_stats)) {
-      data.gender_stats = processStatsArray(data.gender_stats);
-    }
-    if (data.surface_stats && Array.isArray(data.surface_stats)) {
-      data.surface_stats = processStatsArray(data.surface_stats);
-    }
-    if (data.track_change_stats && Array.isArray(data.track_change_stats)) {
-      data.track_change_stats = processStatsArray(data.track_change_stats);
-    }
-    if (data.track_condition_stats && Array.isArray(data.track_condition_stats)) {
-      data.track_condition_stats = processStatsArray(data.track_condition_stats);
-    }
-    if (data.racecourse_stats && Array.isArray(data.racecourse_stats)) {
-      data.racecourse_stats = processStatsArray(data.racecourse_stats);
+    // すべての統計配列を処理
+    const statsArrays = [
+      'yearly_stats',
+      'class_stats',
+      'distance_stats',
+      'gender_stats',
+      'surface_stats',
+      'track_change_stats',
+      'track_condition_stats',
+      'racecourse_stats',
+      'running_style_stats',
+      'age_stats',
+      'gate_stats',
+      'course_stats',
+      'dam_sire_stats',
+      'horse_weight_stats'
+    ];
+
+    for (const arrayName of statsArrays) {
+      if (data[arrayName] && Array.isArray(data[arrayName])) {
+        data[arrayName] = processStatsArray(data[arrayName]);
+      }
     }
 
     return data;

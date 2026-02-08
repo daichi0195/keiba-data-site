@@ -142,20 +142,22 @@ export async function getJockeyDataFromGCS(jockeyId: string | number) {
       }));
     };
 
-    if (data.distance_stats && Array.isArray(data.distance_stats)) {
-      data.distance_stats = processStatsArray(data.distance_stats);
-    }
-    if (data.surface_stats && Array.isArray(data.surface_stats)) {
-      data.surface_stats = processStatsArray(data.surface_stats);
-    }
-    if (data.track_condition_stats && Array.isArray(data.track_condition_stats)) {
-      data.track_condition_stats = processStatsArray(data.track_condition_stats);
-    }
-    if (data.racecourse_stats && Array.isArray(data.racecourse_stats)) {
-      data.racecourse_stats = processStatsArray(data.racecourse_stats);
-    }
-    if (data.gender_stats && Array.isArray(data.gender_stats)) {
-      data.gender_stats = processStatsArray(data.gender_stats);
+    // すべての統計配列を処理
+    const statsArrays = [
+      'yearly_stats',
+      'distance_stats',
+      'surface_stats',
+      'track_condition_stats',
+      'racecourse_stats',
+      'gender_stats',
+      'class_stats',
+      'course_stats'
+    ];
+
+    for (const arrayName of statsArrays) {
+      if (data[arrayName] && Array.isArray(data[arrayName])) {
+        data[arrayName] = processStatsArray(data[arrayName]);
+      }
     }
 
     console.log('✅ Jockey data loaded from GCS');

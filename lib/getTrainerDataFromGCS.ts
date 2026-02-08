@@ -92,6 +92,35 @@ export async function getTrainerDataFromGCS(trainerId: string | number) {
       }));
     }
 
+    // 他の統計データの処理（avg_popularity、avg_rank、median_popularity、median_rankを含める）
+    const processStatsArray = (statsArray: any[]) => {
+      return statsArray.map((item: any) => ({
+        ...item,
+        avg_popularity: typeof item.avg_popularity === 'string' ? parseFloat(item.avg_popularity) : item.avg_popularity,
+        avg_rank: typeof item.avg_rank === 'string' ? parseFloat(item.avg_rank) : item.avg_rank,
+        median_popularity: typeof item.median_popularity === 'string' ? parseInt(item.median_popularity, 10) : item.median_popularity,
+        median_rank: typeof item.median_rank === 'string' ? parseInt(item.median_rank, 10) : item.median_rank,
+      }));
+    };
+
+    // すべての統計配列を処理
+    const statsArrays = [
+      'yearly_stats',
+      'distance_stats',
+      'surface_stats',
+      'racecourse_stats',
+      'gender_stats',
+      'class_stats',
+      'course_stats',
+      'interval_stats'
+    ];
+
+    for (const arrayName of statsArrays) {
+      if (data[arrayName] && Array.isArray(data[arrayName])) {
+        data[arrayName] = processStatsArray(data[arrayName]);
+      }
+    }
+
     console.log('✅ Trainer data loaded from GCS');
     console.log('  - Trainer:', data.name || '(unknown)');
     console.log('  - Total races:', data.total_stats?.races || 0);
