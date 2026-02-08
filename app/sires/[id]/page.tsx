@@ -1201,16 +1201,16 @@ export default async function SirePage({
                                 </span>
                               </td>
                               <td className="mobile-scroll-col" style={{ width: '80px', minWidth: '80px' }}>
-                                <span>{stat.avg_popularity !== undefined ? stat.avg_popularity.toFixed(1) : '-'}</span>
+                                <span>{stat.avg_popularity != null ? stat.avg_popularity.toFixed(1) : '-'}</span>
                               </td>
                               <td className="mobile-scroll-col" style={{ width: '80px', minWidth: '80px' }}>
-                                <span>{stat.avg_rank !== undefined ? stat.avg_rank.toFixed(1) : '-'}</span>
+                                <span>{stat.avg_rank != null ? stat.avg_rank.toFixed(1) : '-'}</span>
                               </td>
                               <td className="mobile-scroll-col" style={{ width: '80px', minWidth: '80px' }}>
-                                <span>{stat.median_popularity !== undefined ? Math.round(stat.median_popularity) : '-'}</span>
+                                <span>{stat.median_popularity != null ? Math.round(stat.median_popularity) : '-'}</span>
                               </td>
                               <td className="mobile-scroll-col" style={{ width: '80px', minWidth: '80px' }}>
-                                <span>{stat.median_rank !== undefined ? Math.round(stat.median_rank) : '-'}</span>
+                                <span>{stat.median_rank != null ? Math.round(stat.median_rank) : '-'}</span>
                               </td>
                             </tr>
                           ))}
