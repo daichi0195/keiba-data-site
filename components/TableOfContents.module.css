@@ -1,6 +1,6 @@
 /* PC専用の右サイドバー目次 */
 .tableOfContents {
-  display: none; /* SP時は非表示 */
+  display: none;
 }
 
 /* PC表示時のみ表示 */
@@ -9,9 +9,12 @@
     display: flex;
     flex-direction: column;
     position: sticky;
-    top: 80px;
+    top: 90px;
     padding: 0;
-    align-self: flex-start;
+    max-height: calc(100vh - 110px);
+    background: #fbfcfd;
+    z-index: 50;
+    overflow-y: auto;
   }
 
   .nav {
@@ -21,7 +24,7 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     border: 1px solid #e8eef5;
     flex-shrink: 0;
-    max-height: 600px;
+    max-height: 500px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -74,7 +77,6 @@
     color: var(--primary-green);
   }
 
-  /* スクロール中はホバーを無効化 */
   .scrolling .link:hover:not(.active) {
     color: #334155;
   }
@@ -103,7 +105,6 @@
     color: var(--primary-green-dark);
   }
 
-  /* バナーエリア */
   .bannerArea {
     margin-top: 1rem;
     flex-shrink: 0;
@@ -137,5 +138,12 @@
     color: #ffffff;
     letter-spacing: 0.1em;
     opacity: 0.9;
+  }
+}
+
+/* 中画面では非表示 */
+@media (min-width: 769px) and (max-width: 1199px) {
+  .tableOfContents {
+    display: none;
   }
 }

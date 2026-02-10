@@ -213,3 +213,54 @@ a.secondary {
     line-height: 1;
   }
 }
+
+/* TOPページのサイドバー */
+.homeSidebar {
+  display: none;
+}
+
+/* PC表示時のみ表示 */
+@media (min-width: 769px) {
+  .homeSidebar {
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 90px;
+    padding: 0;
+    max-height: calc(100vh - 110px);
+    background: #fbfcfd;
+  }
+
+  .bannerArea {
+    height: 250px;
+  }
+
+  .bannerPlaceholder {
+    background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-green-dark) 100%);
+    border-radius: 12px;
+    padding: 2rem 1rem;
+    text-align: center;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 12px rgba(29, 184, 84, 0.2);
+  }
+
+  .bannerTitle {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: 0.05em;
+  }
+
+  .bannerSubtitle {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.1em;
+    opacity: 0.9;
+  }
+}

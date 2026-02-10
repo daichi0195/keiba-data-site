@@ -1,5 +1,4 @@
 import { Metadata } from 'next';
-import TableOfContents from '@/components/TableOfContents';
 import ArticleCarousel from '@/components/ArticleCarousel';
 import XBanner from '@/components/XBanner';
 import ThisWeekVenues from '@/components/ThisWeekVenues';
@@ -10,6 +9,7 @@ import TrainerLeading from '@/components/TrainerLeading';
 import ColumnSection from '@/components/ColumnSection';
 import { getJockeyLeading, getTrainerLeading, getSireLeading } from '@/lib/getLeadingData';
 import { getAllArticles } from '@/lib/articles';
+import styles from './page.module.css';
 
 // ISR: 1日1回（86400秒）再生成
 export const revalidate = 86400;
@@ -52,14 +52,15 @@ export default async function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
-      <main style={{ padding: 0 }}>
-        <article style={{ backgroundColor: '#fbfcfd' }}>
-          {/* 記事セクション */}
-          <section className="section section-full-width section-article-carousel">
-            <ArticleCarousel articles={articles} />
-            <XBanner />
-          </section>
+      <main className="home-main">
+        {/* 記事カルーセル - 全幅 */}
+        <section className="section section-full-width section-article-carousel">
+          <ArticleCarousel articles={articles} />
+          <XBanner />
+        </section>
 
+        {/* 2カラムレイアウト部分 */}
+        <article style={{ backgroundColor: '#fbfcfd' }}>
           <ThisWeekVenues />
 
           <div className="home-content-wrapper">
@@ -74,7 +75,16 @@ export default async function HomePage() {
             <ColumnSection articles={articles} />
           </div>
         </article>
-        {/* <TableOfContents /> */}
+
+        {/* バナーエリア */}
+        <aside className={styles.homeSidebar}>
+          <div className={styles.bannerArea}>
+            <div className={styles.bannerPlaceholder}>
+              <div className={styles.bannerTitle}>競馬AI製作中！</div>
+              <div className={styles.bannerSubtitle}>COMING SOON</div>
+            </div>
+          </div>
+        </aside>
       </main>
     </>
   );

@@ -215,7 +215,7 @@
   .carouselWrapper {
     overflow-x: scroll;
     gap: 8px;
-    padding: 0 calc(50vw - (100vw - 40px) / 2);
+    padding: 0 20px;
     scroll-snap-type: x mandatory;
     scroll-behavior: auto;
   }

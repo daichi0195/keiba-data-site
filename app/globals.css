@@ -28,8 +28,8 @@
 }
 
 html {
-  overflow-x: hidden;
   width: 100%;
+  height: 100%;
 }
 
 body {
@@ -37,9 +37,10 @@ body {
   background: #fbfcfd;
   color: var(--text-dark);
   min-height: 100vh;
-  overflow-x: hidden;
+  height: auto;
   width: 100%;
   max-width: 100vw;
+  overflow-x: clip;
 }
 
 /* ヘッダー */
@@ -141,6 +142,24 @@ header {
   color: #2d3748;
 }
 
+/* PC表示時：コンテンツカードの余白を拡大 */
+@media (min-width: 769px) {
+  .content-card {
+    padding: 32px 40px;
+    border-radius: 12px;
+  }
+
+  .content-card .section,
+  .content-card > section {
+    padding: 0 0 24px 0;
+    margin-bottom: 32px;
+  }
+
+  .content-card h3 {
+    font-size: 20px;
+  }
+}
+
 .content-card #highlights-section > .highlights-box {
   background: transparent !important;
   border: none !important;
@@ -158,52 +177,108 @@ header {
   margin-bottom: 0;
 }
 
-/* メインコンテンツ */
-main:not(.page_articleMain__GmN3G) {
+/* メインコンテンツ（コースページのみ - asideを持つmain） */
+main:has(aside) {
   max-width: 1200px;
   margin: 0 auto;
   padding: 16px 12px;
 }
 
-/* PC表示時：中央配置 + 左右サイドバー */
+/* PC表示時：中央配置 + 右サイドバー（コースページのみ） */
 @media (min-width: 769px) {
-  main:not(.page_articleMain__GmN3G) {
+  main:has(aside) {
     display: grid;
-    grid-template-columns: 280px minmax(0, 700px) 280px;
-    gap: 1.5rem;
+    grid-template-columns: minmax(0, 900px) 280px;
+    gap: 2rem;
     padding: 16px 1rem;
     max-width: 1400px;
     margin: 0 auto; /* 中央配置 */
     width: 100%;
     box-sizing: border-box;
-    align-items: start;
+    min-height: 100vh; /* 最小高さを設定 */
+    position: relative; /* サイドバーの absolute 配置のため */
   }
 
-  /* 中央コンテンツエリア（article直接 または ArticleLayoutのdiv.container） */
-  main > article,
-  main > div:first-child {
-    grid-column: 2;
-    max-width: 650px;
+  /* 中央コンテンツエリア（コースページのみ） */
+  main:has(aside) > article,
+  main:has(aside) > div:first-child {
+    grid-column: 1;
+    max-width: 900px;
     min-width: 0; /* グリッドオーバーフロー防止 */
   }
 
-  /* 右側目次 */
-  main > aside {
-    grid-column: 3;
+  /* 右側目次（コースページのみ） */
+  main:has(aside) > aside {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    align-self: start;
     padding-bottom: 2rem;
+  }
+
+  /* TOPページ用レイアウト（PC） */
+  main.home-main {
+    display: grid;
+    grid-template-columns: minmax(0, 900px) 280px;
+    grid-template-rows: auto 1fr;
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* カルーセルセクション：全幅 */
+  main.home-main .section-article-carousel {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem 0;
+  }
+
+  /* メインコンテンツエリア */
+  main.home-main > article {
+    grid-column: 1;
+    grid-row: 2;
+    max-width: 900px;
+    min-width: 0;
+  }
+
+  /* バナーエリア */
+  main.home-main > aside {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: start;
   }
 
   /* ヘッダーサイズの調整 */
   .page-header h1 {
-    font-size: 22px;
+    font-size: 28px;
   }
 
   h2.section-title {
-    font-size: 1.75rem;
+    font-size: 28px;
+    margin-bottom: 20px;
+    padding-left: 1rem;
+    padding-bottom: 0;
+    border-left: 4px solid var(--primary-green);
+    border-bottom: none;
   }
 
   h3 {
-    font-size: 1.25rem;
+    font-size: 1.375rem;
+  }
+
+  /* 本文の文字サイズ */
+  p, li, td, th {
+    font-size: 16px;
+    line-height: 1.75;
   }
 
   /* page-headerのメタ情報を縦並びに */
@@ -281,20 +356,19 @@ main:not(.page_articleMain__GmN3G) {
 
   /* 見出しを強調 */
   .section-title {
-    font-size: 22px;
-    margin-top: 4px;
-    margin-bottom: 8px;
-    padding-bottom: 0.625rem;
-    border-bottom: 3px solid var(--primary-green);
+    font-size: 28px;
+    margin-top: 8px;
+    margin-bottom: 20px;
+    padding-left: 1rem;
+    border-left: 4px solid var(--primary-green);
     position: relative;
-    font-weight: 600;
-    color: #4b5563;
+    font-weight: 700;
+    color: #1f2937;
+    letter-spacing: 0.02em;
   }
 
   .section-title::before {
-    width: 6px;
-    height: 32px;
-    background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-green-dark) 100%);
+    content: none !important;
   }
 
   /* 特性ボックスのスタイル強化 */
@@ -2370,8 +2444,14 @@ a.no-ellipsis-link * {
   }
   
   .page-header {
-    padding: 2rem;
-    margin-bottom: 1rem;
+    padding: 2.5rem 3rem;
+    margin-bottom: 2rem;
+    border-radius: 12px;
+  }
+
+  .page-header h1 {
+    font-size: 32px;
+    margin-bottom: 1.5rem;
   }
   
   .summary-box {
@@ -2816,20 +2896,7 @@ a.no-ellipsis-link * {
 }
 
 /* ===== 見出しは外側装飾で統一 ===== */
-h2.section-title {
-  font-size: 20px;
-  font-weight: 700;
-  color: #2d3748;
-  margin: 6px 0 16px;
-  line-height: 1.3;
-  letter-spacing: 0.02em;
-  padding: 0 0 0 0.75rem;
-  text-align: left;
-  border-left: 4px solid #1db854;
-}
-
-/* 念のため、どこかで定義されている ::before を全無効化 */
-h2.section-title::before { content: none !important; }
+/* SP用のh2.section-titleスタイルは下のメディアクエリ内で定義 */
 
 /* サブセクションタイトル（h3） */
 h3.subsection-title {
@@ -2885,6 +2952,29 @@ h3.subsection-title:first-of-type {
     background: transparent;
   }
 
+  /* TOPページ：SP時のレイアウト */
+  main.home-main {
+    display: block;
+    padding: 0;
+    margin: 0;
+    max-width: 100%;
+  }
+
+  main.home-main .section-article-carousel {
+    width: 100vw;
+    max-width: 100vw;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    left: 0;
+    right: 0;
+  }
+
+  main.home-main > article,
+  main.home-main > aside {
+    width: 100%;
+  }
+
   .section-this-week-venues {
     padding: 10px 20px 1rem 20px;
     border-radius: 8px;
@@ -2894,6 +2984,8 @@ h3.subsection-title:first-of-type {
   h2.section-title {
     font-size: 20px;
     margin: 4px 0 8px;
+    padding-left: 0.75rem;
+    border-left: 4px solid var(--primary-green);
     font-weight: 600;
     color: #2d3748;
   }

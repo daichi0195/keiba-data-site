@@ -170,6 +170,9 @@ export async function getCourseDataFromGCS(
         running_style: typeof data.characteristics.running_style === 'string'
           ? parseInt(data.characteristics.running_style, 10)
           : data.characteristics.running_style,
+        running_style_trend_position: typeof data.characteristics.running_style_trend_position === 'string'
+          ? parseInt(data.characteristics.running_style_trend_position, 10)
+          : data.characteristics.running_style_trend_position,
         volatility: typeof data.characteristics.volatility === 'string'
           ? parseInt(data.characteristics.volatility, 10)
           : data.characteristics.volatility,
@@ -211,7 +214,10 @@ export async function getCourseDataFromGCS(
     console.log('  - Popularity stats:', Object.keys(data.popularity_stats || {}).length, 'groups');
     console.log('  - Jockey stats:', data.jockey_stats?.length || 0, 'jockeys');
     console.log('  - Trainer stats:', data.trainer_stats?.length || 0, 'trainers');
+    console.log('  - Running style stats:', data.running_style_stats?.length || 0, 'styles');
+    console.log('  - Running style trends:', data.running_style_trends?.length || 0, 'trends');
     console.log('  - Characteristics:', data.characteristics ? '✓' : '✗');
+    console.log('  - Running style trend position:', data.characteristics?.running_style_trend_position || '✗');
     console.log('  - Data period:', data.data_period ? '✓' : '✗');
     console.log('  - Total races:', data.total_races || data.course_info?.total_races || '✗');
 

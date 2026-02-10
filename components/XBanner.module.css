@@ -82,6 +82,13 @@
   transform: translateX(4px);
 }
 
+/* PC表示時は非表示 */
+@media (min-width: 769px) {
+  .banner {
+    display: none;
+  }
+}
+
 /* モバイル対応 */
 @media (max-width: 768px) {
   .banner {

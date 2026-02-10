@@ -12,6 +12,120 @@ export default function TableOfContents({ items }: { items?: Item[] }) {
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const listRef = useRef<HTMLUListElement>(null);
   const activeItemRefs = useRef<Map<string, HTMLLIElement>>(new Map());
+  const tocRef = useRef<HTMLElement>(null);
+
+  // 🔍 強化されたデバッグログ
+  useEffect(() => {
+    if (!tocRef.current) return;
+
+    const logDebugInfo = () => {
+      if (!tocRef.current) return;
+
+      const element = tocRef.current;
+      const rect = element.getBoundingClientRect();
+      const styles = window.getComputedStyle(element);
+
+      // 全ての親要素を取得
+      const ancestors: HTMLElement[] = [];
+      let current = element.parentElement;
+      while (current) {
+        ancestors.push(current);
+        current = current.parentElement;
+      }
+
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      console.log('🔍 ENHANCED DEBUG INFO - TableOfContents');
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+
+      console.log('\n📍 Element (<aside>) Computed Styles:');
+      console.log('  position:', styles.position);
+      console.log('  top:', styles.top);
+      console.log('  bottom:', styles.bottom);
+      console.log('  left:', styles.left);
+      console.log('  right:', styles.right);
+      console.log('  display:', styles.display);
+      console.log('  align-self:', styles.alignSelf);
+      console.log('  justify-self:', styles.justifySelf);
+      console.log('  grid-column:', styles.gridColumn);
+      console.log('  grid-row:', styles.gridRow);
+      console.log('  grid-area:', styles.gridArea);
+      console.log('  z-index:', styles.zIndex);
+      console.log('  transform:', styles.transform);
+      console.log('  will-change:', styles.willChange);
+      console.log('  contain:', styles.contain);
+      console.log('  overflow:', styles.overflow);
+      console.log('  overflow-x:', styles.overflowX);
+      console.log('  overflow-y:', styles.overflowY);
+      console.log('  height:', styles.height);
+      console.log('  max-height:', styles.maxHeight);
+      console.log('  width:', styles.width);
+
+      console.log('\n📏 Element BoundingClientRect:');
+      console.log('  top:', rect.top);
+      console.log('  bottom:', rect.bottom);
+      console.log('  left:', rect.left);
+      console.log('  right:', rect.right);
+      console.log('  width:', rect.width);
+      console.log('  height:', rect.height);
+
+      console.log('\n🌳 Ancestor Elements Chain:');
+      ancestors.forEach((ancestor, index) => {
+        const ancestorStyles = window.getComputedStyle(ancestor);
+        const tagName = ancestor.tagName.toLowerCase();
+        const className = ancestor.className;
+        console.log(`\n  [${index}] <${tagName}>${className ? ` .${className}` : ''}`);
+        console.log('    position:', ancestorStyles.position);
+        console.log('    overflow:', ancestorStyles.overflow);
+        console.log('    overflow-x:', ancestorStyles.overflowX);
+        console.log('    overflow-y:', ancestorStyles.overflowY);
+        console.log('    transform:', ancestorStyles.transform);
+        console.log('    will-change:', ancestorStyles.willChange);
+        console.log('    contain:', ancestorStyles.contain);
+        console.log('    perspective:', ancestorStyles.perspective);
+        console.log('    filter:', ancestorStyles.filter);
+        console.log('    isolation:', ancestorStyles.isolation);
+        console.log('    display:', ancestorStyles.display);
+        console.log('    height:', ancestorStyles.height);
+        console.log('    grid-template-columns:', ancestorStyles.gridTemplateColumns);
+        console.log('    grid-template-rows:', ancestorStyles.gridTemplateRows);
+      });
+
+      console.log('\n📜 Scroll Info:');
+      console.log('  window.scrollY:', window.scrollY);
+      console.log('  document.documentElement.scrollTop:', document.documentElement.scrollTop);
+      console.log('  document.body.scrollTop:', document.body.scrollTop);
+
+      console.log('\n🎯 Sticky Detection:');
+      console.log('  CSS.supports("position", "sticky"):', CSS.supports('position', 'sticky'));
+      console.log('  CSS.supports("position", "-webkit-sticky"):', CSS.supports('position', '-webkit-sticky'));
+
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    };
+
+    // 初回ログ出力
+    setTimeout(logDebugInfo, 1000);
+
+    // スクロール時のログ出力
+    let scrollTimeout: NodeJS.Timeout;
+    const handleScroll = () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        if (!tocRef.current) return;
+        const rect = tocRef.current.getBoundingClientRect();
+        console.log('\n📜 SCROLL EVENT:');
+        console.log('  window.scrollY:', window.scrollY);
+        console.log('  Element top:', rect.top, '← Should be 90px when sticky');
+        console.log('  Expected:', rect.top === 90 ? '✅ STICKY WORKING!' : '❌ NOT STICKY');
+      }, 500);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearTimeout(scrollTimeout);
+    };
+  }, []);
 
   // H2要素を自動検出して目次を生成
   useEffect(() => {
@@ -138,7 +252,7 @@ export default function TableOfContents({ items }: { items?: Item[] }) {
   };
 
   return (
-    <aside className={styles.tableOfContents}>
+    <aside ref={tocRef} className={styles.tableOfContents}>
       <nav className={`${styles.nav} ${isScrolling ? styles.scrolling : ''}`}>
         <h2 className={styles.title}>目次</h2>
         <ul className={styles.list} ref={listRef}>
