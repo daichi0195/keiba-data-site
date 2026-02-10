@@ -334,6 +334,10 @@ export default function HeaderMenu() {
             <i className="fa-solid fa-user"></i>
             <span>調教師データ</span>
           </Link>
+          <Link href="/articles" className={styles.pcMenuLink}>
+            <i className="fa-regular fa-pen-to-square"></i>
+            <span>コラム</span>
+          </Link>
         </nav>
 
       {/* ===== モバイル：下部固定メニューボタン（5つ） ===== */}

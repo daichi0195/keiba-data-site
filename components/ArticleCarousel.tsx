@@ -11,7 +11,6 @@ interface ArticleCarouselProps {
 }
 
 export default function ArticleCarousel({ articles }: ArticleCarouselProps) {
-  const [currentIndex, setCurrentIndex] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -21,6 +20,15 @@ export default function ArticleCarousel({ articles }: ArticleCarouselProps) {
   const sortedArticles = [...articles].sort((a, b) => {
     return new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime();
   });
+
+  // 無限スクロール用：配列を30回繰り返す
+  const repeatCount = 30;
+  const infiniteArticles = sortedArticles.length > 0
+    ? Array(repeatCount).fill(sortedArticles).flat()
+    : sortedArticles;
+
+  // 真ん中あたり（15サイクル目）から開始
+  const [currentIndex, setCurrentIndex] = useState(sortedArticles.length * 15);
 
   // モバイル判定
   useEffect(() => {
@@ -33,66 +41,148 @@ export default function ArticleCarousel({ articles }: ArticleCarouselProps) {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // ページ読み込み完了後にアニメーション開始
+  // ページ読み込み完了後に初期位置設定
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const timer = setTimeout(() => {
-        setIsLoaded(true);
-      }, 300);
-      return () => clearTimeout(timer);
+    if (typeof window !== 'undefined' && sortedArticles.length > 0 && carouselRef.current) {
+      const carousel = carouselRef.current;
+
+      // DOM要素が完全にレンダリングされるまで待つ
+      const initScroll = () => {
+        const firstCard = carousel.children[0] as HTMLElement;
+        if (!firstCard || firstCard.offsetWidth === 0) {
+          // まだレンダリングされていない場合は少し待つ
+          setTimeout(initScroll, 10);
+          return;
+        }
+
+        // 初期位置にスクロール（アニメーションなし）
+        const cardWidth = firstCard.offsetWidth;
+        const gap = isMobile ? 8 : 24;
+        const targetScroll = (cardWidth + gap) * sortedArticles.length * 15;
+        carousel.scrollLeft = targetScroll;
+
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            setIsLoaded(true);
+            setTimeout(() => {
+              resetAutoScrollTimer();
+            }, 100);
+          });
+        });
+      };
+
+      initScroll();
     }
-  }, []);
+  }, [sortedArticles.length, isMobile]);
 
-  // 10秒ごとに自動スクロール
+  // インデックスからスクロール位置を計算してスクロールする関数
+  const scrollToIndex = (index: number, behavior: ScrollBehavior = 'smooth') => {
+    if (!carouselRef.current || infiniteArticles.length === 0) return;
+
+    const carousel = carouselRef.current;
+
+    // 各カードの実際の幅を取得
+    const firstCard = carousel.children[0] as HTMLElement;
+    if (!firstCard) return;
+
+    const cardWidth = firstCard.offsetWidth;
+    const gap = isMobile ? 8 : 24;
+
+    // スクロール位置を計算
+    const targetScroll = (cardWidth + gap) * index;
+
+    // スクロール
+    carousel.scrollTo({
+      left: targetScroll,
+      behavior
+    });
+  };
+
+  // 自動スクロール用のタイマー管理
+  const autoScrollTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const resetAutoScrollTimer = () => {
+    if (autoScrollTimerRef.current) {
+      clearTimeout(autoScrollTimerRef.current);
+    }
+
+    if (sortedArticles.length > 0) {
+      autoScrollTimerRef.current = setTimeout(() => {
+        setCurrentIndex((prev) => prev + 1);
+      }, 8000);
+    }
+  };
+
   useEffect(() => {
-    const autoScroll = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % sortedArticles.length);
-    }, 10000);
-
-    return () => clearInterval(autoScroll);
-  }, [sortedArticles.length]);
+    return () => {
+      if (autoScrollTimerRef.current) {
+        clearTimeout(autoScrollTimerRef.current);
+      }
+    };
+  }, []);
 
   // currentIndexが変更されたらスクロール
   useEffect(() => {
-    if (!carouselRef.current) return;
+    if (!carouselRef.current || sortedArticles.length === 0) return;
 
     isScrollingRef.current = true;
+    scrollToIndex(currentIndex);
 
-    if (isMobile) {
-      // モバイル: カード幅 + gap を計算してスクロール
-      const cardWidth = carouselRef.current.scrollWidth / sortedArticles.length;
-      const gap = 8;
-      const targetScroll = (cardWidth + gap) * currentIndex;
-      carouselRef.current.scrollTo({ left: targetScroll, behavior: 'smooth' });
-    } else {
-      // デスクトップ: 画面幅でスクロール
-      const scrollAmount = carouselRef.current.offsetWidth * currentIndex;
-      carouselRef.current.scrollTo({ left: scrollAmount, behavior: 'smooth' });
-    }
-
-    // スクロール完了後にフラグをリセット
-    const timer = setTimeout(() => {
+    const resetTimer = setTimeout(() => {
       isScrollingRef.current = false;
+      resetAutoScrollTimer();
     }, 600);
 
-    return () => clearTimeout(timer);
-  }, [currentIndex, isMobile, sortedArticles.length]);
+    // エッジ検出：最初の5サイクルまたは最後の5サイクルに入ったらジャンプ
+    const loopTimer = setTimeout(() => {
+      if (!carouselRef.current || sortedArticles.length === 0) return;
+
+      const cycleNumber = Math.floor(currentIndex / sortedArticles.length);
+
+      if (cycleNumber < 5) {
+        // 最初の方に近づいた → 15サイクル目の対応する位置へ
+        const offset = currentIndex % sortedArticles.length;
+        const newIndex = sortedArticles.length * 15 + offset;
+        scrollToIndex(newIndex, 'auto');
+        setTimeout(() => {
+          setCurrentIndex(newIndex);
+        }, 0);
+      } else if (cycleNumber >= 25) {
+        // 最後の方に近づいた → 15サイクル目の対応する位置へ
+        const offset = currentIndex % sortedArticles.length;
+        const newIndex = sortedArticles.length * 15 + offset;
+        scrollToIndex(newIndex, 'auto');
+        setTimeout(() => {
+          setCurrentIndex(newIndex);
+        }, 0);
+      }
+    }, 650);
+
+    return () => {
+      clearTimeout(resetTimer);
+      clearTimeout(loopTimer);
+    };
+  }, [currentIndex, sortedArticles.length]);
 
   // モバイルでのスクロール終了時にインデックスを更新
   useEffect(() => {
-    if (!isMobile || !carouselRef.current) return;
+    if (!isMobile || !carouselRef.current || infiniteArticles.length === 0) return;
 
     const handleScrollEnd = () => {
       // プログラムによるスクロール中は何もしない
       if (isScrollingRef.current) return;
 
-      const scrollLeft = carouselRef.current!.scrollLeft;
-      const cardWidth = carouselRef.current!.scrollWidth / sortedArticles.length;
+      const carousel = carouselRef.current!;
+      const firstCard = carousel.children[0] as HTMLElement;
+      if (!firstCard) return;
+
+      const cardWidth = firstCard.offsetWidth;
       const gap = 8;
+      const scrollLeft = carousel.scrollLeft;
 
       // 現在のスクロール位置から最も近いインデックスを計算
       const calculatedIndex = Math.round(scrollLeft / (cardWidth + gap));
-      const clampedIndex = Math.max(0, Math.min(calculatedIndex, sortedArticles.length - 1));
+      const clampedIndex = Math.max(0, Math.min(calculatedIndex, infiniteArticles.length - 1));
 
       if (clampedIndex !== currentIndex) {
         setCurrentIndex(clampedIndex);
@@ -105,18 +195,47 @@ export default function ArticleCarousel({ articles }: ArticleCarouselProps) {
     return () => {
       carousel.removeEventListener('scrollend', handleScrollEnd);
     };
-  }, [isMobile, currentIndex, sortedArticles.length]);
+  }, [isMobile, currentIndex, infiniteArticles.length]);
 
   const handlePrev = () => {
-    setCurrentIndex((prev) => (prev > 0 ? prev - 1 : sortedArticles.length - 1));
+    if (autoScrollTimerRef.current) {
+      clearTimeout(autoScrollTimerRef.current);
+    }
+    setCurrentIndex((prev) => prev - 1);
   };
 
   const handleNext = () => {
-    setCurrentIndex((prev) => (prev < sortedArticles.length - 1 ? prev + 1 : 0));
+    if (autoScrollTimerRef.current) {
+      clearTimeout(autoScrollTimerRef.current);
+    }
+    setCurrentIndex((prev) => prev + 1);
   };
 
   const handleIndicatorClick = (index: number) => {
-    setCurrentIndex(index);
+    if (autoScrollTimerRef.current) {
+      clearTimeout(autoScrollTimerRef.current);
+    }
+
+    // 現在位置を元の配列のインデックスに変換
+    const currentNormalized = currentIndex % sortedArticles.length;
+
+    // 前方と後方の距離を計算
+    let forwardDistance = index - currentNormalized;
+    if (forwardDistance < 0) {
+      forwardDistance += sortedArticles.length;
+    }
+
+    let backwardDistance = currentNormalized - index;
+    if (backwardDistance < 0) {
+      backwardDistance += sortedArticles.length;
+    }
+
+    // より近い方向に移動
+    if (forwardDistance <= backwardDistance) {
+      setCurrentIndex(currentIndex + forwardDistance);
+    } else {
+      setCurrentIndex(currentIndex - backwardDistance);
+    }
   };
 
   if (sortedArticles.length === 0) {
@@ -125,44 +244,49 @@ export default function ArticleCarousel({ articles }: ArticleCarouselProps) {
 
   return (
     <div className={`${styles.carouselContainer} ${isLoaded ? styles.loaded : ''}`}>
-      <button className={styles.navButton + ' ' + styles.navButtonPrev} onClick={handlePrev} aria-label="前の記事">
-      </button>
+      <div className={styles.carouselWrapperContainer}>
+        <button className={styles.navButton + ' ' + styles.navButtonPrev} onClick={handlePrev} aria-label="前の記事">
+        </button>
 
-      <div className={styles.carouselWrapper} ref={carouselRef}>
-        {sortedArticles.map((article, index) => (
-          <Link
-            key={`${article.slug}-${index}`}
-            href={`/articles/${article.slug}`}
-            className={styles.carouselItem}
-          >
-            {article.frontmatter.thumbnail && (
-              <div className={styles.thumbnailWrapper}>
-                <Image
-                  src={article.frontmatter.thumbnail}
-                  alt={article.frontmatter.title}
-                  fill
-                  className={styles.thumbnail}
-                  sizes="(max-width: 768px) 100vw, 800px"
-                />
-              </div>
-            )}
-          </Link>
-        ))}
+        <div className={styles.carouselWrapper} ref={carouselRef}>
+          {infiniteArticles.map((article, index) => (
+            <Link
+              key={`${article.slug}-${index}`}
+              href={`/articles/${article.slug}`}
+              className={styles.carouselItem}
+            >
+              {article.frontmatter.thumbnail && (
+                <div className={styles.thumbnailWrapper}>
+                  <Image
+                    src={article.frontmatter.thumbnail}
+                    alt={article.frontmatter.title}
+                    fill
+                    className={styles.thumbnail}
+                    sizes="(max-width: 768px) 100vw, 800px"
+                  />
+                </div>
+              )}
+            </Link>
+          ))}
+        </div>
+
+        <button className={styles.navButton + ' ' + styles.navButtonNext} onClick={handleNext} aria-label="次の記事">
+        </button>
       </div>
-
-      <button className={styles.navButton + ' ' + styles.navButtonNext} onClick={handleNext} aria-label="次の記事">
-      </button>
 
       {/* インジケーター */}
       <div className={styles.indicators}>
-        {sortedArticles.map((_, index) => (
-          <button
-            key={index}
-            className={`${styles.indicator} ${index === currentIndex ? styles.indicatorActive : ''}`}
-            onClick={() => handleIndicatorClick(index)}
-            aria-label={`記事${index + 1}へ移動`}
-          />
-        ))}
+        {sortedArticles.map((_, index) => {
+          const normalizedIndex = currentIndex % sortedArticles.length;
+          return (
+            <button
+              key={index}
+              className={`${styles.indicator} ${index === normalizedIndex ? styles.indicatorActive : ''}`}
+              onClick={() => handleIndicatorClick(index)}
+              aria-label={`記事${index + 1}へ移動`}
+            />
+          );
+        })}
       </div>
     </div>
   );
