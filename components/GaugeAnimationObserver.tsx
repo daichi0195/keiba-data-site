@@ -36,8 +36,23 @@ export default function GaugeAnimationObserver() {
     const observeIcons = () => {
       const horseIcons = document.querySelectorAll('.gauge-horse-icon');
       horseIcons.forEach((icon) => {
-        if (!icon.classList.contains('animate') && observer) {
-          observer.observe(icon);
+        if (!icon.classList.contains('animate')) {
+          // すでにビューポート内にあるかチェック
+          const rect = icon.getBoundingClientRect();
+          const isInViewport = (
+            rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+          );
+
+          if (isInViewport) {
+            // すでに表示されている場合は即座にアニメーション開始
+            icon.classList.add('animate');
+          } else if (observer) {
+            // まだ表示されていない場合は監視対象に追加
+            observer.observe(icon);
+          }
         }
       });
     };
