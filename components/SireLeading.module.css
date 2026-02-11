@@ -37,7 +37,7 @@
 .sectionName {
   font-size: 16px;
   font-weight: 700;
-  color: #2d3748;
+  color: #4B5663;
   margin: 0;
 }
 
@@ -174,9 +174,21 @@
 .leadingTitle {
   font-size: 18px;
   font-weight: 700;
-  color: #2d3748;
+  color: #4B5663;
   margin: 24px 0 12px 0;
   padding: 0;
+}
+
+/* PC用 */
+@media (min-width: 769px) {
+  .sectionName {
+    font-size: 20px;
+    color: #4B5663;
+  }
+
+  .leadingTitle {
+    font-size: 20px;
+  }
 }
 
 /* レスポンシブ */
