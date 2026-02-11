@@ -706,6 +706,24 @@ export default async function CoursePage({ params }: Props) {
           <span>{racecourseJa}競馬場 {surfaceJa}{distanceDisplay}m{trackVariantLabel}</span>
         </nav>
 
+        {/* レース数が少ない場合の警告 */}
+        {course_info.total_races <= 10 && (
+          <div style={{
+            padding: '0.75rem 1.25rem',
+            background: '#fef9e7',
+            border: '1px solid #ffc107',
+            borderRadius: '6px',
+            color: '#856404',
+            fontSize: '0.9rem',
+            fontWeight: '600',
+            textAlign: 'center',
+            marginBottom: '1rem'
+          }}>
+            <i className="fa-solid fa-triangle-exclamation" style={{ marginRight: '0.5rem' }}></i>
+            対象レース数が少ないコースです
+          </div>
+        )}
+
         <div className="page-header">
           <h1>{course_info.racecourse} {course_info.surface}{distanceDisplay}m{trackVariantLabel}</h1>
 
@@ -730,24 +748,6 @@ export default async function CoursePage({ params }: Props) {
             </div>
           </div>
         </div>
-
-        {/* レース数が少ない場合の警告 */}
-        {course_info.total_races <= 10 && (
-          <div style={{
-            padding: '1rem 1.5rem',
-            background: '#fff3cd',
-            border: '2px solid #ffc107',
-            borderRadius: '8px',
-            color: '#856404',
-            fontSize: '0.95rem',
-            fontWeight: '600',
-            textAlign: 'center',
-            marginBottom: '1rem'
-          }}>
-            <i className="fa-solid fa-triangle-exclamation" style={{ marginRight: '0.5rem' }}></i>
-            対象レース数が少ないコースです
-          </div>
-        )}
 
         <article className="content-card">
         {/* === コース特性セクション === */}
