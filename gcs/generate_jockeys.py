@@ -118,7 +118,10 @@ def get_yearly_leading(client):
       SELECT
         EXTRACT(YEAR FROM rm.race_date) as year,
         rr.jockey_id,
-        SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins
+        SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
+        SUM(CASE WHEN rr.finish_position = 2 THEN 1 ELSE 0 END) as places_2,
+        SUM(CASE WHEN rr.finish_position = 3 THEN 1 ELSE 0 END) as places_3,
+        COUNT(*) as rides
       FROM
         `{DATASET}.race_master` rm
         JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
@@ -131,7 +134,7 @@ def get_yearly_leading(client):
         year,
         jockey_id,
         wins,
-        RANK() OVER (PARTITION BY year ORDER BY wins DESC) as ranking
+        RANK() OVER (PARTITION BY year ORDER BY wins DESC, places_2 DESC, places_3 DESC, rides ASC) as ranking
       FROM yearly_wins
     )
     SELECT
@@ -530,7 +533,7 @@ def get_course_stats(client):
         rm.track_variant
     )
     SELECT
-      ROW_NUMBER() OVER (ORDER BY wins DESC, win_rate DESC) as rank,
+      ROW_NUMBER() OVER (ORDER BY wins DESC, places_2 DESC, places_3 DESC, races ASC) as rank,
       CONCAT(venue_name, '競馬場 ',
         CASE surface
           WHEN 'ダート' THEN 'ダ'
@@ -641,7 +644,7 @@ def get_trainer_stats(client):
       GROUP BY t.trainer_id, t.trainer_name
     )
     SELECT
-      ROW_NUMBER() OVER (ORDER BY wins DESC, win_rate DESC) as rank,
+      ROW_NUMBER() OVER (ORDER BY wins DESC, places_2 DESC, places_3 DESC, races ASC) as rank,
       trainer_id,
       name,
       races,
@@ -658,7 +661,7 @@ def get_trainer_stats(client):
       median_popularity,
       median_rank
     FROM trainer_data
-    ORDER BY wins DESC, win_rate DESC
+    ORDER BY wins DESC, places_2 DESC, places_3 DESC, races ASC
     LIMIT 50
     """
 
@@ -1043,7 +1046,7 @@ def get_owner_stats(client):
       GROUP BY h.owner_name
     )
     SELECT
-      ROW_NUMBER() OVER (ORDER BY wins DESC, win_rate DESC) as rank,
+      ROW_NUMBER() OVER (ORDER BY wins DESC, places_2 DESC, places_3 DESC, races ASC) as rank,
       name,
       races,
       wins,
@@ -1059,7 +1062,7 @@ def get_owner_stats(client):
       median_popularity,
       median_rank
     FROM owner_data
-    ORDER BY wins DESC, win_rate DESC
+    ORDER BY wins DESC, places_2 DESC, places_3 DESC, races ASC
     LIMIT 50
     """
 

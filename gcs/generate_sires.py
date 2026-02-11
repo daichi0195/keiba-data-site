@@ -125,7 +125,10 @@ def get_yearly_leading(client):
       SELECT
         EXTRACT(YEAR FROM rm.race_date) as year,
         h.father,
-        SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins
+        SUM(CASE WHEN rr.finish_position = 1 THEN 1 ELSE 0 END) as wins,
+        SUM(CASE WHEN rr.finish_position = 2 THEN 1 ELSE 0 END) as places_2,
+        SUM(CASE WHEN rr.finish_position = 3 THEN 1 ELSE 0 END) as places_3,
+        COUNT(*) as rides
       FROM
         `{DATASET}.race_master` rm
         JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
@@ -140,7 +143,7 @@ def get_yearly_leading(client):
         year,
         father,
         wins,
-        RANK() OVER (PARTITION BY year ORDER BY wins DESC) as ranking
+        RANK() OVER (PARTITION BY year ORDER BY wins DESC, places_2 DESC, places_3 DESC, rides ASC) as ranking
       FROM yearly_wins
     )
     SELECT
@@ -863,7 +866,7 @@ def get_racecourse_stats(client):
       h.father = '{SIRE_NAME}'
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
     GROUP BY rm.venue_name
-    ORDER BY wins DESC
+    ORDER BY wins DESC, places_2 DESC, places_3 DESC, races ASC
     """
 
     try:
@@ -1099,7 +1102,7 @@ def get_course_stats(client):
         rm.track_variant
     )
     SELECT
-      ROW_NUMBER() OVER (ORDER BY wins DESC, win_rate DESC) as rank,
+      ROW_NUMBER() OVER (ORDER BY wins DESC, places_2 DESC, places_3 DESC, races ASC) as rank,
       CONCAT(venue_name, '競馬場 ',
         CASE surface
           WHEN 'ダート' THEN 'ダ'
