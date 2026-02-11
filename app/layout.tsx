@@ -3,6 +3,7 @@ import Script from "next/script";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import HeaderMenu from "@/components/HeaderMenu";
+import GaugeAnimationObserver from "@/components/GaugeAnimationObserver";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -92,6 +93,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         </header>
         {children}
         <Footer />
+        <GaugeAnimationObserver />
       </body>
     </html>
   );
