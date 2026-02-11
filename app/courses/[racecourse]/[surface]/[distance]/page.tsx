@@ -711,7 +711,7 @@ export default async function CoursePage({ params }: Props) {
           <div style={{
             padding: '0.75rem 1.25rem',
             background: '#fef9e7',
-            border: '0.5px solid #ffe082',
+            border: '0.5px solid #ffc107',
             borderRadius: '6px',
             color: '#856404',
             fontSize: '0.9rem',
