@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 import ArticleCarousel from '@/components/ArticleCarousel';
-import XBanner from '@/components/XBanner';
 import ThisWeekVenues from '@/components/ThisWeekVenues';
 import AllVenues from '@/components/AllVenues';
 import JockeyLeading from '@/components/JockeyLeading';
@@ -56,7 +55,6 @@ export default async function HomePage() {
         {/* 記事カルーセル - 全幅 */}
         <section className="section section-full-width section-article-carousel">
           <ArticleCarousel articles={articles} />
-          <XBanner />
         </section>
 
         {/* 2カラムレイアウト部分 */}
