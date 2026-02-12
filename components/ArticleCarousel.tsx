@@ -62,12 +62,10 @@ export default function ArticleCarousel({ articles }: ArticleCarouselProps) {
         carousel.scrollLeft = targetScroll;
 
         requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            setIsLoaded(true);
-            setTimeout(() => {
-              resetAutoScrollTimer();
-            }, 100);
-          });
+          setIsLoaded(true);
+          setTimeout(() => {
+            resetAutoScrollTimer();
+          }, 50);
         });
       };
 

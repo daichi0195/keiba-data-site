@@ -230,14 +230,16 @@ const getVenueName = (venueId: string): string => {
 export default function ThisWeekVenues() {
   const sectionRef = useRef<HTMLElement>(null);
   const [scheduleData, setScheduleData] = useState<RaceSchedule[]>([]);
-  const [currentTime, setCurrentTime] = useState(new Date());
+  // テスト用：土曜日15時に固定
+  const [currentTime, setCurrentTime] = useState(new Date('2026-02-14T15:00:00'));
   const [isLoading, setIsLoading] = useState(true);
 
   // データ取得（当日のみ）
   useEffect(() => {
     async function fetchSchedule() {
       try {
-        const today = formatDateToYYYYMMDD(new Date());
+        // テスト用：土曜日の日付を使用
+        const today = formatDateToYYYYMMDD(new Date('2026-02-14T15:00:00'));
 
         const res = await fetch(`/api/race-schedule/${today}`);
 
@@ -295,7 +297,14 @@ export default function ThisWeekVenues() {
 
   // レースの状態を判定
   const raceStatus = useMemo(() => {
+    console.log('🔍 raceStatus計算:', {
+      scheduleDataLength: scheduleData.length,
+      isLoading,
+      scheduleData
+    });
+
     if (scheduleData.length === 0) {
+      console.log('⚠️ scheduleDataが空です');
       return { hasSchedule: false, allRacesFinished: false, nextRaces: [] };
     }
 
@@ -346,12 +355,18 @@ export default function ThisWeekVenues() {
     };
   }, [scheduleData, currentTime]);
 
+  console.log('🎨 レンダリング:', {
+    isLoading,
+    hasSchedule: raceStatus.hasSchedule,
+    allRacesFinished: raceStatus.allRacesFinished,
+    nextRacesCount: raceStatus.nextRaces.length,
+    showSection: !isLoading && raceStatus.hasSchedule
+  });
+
   return (
-    <section ref={sectionRef} className="section section-this-week-venues fade-in-card">
+    <section ref={sectionRef} className="section section-this-week-venues">
       <div style={{ width: '100%' }}>
-        <h2 className="section-title is-visible">
-          今週開催の競馬場
-        </h2>
+        <h2 className={`section-title is-visible ${styles.mainTitle}`}>今週開催の競馬場</h2>
 
         {/* 次のレースセクション */}
         {!isLoading && raceStatus.hasSchedule && (

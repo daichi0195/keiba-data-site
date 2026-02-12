@@ -1815,6 +1815,13 @@ details[open] .evaluation-content {
   background: transparent;
 }
 
+/* 次のレースセクション */
+.section-next-race {
+  background: transparent;
+  padding: 1.25rem 20px 0.5rem 20px !important;
+  margin-bottom: 0 !important;
+}
+
 /* 今週開催の競馬場セクション */
 .section-this-week-venues {
   background: transparent;
