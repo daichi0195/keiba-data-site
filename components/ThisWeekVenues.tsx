@@ -162,9 +162,8 @@ export default function ThisWeekVenues() {
           {mockVenues.map((venue) => (
             venue.nextRace && (
               <div key={`next-race-${venue.id}`} className={styles.nextRaceCard}>
-                <div className={styles.nextRaceLabel}>次のレース</div>
-                <div className={styles.racecourse}>{venue.nextRace.racecourse}競馬場</div>
-                <div className={styles.raceInfo}>第{venue.nextRace.raceNumber}レース</div>
+                <h3 className={styles.nextRaceLabel}>次のレース</h3>
+                <div className={styles.racecourse}>{venue.nextRace.racecourse} {venue.nextRace.raceNumber}R</div>
                 <div className={styles.raceInfo}>{venue.nextRace.raceName}</div>
                 <div className={styles.raceTime}>{venue.nextRace.startTime} 発走</div>
               </div>
