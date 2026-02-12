@@ -1,9 +1,3 @@
-/* メインタイトル */
-.mainTitle {
-  opacity: 0;
-  animation: fadeInFromBottom 0.5s ease forwards;
-}
-
 /* 次のレースセクション */
 .nextRaceSection {
   margin-bottom: 1rem;

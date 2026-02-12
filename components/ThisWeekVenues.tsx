@@ -366,7 +366,7 @@ export default function ThisWeekVenues() {
   return (
     <section ref={sectionRef} className="section section-this-week-venues">
       <div style={{ width: '100%' }}>
-        <h2 className={`section-title is-visible ${styles.mainTitle}`}>今週開催の競馬場</h2>
+        <h2 className="section-title is-visible">今週開催の競馬場</h2>
 
         {/* 次のレースセクション */}
         {!isLoading && raceStatus.hasSchedule && (
