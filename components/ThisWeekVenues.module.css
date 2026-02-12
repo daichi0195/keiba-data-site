@@ -1,9 +1,22 @@
+/* 次のレースセクション */
+.nextRaceSection {
+  margin-bottom: 2rem;
+}
+
+/* 次のレースタイトル（H3） */
+.nextRaceTitle {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0 0 1rem 0;
+  padding: 0;
+}
+
 /* 次のレースグリッド */
 .nextRaceGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 0.75rem;
-  margin-bottom: 2rem;
 }
 
 /* 次のレースカード */
@@ -20,14 +33,6 @@
 .nextRaceCard:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(29, 184, 84, 0.3);
-}
-
-/* 次のレースラベル（H3） */
-.nextRaceLabel {
-  font-size: 0.75rem;
-  opacity: 0.9;
-  margin: 0 0 0.5rem 0;
-  font-weight: 600;
 }
 
 /* 競馬場名 */
@@ -53,6 +58,10 @@
 
 /* PC表示 */
 @media (min-width: 769px) {
+  .nextRaceTitle {
+    font-size: 1.25rem;
+  }
+
   .nextRaceGrid {
     gap: 1rem;
   }
@@ -60,10 +69,6 @@
   .nextRaceCard {
     border-radius: 12px;
     padding: 1.25rem;
-  }
-
-  .nextRaceLabel {
-    font-size: 0.8rem;
   }
 
   .racecourse {

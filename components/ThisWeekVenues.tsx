@@ -157,18 +157,20 @@ export default function ThisWeekVenues() {
           今週開催の競馬場
         </h2>
 
-        {/* 次のレースカード */}
-        <div className={styles.nextRaceGrid}>
-          {mockVenues.map((venue) => (
-            venue.nextRace && (
-              <div key={`next-race-${venue.id}`} className={styles.nextRaceCard}>
-                <h3 className={styles.nextRaceLabel}>次のレース</h3>
-                <div className={styles.racecourse}>{venue.nextRace.racecourse} {venue.nextRace.raceNumber}R</div>
-                <div className={styles.raceInfo}>{venue.nextRace.raceName}</div>
-                <div className={styles.raceTime}>{venue.nextRace.startTime} 発走</div>
-              </div>
-            )
-          ))}
+        {/* 次のレースセクション */}
+        <div className={styles.nextRaceSection}>
+          <h3 className={styles.nextRaceTitle}>次のレース</h3>
+          <div className={styles.nextRaceGrid}>
+            {mockVenues.map((venue) => (
+              venue.nextRace && (
+                <div key={`next-race-${venue.id}`} className={styles.nextRaceCard}>
+                  <div className={styles.racecourse}>{venue.nextRace.racecourse} {venue.nextRace.raceNumber}R</div>
+                  <div className={styles.raceInfo}>{venue.nextRace.raceName}</div>
+                  <div className={styles.raceTime}>{venue.nextRace.startTime} 発走</div>
+                </div>
+              )
+            ))}
+          </div>
         </div>
 
         <div className={styles.venueGrid}>
