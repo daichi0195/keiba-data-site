@@ -1,3 +1,9 @@
+/* メインタイトル */
+.mainTitle {
+  opacity: 0;
+  animation: fadeIn 0.5s ease forwards;
+}
+
 /* 次のレースセクション */
 .nextRaceSection {
   margin-bottom: 1rem;
@@ -348,5 +354,14 @@
   .allRacesFinishedMessage {
     font-size: 0.875rem;
     padding: 1.5rem;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
