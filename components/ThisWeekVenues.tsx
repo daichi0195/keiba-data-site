@@ -232,16 +232,14 @@ const getVenueName = (venueId: string): string => {
 export default function ThisWeekVenues() {
   const sectionRef = useRef<HTMLElement>(null);
   const [scheduleData, setScheduleData] = useState<RaceSchedule[]>([]);
-  // テスト用：土曜日15時に固定
-  const [currentTime, setCurrentTime] = useState(new Date('2026-02-14T15:00:00'));
+  const [currentTime, setCurrentTime] = useState(new Date());
   const [isLoading, setIsLoading] = useState(true);
 
   // データ取得（当日のみ）
   useEffect(() => {
     async function fetchSchedule() {
       try {
-        // テスト用：土曜日の日付を使用
-        const today = formatDateToYYYYMMDD(new Date('2026-02-14T15:00:00'));
+        const today = formatDateToYYYYMMDD(new Date());
 
         const res = await fetch(`/api/race-schedule/${today}`);
 
