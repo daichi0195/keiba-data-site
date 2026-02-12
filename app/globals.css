@@ -1392,10 +1392,11 @@ details[open] .evaluation-content {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  background: #F8FAFC;
-  padding: 24px 1rem;
+  background: #fff;
+  border: 0.5px solid #e2e8f0;
+  padding: 1rem;
   border-radius: 6px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .gate-detail-title {
@@ -1425,18 +1426,6 @@ details[open] .evaluation-content {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  background: #fff;
-  border: 0.5px solid #e2e8f0;
-  border-radius: 6px;
-  padding: 0.625rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
-}
-
-.gate-chart-item:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-color: #cbd5e0;
-  transform: translateY(-2px);
 }
 
 .gate-number-badge {
@@ -3189,13 +3178,6 @@ h3.subsection-title:first-of-type {
 }
 
 /* ===== TOPページ専用スタイル ===== */
-
-/* リーディングチャートの背景をグレーに */
-.gate-place-rate-detail {
-  background-color: #F8FAFC;
-  padding: 16px;
-  border-radius: 8px;
-}
 
 /* TOPページの競馬場別データ以降のセクション - 左右パディング20px */
 .home-content-wrapper .section.fade-in-card {
