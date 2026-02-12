@@ -1,86 +1,136 @@
 /* 次のレースセクション */
 .nextRaceSection {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 /* 次のレースタイトル（H3） */
 .nextRaceTitle {
-  font-size: 1.125rem;
+  font-size: 16px;
   font-weight: 700;
   color: #2d3748;
-  margin: 0 0 1rem 0;
+  margin: 4px 0 0.5rem 0;
   padding: 0;
 }
 
 /* 次のレースグリッド */
-.nextRaceGrid {
+.upcomingRaceGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 0.75rem;
+  gap: 0.375rem;
 }
 
-/* 次のレースカード */
-.nextRaceCard {
-  background: linear-gradient(135deg, #1db854 0%, #17a047 100%);
+/* 次のレースアイテム */
+.upcomingRaceItem {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0;
+}
+
+/* 次のレースカード（内側のカード） */
+.upcomingRaceCard {
+  background: #F8FAFc;
+  border: 0.5px solid #e2e8f0;
   border-radius: 8px;
-  padding: 0.875rem;
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(29, 184, 84, 0.2);
+  padding: 0.625rem;
+  color: #2d3748;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.upcomingRaceCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-color: #cbd5e0;
+}
+
+/* レース場名 */
+.raceCourseName {
+  font-size: 1rem;
+  font-weight: 700;
   text-align: center;
 }
 
-.nextRaceCard:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(29, 184, 84, 0.3);
-}
-
-/* 競馬場名 */
-.racecourse {
-  font-size: 1rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-}
-
-/* レース情報 */
-.raceInfo {
+/* レース詳細 */
+.raceDetails {
   font-size: 0.8rem;
-  margin-bottom: 0.25rem;
   line-height: 1.4;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* 開催時間 */
-.raceTime {
-  font-size: 1.125rem;
-  font-weight: 700;
-  margin-top: 0.5rem;
+/* コース情報 */
+.raceCourseInfo {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1;
+  text-align: center;
+}
+
+/* 芝バッジ */
+.turfBadge {
+  background: #3db866;
+  color: #fff;
+}
+
+/* ダートバッジ */
+.dirtBadge {
+  background: #b89066;
+  color: #fff;
+}
+
+/* 障害バッジ */
+.steeplechaseBadge {
+  background: #838b97;
+  color: #fff;
+}
+
+/* 開始時間 */
+.raceStartTime {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-align: center;
+  color: #666;
 }
 
 /* PC表示 */
 @media (min-width: 769px) {
   .nextRaceTitle {
-    font-size: 1.25rem;
+    font-size: 20px;
   }
 
-  .nextRaceGrid {
-    gap: 1rem;
+  .upcomingRaceGrid {
+    gap: 0.5rem;
   }
 
-  .nextRaceCard {
+  .upcomingRaceCard {
     border-radius: 12px;
-    padding: 1.25rem;
+    padding: 0.875rem;
   }
 
-  .racecourse {
+  .raceCourseName {
     font-size: 1.125rem;
   }
 
-  .raceInfo {
+  .raceDetails {
     font-size: 0.875rem;
   }
 
-  .raceTime {
-    font-size: 1.25rem;
+  .raceCourseInfo {
+    font-size: 0.8125rem;
+    padding: 6px 12px;
+  }
+
+  .raceStartTime {
+    font-size: 0.8125rem;
   }
 }
 

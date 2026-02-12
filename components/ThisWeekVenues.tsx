@@ -15,6 +15,8 @@ interface NextRace {
   raceNumber: number;
   raceName: string;
   startTime: string;
+  surface: 'turf' | 'dirt' | 'steeplechase';
+  distance: number;
 }
 
 interface Venue {
@@ -38,6 +40,8 @@ const mockVenues: Venue[] = [
       raceNumber: 5,
       raceName: 'サラ系3歳未勝利',
       startTime: '15:20',
+      surface: 'dirt',
+      distance: 1600,
     },
     courses: {
       turf: [
@@ -68,6 +72,8 @@ const mockVenues: Venue[] = [
       raceNumber: 3,
       raceName: '3歳以上1勝クラス',
       startTime: '14:35',
+      surface: 'turf',
+      distance: 1800,
     },
     courses: {
       turf: [
@@ -103,6 +109,8 @@ const mockVenues: Venue[] = [
       raceNumber: 7,
       raceName: '3歳未勝利',
       startTime: '16:10',
+      surface: 'dirt',
+      distance: 2100,
     },
     courses: {
       turf: [
@@ -123,6 +131,31 @@ const mockVenues: Venue[] = [
     },
   },
 ];
+
+// コース区分の略称を取得
+const getSurfaceLabel = (surface: 'turf' | 'dirt' | 'steeplechase'): string => {
+  switch (surface) {
+    case 'turf':
+      return '芝';
+    case 'dirt':
+      return 'ダ';
+    case 'steeplechase':
+      return '障';
+  }
+};
+
+// 時刻を「X時X分発走」形式に変換
+const formatStartTime = (time: string): string => {
+  const [hours, minutes] = time.split(':');
+  return `${hours}時${minutes}分発走`;
+};
+
+// レース名を略称化
+const formatRaceName = (name: string): string => {
+  return name
+    .replace(/クラス/g, 'C')
+    .replace(/ステークス/g, 'S');
+};
 
 export default function ThisWeekVenues() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -160,13 +193,24 @@ export default function ThisWeekVenues() {
         {/* 次のレースセクション */}
         <div className={styles.nextRaceSection}>
           <h3 className={styles.nextRaceTitle}>次のレース</h3>
-          <div className={styles.nextRaceGrid}>
+          <div className={styles.upcomingRaceGrid}>
             {mockVenues.map((venue) => (
               venue.nextRace && (
-                <div key={`next-race-${venue.id}`} className={styles.nextRaceCard}>
-                  <div className={styles.racecourse}>{venue.nextRace.racecourse} {venue.nextRace.raceNumber}R</div>
-                  <div className={styles.raceInfo}>{venue.nextRace.raceName}</div>
-                  <div className={styles.raceTime}>{venue.nextRace.startTime} 発走</div>
+                <div key={`next-race-${venue.id}`} className={styles.upcomingRaceItem}>
+                  <div className={styles.upcomingRaceCard}>
+                    <div className={styles.raceCourseName}>{venue.nextRace.racecourse} {venue.nextRace.raceNumber}R</div>
+                    <div className={styles.raceDetails}>{formatRaceName(venue.nextRace.raceName)}</div>
+                    <div
+                      className={`${styles.raceCourseInfo} ${
+                        venue.nextRace.surface === 'turf' ? styles.turfBadge :
+                        venue.nextRace.surface === 'dirt' ? styles.dirtBadge :
+                        styles.steeplechaseBadge
+                      }`}
+                    >
+                      {getSurfaceLabel(venue.nextRace.surface)}{venue.nextRace.distance}m
+                    </div>
+                    <div className={styles.raceStartTime}>{formatStartTime(venue.nextRace.startTime)}</div>
+                  </div>
                 </div>
               )
             ))}
