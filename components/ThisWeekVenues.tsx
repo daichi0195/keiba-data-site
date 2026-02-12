@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import Link from 'next/link';
-import styles from './FeaturedVenues.module.css';
+import styles from './ThisWeekVenues.module.css';
 
 interface Course {
   distance: number;
@@ -10,9 +10,17 @@ interface Course {
   label?: string;
 }
 
+interface NextRace {
+  racecourse: string;
+  raceNumber: number;
+  raceName: string;
+  startTime: string;
+}
+
 interface Venue {
   id: string;
   name: string;
+  nextRace?: NextRace;
   courses: {
     turf: Course[];
     dirt: Course[];
@@ -25,6 +33,12 @@ const mockVenues: Venue[] = [
   {
     id: 'tokyo',
     name: '東京競馬場',
+    nextRace: {
+      racecourse: '東京',
+      raceNumber: 5,
+      raceName: 'サラ系3歳未勝利',
+      startTime: '15:20',
+    },
     courses: {
       turf: [
         { distance: 1400 },
@@ -49,6 +63,12 @@ const mockVenues: Venue[] = [
   {
     id: 'kyoto',
     name: '京都競馬場',
+    nextRace: {
+      racecourse: '京都',
+      raceNumber: 3,
+      raceName: '3歳以上1勝クラス',
+      startTime: '14:35',
+    },
     courses: {
       turf: [
         { distance: 1200 },
@@ -78,6 +98,12 @@ const mockVenues: Venue[] = [
   {
     id: 'kokura',
     name: '小倉競馬場',
+    nextRace: {
+      racecourse: '小倉',
+      raceNumber: 7,
+      raceName: '3歳未勝利',
+      startTime: '16:10',
+    },
     courses: {
       turf: [
         { distance: 1200 },
@@ -130,6 +156,21 @@ export default function ThisWeekVenues() {
         <h2 className="section-title is-visible">
           今週開催の競馬場
         </h2>
+
+        {/* 次のレースカード */}
+        <div className={styles.nextRaceGrid}>
+          {mockVenues.map((venue) => (
+            venue.nextRace && (
+              <div key={`next-race-${venue.id}`} className={styles.nextRaceCard}>
+                <div className={styles.nextRaceLabel}>次のレース</div>
+                <div className={styles.racecourse}>{venue.nextRace.racecourse}競馬場</div>
+                <div className={styles.raceInfo}>第{venue.nextRace.raceNumber}レース</div>
+                <div className={styles.raceInfo}>{venue.nextRace.raceName}</div>
+                <div className={styles.raceTime}>{venue.nextRace.startTime} 発走</div>
+              </div>
+            )
+          ))}
+        </div>
 
         <div className={styles.venueGrid}>
         {mockVenues.map((venue, index) => (

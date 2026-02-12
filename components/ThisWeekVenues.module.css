@@ -1,0 +1,210 @@
+/* 次のレースグリッド */
+.nextRaceGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+/* 次のレースカード */
+.nextRaceCard {
+  background: linear-gradient(135deg, #1db854 0%, #17a047 100%);
+  border-radius: 8px;
+  padding: 0.875rem;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(29, 184, 84, 0.2);
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.nextRaceCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(29, 184, 84, 0.3);
+}
+
+/* 次のレースラベル */
+.nextRaceLabel {
+  font-size: 0.75rem;
+  opacity: 0.9;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+/* 競馬場名 */
+.racecourse {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+/* レース情報 */
+.raceInfo {
+  font-size: 0.8rem;
+  margin-bottom: 0.25rem;
+  line-height: 1.4;
+}
+
+/* 開催時間 */
+.raceTime {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-top: 0.5rem;
+}
+
+/* PC表示 */
+@media (min-width: 769px) {
+  .nextRaceGrid {
+    gap: 1rem;
+  }
+
+  .nextRaceCard {
+    border-radius: 12px;
+    padding: 1.25rem;
+  }
+
+  .nextRaceLabel {
+    font-size: 0.8rem;
+  }
+
+  .racecourse {
+    font-size: 1.125rem;
+  }
+
+  .raceInfo {
+    font-size: 0.875rem;
+  }
+
+  .raceTime {
+    font-size: 1.25rem;
+  }
+}
+
+/* 競馬場コンテンツ用スタイル（FeaturedVenues.module.cssから移行） */
+.venueGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.venueCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0;
+}
+
+.venueName {
+  font-size: 16px;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 4px 0 0 0;
+  padding: 0;
+}
+
+.courseList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.surfaceGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.surfaceLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+}
+
+.distanceLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.distanceLink {
+  display: inline-block !important;
+  padding: 9px 14px !important;
+  text-decoration: none !important;
+  border-radius: 4px;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease;
+  border: 1px solid;
+  text-align: center;
+  box-sizing: border-box;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  line-height: 1 !important;
+}
+
+.variantGroup {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+}
+
+.variantGroup .distanceLink {
+  flex: 1;
+}
+
+/* 芝コースのスタイル */
+.turfLink {
+  background: #3db866;
+  border-color: #3db866;
+  color: #fff !important;
+}
+
+.turfLink:hover {
+  background: #2ea358;
+  border-color: #2ea358;
+  color: #fff !important;
+  text-decoration: none !important;
+}
+
+/* ダートコースのスタイル */
+.dirtLink {
+  background: #b89066;
+  border-color: #b89066;
+  color: #fff !important;
+}
+
+.dirtLink:hover {
+  background: #a67c52;
+  border-color: #a67c52;
+  color: #fff !important;
+  text-decoration: none !important;
+}
+
+/* 障害コースのスタイル */
+.steeplechaseLink {
+  background: #838b97;
+  border-color: #838b97;
+  color: #fff !important;
+}
+
+.steeplechaseLink:hover {
+  background: #6b7280;
+  border-color: #6b7280;
+  color: #fff !important;
+  text-decoration: none !important;
+}
+
+/* PC用 */
+@media (min-width: 769px) {
+  .venueName {
+    font-size: 20px;
+    color: #2d3748;
+  }
+}
+
+/* レスポンシブ */
+@media (max-width: 768px) {
+  .distanceLink {
+    font-size: 14px !important;
+    padding: 6px 10px !important;
+  }
+}
