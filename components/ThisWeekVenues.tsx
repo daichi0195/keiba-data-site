@@ -16,6 +16,7 @@ interface Race {
   surface: 'turf' | 'dirt' | 'steeplechase';
   distance: number;
   startTime: string;
+  variant?: 'inner' | 'outer';
 }
 
 interface VenueData {
@@ -37,6 +38,7 @@ interface NextRace {
   startTime: string;
   surface: 'turf' | 'dirt' | 'steeplechase';
   distance: number;
+  variant?: 'inner' | 'outer';
 }
 
 interface Venue {
@@ -335,6 +337,7 @@ export default function ThisWeekVenues() {
               startTime: nextRace.startTime,
               surface: nextRace.surface,
               distance: nextRace.distance,
+              variant: nextRace.variant,
             },
           });
         }
@@ -386,7 +389,7 @@ export default function ThisWeekVenues() {
                 {raceStatus.nextRaces.map((venue) => (
                   <div key={`next-race-${venue.date}-${venue.id}`} className={styles.upcomingRaceItem}>
                     <Link
-                      href={`/courses/${venue.id}/${venue.nextRace.surface}/${venue.nextRace.distance}`}
+                      href={`/courses/${venue.id}/${venue.nextRace.surface}/${venue.nextRace.distance}${venue.nextRace.variant ? `-${venue.nextRace.variant}` : ''}`}
                       className={styles.upcomingRaceCard}
                     >
                       <div className={styles.raceCourseName}>{venue.nextRace.racecourse} {venue.nextRace.raceNumber}R</div>

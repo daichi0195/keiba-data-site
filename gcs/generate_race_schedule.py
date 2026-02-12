@@ -8,8 +8,18 @@ from bs4 import BeautifulSoup
 import json
 import re
 import sys
+import os
 from datetime import datetime
 from google.cloud import storage
+
+
+# 内回り・外回りの区別があるコース定義
+# format: (競馬場ID, コース区分, 距離)
+COURSES_WITH_VARIANTS = {
+    ('kyoto', 'turf', 1400),   # 京都 芝1400m
+    ('kyoto', 'turf', 1600),   # 京都 芝1600m
+    ('niigata', 'turf', 2000), # 新潟 芝2000m
+}
 
 
 def generate_jra_url(date_str):
@@ -149,13 +159,14 @@ def scrape_race_schedule(url):
 
             # パターン例: "3歳未勝利1,400（ダ）", "クイーンカップ（G3）1,600（芝）", "3歳未勝利1,800（芝・外）"
             # 距離とコース区分を抽出（最後の部分）- 全角括弧に注意、内外の情報も考慮
-            distance_pattern = re.search(r'([\d,]+)（(ダ|芝|障)(?:・[内外])?）', race_info_text)
+            distance_pattern = re.search(r'([\d,]+)（(ダ|芝|障)(?:・([内外]))?）', race_info_text)
             if not distance_pattern:
                 print(f"⚠️  Could not parse race info: {race_info_text}")
                 continue
 
             distance_str = distance_pattern.group(1).replace(',', '')
             surface_char = distance_pattern.group(2)
+            variant_char = distance_pattern.group(3)  # 内 or 外 or None
 
             # コース区分を判定
             if surface_char == 'ダ':
@@ -169,6 +180,18 @@ def scrape_race_schedule(url):
                 continue
 
             distance = int(distance_str)
+
+            # バリアント（内回り・外回り）の判定
+            # 内外の区別があるコースかどうかをチェック
+            variant = None
+            course_key = (venue_id, surface, distance)
+            if course_key in COURSES_WITH_VARIANTS:
+                # 区別があるコースの場合
+                if variant_char == '外':
+                    variant = 'outer'
+                else:
+                    # 「外」の記載がない場合は内回りとして扱う
+                    variant = 'inner'
 
             # レース名を抽出（距離とコース区分の前まで）- 全角括弧に注意、内外の情報も考慮
             race_name = re.sub(r'[\d,]+（(ダ|芝|障)(?:・[内外])?）.*$', '', race_info_text).strip()
@@ -215,8 +238,13 @@ def scrape_race_schedule(url):
                 "startTime": start_time
             }
 
+            # バリアントがある場合のみ追加
+            if variant:
+                race["variant"] = variant
+
             races.append(race)
-            print(f"  ✓ {race_number}R {race_name} {surface}{distance}m {start_time}")
+            variant_str = f"({variant})" if variant else ""
+            print(f"  ✓ {race_number}R {race_name} {surface}{distance}m{variant_str} {start_time}")
 
         if races:
             # レース番号順にソート
@@ -349,6 +377,10 @@ def main():
         print("\n🚀 Auto-uploading to GCS...")
         upload_to_gcs(schedule)
         print(f"✅ Uploaded: gs://umadata/race_schedule/{schedule['date'].replace('-', '')}.json")
+
+        # ローカルファイルを削除
+        os.remove(output_path)
+        print(f"🗑️  Deleted local file: {output_path}")
     else:
         print("\n💡 レース名を確認してください。")
         print()
@@ -358,6 +390,10 @@ def main():
             print("\n🚀 Uploading to GCS...")
             upload_to_gcs(schedule)
             print(f"✅ Uploaded: gs://umadata/race_schedule/{schedule['date'].replace('-', '')}.json")
+
+            # ローカルファイルを削除
+            os.remove(output_path)
+            print(f"🗑️  Deleted local file: {output_path}")
         else:
             print("\n⏸️  アップロードをスキップしました。")
             print(f"   ローカルファイル: {output_path}")
