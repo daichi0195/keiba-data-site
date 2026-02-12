@@ -37,11 +37,11 @@ const mockVenues: Venue[] = [
     name: '東京競馬場',
     nextRace: {
       racecourse: '東京',
-      raceNumber: 5,
-      raceName: 'サラ系3歳未勝利',
-      startTime: '15:20',
+      raceNumber: 1,
+      raceName: '3歳未勝利',
+      startTime: '10:05',
       surface: 'dirt',
-      distance: 1600,
+      distance: 1400,
     },
     courses: {
       turf: [
@@ -69,10 +69,10 @@ const mockVenues: Venue[] = [
     name: '京都競馬場',
     nextRace: {
       racecourse: '京都',
-      raceNumber: 3,
-      raceName: '3歳以上1勝クラス',
-      startTime: '14:35',
-      surface: 'turf',
+      raceNumber: 1,
+      raceName: '3歳未勝利',
+      startTime: '09:50',
+      surface: 'dirt',
       distance: 1800,
     },
     courses: {
@@ -106,11 +106,11 @@ const mockVenues: Venue[] = [
     name: '小倉競馬場',
     nextRace: {
       racecourse: '小倉',
-      raceNumber: 7,
+      raceNumber: 1,
       raceName: '3歳未勝利',
-      startTime: '16:10',
+      startTime: '09:45',
       surface: 'dirt',
-      distance: 2100,
+      distance: 1700,
     },
     courses: {
       turf: [
@@ -141,6 +141,18 @@ const getSurfaceLabel = (surface: 'turf' | 'dirt' | 'steeplechase'): string => {
       return 'ダ';
     case 'steeplechase':
       return '障';
+  }
+};
+
+// コース区分のフルネームを取得
+const getSurfaceFullLabel = (surface: 'turf' | 'dirt' | 'steeplechase'): string => {
+  switch (surface) {
+    case 'turf':
+      return '芝';
+    case 'dirt':
+      return 'ダート';
+    case 'steeplechase':
+      return '障害';
   }
 };
 
@@ -194,10 +206,19 @@ export default function ThisWeekVenues() {
         <div className={styles.nextRaceSection}>
           <h3 className={styles.nextRaceTitle}>次のレース</h3>
           <div className={styles.upcomingRaceGrid}>
-            {mockVenues.map((venue) => (
+            {mockVenues
+              .filter((venue) => venue.nextRace)
+              .sort((a, b) => {
+                if (!a.nextRace || !b.nextRace) return 0;
+                return a.nextRace.startTime.localeCompare(b.nextRace.startTime);
+              })
+              .map((venue) => (
               venue.nextRace && (
                 <div key={`next-race-${venue.id}`} className={styles.upcomingRaceItem}>
-                  <div className={styles.upcomingRaceCard}>
+                  <Link
+                    href={`/courses/${venue.id}/${venue.nextRace.surface}/${venue.nextRace.distance}`}
+                    className={styles.upcomingRaceCard}
+                  >
                     <div className={styles.raceCourseName}>{venue.nextRace.racecourse} {venue.nextRace.raceNumber}R</div>
                     <div className={styles.raceDetails}>{formatRaceName(venue.nextRace.raceName)}</div>
                     <div
@@ -207,10 +228,15 @@ export default function ThisWeekVenues() {
                         styles.steeplechaseBadge
                       }`}
                     >
-                      {getSurfaceLabel(venue.nextRace.surface)}{venue.nextRace.distance}m
+                      <span className={styles.surfaceLabelShort}>
+                        {getSurfaceLabel(venue.nextRace.surface)}{venue.nextRace.distance}m
+                      </span>
+                      <span className={styles.surfaceLabelFull}>
+                        {getSurfaceFullLabel(venue.nextRace.surface)}{venue.nextRace.distance}m
+                      </span>
                     </div>
                     <div className={styles.raceStartTime}>{formatStartTime(venue.nextRace.startTime)}</div>
-                  </div>
+                  </Link>
                 </div>
               )
             ))}
