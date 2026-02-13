@@ -935,21 +935,10 @@ export default async function CoursePage({ params }: Props) {
                 <div className="running-style-detail-title">脚質別複勝率</div>
                 <div className="running-style-chart">
                   {mergedRunningStyleStats.map((style, index) => {
-                    // アイコンマッピング
-                    const styleIcons: { [key: string]: string } = {
-                      'front': '前',
-                      'closer': '後',
-                      '逃げ・先行': '前',
-                      '差し・追込': '後'
-                    };
-
-                    // style.styleまたはstyle.style_labelから1文字アイコンを取得
-                    const icon = styleIcons[style.style] || styleIcons[style.style_label] || style.style_label?.charAt(0) || '?';
-
                     return (
                       <div key={`${style.style}-${index}`} className="running-style-chart-item">
                         <div className="running-style-badge">
-                          {icon}
+                          {style.style_label}
                         </div>
                         <div className="running-style-bar-container">
                           <div
