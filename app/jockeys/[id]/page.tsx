@@ -20,7 +20,9 @@ import BarChartAnimation from '@/components/BarChartAnimation';
 import VolatilityExplanation from '@/components/VolatilityExplanation';
 import GatePositionExplanation from '@/components/GatePositionExplanation';
 import RunningStyleExplanation from '@/components/RunningStyleExplanation';
+import RunningStyleDefinition from '@/components/RunningStyleDefinition';
 import DistanceTrendExplanation from '@/components/DistanceTrendExplanation';
+import DistanceDefinition from '@/components/DistanceDefinition';
 import JockeyTrainerHighlights from '@/components/JockeyTrainerHighlights';
 import { getJockeyDataFromGCS } from '@/lib/getJockeyDataFromGCS';
 import { ALL_JOCKEYS } from '@/lib/jockeys';
@@ -1040,6 +1042,7 @@ export default async function JockeyPage({
                           );
                         })}
                       </div>
+                      <RunningStyleDefinition />
                     </div>
                 </div>
 
@@ -1097,6 +1100,7 @@ export default async function JockeyPage({
                           </div>
                         ))}
                       </div>
+                      <DistanceDefinition />
                     </div>
                 </div>
 
