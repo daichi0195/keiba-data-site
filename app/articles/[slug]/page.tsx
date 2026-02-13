@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { MDXRemote } from 'next-mdx-remote/rsc';
+import { compileMDX } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
 import {
   getArticleBySlug,
@@ -35,54 +35,6 @@ function generateId(text: string): string {
     .replace(/[^\w\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF\s-]/g, '')
     .replace(/\s+/g, '-');
 }
-
-// 最初のH2かどうかを追跡する変数（各レンダリングでリセット）
-let isFirstH2 = true;
-
-// MDX内で使えるコンポーネントを生成する関数
-const createComponents = (headings: Array<{ level: number; text: string; id: string }>) => {
-  // 各レンダリングでリセット
-  isFirstH2 = true;
-
-  return {
-    DataTable,
-    GateTable,
-    HorseWeightTable,
-    RunningStyleTable,
-    PopularityTable,
-    StatsTable,
-    ClassTable,
-    ComparisonTable,
-    GenderTable,
-    PreviousFinishTable,
-    // 見出しにIDを付与し、最初のH2の前に目次を挿入
-    h2: ({ children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => {
-      const text = String(children);
-      const id = generateId(text);
-      const showToc = isFirstH2;
-      isFirstH2 = false;
-
-      return (
-        <>
-          {showToc && <MobileTableOfContents headings={headings} initialShow={5} />}
-          <h2 id={id} {...props}>{children}</h2>
-        </>
-      );
-    },
-    h3: ({ children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => {
-      const text = String(children);
-      const id = generateId(text);
-      return <h3 id={id} {...props}>{children}</h3>;
-    },
-  };
-};
-
-// MDXのオプション設定（GitHub Flavored Markdown対応）
-const options = {
-  mdxOptions: {
-    remarkPlugins: [remarkGfm],
-  },
-};
 
 interface ArticlePageProps {
   params: Promise<{
@@ -179,6 +131,44 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   // 見出しを抽出（SP用目次）
   const headings = extractHeadings(article.content);
 
+  // MDXをコンパイル
+  const mdxCompiled = article.isMDX
+    ? await compileMDX({
+        source: article.content,
+        options: {
+          mdxOptions: {
+            remarkPlugins: [remarkGfm],
+          },
+          blockJS: false,
+          blockDangerousJS: false,
+        },
+        components: {
+          DataTable,
+          GateTable,
+          HorseWeightTable,
+          RunningStyleTable,
+          PopularityTable,
+          StatsTable,
+          ClassTable,
+          ComparisonTable,
+          GenderTable,
+          PreviousFinishTable,
+          // 見出しにIDを付与し、最初のH2の前に目次を挿入
+          h2: ({ children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => {
+            const text = String(children);
+            const id = generateId(text);
+            // 最初のH2にのみ目次を表示するロジックは難しいので、一旦シンプルに
+            return <h2 id={id} {...props}>{children}</h2>;
+          },
+          h3: ({ children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => {
+            const text = String(children);
+            const id = generateId(text);
+            return <h3 id={id} {...props}>{children}</h3>;
+          },
+        },
+      })
+    : null;
+
   return (
     <>
       <div className={styles.articleMain}>
@@ -217,12 +207,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
               {/* 記事本文（最初のH2の前に目次が挿入される） */}
               <div className={styles.content}>
-                {article.isMDX ? (
-                  <MDXRemote
-                    source={article.content}
-                    components={createComponents(headings)}
-                    options={options}
-                  />
+                <MobileTableOfContents headings={headings} initialShow={5} />
+                {article.isMDX && mdxCompiled ? (
+                  mdxCompiled.content
                 ) : (
                   <div dangerouslySetInnerHTML={{ __html: article.contentHtml }} />
                 )}

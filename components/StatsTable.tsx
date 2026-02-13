@@ -26,6 +26,10 @@ interface StatsTableProps {
 export default function StatsTable({ data }: StatsTableProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  if (!data) {
+    return <div style={{ color: 'red', padding: '1rem' }}>Error: StatsTable data is undefined</div>;
+  }
+
   return (
     <div className={styles.tableContainer}>
       <div className={styles.tableScroll} ref={scrollRef}>
