@@ -912,7 +912,13 @@ export default async function CoursePage({ params }: Props) {
               <div className="gate-chart">
                 {mergedGateStats.map((gate, index) => (
                   <div key={`${gate.label}-${index}`} className="gate-chart-item">
-                    <div className="running-style-badge">
+                    <div
+                      className="gate-number-badge"
+                      style={{
+                        backgroundColor: '#f0f0f0',
+                        color: '#333'
+                      }}
+                    >
                       {gate.label}
                     </div>
                     <div className="gate-bar-container">
