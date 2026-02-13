@@ -223,6 +223,8 @@ interface JockeyData {
     fav1_ranking: number;
     total_jockeys: number;
     running_style_trend_position?: number;
+    distance_trend_position?: number;
+    surface_trend_position?: number;
   };
   running_style_trends?: Array<{
     style: string;
@@ -408,8 +410,8 @@ export default async function JockeyPage({
       };
     };
 
-    const shortMile = mergeTwoDistances(short, mile, '短・マ');
-    const middleLong = mergeTwoDistances(middle, long, '中・長');
+    const shortMile = mergeTwoDistances(short, mile, '短〜マ');
+    const middleLong = mergeTwoDistances(middle, long, '中〜長');
 
     return [shortMile, middleLong].filter(Boolean);
   })();

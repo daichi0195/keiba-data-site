@@ -128,6 +128,12 @@ export async function getJockeyDataFromGCS(jockeyId: string | number) {
         running_style_trend_position: typeof data.characteristics.running_style_trend_position === 'string'
           ? parseInt(data.characteristics.running_style_trend_position, 10)
           : data.characteristics.running_style_trend_position,
+        distance_trend_position: typeof data.characteristics.distance_trend_position === 'string'
+          ? parseInt(data.characteristics.distance_trend_position, 10)
+          : data.characteristics.distance_trend_position,
+        surface_trend_position: typeof data.characteristics.surface_trend_position === 'string'
+          ? parseInt(data.characteristics.surface_trend_position, 10)
+          : data.characteristics.surface_trend_position,
       };
     }
 

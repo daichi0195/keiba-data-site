@@ -92,6 +92,18 @@ export async function getTrainerDataFromGCS(trainerId: string | number) {
       }));
     }
 
+    // characteristics データを処理（数値型に変換）
+    if (data.characteristics) {
+      data.characteristics = {
+        gate_position: typeof data.characteristics.gate_position === 'string'
+          ? parseInt(data.characteristics.gate_position, 10)
+          : data.characteristics.gate_position,
+        distance_trend_position: typeof data.characteristics.distance_trend_position === 'string'
+          ? parseInt(data.characteristics.distance_trend_position, 10)
+          : data.characteristics.distance_trend_position,
+      };
+    }
+
     // 他の統計データの処理（avg_popularity、avg_rank、median_popularity、median_rankを含める）
     const processStatsArray = (statsArray: any[]) => {
       return statsArray.map((item: any) => ({

@@ -64,6 +64,27 @@ export async function getSireDataFromGCS(sireId: string | number) {
       }
     }
 
+    // characteristics データを処理（数値型に変換）
+    if (data.characteristics) {
+      data.characteristics = {
+        surface_trend_position: typeof data.characteristics.surface_trend_position === 'string'
+          ? parseInt(data.characteristics.surface_trend_position, 10)
+          : data.characteristics.surface_trend_position,
+        running_style_trend_position: typeof data.characteristics.running_style_trend_position === 'string'
+          ? parseInt(data.characteristics.running_style_trend_position, 10)
+          : data.characteristics.running_style_trend_position,
+        distance_trend_position: typeof data.characteristics.distance_trend_position === 'string'
+          ? parseInt(data.characteristics.distance_trend_position, 10)
+          : data.characteristics.distance_trend_position,
+        turf_condition_trend_position: typeof data.characteristics.turf_condition_trend_position === 'string'
+          ? parseInt(data.characteristics.turf_condition_trend_position, 10)
+          : data.characteristics.turf_condition_trend_position,
+        dirt_condition_trend_position: typeof data.characteristics.dirt_condition_trend_position === 'string'
+          ? parseInt(data.characteristics.dirt_condition_trend_position, 10)
+          : data.characteristics.dirt_condition_trend_position,
+      };
+    }
+
     return data;
   } catch (error) {
     console.error(`Error fetching sire data for ${sireId}:`, error);
