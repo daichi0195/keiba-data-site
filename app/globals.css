@@ -1831,7 +1831,8 @@ details[open] .evaluation-content {
 }
 
 /* コース特性セクション */
-#characteristics-section {
+#characteristics-section,
+#characteristics {
   margin-bottom: 24px;
 }
 
