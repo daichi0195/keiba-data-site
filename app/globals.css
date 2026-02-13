@@ -1830,6 +1830,11 @@ details[open] .evaluation-content {
   margin-bottom: 0;
 }
 
+/* コース特性セクション */
+#characteristics-section {
+  margin-bottom: 24px;
+}
+
 /* owner-stats内のsectionのマージンを0に */
 #owner-stats .section {
   margin-bottom: 0;
