@@ -636,6 +636,39 @@ export default async function CoursePage({ params }: Props) {
     return [frontRunners, closers].filter(Boolean);
   })();
 
+  // 枠順データを2つに統合（内枠、外枠）
+  const mergedGateStats = (() => {
+    const innerGates = gate_stats.filter(g => g.gate >= 1 && g.gate <= 4);
+    const outerGates = gate_stats.filter(g => g.gate >= 5 && g.gate <= 8);
+
+    const mergeGates = (gates: any[], label: string) => {
+      if (gates.length === 0) return null;
+
+      const totalRaces = gates.reduce((sum, g) => sum + g.races, 0);
+      const totalWins = gates.reduce((sum, g) => sum + g.wins, 0);
+      const totalPlaces2 = gates.reduce((sum, g) => sum + g.places_2, 0);
+      const totalPlaces3 = gates.reduce((sum, g) => sum + g.places_3, 0);
+
+      return {
+        label,
+        races: totalRaces,
+        wins: totalWins,
+        places_2: totalPlaces2,
+        places_3: totalPlaces3,
+        win_rate: totalRaces > 0 ? (totalWins / totalRaces) * 100 : 0,
+        quinella_rate: totalRaces > 0 ? ((totalWins + totalPlaces2) / totalRaces) * 100 : 0,
+        place_rate: totalRaces > 0 ? ((totalWins + totalPlaces2 + totalPlaces3) / totalRaces) * 100 : 0,
+        win_payback: totalRaces > 0 ? gates.reduce((sum, g) => sum + (g.win_payback * g.races), 0) / totalRaces : 0,
+        place_payback: totalRaces > 0 ? gates.reduce((sum, g) => sum + (g.place_payback * g.races), 0) / totalRaces : 0,
+      };
+    };
+
+    const inner = mergeGates(innerGates, '内枠');
+    const outer = mergeGates(outerGates, '外枠');
+
+    return [inner, outer].filter(Boolean);
+  })();
+
   // 騎手統計にリンクを追加（ページが存在する騎手のみ）
   const jockeyStatsWithLinks = jockey_stats.map(stat => {
     const jockey = ALL_JOCKEYS.find(j => j.name === stat.name);
@@ -897,6 +930,29 @@ export default async function CoursePage({ params }: Props) {
                       ></div>
                     </div>
                     <div className="gate-rate">{gate.place_rate}%</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 内枠・外枠別複勝率グラフ */}
+            <div className="gate-place-rate-detail" style={{ marginTop: '1rem' }}>
+              <div className="gate-detail-title">内枠・外枠別複勝率</div>
+              <div className="gate-chart">
+                {mergedGateStats.map((gate, index) => (
+                  <div key={`${gate.label}-${index}`} className="gate-chart-item">
+                    <div className="running-style-badge">
+                      {gate.label}
+                    </div>
+                    <div className="gate-bar-container">
+                      <div
+                        className="gate-bar"
+                        style={{
+                          width: `${gate.place_rate ?? 0}%`
+                        }}
+                      ></div>
+                    </div>
+                    <div className="gate-rate">{(gate.place_rate ?? 0).toFixed(1)}%</div>
                   </div>
                 ))}
               </div>
