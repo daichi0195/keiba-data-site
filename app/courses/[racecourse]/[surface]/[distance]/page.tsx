@@ -630,8 +630,8 @@ export default async function CoursePage({ params }: Props) {
       };
     };
 
-    const frontRunners = mergeTwoStyles(escape, lead, '逃げ・先行', 'front');
-    const closers = mergeTwoStyles(pursue, close, '差し・追込', 'closer');
+    const frontRunners = mergeTwoStyles(escape, lead, '逃・先', 'front');
+    const closers = mergeTwoStyles(pursue, close, '差・追', 'closer');
 
     return [frontRunners, closers].filter(Boolean);
   })();
