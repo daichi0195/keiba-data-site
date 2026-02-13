@@ -1510,7 +1510,7 @@ details[open] .evaluation-content {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  padding: 1rem;
+  padding: 0;
 }
 
 .running-style-detail-title {
