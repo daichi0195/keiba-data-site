@@ -861,16 +861,16 @@ export default async function CoursePage({ params }: Props) {
               <div className="gauge-horse-icon" style={{ left: `${(course_info.characteristics.gate_position - 1) * 25}%` }}>🏇</div>
             </div>
             <div className="gauge-labels">
-              <span>内有利</span>
+              <span>内枠有利</span>
               <span>互角</span>
-              <span>外有利</span>
+              <span>外枠有利</span>
             </div>
             <div className="gauge-result">
-              {course_info.characteristics.gate_position === 1 && '内有利'}
-              {course_info.characteristics.gate_position === 2 && 'やや内有利'}
+              {course_info.characteristics.gate_position === 1 && '内枠有利'}
+              {course_info.characteristics.gate_position === 2 && 'やや内枠有利'}
               {course_info.characteristics.gate_position === 3 && '互角'}
-              {course_info.characteristics.gate_position === 4 && 'やや外有利'}
-              {course_info.characteristics.gate_position === 5 && '外有利'}
+              {course_info.characteristics.gate_position === 4 && 'やや外枠有利'}
+              {course_info.characteristics.gate_position === 5 && '外枠有利'}
             </div>
 
             {/* 枠順別複勝率グラフ */}
