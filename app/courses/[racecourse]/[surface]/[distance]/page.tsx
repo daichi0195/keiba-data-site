@@ -598,6 +598,44 @@ export default async function CoursePage({ params }: Props) {
 
   const { course_info, gate_stats, running_style_stats, running_style_trends, popularity_stats, jockey_stats, pedigree_stats, dam_sire_stats, trainer_stats, gender_stats, horse_weight_stats } = data;
 
+  // 脚質データを2つに統合（逃げ・先行、差し・追込）
+  const mergedRunningStyleStats = (() => {
+    const escape = running_style_stats.find(s => s.style === 'escape');
+    const lead = running_style_stats.find(s => s.style === 'lead');
+    const pursue = running_style_stats.find(s => s.style === 'pursue');
+    const close = running_style_stats.find(s => s.style === 'close');
+
+    const mergeTwoStyles = (style1: any, style2: any, label: string, styleKey: string) => {
+      if (!style1 && !style2) return null;
+      if (!style1) return { ...style2, style_label: label, style: styleKey };
+      if (!style2) return { ...style1, style_label: label, style: styleKey };
+
+      const totalRaces = style1.races + style2.races;
+      const totalWins = style1.wins + style2.wins;
+      const totalPlaces2 = style1.places_2 + style2.places_2;
+      const totalPlaces3 = style1.places_3 + style2.places_3;
+
+      return {
+        style: styleKey,
+        style_label: label,
+        races: totalRaces,
+        wins: totalWins,
+        places_2: totalPlaces2,
+        places_3: totalPlaces3,
+        win_rate: totalRaces > 0 ? (totalWins / totalRaces) * 100 : 0,
+        quinella_rate: totalRaces > 0 ? ((totalWins + totalPlaces2) / totalRaces) * 100 : 0,
+        place_rate: totalRaces > 0 ? ((totalWins + totalPlaces2 + totalPlaces3) / totalRaces) * 100 : 0,
+        win_payback: totalRaces > 0 ? ((style1.win_payback * style1.races) + (style2.win_payback * style2.races)) / totalRaces : 0,
+        place_payback: totalRaces > 0 ? ((style1.place_payback * style1.races) + (style2.place_payback * style2.races)) / totalRaces : 0,
+      };
+    };
+
+    const frontRunners = mergeTwoStyles(escape, lead, '逃げ・先行', 'front');
+    const closers = mergeTwoStyles(pursue, close, '差し・追込', 'closer');
+
+    return [frontRunners, closers].filter(Boolean);
+  })();
+
   // 騎手統計にリンクを追加（ページが存在する騎手のみ）
   const jockeyStatsWithLinks = jockey_stats.map(stat => {
     const jockey = ALL_JOCKEYS.find(j => j.name === stat.name);
@@ -896,17 +934,13 @@ export default async function CoursePage({ params }: Props) {
               <div className="running-style-place-rate-detail">
                 <div className="running-style-detail-title">脚質別複勝率</div>
                 <div className="running-style-chart">
-                  {running_style_stats.map((style, index) => {
-                    // アイコンマッピング（英語と日本語両方に対応）
+                  {mergedRunningStyleStats.map((style, index) => {
+                    // アイコンマッピング
                     const styleIcons: { [key: string]: string } = {
-                      'escape': '逃',
-                      'lead': '先',
-                      'pursue': '差',
-                      'close': '追',
-                      '逃げ': '逃',
-                      '先行': '先',
-                      '差し': '差',
-                      '追込': '追'
+                      'front': '前',
+                      'closer': '後',
+                      '逃げ・先行': '前',
+                      '差し・追込': '後'
                     };
 
                     // style.styleまたはstyle.style_labelから1文字アイコンを取得
@@ -966,7 +1000,7 @@ export default async function CoursePage({ params }: Props) {
 <section id="running-style-section" aria-label="脚質別データ">
   <RunningStyleTable
     title={`${seoPrefix} 脚質別データ`}
-    data={running_style_stats}
+    data={mergedRunningStyleStats}
   />
 </section>
 
