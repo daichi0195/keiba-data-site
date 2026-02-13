@@ -670,6 +670,44 @@ export default async function JockeyPage({
     }
   });
 
+  // 脚質別データを2グループに統合（逃・先 と 差・追）
+  const mergedRunningStyleStats = (() => {
+    const escape = jockey.running_style_stats.find(s => s.style === 'escape');
+    const lead = jockey.running_style_stats.find(s => s.style === 'lead');
+    const pursue = jockey.running_style_stats.find(s => s.style === 'pursue');
+    const close = jockey.running_style_stats.find(s => s.style === 'close');
+
+    const mergeTwoStyles = (style1: any, style2: any, label: string, styleKey: string) => {
+      if (!style1 && !style2) return null;
+      if (!style1) return { ...style2, style_label: label, style: styleKey };
+      if (!style2) return { ...style1, style_label: label, style: styleKey };
+
+      const totalRaces = style1.races + style2.races;
+      const totalWins = style1.wins + style2.wins;
+      const totalPlaces2 = style1.places_2 + style2.places_2;
+      const totalPlaces3 = style1.places_3 + style2.places_3;
+
+      return {
+        style: styleKey,
+        style_label: label,
+        races: totalRaces,
+        wins: totalWins,
+        places_2: totalPlaces2,
+        places_3: totalPlaces3,
+        win_rate: totalRaces > 0 ? (totalWins / totalRaces) * 100 : 0,
+        quinella_rate: totalRaces > 0 ? ((totalWins + totalPlaces2) / totalRaces) * 100 : 0,
+        place_rate: totalRaces > 0 ? ((totalWins + totalPlaces2 + totalPlaces3) / totalRaces) * 100 : 0,
+        win_payback: totalRaces > 0 ? ((style1.win_payback * style1.races) + (style2.win_payback * style2.races)) / totalRaces : 0,
+        place_payback: totalRaces > 0 ? ((style1.place_payback * style1.races) + (style2.place_payback * style2.races)) / totalRaces : 0,
+      };
+    };
+
+    const frontRunners = mergeTwoStyles(escape, lead, '逃・先', 'front');
+    const closers = mergeTwoStyles(pursue, close, '差・追', 'closer');
+
+    return [frontRunners, closers].filter(Boolean);
+  })();
+
   // ナビゲーションアイテム
   const navigationItems = [
     { id: 'leading', label: '年度別' },
@@ -945,19 +983,11 @@ export default async function JockeyPage({
                     <div className="running-style-place-rate-detail">
                       <div className="running-style-detail-title">脚質別複勝率</div>
                       <div className="running-style-chart">
-                        {jockey.running_style_stats.map((style) => {
-                          // アイコンマッピング
-                          const styleIcons: { [key: string]: string } = {
-                            'escape': '逃',
-                            'lead': '先',
-                            'pursue': '差',
-                            'close': '追'
-                          };
-
+                        {mergedRunningStyleStats.map((style) => {
                           return (
                             <div key={style.style} className="running-style-chart-item">
                               <div className="running-style-badge">
-                                {styleIcons[style.style] || style.style_label}
+                                {style.style_label}
                               </div>
                               <div className="running-style-bar-container">
                                 <div
