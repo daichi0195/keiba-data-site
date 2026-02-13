@@ -1533,9 +1533,10 @@ details[open] .evaluation-content {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 28px;
-  width: 28px;
+  min-width: 80px;
+  width: auto;
   height: 28px;
+  padding: 0 8px;
   border-radius: 4px;
   font-size: 0.75rem;
   font-weight: 700;
@@ -1543,6 +1544,7 @@ details[open] .evaluation-content {
   background: #f0f0f0;
   flex-shrink: 0;
   border: 1px solid #ddd;
+  white-space: nowrap;
 }
 
 .running-style-bar-container {
