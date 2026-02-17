@@ -6,15 +6,17 @@
 
 /* 次のレースセクション */
 .nextRaceSection {
-  margin-bottom: 1rem;
+  background: #f1f5f9;
+  margin: 0 -20px 1.25rem;
+  padding: 20px 20px 24px;
 }
 
 /* 次のレースタイトル（H3） */
 .nextRaceTitle {
   font-size: 16px;
   font-weight: 700;
-  color: #2d3748;
-  margin: 4px 0 0.5rem 0;
+  color: #606c7a;
+  margin: 0 0 0.5rem 0;
   padding: 0;
   opacity: 0;
   animation: fadeInFromBottom 0.5s ease 0.1s forwards;
@@ -90,8 +92,8 @@
 
 /* レース場名 */
 .raceCourseName {
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: 0.875rem;
+  font-weight: 600;
   text-align: center;
 }
 
@@ -173,7 +175,8 @@
   }
 
   .raceCourseName {
-    font-size: 1.25rem;
+    font-size: 1rem;
+    font-weight: 600;
   }
 
   .raceDetails {
@@ -196,6 +199,41 @@
   .surfaceLabelFull {
     display: inline;
   }
+}
+
+/* 競馬場タブ */
+.venueTabs {
+  display: flex;
+  border-bottom: 2px solid #cbd5e0;
+  margin-bottom: 16px;
+  opacity: 0;
+  animation: fadeInFromBottom 0.6s ease 0.5s forwards;
+}
+
+.venueTab {
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 8px 16px 4px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #999;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  margin-bottom: -1px;
+  font-family: inherit;
+}
+
+.venueTab:hover {
+  color: #2d3748;
+}
+
+.venueTabActive {
+  color: #2d3748;
+  border-bottom: 3px solid #4a5568;
+}
+
+.venueContent {
 }
 
 /* 競馬場コンテンツ用スタイル（FeaturedVenues.module.cssから移行） */
@@ -341,7 +379,7 @@
   background: #f5f7fa;
   border-radius: 6px;
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 /* レスポンシブ */

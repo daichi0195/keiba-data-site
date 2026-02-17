@@ -1,0 +1,142 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: #fff;
+  border-radius: 10px;
+  padding: 14px 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* タイトル */
+.title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #2d3748;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 4px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* 順位バッジ */
+.rankBadge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.rank1 {
+  background: #f59e0b;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(245, 158, 11, 0.45);
+}
+
+.rank2 {
+  background: #94a3b8;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(148, 163, 184, 0.45);
+}
+
+.rank3 {
+  background: #c07a3a;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(192, 122, 58, 0.35);
+}
+
+.rankDefault {
+  background: transparent;
+  color: #94a3b8;
+  border: 1.5px solid #d1d5db;
+  font-weight: 600;
+}
+
+/* 名前リンク */
+.name {
+  min-width: 72px;
+  width: 72px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #2563eb;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+}
+
+.name:hover {
+  text-decoration: underline;
+  color: #1d4ed8;
+}
+
+/* バーのトラック */
+.barTrack {
+  flex: 1;
+  height: 8px;
+  background: transparent;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* バー本体 */
+.bar {
+  height: 100%;
+  border-radius: 4px;
+  background: #1db854;
+  transition: width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* 勝ち数（右端独立表示） */
+.winsLabel {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #2d3748;
+  min-width: 36px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* 注釈 */
+.note {
+  font-size: 0.75rem;
+  color: #999;
+  text-align: right;
+  margin-top: 4px;
+}
+
+/* PC */
+@media (min-width: 769px) {
+  .name {
+    min-width: 90px;
+    width: 90px;
+    font-size: 0.9rem;
+  }
+
+  .barTrack {
+    height: 10px;
+  }
+
+  .rankBadge {
+    width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+  }
+
+  .winsLabel {
+    font-size: 0.85rem;
+    min-width: 42px;
+  }
+}

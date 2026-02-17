@@ -232,14 +232,15 @@ const getVenueName = (venueId: string): string => {
 export default function ThisWeekVenues() {
   const sectionRef = useRef<HTMLElement>(null);
   const [scheduleData, setScheduleData] = useState<RaceSchedule[]>([]);
-  const [currentTime, setCurrentTime] = useState(new Date());
+  const [currentTime, setCurrentTime] = useState(new Date('2026-02-15T15:00:00'));
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedVenueId, setSelectedVenueId] = useState<string>(mockVenues[0].id);
 
   // データ取得（当日のみ）
   useEffect(() => {
     async function fetchSchedule() {
       try {
-        const today = formatDateToYYYYMMDD(new Date());
+        const today = formatDateToYYYYMMDD(new Date('2026-02-15T15:00:00'));
 
         const res = await fetch(`/api/race-schedule/${today}`);
 
@@ -367,8 +368,6 @@ export default function ThisWeekVenues() {
   return (
     <section ref={sectionRef} className="section section-this-week-venues">
       <div style={{ width: '100%' }}>
-        <h2 className={`section-title is-visible ${styles.mainTitle}`}>今週開催の競馬場</h2>
-
         {/* 次のレースセクション */}
         {!isLoading && raceStatus.hasSchedule && (
           <div className={styles.nextRaceSection}>
@@ -415,14 +414,24 @@ export default function ThisWeekVenues() {
           </div>
         )}
 
-        <div className={styles.venueGrid}>
-        {mockVenues.map((venue, index) => (
-          <div
-            key={venue.id}
-            className={styles.venueCard}
-          >
-            <h3 className={styles.venueName}>{venue.name}</h3>
+        <h2 className={`section-title is-visible ${styles.mainTitle}`}>今週開催の競馬場</h2>
 
+        {/* 競馬場タブ */}
+        <div className={styles.venueTabs}>
+          {mockVenues.map((venue) => (
+            <button
+              key={venue.id}
+              className={`${styles.venueTab} ${selectedVenueId === venue.id ? styles.venueTabActive : ''}`}
+              onClick={() => setSelectedVenueId(venue.id)}
+            >
+              {venue.name.replace('競馬場', '')}
+            </button>
+          ))}
+        </div>
+
+        {/* 選択された競馬場のコース一覧 */}
+        {mockVenues.filter((v) => v.id === selectedVenueId).map((venue) => (
+          <div key={venue.id} className={styles.venueContent}>
             <div className={styles.courseList}>
               <div className={styles.surfaceGroup}>
                 <div className={styles.distanceLinks}>
@@ -470,7 +479,6 @@ export default function ThisWeekVenues() {
             </div>
           </div>
         ))}
-      </div>
       </div>
     </section>
   );
