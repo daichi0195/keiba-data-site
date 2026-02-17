@@ -1,0 +1,55 @@
+.nav {
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  background: #fff;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0 8px;
+  gap: 0;
+  white-space: nowrap;
+}
+
+.nav::-webkit-scrollbar {
+  display: none;
+}
+
+.navItem {
+  display: inline-block;
+  padding: 4px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4a5568;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.navItem:hover {
+  color: #1db854;
+}
+
+.active {
+  color: #1db854;
+  font-weight: 700;
+}
+
+.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  width: 80%;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #7dd9a3, #2ecc71, #1db854);
+}
+
+/* PC では非表示 */
+@media (min-width: 769px) {
+  .nav {
+    display: none;
+  }
+}

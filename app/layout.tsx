@@ -3,6 +3,7 @@ import Script from "next/script";
 import Link from "next/link";
 import Footer from "@/components/Footer";
 import HeaderMenu from "@/components/HeaderMenu";
+import SpGlobalNav from "@/components/SpGlobalNav";
 import GaugeAnimationObserver from "@/components/GaugeAnimationObserver";
 import "./globals.css";
 
@@ -91,6 +92,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           </Link>
           <HeaderMenu />
         </header>
+        <SpGlobalNav />
         {children}
         <Footer />
         <GaugeAnimationObserver />
