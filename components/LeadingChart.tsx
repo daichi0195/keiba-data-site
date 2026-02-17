@@ -66,7 +66,6 @@ export default function LeadingChart({
           <span className={styles.winsLabel}>{item.wins}勝</span>
         </div>
       ))}
-      <div className={styles.note}>{note}</div>
     </div>
   );
 }
