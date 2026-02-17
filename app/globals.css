@@ -59,6 +59,13 @@ header {
   min-height: 48px;
 }
 
+/* スクロール時のヘッダー下線 */
+@media (max-width: 768px) {
+  header.scrolled {
+    border-bottom: 1px solid #e2e8f0;
+  }
+}
+
 /* PC表示時：ヘッダーのレイアウト調整 */
 @media (min-width: 769px) {
   header {
