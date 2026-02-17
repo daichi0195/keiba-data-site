@@ -232,7 +232,7 @@ const getVenueName = (venueId: string): string => {
 export default function ThisWeekVenues() {
   const sectionRef = useRef<HTMLElement>(null);
   const [scheduleData, setScheduleData] = useState<RaceSchedule[]>([]);
-  const [currentTime, setCurrentTime] = useState(new Date('2026-02-15T15:00:00'));
+  const [currentTime, setCurrentTime] = useState(new Date());
   const [isLoading, setIsLoading] = useState(true);
   const [selectedVenueId, setSelectedVenueId] = useState<string>(mockVenues[0].id);
 
@@ -240,7 +240,7 @@ export default function ThisWeekVenues() {
   useEffect(() => {
     async function fetchSchedule() {
       try {
-        const today = formatDateToYYYYMMDD(new Date('2026-02-15T15:00:00'));
+        const today = formatDateToYYYYMMDD(new Date());
 
         const res = await fetch(`/api/race-schedule/${today}`);
 
