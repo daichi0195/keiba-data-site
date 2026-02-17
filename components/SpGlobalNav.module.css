@@ -17,7 +17,7 @@
 .navItem {
   display: inline-block;
   padding: 4px 14px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   color: #4a5568;
   text-decoration: none;
@@ -42,7 +42,7 @@
   bottom: 0;
   left: 10%;
   width: 80%;
-  height: 4px;
+  height: 3px;
   border-radius: 2px;
   background: linear-gradient(90deg, #7dd9a3, #2ecc71, #1db854);
 }
