@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import styles from './Footer.module.css';
 
 export default function Footer() {
@@ -6,7 +7,16 @@ export default function Footer() {
     <footer className={styles.footer}>
       <div className={styles.footerContent}>
         <div className={styles.siteName}>
-          <h2>競馬データ.com</h2>
+          <h2>
+            <Image
+              src="/logo.png"
+              alt="競馬データ.com ロゴ"
+              width={28}
+              height={28}
+              className={styles.logo}
+            />
+            競馬データ.com
+          </h2>
           <p className={styles.tagline}>競馬予想にさらなるワクワクを</p>
         </div>
 

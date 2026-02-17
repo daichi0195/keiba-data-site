@@ -23,6 +23,13 @@
   color: #ffffff;
   margin: 0 0 0.5rem 0;
   letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo {
+  filter: brightness(0) invert(1);
 }
 
 .tagline {
