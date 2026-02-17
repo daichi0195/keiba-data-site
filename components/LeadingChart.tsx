@@ -17,6 +17,7 @@ interface LeadingChartProps {
   title?: string;
   note?: string;
   maxNameLength?: number;
+  nameWidth?: number;
 }
 
 export default function LeadingChart({
@@ -26,6 +27,7 @@ export default function LeadingChart({
   title,
   note = '2026年/勝ち数順',
   maxNameLength,
+  nameWidth,
 }: LeadingChartProps) {
   const maxWins = Math.max(...data.map((item) => item.wins));
 
@@ -52,7 +54,7 @@ export default function LeadingChart({
             {item.rank}
           </div>
 
-          <Link href={`${linkPrefix}${item.id}`} className={styles.name}>
+          <Link href={`${linkPrefix}${item.id}`} className={styles.name} style={nameWidth ? { minWidth: nameWidth, width: nameWidth } : undefined}>
             {formatName(item.name)}
           </Link>
 

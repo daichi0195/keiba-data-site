@@ -70,7 +70,8 @@
   font-size: 0.85rem;
   font-weight: 600;
   color: #2563eb;
-  text-decoration: none;
+  text-decoration: underline;
+  text-underline-offset: 2px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -78,7 +79,6 @@
 }
 
 .name:hover {
-  text-decoration: underline;
   color: #1d4ed8;
 }
 

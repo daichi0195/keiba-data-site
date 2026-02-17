@@ -41,7 +41,7 @@ export default function SireLeading({ data }: SireLeadingProps) {
   return (
     <section ref={sectionRef} className="section fade-in-card">
       <h2 className="section-title is-visible">血統（種牡馬）別データ</h2>
-      <LeadingChart data={data} linkPrefix="/sires/" isVisible={isVisible} maxNameLength={8} title="種牡馬リーディング（勝ち数順）" />
+      <LeadingChart data={data} linkPrefix="/sires/" isVisible={isVisible} maxNameLength={12} nameWidth={110} title="種牡馬リーディング（勝ち数順）" />
       <AllSires />
     </section>
   );
