@@ -41,7 +41,7 @@ export default function JockeyLeading({ data }: JockeyLeadingProps) {
   return (
     <section ref={sectionRef} className="section fade-in-card">
       <h2 className="section-title is-visible">騎手別データ</h2>
-      <LeadingChart data={data} linkPrefix="/jockeys/" isVisible={isVisible} title="騎手リーディング" />
+      <LeadingChart data={data} linkPrefix="/jockeys/" isVisible={isVisible} title="騎手リーディング（勝ち数順）" />
       <AllJockeys />
     </section>
   );

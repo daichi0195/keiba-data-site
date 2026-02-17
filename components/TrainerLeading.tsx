@@ -41,7 +41,7 @@ export default function TrainerLeading({ data }: TrainerLeadingProps) {
   return (
     <section ref={sectionRef} className="section fade-in-card">
       <h2 className="section-title is-visible">調教師別データ</h2>
-      <LeadingChart data={data} linkPrefix="/trainers/" isVisible={isVisible} title="調教師リーディング" />
+      <LeadingChart data={data} linkPrefix="/trainers/" isVisible={isVisible} title="調教師リーディング（勝ち数順）" />
       <AllTrainers />
     </section>
   );

@@ -63,7 +63,7 @@
   padding-top: 16px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
   background: transparent;
 }
 
@@ -80,7 +80,7 @@
 .accordionDistanceLinks {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 
 .avCourseCard {

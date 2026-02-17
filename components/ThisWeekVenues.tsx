@@ -232,7 +232,7 @@ const getVenueName = (venueId: string): string => {
 export default function ThisWeekVenues() {
   const sectionRef = useRef<HTMLElement>(null);
   const [scheduleData, setScheduleData] = useState<RaceSchedule[]>([]);
-  const [currentTime, setCurrentTime] = useState(new Date());
+  const [currentTime, setCurrentTime] = useState(new Date('2026-02-15T15:00:00'));
   const [isLoading, setIsLoading] = useState(true);
   const [selectedVenueId, setSelectedVenueId] = useState<string>(mockVenues[0].id);
 
@@ -240,7 +240,7 @@ export default function ThisWeekVenues() {
   useEffect(() => {
     async function fetchSchedule() {
       try {
-        const today = formatDateToYYYYMMDD(new Date());
+        const today = formatDateToYYYYMMDD(new Date('2026-02-15T15:00:00'));
 
         const res = await fetch(`/api/race-schedule/${today}`);
 
@@ -387,7 +387,11 @@ export default function ThisWeekVenues() {
                   <div key={`next-race-${venue.date}-${venue.id}`} className={styles.upcomingRaceItem}>
                     <Link
                       href={`/courses/${venue.id}/${venue.nextRace.surface}/${venue.nextRace.distance}${venue.nextRace.variant ? `-${venue.nextRace.variant}` : ''}`}
-                      className={styles.upcomingRaceCard}
+                      className={`${styles.upcomingRaceCard} ${
+                        venue.nextRace.surface === 'turf' ? styles.upcomingRaceCardTurf :
+                        venue.nextRace.surface === 'dirt' ? styles.upcomingRaceCardDirt :
+                        styles.upcomingRaceCardSteeplechase
+                      }`}
                     >
                       <div className={styles.raceCourseName}>{venue.nextRace.racecourse} {venue.nextRace.raceNumber}R</div>
                       <div className={styles.raceDetails}>{formatRaceName(venue.nextRace.raceName)}</div>
