@@ -802,12 +802,7 @@ export default async function CoursePage({ params }: Props) {
           <div className="course-meta-section">
             <div className="meta-item">
               <span className="meta-label">データ取得期間</span>
-              <span>
-                直近3年間分
-                <span className="meta-sub-text">
-                  {course_info.data_period.match(/（[^）]+）/)?.[0] || course_info.data_period}
-                </span>
-              </span>
+              <span>直近3年間分</span>
             </div>
             <div className="meta-item">
               <span className="meta-label">対象レース数</span>
@@ -818,9 +813,16 @@ export default async function CoursePage({ params }: Props) {
               <span>{course_info.last_updated}</span>
             </div>
           </div>
+
         </div>
 
         <article className="content-card">
+        {/* === ページ概要セクション === */}
+        <section className="page-description-section">
+          <p className="page-description">
+            {course_info.racecourse} {course_info.surface}{distanceDisplay}m{trackVariantLabel}のコースデータをまとめたページです。<br className="sp-br" />独自のデータベースに基づき、直近3年間（{formatDate(threeYearsAgo)}〜{formatDate(yesterday)}）で集計しています。
+          </p>
+        </section>
         {/* === コース特性セクション === */}
         <section id="characteristics-section" aria-label="コース特性">
         <BarChartAnimation>
