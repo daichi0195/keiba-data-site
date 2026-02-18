@@ -3204,15 +3204,6 @@ h3.subsection-title:first-of-type {
   margin-bottom: 12px;
 }
 
-/* モバイル表示時のDataTable出走数カラム幅調整 */
-@media (max-width: 768px) {
-  .mobile-data-table th.mobile-scroll-col:nth-child(3),
-  .mobile-data-table td.mobile-scroll-col:nth-child(3) {
-    width: 80px !important;
-    min-width: 80px !important;
-    max-width: 80px !important;
-  }
-}
 
 /* ===== TOPページ専用スタイル ===== */
 

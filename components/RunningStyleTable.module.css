@@ -198,12 +198,12 @@
       max-width: 80px !important;
     }
 
-    /* 第2列：出走数 - 80px */
+    /* 第2列：出走数 - 60px */
     .table th:nth-child(2),
     .table td:nth-child(2) {
-      width: 80px !important;
-      min-width: 80px !important;
-      max-width: 80px !important;
+      width: 60px !important;
+      min-width: 60px !important;
+      max-width: 60px !important;
     }
 
     /* 第3列：1着 - 50px */

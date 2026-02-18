@@ -259,9 +259,9 @@
   /* 第2列：出走数 - 60px */
   .table th:nth-child(2),
   .table td:nth-child(2) {
-    width: 70px !important;
-    min-width: 70px !important;
-    max-width: 70px !important;
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
   }
 
   /* 第3列：1着 - 50px */
@@ -339,9 +339,9 @@
   /* モバイル表示での幅広カラムモード */
   .wideTable .table th:nth-child(2),
   .wideTable .table td:nth-child(2) {
-    width: 75px !important;
-    min-width: 75px !important;
-    max-width: 75px !important;
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
   }
 
   .wideTable .table th:nth-child(3),

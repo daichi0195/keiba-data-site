@@ -726,7 +726,7 @@ export default async function CoursePage({ params }: Props) {
 
   // ナビゲーション用のセクションアイテム
   const navigationItems = [
-    { id: 'characteristics-section', label: 'コース特性' },
+    { id: 'characteristics-section', label: 'コースの特徴' },
     { id: 'highlights-section', label: '注目ポイント' },
     { id: 'popularity-section', label: '人気別' },
     { id: 'gate-section', label: '枠順別' },
@@ -834,7 +834,7 @@ export default async function CoursePage({ params }: Props) {
         {/* === コース特性セクション === */}
         <section id="characteristics-section" aria-label="コース特性">
         <BarChartAnimation>
-          <h2 className="section-title">コース特性</h2>
+          <h2 className="section-title">{course_info.racecourse.replace('競馬場', '')}{course_info.surface}{distanceDisplay}mの特徴</h2>
 
           {/* 荒れやすさ */}
           <div className="gauge-item">
@@ -1039,6 +1039,7 @@ export default async function CoursePage({ params }: Props) {
             pedigree_stats={pedigree_stats}
             dam_sire_stats={dam_sire_stats}
             trainer_stats={trainer_stats}
+            sectionTitle={`${course_info.racecourse.replace('競馬場', '')}${course_info.surface}${distanceDisplay}mの注目ポイント`}
           />
         </section>
         {/* === 人気別 === */}
@@ -1061,7 +1062,7 @@ export default async function CoursePage({ params }: Props) {
 <section id="running-style-section" aria-label="脚質別データ">
   <RunningStyleTable
     title={`${seoPrefix} 脚質別データ`}
-    data={mergedRunningStyleStats}
+    data={running_style_stats}
   />
 </section>
 

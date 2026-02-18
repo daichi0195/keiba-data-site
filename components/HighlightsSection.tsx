@@ -21,13 +21,15 @@ interface HighlightsSectionProps {
   pedigree_stats?: StatItem[];
   dam_sire_stats?: StatItem[];
   trainer_stats?: StatItem[];
+  sectionTitle?: string;
 }
 
 export default function HighlightsSection({
   jockey_stats,
   pedigree_stats,
   dam_sire_stats,
-  trainer_stats
+  trainer_stats,
+  sectionTitle,
 }: HighlightsSectionProps) {
   const [modalState, setModalState] = useState<{ isOpen: boolean; subsectionKey: string | null }>({
     isOpen: false,
@@ -146,7 +148,7 @@ export default function HighlightsSection({
   return (
     <section id="highlights-section">
       <div className="highlights-box">
-        <h2 className="section-title">注目ポイント</h2>
+        <h2 className="section-title">{sectionTitle ?? '注目ポイント'}</h2>
 
         {/* 騎手セクション（コースページ）または コースセクション（騎手ページ） */}
         <div className="highlight-item">

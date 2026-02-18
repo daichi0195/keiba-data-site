@@ -220,7 +220,7 @@ export default function DataTable({ title = '', data, initialShow = 10, nameLabe
                 </th>
                 
                 {/* スクロール列 */}
-                <th className="mobile-scroll-col" style={wideRacesColumn ? { width: '80px', minWidth: '80px' } : undefined}>出走数</th>
+                <th className="mobile-scroll-col">出走数</th>
                 <th className="mobile-scroll-col">1着</th>
                 <th className="mobile-scroll-col">2着</th>
                 <th className="mobile-scroll-col">3着</th>
@@ -288,7 +288,7 @@ export default function DataTable({ title = '', data, initialShow = 10, nameLabe
                   </td>
                   
                   {/* スクロール列 - 数値のみハイライト */}
-                  <td className="mobile-scroll-col" style={wideRacesColumn ? { width: '80px', minWidth: '80px' } : undefined}>
+                  <td className="mobile-scroll-col">
                     <span className={isHighlight(row.races, maxRaces) ? 'mobile-highlight' : ''}>
                       {formatNumber(row.races)}
                     </span>
