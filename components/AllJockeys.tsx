@@ -77,6 +77,7 @@ export default function AllJockeys() {
                 {expandedKana[group.kana] ? '▼' : '▶'}
               </span>
               {group.kana}
+              <span className={styles.countBadge}>{group.jockeys.length}名</span>
             </button>
 
             <div className={`${styles.accordionContent} ${expandedKana[group.kana] ? '' : styles.hidden}`}>

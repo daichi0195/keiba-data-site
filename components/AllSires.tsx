@@ -77,6 +77,7 @@ export default function AllSires() {
                 {expandedKana[group.kana] ? '▼' : '▶'}
               </span>
               {group.kana}
+              <span className={styles.countBadge}>{group.sires.length}頭</span>
             </button>
 
             <div className={`${styles.accordionContent} ${expandedKana[group.kana] ? '' : styles.hidden}`}>

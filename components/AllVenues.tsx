@@ -74,11 +74,22 @@ export default function AllVenues() {
                   {expandedRacecourse[racecourse.nameEn] ? '▼' : '▶'}
                 </span>
                 <h3 className={styles.venueName}>{racecourse.name}</h3>
+                <div className={styles.surfaceBadges}>
+                  {turfCourses.length > 0 && (
+                    <span className={`${styles.surfaceBadge} ${styles.surfaceBadgeTurf}`}>芝 {turfCourses.length}コース</span>
+                  )}
+                  {dirtCourses.length > 0 && (
+                    <span className={`${styles.surfaceBadge} ${styles.surfaceBadgeDirt}`}>ダート {dirtCourses.length}コース</span>
+                  )}
+                  {steeplechaseCourses.length > 0 && (
+                    <span className={`${styles.surfaceBadge} ${styles.surfaceBadgeSteeplechase}`}>障害 {steeplechaseCourses.length}コース</span>
+                  )}
+                </div>
               </button>
 
               <div className={`${styles.accordionContent} ${expandedRacecourse[racecourse.nameEn] ? '' : styles.hidden}`}>
                 {turfCourses.length > 0 && (
-                  <div className={styles.surfaceGroup}>
+                  <div className={`${styles.surfaceGroup} ${styles.surfaceGroupTurf}`}>
                     <div className={styles.accordionDistanceLinks}>
                       {turfCourses.map((course, idx) => (
                         <Link
@@ -97,7 +108,7 @@ export default function AllVenues() {
                 )}
 
                 {dirtCourses.length > 0 && (
-                  <div className={styles.surfaceGroup}>
+                  <div className={`${styles.surfaceGroup} ${styles.surfaceGroupDirt}`}>
                     <div className={styles.accordionDistanceLinks}>
                       {dirtCourses.map((course, idx) => (
                         <Link
@@ -113,7 +124,7 @@ export default function AllVenues() {
                 )}
 
                 {steeplechaseCourses.length > 0 && (
-                  <div className={styles.surfaceGroup}>
+                  <div className={`${styles.surfaceGroup} ${styles.surfaceGroupSteeplechase}`}>
                     <div className={styles.accordionDistanceLinks}>
                       {steeplechaseCourses.map((course, idx) => (
                         <Link
