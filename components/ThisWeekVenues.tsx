@@ -437,7 +437,7 @@ export default function ThisWeekVenues() {
         {mockVenues.filter((v) => v.id === selectedVenueId).map((venue) => (
           <div key={venue.id} className={styles.venueContent}>
             <div className={styles.courseList}>
-              <div className={styles.surfaceGroup}>
+              <div className={`${styles.surfaceGroup} ${styles.surfaceGroupTurf}`}>
                 <div className={styles.distanceLinks}>
                   {venue.courses.turf.map((course, idx) => (
                     <Link
@@ -451,7 +451,7 @@ export default function ThisWeekVenues() {
                 </div>
               </div>
 
-              <div className={styles.surfaceGroup}>
+              <div className={`${styles.surfaceGroup} ${styles.surfaceGroupDirt}`}>
                 <div className={styles.distanceLinks}>
                   {venue.courses.dirt.map((course, idx) => (
                     <Link
@@ -466,7 +466,7 @@ export default function ThisWeekVenues() {
               </div>
 
               {venue.courses.steeplechase && venue.courses.steeplechase.length > 0 && (
-                <div className={styles.surfaceGroup}>
+                <div className={`${styles.surfaceGroup} ${styles.surfaceGroupSteeplechase}`}>
                   <div className={styles.distanceLinks}>
                     {venue.courses.steeplechase.map((course, idx) => (
                       <Link

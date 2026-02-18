@@ -298,7 +298,39 @@
 .surfaceGroup {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
+  padding: 10px 12px 12px;
+  border-radius: 8px;
+}
+
+.surfaceGroupTurf {
+  background: rgba(61, 184, 102, 0.07);
+}
+
+.surfaceGroupDirt {
+  background: rgba(184, 144, 102, 0.07);
+}
+
+.surfaceGroupSteeplechase {
+  background: rgba(131, 139, 151, 0.07);
+}
+
+.surfaceGroupLabel {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.surfaceGroupLabelTurf {
+  color: #2ea358;
+}
+
+.surfaceGroupLabelDirt {
+  color: #a67c52;
+}
+
+.surfaceGroupLabelSteeplechase {
+  color: #6b7280;
 }
 
 .surfaceLabel {
