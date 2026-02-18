@@ -598,6 +598,14 @@ export default async function CoursePage({ params }: Props) {
 
   const { course_info, gate_stats, running_style_stats, running_style_trends, popularity_stats, jockey_stats, pedigree_stats, dam_sire_stats, trainer_stats, gender_stats, horse_weight_stats } = data;
 
+  // コース特性テキスト
+  const volatilityLabels: Record<number, string> = { 1: '堅い', 2: 'やや堅い', 3: '標準', 4: 'やや荒れやすい', 5: '荒れやすい' };
+  const gatePositionLabels: Record<number, string> = { 1: '内枠有利', 2: 'やや内枠有利', 3: '互角', 4: 'やや外枠有利', 5: '外枠有利' };
+  const runningStyleLabels: Record<number, string> = { 1: '逃げ・先行有利', 2: 'やや逃げ・先行有利', 3: '互角', 4: 'やや差し・追込有利', 5: '差し・追込有利' };
+  const volatilityText = volatilityLabels[course_info.characteristics.volatility] ?? '';
+  const gatePositionText = gatePositionLabels[course_info.characteristics.gate_position] ?? '';
+  const runningStyleText = course_info.characteristics.running_style_trend_position ? runningStyleLabels[course_info.characteristics.running_style_trend_position] ?? '' : '';
+
   // 脚質データを2つに統合（逃げ・先行、差し・追込）
   const mergedRunningStyleStats = (() => {
     const escape = running_style_stats.find(s => s.style === 'escape');

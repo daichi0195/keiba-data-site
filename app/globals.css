@@ -305,8 +305,12 @@ main:has(aside) {
     padding: 0.75rem 0.625rem !important;
   }
 
+  .course-meta-section .meta-item:nth-child(2) {
+    flex: 1.1 !important;
+  }
+
   .course-meta-section .meta-item:nth-child(3) {
-    flex: 1.5 !important;
+    flex: 1.4 !important;
   }
 
   .course-meta-section .meta-label {
@@ -1234,6 +1238,18 @@ main:has(aside) {
   text-align: center;
   margin-top: 0.5rem;
   margin-bottom: 1rem;
+}
+
+.gauge-result-inline {
+  color: var(--primary-green);
+  font-weight: 700;
+}
+
+.characteristics-summary {
+  font-size: 0.875rem;
+  color: #334155;
+  line-height: 1.8;
+  margin: 0 0 1.25rem;
 }
 
 /* ランキング情報 */
@@ -3061,8 +3077,12 @@ h3.subsection-title:first-of-type {
     text-align: left;
   }
 
+  .course-meta-section .meta-item:nth-child(2) {
+    flex: 1.1;
+  }
+
   .course-meta-section .meta-item:nth-child(3) {
-    flex: 1.5;
+    flex: 1.4;
   }
 
   .course-meta-section .meta-item:hover {

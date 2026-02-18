@@ -823,12 +823,7 @@ export default async function JockeyPage({
             <div className="course-meta-section">
               <div className="meta-item">
                 <span className="meta-label">データ取得期間</span>
-                <span>
-                  直近3年間分
-                  <span className="meta-sub-text">
-                    {jockey.data_period.match(/（[^）]+）/)?.[0] || jockey.data_period}
-                  </span>
-                </span>
+                <span>直近3年間分</span>
               </div>
               <div className="meta-item">
                 <span className="meta-label">対象レース数</span>
@@ -842,6 +837,12 @@ export default async function JockeyPage({
           </div>
 
           <article className="content-card">
+          {/* === ページ概要セクション === */}
+          <section className="page-description-section">
+            <p className="page-description">
+              {jockey.name}騎手の成績・データをまとめたページです。<br className="sp-br" />独自のデータベースに基づき、直近3年間（{jockey.data_period.match(/（([^）]+)）/)?.[1] ?? ''}）で集計しています。
+            </p>
+          </section>
           {/* 年度別成績セクション */}
           <section id="leading" aria-label="年度別成績">
             <JockeyLeadingChart
