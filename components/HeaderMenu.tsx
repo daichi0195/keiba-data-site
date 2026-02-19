@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import styles from './HeaderMenu.module.css';
 import { getCoursesByRacecourse, getCourseUrl, getCourseDisplayName } from '@/lib/courses';
 import { ALL_JOCKEYS, type JockeyInfo } from '@/lib/jockeys';
@@ -304,6 +305,12 @@ type MenuType = 'course' | 'jockey' | 'sire' | 'trainer' | null;
 export default function HeaderMenu() {
   const [openMenu, setOpenMenu] = useState<MenuType>(null);
   const [expandedRacecourse, setExpandedRacecourse] = useState<Record<string, boolean>>({});
+  const pathname = usePathname();
+
+  const isPcLinkActive = (href: string) => {
+    if (href === '/') return pathname === '/';
+    return pathname.startsWith(href);
+  };
 
   const toggleRacecourse = (racecourseNameEn: string) => {
     setExpandedRacecourse((prev) => ({
@@ -318,23 +325,23 @@ export default function HeaderMenu() {
     <>
       {/* ===== PC：ヘッダー用リンクメニュー ===== */}
       <nav className={styles.pcMenu}>
-          <Link href="/courses" className={styles.pcMenuLink}>
+          <Link href="/courses" className={`${styles.pcMenuLink} ${isPcLinkActive('/courses') ? styles.pcMenuLinkActive : ''}`}>
             <i className="fa-solid fa-flag"></i>
             <span>コースデータ</span>
           </Link>
-          <Link href="/jockeys" className={styles.pcMenuLink}>
+          <Link href="/jockeys" className={`${styles.pcMenuLink} ${isPcLinkActive('/jockeys') ? styles.pcMenuLinkActive : ''}`}>
             <i className="fa-solid fa-helmet-safety"></i>
             <span>騎手データ</span>
           </Link>
-          <Link href="/sires" className={styles.pcMenuLink}>
+          <Link href="/sires" className={`${styles.pcMenuLink} ${isPcLinkActive('/sires') ? styles.pcMenuLinkActive : ''}`}>
             <i className="fa-solid fa-horse"></i>
             <span>血統データ</span>
           </Link>
-          <Link href="/trainers" className={styles.pcMenuLink}>
+          <Link href="/trainers" className={`${styles.pcMenuLink} ${isPcLinkActive('/trainers') ? styles.pcMenuLinkActive : ''}`}>
             <i className="fa-solid fa-user"></i>
             <span>調教師データ</span>
           </Link>
-          <Link href="/articles" className={styles.pcMenuLink}>
+          <Link href="/articles" className={`${styles.pcMenuLink} ${isPcLinkActive('/articles') ? styles.pcMenuLinkActive : ''}`}>
             <i className="fa-regular fa-pen-to-square"></i>
             <span>コラム</span>
           </Link>

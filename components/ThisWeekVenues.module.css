@@ -153,11 +153,11 @@
 
 /* コース区分ラベル切り替え */
 .surfaceLabelShort {
-  display: inline;
+  display: none;
 }
 
 .surfaceLabelFull {
-  display: none;
+  display: inline;
 }
 
 /* 開始時間 */

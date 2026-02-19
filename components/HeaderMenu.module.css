@@ -60,6 +60,29 @@
   background: #e8f9f0;
 }
 
+.pcMenuLinkActive {
+  color: var(--primary-green) !important;
+}
+
+.pcMenuLinkActive i {
+  color: var(--primary-green) !important;
+}
+
+.pcMenuLinkActive span {
+  position: relative;
+}
+
+.pcMenuLinkActive span::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #7dd9a3, #1db854);
+  border-radius: 2px;
+}
+
 /* ===== SP用メニュー ===== */
 .spMenu {
   display: flex !important;
