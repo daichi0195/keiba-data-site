@@ -232,7 +232,7 @@ const getVenueName = (venueId: string): string => {
 export default function ThisWeekVenues() {
   const sectionRef = useRef<HTMLElement>(null);
   const [scheduleData, setScheduleData] = useState<RaceSchedule[]>([]);
-  const [currentTime, setCurrentTime] = useState(new Date());
+  const [currentTime, setCurrentTime] = useState(new Date('2026-02-21T15:00:00'));
   const [isLoading, setIsLoading] = useState(true);
   const [selectedVenueId, setSelectedVenueId] = useState<string>(mockVenues[0].id);
 
@@ -240,7 +240,7 @@ export default function ThisWeekVenues() {
   useEffect(() => {
     async function fetchSchedule() {
       try {
-        const today = formatDateToYYYYMMDD(new Date());
+        const today = formatDateToYYYYMMDD(new Date('2026-02-21T15:00:00'));
 
         const res = await fetch(`/api/race-schedule/${today}`);
 
@@ -266,7 +266,7 @@ export default function ThisWeekVenues() {
   // 1分ごとに現在時刻を更新
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentTime(new Date());
+      setCurrentTime(new Date('2026-02-21T15:00:00'));
     }, 60000); // 1分ごと
 
     return () => clearInterval(timer);
