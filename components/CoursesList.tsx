@@ -23,47 +23,53 @@ export default function CoursesList() {
 
             <div className={styles.surfaceGroups}>
               {turfCourses.length > 0 && (
-                <div className={listStyles.dataCardGrid}>
-                  {turfCourses.map((course, idx) => (
-                    <Link
-                      key={`${course.racecourse}-${course.surface}-${course.distance}-${course.variant || idx}`}
-                      href={getCourseUrl(course)}
-                      className={`${styles.courseLink} ${styles.turfLink}`}
-                    >
-                      {course.variant
-                        ? `芝${course.distance}m(${course.variant === 'inner' ? '内' : '外'})`
-                        : `芝${course.distance}m`
-                      }
-                    </Link>
-                  ))}
+                <div className={`${styles.surfaceGroup} ${styles.surfaceGroupTurf}`}>
+                  <div className={listStyles.dataCardGrid}>
+                    {turfCourses.map((course, idx) => (
+                      <Link
+                        key={`${course.racecourse}-${course.surface}-${course.distance}-${course.variant || idx}`}
+                        href={getCourseUrl(course)}
+                        className={`${styles.courseLink} ${styles.turfLink}`}
+                      >
+                        {course.variant
+                          ? `芝${course.distance}m(${course.variant === 'inner' ? '内' : '外'})`
+                          : `芝${course.distance}m`
+                        }
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               )}
 
               {dirtCourses.length > 0 && (
-                <div className={listStyles.dataCardGrid}>
-                  {dirtCourses.map((course, idx) => (
-                    <Link
-                      key={`${course.racecourse}-${course.surface}-${course.distance}-${course.variant || idx}`}
-                      href={getCourseUrl(course)}
-                      className={`${styles.courseLink} ${styles.dirtLink}`}
-                    >
-                      {`ダート${course.distance}m`}
-                    </Link>
-                  ))}
+                <div className={`${styles.surfaceGroup} ${styles.surfaceGroupDirt}`}>
+                  <div className={listStyles.dataCardGrid}>
+                    {dirtCourses.map((course, idx) => (
+                      <Link
+                        key={`${course.racecourse}-${course.surface}-${course.distance}-${course.variant || idx}`}
+                        href={getCourseUrl(course)}
+                        className={`${styles.courseLink} ${styles.dirtLink}`}
+                      >
+                        {`ダート${course.distance}m`}
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               )}
 
               {steeplechaseCourses.length > 0 && (
-                <div className={listStyles.dataCardGrid}>
-                  {steeplechaseCourses.map((course, idx) => (
-                    <Link
-                      key={`${course.racecourse}-${course.surface}-${course.distance}-${course.variant || idx}`}
-                      href={getCourseUrl(course)}
-                      className={`${styles.courseLink} ${styles.steeplechaseLink}`}
-                    >
-                      {`障害${course.distance}m`}
-                    </Link>
-                  ))}
+                <div className={`${styles.surfaceGroup} ${styles.surfaceGroupSteeplechase}`}>
+                  <div className={listStyles.dataCardGrid}>
+                    {steeplechaseCourses.map((course, idx) => (
+                      <Link
+                        key={`${course.racecourse}-${course.surface}-${course.distance}-${course.variant || idx}`}
+                        href={getCourseUrl(course)}
+                        className={`${styles.courseLink} ${styles.steeplechaseLink}`}
+                      >
+                        {`障害${course.distance}m`}
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>

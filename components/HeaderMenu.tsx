@@ -431,7 +431,7 @@ export default function HeaderMenu() {
 
                   {expandedRacecourse[racecourse.nameEn] && (
                     <div className={styles.accordionContent}>
-                      <div className={styles.surfaceGroup}>
+                      <div className={`${styles.surfaceGroup} ${styles.surfaceGroupTurf}`}>
                         {racecourse.courses
                           .filter((course) => course.surface === 'turf')
                           .map((course) => (
@@ -445,7 +445,7 @@ export default function HeaderMenu() {
                             </Link>
                           ))}
                       </div>
-                      <div className={styles.surfaceGroup}>
+                      <div className={`${styles.surfaceGroup} ${styles.surfaceGroupDirt}`}>
                         {racecourse.courses
                           .filter((course) => course.surface === 'dirt')
                           .map((course) => (
@@ -460,7 +460,7 @@ export default function HeaderMenu() {
                           ))}
                       </div>
                       {racecourse.courses.some((course) => course.surface === 'steeplechase') && (
-                        <div className={styles.surfaceGroup}>
+                        <div className={`${styles.surfaceGroup} ${styles.surfaceGroupSteeplechase}`}>
                           {racecourse.courses
                             .filter((course) => course.surface === 'steeplechase')
                             .map((course) => (
