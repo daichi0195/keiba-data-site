@@ -1,6 +1,8 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import AllJockeysList from '@/components/AllJockeysList';
+import LeadingChartSection from '@/components/LeadingChartSection';
+import { getJockeyLeading } from '@/lib/getLeadingData';
 import styles from '@/app/static-page.module.css';
 import contentStyles from '@/components/article-content.module.css';
 
@@ -9,7 +11,9 @@ export const metadata: Metadata = {
   description: '騎手の成績や特徴がまるわかり！豊富な統計データで予想をサポート。',
 };
 
-export default function JockeysPage() {
+export default async function JockeysPage() {
+  const jockeyLeading = await getJockeyLeading();
+
   return (
     <div className={styles.staticPageContainer}>
       <nav className={styles.staticPageBreadcrumb}>
@@ -22,6 +26,12 @@ export default function JockeysPage() {
         <div className={styles.staticPageHeader}>
           <h1 className={styles.staticPageTitle}>騎手データ一覧</h1>
         </div>
+
+        <LeadingChartSection
+          data={jockeyLeading}
+          linkPrefix="/jockeys/"
+          title="騎手リーディング（勝ち数順）"
+        />
 
         <p className={contentStyles.text}>
           過去3年間に30レース以上出走している現役中央騎手のデータを集計しています。

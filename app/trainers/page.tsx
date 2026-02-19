@@ -1,6 +1,8 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import AllTrainersList from '@/components/AllTrainersList';
+import LeadingChartSection from '@/components/LeadingChartSection';
+import { getTrainerLeading } from '@/lib/getLeadingData';
 import styles from '@/app/static-page.module.css';
 import contentStyles from '@/components/article-content.module.css';
 
@@ -9,7 +11,9 @@ export const metadata: Metadata = {
   description: '調教師の成績や特徴がまるわかり！豊富な統計データで予想をサポート。',
 };
 
-export default function TrainersPage() {
+export default async function TrainersPage() {
+  const trainerLeading = await getTrainerLeading();
+
   return (
     <div className={styles.staticPageContainer}>
       <nav className={styles.staticPageBreadcrumb}>
@@ -22,6 +26,12 @@ export default function TrainersPage() {
         <div className={styles.staticPageHeader}>
           <h1 className={styles.staticPageTitle}>調教師データ一覧</h1>
         </div>
+
+        <LeadingChartSection
+          data={trainerLeading}
+          linkPrefix="/trainers/"
+          title="調教師リーディング（勝ち数順）"
+        />
 
         <p className={contentStyles.text}>
           過去3年間に30レース以上出走している現役中央調教師のデータを集計しています。

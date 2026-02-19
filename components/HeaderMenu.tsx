@@ -417,7 +417,11 @@ export default function HeaderMenu() {
             <div className={styles.mobileMenuContent}>
               {openMenu === 'course' && (
                 <>
-              {racecoursesData.map((racecourse) => (
+              {racecoursesData.map((racecourse) => {
+                const turfCount = racecourse.courses.filter(c => c.surface === 'turf').length;
+                const dirtCount = racecourse.courses.filter(c => c.surface === 'dirt').length;
+                const steeplechaseCount = racecourse.courses.filter(c => c.surface === 'steeplechase').length;
+                return (
                 <div key={racecourse.nameEn} className={styles.accordionItem}>
                   <button
                     className={`${styles.accordionTrigger} ${expandedRacecourse[racecourse.nameEn] ? styles.expanded : ''}`}
@@ -427,6 +431,11 @@ export default function HeaderMenu() {
                       {expandedRacecourse[racecourse.nameEn] ? '▼' : '▶'}
                     </span>
                     {racecourse.name}
+                    <div className={styles.surfaceBadges}>
+                      {turfCount > 0 && <span className={`${styles.surfaceBadge} ${styles.surfaceBadgeTurf}`}>芝 {turfCount}</span>}
+                      {dirtCount > 0 && <span className={`${styles.surfaceBadge} ${styles.surfaceBadgeDirt}`}>ダート {dirtCount}</span>}
+                      {steeplechaseCount > 0 && <span className={`${styles.surfaceBadge} ${styles.surfaceBadgeSteeplechase}`}>障害 {steeplechaseCount}</span>}
+                    </div>
                   </button>
 
                   {expandedRacecourse[racecourse.nameEn] && (
@@ -478,7 +487,8 @@ export default function HeaderMenu() {
                     </div>
                   )}
                 </div>
-              ))}
+              );
+              })}
               </>
               )}
 
@@ -494,6 +504,7 @@ export default function HeaderMenu() {
                       {expandedRacecourse[`jockey-${group.kana}`] ? '▼' : '▶'}
                     </span>
                     {group.kana}
+                    <span className={styles.countBadge}>{group.jockeys.length}人</span>
                   </button>
 
                   {expandedRacecourse[`jockey-${group.kana}`] && (
@@ -529,6 +540,7 @@ export default function HeaderMenu() {
                       {expandedRacecourse[`sire-${group.kana}`] ? '▼' : '▶'}
                     </span>
                     {group.kana}
+                    <span className={styles.countBadge}>{group.sires.length}頭</span>
                   </button>
 
                   {expandedRacecourse[`sire-${group.kana}`] && (
@@ -564,6 +576,7 @@ export default function HeaderMenu() {
                       {expandedRacecourse[`trainer-${group.kana}`] ? '▼' : '▶'}
                     </span>
                     {group.kana}
+                    <span className={styles.countBadge}>{group.trainers.length}人</span>
                   </button>
 
                   {expandedRacecourse[`trainer-${group.kana}`] && (
