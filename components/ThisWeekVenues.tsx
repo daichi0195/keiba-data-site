@@ -238,7 +238,7 @@ const getVenueName = (venueId: string): string => {
 export default function ThisWeekVenues() {
   const sectionRef = useRef<HTMLElement>(null);
   const [scheduleData, setScheduleData] = useState<RaceSchedule[]>([]);
-  const [currentTime, setCurrentTime] = useState(new Date('2026-02-28T12:00:00')); // TODO: テスト用固定時刻
+  const [currentTime, setCurrentTime] = useState(new Date());
   const [isLoading, setIsLoading] = useState(true);
   const [selectedVenueId, setSelectedVenueId] = useState<string>(mockVenues[0].id);
 
