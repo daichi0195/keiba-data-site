@@ -184,6 +184,12 @@ const formatStartTime = (time: string): string => {
   return `${hours}時${minutes}分発走`;
 };
 
+// 障害レースはレース名で判定してsteeplechaseを返す（JSONのsurfaceがturfになるケースがあるため）
+const getEffectiveSurface = (race: NextRace): 'turf' | 'dirt' | 'steeplechase' => {
+  if (race.raceName.includes('障害')) return 'steeplechase';
+  return race.surface;
+};
+
 // レース名を略称化（最大8文字に制限）
 const formatRaceName = (name: string, maxLength: number = 8): string => {
   const formatted = name
@@ -232,7 +238,7 @@ const getVenueName = (venueId: string): string => {
 export default function ThisWeekVenues() {
   const sectionRef = useRef<HTMLElement>(null);
   const [scheduleData, setScheduleData] = useState<RaceSchedule[]>([]);
-  const [currentTime, setCurrentTime] = useState(new Date());
+  const [currentTime, setCurrentTime] = useState(new Date('2026-03-01T12:00:00')); // TODO: テスト用固定時刻
   const [isLoading, setIsLoading] = useState(true);
   const [selectedVenueId, setSelectedVenueId] = useState<string>(mockVenues[0].id);
 
@@ -240,7 +246,7 @@ export default function ThisWeekVenues() {
   useEffect(() => {
     async function fetchSchedule() {
       try {
-        const today = formatDateToYYYYMMDD(new Date());
+        const today = '20260301'; // TODO: テスト用固定日付
 
         const res = await fetch(`/api/race-schedule/${today}`);
 
@@ -385,32 +391,37 @@ export default function ThisWeekVenues() {
               <div className={styles.upcomingRaceGrid}>
                 {raceStatus.nextRaces.map((venue) => (
                   <div key={`next-race-${venue.date}-${venue.id}`} className={styles.upcomingRaceItem}>
-                    <Link
-                      href={`/courses/${venue.id}/${venue.nextRace.surface}/${venue.nextRace.distance}${venue.nextRace.variant ? `-${venue.nextRace.variant}` : ''}`}
-                      className={`${styles.upcomingRaceCard} ${
-                        venue.nextRace.surface === 'turf' ? styles.upcomingRaceCardTurf :
-                        venue.nextRace.surface === 'dirt' ? styles.upcomingRaceCardDirt :
-                        styles.upcomingRaceCardSteeplechase
-                      }`}
-                    >
-                      <div className={styles.raceCourseName}>{venue.nextRace.racecourse} {venue.nextRace.raceNumber}R</div>
-                      <div className={styles.raceDetails}>{formatRaceName(venue.nextRace.raceName)}</div>
-                      <div
-                        className={`${styles.raceCourseInfo} ${
-                          venue.nextRace.surface === 'turf' ? styles.turfBadge :
-                          venue.nextRace.surface === 'dirt' ? styles.dirtBadge :
-                          styles.steeplechaseBadge
-                        }`}
-                      >
-                        <span className={styles.surfaceLabelShort}>
-                          {getSurfaceLabel(venue.nextRace.surface)}{venue.nextRace.distance}m
-                        </span>
-                        <span className={styles.surfaceLabelFull}>
-                          {getSurfaceFullLabel(venue.nextRace.surface)}{venue.nextRace.distance}m
-                        </span>
-                      </div>
-                      <div className={styles.raceStartTime}>{formatStartTime(venue.nextRace.startTime)}</div>
-                    </Link>
+                    {(() => {
+                      const effectiveSurface = getEffectiveSurface(venue.nextRace);
+                      return (
+                        <Link
+                          href={`/courses/${venue.id}/${effectiveSurface}/${venue.nextRace.distance}${venue.nextRace.variant ? `-${venue.nextRace.variant}` : ''}`}
+                          className={`${styles.upcomingRaceCard} ${
+                            effectiveSurface === 'turf' ? styles.upcomingRaceCardTurf :
+                            effectiveSurface === 'dirt' ? styles.upcomingRaceCardDirt :
+                            styles.upcomingRaceCardSteeplechase
+                          }`}
+                        >
+                          <div className={styles.raceCourseName}>{venue.nextRace.racecourse} {venue.nextRace.raceNumber}R</div>
+                          <div className={styles.raceDetails}>{formatRaceName(venue.nextRace.raceName)}</div>
+                          <div
+                            className={`${styles.raceCourseInfo} ${
+                              effectiveSurface === 'turf' ? styles.turfBadge :
+                              effectiveSurface === 'dirt' ? styles.dirtBadge :
+                              styles.steeplechaseBadge
+                            }`}
+                          >
+                            <span className={styles.surfaceLabelShort}>
+                              {getSurfaceLabel(effectiveSurface)}{venue.nextRace.distance}m
+                            </span>
+                            <span className={styles.surfaceLabelFull}>
+                              {getSurfaceFullLabel(effectiveSurface)}{venue.nextRace.distance}m
+                            </span>
+                          </div>
+                          <div className={styles.raceStartTime}>{formatStartTime(venue.nextRace.startTime)}</div>
+                        </Link>
+                      );
+                    })()}
                   </div>
                 ))}
               </div>
