@@ -58,31 +58,33 @@ export default async function HomePage() {
         </section>
 
         {/* 2カラムレイアウト部分 */}
-        <article style={{ backgroundColor: 'transparent' }}>
-          <ThisWeekVenues />
+        <div className="home-columns">
+          <article style={{ backgroundColor: 'transparent' }}>
+            <ThisWeekVenues />
 
-          <div className="home-content-wrapper">
-            <AllVenues />
+            <div className="home-content-wrapper">
+              <AllVenues />
 
-            <JockeyLeading data={jockeyLeading} />
+              <JockeyLeading data={jockeyLeading} />
 
-            <SireLeading data={sireLeading} />
+              <SireLeading data={sireLeading} />
 
-            <TrainerLeading data={trainerLeading} />
+              <TrainerLeading data={trainerLeading} />
 
-            <ColumnSection articles={articles} />
-          </div>
-        </article>
-
-        {/* バナーエリア */}
-        <aside className={styles.homeSidebar}>
-          <div className={styles.bannerArea}>
-            <div className={styles.bannerPlaceholder}>
-              <div className={styles.bannerTitle}>競馬AI製作中！</div>
-              <div className={styles.bannerSubtitle}>COMING SOON</div>
+              <ColumnSection articles={articles} />
             </div>
-          </div>
-        </aside>
+          </article>
+
+          {/* バナーエリア */}
+          <aside className={styles.homeSidebar}>
+            <div className={styles.bannerArea}>
+              <div className={styles.bannerPlaceholder}>
+                <div className={styles.bannerTitle}>競馬AI製作中！</div>
+                <div className={styles.bannerSubtitle}>COMING SOON</div>
+              </div>
+            </div>
+          </aside>
+        </div>
       </main>
     </>
   );

@@ -11,10 +11,18 @@
   padding: 16px 0 12px;
   max-width: 100%;
   width: 100%;
-  overflow: visible;
+  /* opacity: 0 のまま待機。計測完了後に .carouselReady でフェードイン */
   opacity: 0;
-  transition: opacity 0.6s ease;
   background: transparent;
+}
+
+/* 計測完了 (isReady=true) 後にJSから付与されるクラス */
+.carouselReady {
+  animation: fadeInCarousel 0.3s ease 0s forwards;
+}
+
+@keyframes fadeInCarousel {
+  to { opacity: 1; }
 }
 
 /* カルーセルラッパーコンテナ（ボタンの配置基準） */
@@ -23,46 +31,34 @@
   width: 100%;
 }
 
-.carouselContainer.loaded {
-  opacity: 1;
+/* カルーセルビューポート */
+.carouselViewport {
+  overflow: hidden;
+  width: 100%;
 }
 
-/* カルーセルラッパー */
-.carouselWrapper {
+/* カルーセルトラック
+   transform / gap はすべて JS (inline style) で設定するため
+   CSS 側には何も書かない → calc(var()) による PostCSS 問題を回避 */
+.carouselTrack {
   display: flex;
-  overflow-x: hidden;
-  scroll-snap-type: x mandatory;
-  gap: 0;
-  scroll-behavior: auto !important;
-  position: relative;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  isolation: isolate;
+  will-change: transform;
 }
 
-.carouselWrapper::-webkit-scrollbar {
-  display: none;
-}
-
-/* カルーセルアイテム */
+/* カルーセルアイテム
+   flex-basis は JS (inline style) で設定 */
 .carouselItem {
-  flex: 0 0 100%;
-  scroll-snap-align: start;
+  flex: none;
   display: block;
-  border-radius: 6px;
   overflow: hidden;
   text-decoration: none;
-  transition: all 0.3s ease;
-}
-
-.carouselItem:hover {
-  transform: none;
+  border-radius: 6px;
 }
 
 .thumbnailWrapper {
   position: relative;
   width: 100%;
-  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  padding-bottom: 56.25%; /* 16:9 */
   background: #fbfcfd;
 }
 
@@ -86,6 +82,7 @@
   z-index: 10;
   padding: 0;
   margin: 0;
+  display: none;
 }
 
 .navButton::before {
@@ -93,7 +90,6 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
   width: 11px;
   height: 11px;
   border-right: 3.5px solid rgba(255, 255, 255, 1);
@@ -117,14 +113,6 @@
 .navButton:hover::before {
   border-right-color: rgba(255, 255, 255, 1);
   border-top-color: rgba(255, 255, 255, 1);
-}
-
-.navButtonPrev {
-  left: -60px;
-}
-
-.navButtonNext {
-  right: -60px;
 }
 
 /* インジケーター */
@@ -164,44 +152,20 @@
 /* PC対応 (769px以上) */
 @media (min-width: 769px) {
   .carouselContainer {
-    max-width: 100%;
-    overflow: visible;
     padding: 12px 0 6px;
   }
 
-  .carouselWrapperContainer {
-    padding: 0;
-    overflow: visible;
-  }
-
-  .carouselWrapper {
-    gap: 24px;
-    overflow-x: hidden;
-    justify-content: flex-start;
-    scroll-snap-type: x mandatory;
-    padding: 0 calc(50% - 300px);
-    scroll-behavior: auto !important;
-  }
-
-  .carouselItem {
-    flex: 0 0 600px;
-    max-width: 600px;
-    scroll-snap-align: center;
-    scroll-snap-stop: always;
-  }
-
   .navButton {
-    display: block !important;
-    opacity: 1 !important;
-    visibility: visible !important;
+    display: block;
   }
 
+  /* ピーク領域の端寄りにボタンを配置 */
   .navButtonPrev {
-    left: 10px;
+    left: 8px;
   }
 
   .navButtonNext {
-    right: 10px;
+    right: 8px;
   }
 }
 
@@ -209,29 +173,9 @@
 @media (max-width: 768px) {
   .carouselContainer {
     padding: 0 0 12px 0;
-    max-width: 100%;
-  }
-
-  .carouselWrapper {
-    overflow-x: scroll;
-    gap: 6px;
-    padding: 0 12px;
-    scroll-snap-type: x mandatory;
-    scroll-behavior: auto;
-  }
-
-  .carouselItem {
-    flex: 0 0 calc(100vw - 24px);
-    scroll-snap-align: center;
-    scroll-snap-stop: always;
-  }
-
-  .navButton {
-    display: none;
   }
 
   .indicators {
     margin-top: 8px;
-    margin-bottom: 0;
   }
 }

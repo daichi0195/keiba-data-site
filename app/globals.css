@@ -262,45 +262,44 @@ main:has(aside) {
     padding-bottom: 2rem;
   }
 
-  /* TOPページ用レイアウト（PC） */
+  /* TOPページ用レイアウト（PC）
+     main 自体はブロック要素とし、カルーセルを自然に全幅に保つ。
+     2カラムレイアウトは .home-columns が担う。 */
   main.home-main {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  /* カルーセルセクション：mainがブロックのため自然に全幅 */
+  main.home-main .section-article-carousel {
+    width: 100%;
+    margin: 0 0 1.5rem 0;
+    padding: 0;
+  }
+
+  /* 2カラムレイアウトコンテナ */
+  .home-columns {
     display: grid;
-    grid-template-columns: minmax(0, 900px) 280px;
-    grid-template-rows: auto 1fr;
+    grid-template-columns: 1fr 280px;
     gap: 1rem;
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 1rem;
-    width: 100%;
     box-sizing: border-box;
-  }
-
-  /* カルーセルセクション：全幅 */
-  main.home-main .section-article-carousel {
-    grid-column: 1 / -1;
-    grid-row: 1;
-    width: 100vw;
-    position: relative;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
-    margin-bottom: 0;
-    padding: 0;
+    width: 100%;
   }
 
   /* メインコンテンツエリア */
-  main.home-main > article {
-    grid-column: 1;
-    grid-row: 2;
-    max-width: 900px;
+  .home-columns > article {
     min-width: 0;
   }
 
   /* バナーエリア */
-  main.home-main > aside {
-    grid-column: 2;
-    grid-row: 2;
+  .home-columns > aside {
     align-self: start;
   }
 
@@ -379,12 +378,7 @@ main:has(aside) {
   .section-article-carousel {
     background: transparent;
     box-shadow: none;
-    width: 100vw;
-    position: relative;
-    left: 50%;
-    right: 50%;
-    margin-left: -50vw;
-    margin-right: -50vw;
+    width: 100%;
     padding: 0 !important;
   }
 
@@ -3051,17 +3045,13 @@ h3.subsection-title:first-of-type {
   }
 
   main.home-main .section-article-carousel {
-    width: 100vw;
-    max-width: 100vw;
-    margin: 0;
+    width: 100%;
+    margin: 0 0 1rem 0;
     padding: 16px 0 0;
-    position: relative;
-    left: 0;
-    right: 0;
   }
 
-  main.home-main > article,
-  main.home-main > aside {
+  .home-columns > article,
+  .home-columns > aside {
     width: 100%;
   }
 
@@ -3265,6 +3255,9 @@ h3.subsection-title:first-of-type {
     padding: 72px 24px 28px !important;
     margin-bottom: 2rem;
     transition: box-shadow 0.2s ease;
+    opacity: 0;
+    transform: translateY(24px);
+    animation: fadeInSection 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s forwards;
   }
 
   .section-this-week-venues:hover {
@@ -3275,8 +3268,9 @@ h3.subsection-title:first-of-type {
     position: absolute;
     top: 0;
     left: 0;
-    background: #1db854;
-    color: #fff;
+    /* background-size アニメーションのため linear-gradient を使う */
+    background: linear-gradient(#1db854, #1db854) no-repeat left center;
+    background-size: 0% 100%;
     font-size: 22px;
     font-weight: 800;
     font-style: italic;
@@ -3286,8 +3280,8 @@ h3.subsection-title:first-of-type {
     border-left: none;
     border-radius: 0;
     letter-spacing: 0.05em;
-    opacity: 1 !important;
-    animation: none !important;
+    color: white;
+    animation: revealBadgeBg 0.5s ease 0.1s forwards;
   }
 
   .section-this-week-venues h2.section-title::before {
@@ -3306,7 +3300,10 @@ h3.subsection-title:first-of-type {
     overflow: hidden;
     padding: 72px 24px 28px;
     margin-bottom: 2rem;
-    transition: box-shadow 0.2s ease;
+    transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                box-shadow 0.2s ease;
+    transition-delay: 0.1s;
   }
 
   .home-content-wrapper .section.fade-in-card:hover {
@@ -3317,8 +3314,8 @@ h3.subsection-title:first-of-type {
     position: absolute;
     top: 0;
     left: 0;
-    background: #1db854;
-    color: #fff;
+    background: linear-gradient(#1db854, #1db854) no-repeat left center;
+    background-size: 0% 100%;
     font-size: 22px;
     font-weight: 800;
     font-style: italic;
@@ -3328,6 +3325,12 @@ h3.subsection-title:first-of-type {
     border-left: none;
     border-radius: 0;
     letter-spacing: 0.05em;
+    color: white;
+  }
+
+  /* セクションが見えたタイミングで緑背景を左から展開 */
+  .home-content-wrapper .section.fade-in-card.is-visible h2.section-title {
+    animation: revealBadgeBg 0.5s ease 0.1s forwards;
   }
 
   .home-content-wrapper .section.fade-in-card h2.section-title::before {
@@ -3338,6 +3341,34 @@ h3.subsection-title:first-of-type {
     border-bottom: 1px solid #e2e8f0;
     padding-bottom: 0.625rem;
     margin-bottom: 1rem;
+  }
+}
+
+@keyframes fadeInSection {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 緑背景を左から右に展開（background-size: 0% → 100%） */
+@keyframes revealBadgeBg {
+  from { background-size: 0% 100%; }
+  to   { background-size: 120% 100%; }
+}
+
+@keyframes slideInBadge {
+  0% {
+    transform: translateX(-110%);
+    color: rgba(255, 255, 255, 0);
+  }
+  55% {
+    transform: translateX(0);
+    color: rgba(255, 255, 255, 0);
+  }
+  100% {
+    transform: translateX(0);
+    color: rgba(255, 255, 255, 1);
   }
 }
 

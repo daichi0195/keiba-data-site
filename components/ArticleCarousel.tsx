@@ -1,6 +1,9 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useLayoutEffect, useCallback, useMemo } from 'react';
+
+// サーバーでは useEffect、クライアントでは useLayoutEffect（描画前に実行 → 計測後の再レンダーをペイント前に完了）
+const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 import Link from 'next/link';
 import Image from 'next/image';
 import { Article } from '@/lib/articles';
@@ -10,281 +13,218 @@ interface ArticleCarouselProps {
   articles: Article[];
 }
 
+// CSS の値と一致させる定数
+const PC_CARD = 600;
+const PC_GAP  = 16;
+const MB_PEEK = 8; // SP時: centering=(viewport-cardWidth)/2=12px → コンテンツ(padding:12px)と左端を揃える
+const MB_GAP  = 8;
+
 export default function ArticleCarousel({ articles }: ArticleCarouselProps) {
-  const carouselRef = useRef<HTMLDivElement>(null);
-  const [isMobile, setIsMobile] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const isScrollingRef = useRef(false);
-
   // 新着順でソート
-  const sortedArticles = [...articles].sort((a, b) => {
-    return new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime();
-  });
+  const sortedArticles = useMemo(
+    () =>
+      [...articles].sort(
+        (a, b) =>
+          new Date(b.frontmatter.date).getTime() -
+          new Date(a.frontmatter.date).getTime()
+      ),
+    [articles]
+  );
 
-  // 無限スクロール用：配列を30回繰り返す
-  const repeatCount = 30;
-  const infiniteArticles = sortedArticles.length > 0
-    ? Array(repeatCount).fill(sortedArticles).flat()
-    : sortedArticles;
+  const n = sortedArticles.length;
 
-  // 真ん中あたり（15サイクル目）から開始
-  const [currentIndex, setCurrentIndex] = useState(sortedArticles.length * 15);
+  // クローン配列: [最後のクローン, 記事1...記事N, 最初のクローン]
+  const items = useMemo(
+    () =>
+      n > 0
+        ? [sortedArticles[n - 1], ...sortedArticles, sortedArticles[0]]
+        : [],
+    [sortedArticles, n]
+  );
 
-  // モバイル判定
-  useEffect(() => {
-    const checkMobile = () => {
-      const mobile = window.innerWidth <= 768;
-      setIsMobile(mobile);
+  const [currentIndex, setCurrentIndex] = useState(1);
+  const [isAnimating, setIsAnimating] = useState(false);
+  // containerWidth: 初期値0 → useLayoutEffect で描画前に更新
+  const [containerWidth, setContainerWidth] = useState(0);
+  // isReady: 計測完了後にフェードインアニメーションを開始するためのフラグ
+  const [isReady, setIsReady] = useState(false);
+
+  const viewportRef    = useRef<HTMLDivElement>(null);
+  const autoTimerRef   = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const currentIndexRef = useRef(currentIndex);
+  const touchStartXRef = useRef<number | null>(null);
+
+  currentIndexRef.current = currentIndex;
+
+  // ---- コンテナ幅の計測 ----
+  useIsomorphicLayoutEffect(() => {
+    if (!viewportRef.current) return;
+
+    const updateWidth = () => {
+      setContainerWidth(window.innerWidth);
     };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+
+    updateWidth();
+    setIsReady(true);
+
+    window.addEventListener('resize', updateWidth);
+    return () => window.removeEventListener('resize', updateWidth);
   }, []);
 
-  // ページ読み込み完了後に初期位置設定
-  useEffect(() => {
-    if (typeof window !== 'undefined' && sortedArticles.length > 0 && carouselRef.current) {
-      const carousel = carouselRef.current;
+  // ---- transform の計算 ----
+  // containerWidth が 0 の SSR / 初期レンダリング時は PC 想定値をフォールバックに使う
+  const isMobile  = containerWidth > 0 && containerWidth <= 768;
+  const cardWidth = containerWidth === 0 ? PC_CARD
+    : isMobile ? containerWidth - MB_PEEK * 2 - MB_GAP
+    : PC_CARD;
+  const gap       = isMobile ? MB_GAP : PC_GAP;
+  // 中央揃えオフセット (containerWidth == 0 のときは 0 → useLayoutEffect 後に補正)
+  const centering = containerWidth > 0 ? (containerWidth - cardWidth) / 2 : 0;
+  const trackOffset = centering - currentIndex * (cardWidth + gap);
 
-      // DOM要素が完全にレンダリングされるまで待つ
-      const initScroll = () => {
-        const firstCard = carousel.children[0] as HTMLElement;
-        if (!firstCard || firstCard.offsetWidth === 0) {
-          // まだレンダリングされていない場合は少し待つ
-          setTimeout(initScroll, 10);
-          return;
-        }
-
-        // 初期位置にスクロール（アニメーションなし）
-        const cardWidth = firstCard.offsetWidth;
-        const gap = isMobile ? 8 : 24;
-        const targetScroll = (cardWidth + gap) * sortedArticles.length * 15;
-        carousel.scrollLeft = targetScroll;
-
-        requestAnimationFrame(() => {
-          setIsLoaded(true);
-          setTimeout(() => {
-            resetAutoScrollTimer();
-          }, 50);
-        });
-      };
-
-      initScroll();
+  // ---- 自動スクロール ----
+  const clearTimer = useCallback(() => {
+    if (autoTimerRef.current) {
+      clearTimeout(autoTimerRef.current);
+      autoTimerRef.current = null;
     }
-  }, [sortedArticles.length, isMobile]);
-
-  // インデックスからスクロール位置を計算してスクロールする関数
-  const scrollToIndex = (index: number, behavior: ScrollBehavior = 'smooth') => {
-    if (!carouselRef.current || infiniteArticles.length === 0) return;
-
-    const carousel = carouselRef.current;
-
-    // 各カードの実際の幅を取得
-    const firstCard = carousel.children[0] as HTMLElement;
-    if (!firstCard) return;
-
-    const cardWidth = firstCard.offsetWidth;
-    const gap = isMobile ? 8 : 24;
-
-    // スクロール位置を計算
-    const targetScroll = (cardWidth + gap) * index;
-
-    // スクロール
-    carousel.scrollTo({
-      left: targetScroll,
-      behavior
-    });
-  };
-
-  // 自動スクロール用のタイマー管理
-  const autoScrollTimerRef = useRef<NodeJS.Timeout | null>(null);
-
-  const resetAutoScrollTimer = () => {
-    if (autoScrollTimerRef.current) {
-      clearTimeout(autoScrollTimerRef.current);
-    }
-
-    if (sortedArticles.length > 0) {
-      autoScrollTimerRef.current = setTimeout(() => {
-        setCurrentIndex((prev) => prev + 1);
-      }, 8000);
-    }
-  };
-
-  useEffect(() => {
-    return () => {
-      if (autoScrollTimerRef.current) {
-        clearTimeout(autoScrollTimerRef.current);
-      }
-    };
   }, []);
 
-  // currentIndexが変更されたらスクロール
+  const scheduleNext = useCallback(() => {
+    clearTimer();
+    if (n === 0) return;
+    autoTimerRef.current = setTimeout(() => {
+      setCurrentIndex((prev) => prev + 1);
+      setIsAnimating(true);
+    }, 8000);
+  }, [clearTimer, n]);
+
   useEffect(() => {
-    if (!carouselRef.current || sortedArticles.length === 0) return;
+    if (n > 0) scheduleNext();
+    return clearTimer;
+  }, [scheduleNext, clearTimer, n]);
 
-    isScrollingRef.current = true;
-    scrollToIndex(currentIndex);
-
-    const resetTimer = setTimeout(() => {
-      isScrollingRef.current = false;
-      resetAutoScrollTimer();
-    }, 600);
-
-    // エッジ検出：最初の5サイクルまたは最後の5サイクルに入ったらジャンプ
-    const loopTimer = setTimeout(() => {
-      if (!carouselRef.current || sortedArticles.length === 0) return;
-
-      const cycleNumber = Math.floor(currentIndex / sortedArticles.length);
-
-      if (cycleNumber < 5) {
-        // 最初の方に近づいた → 15サイクル目の対応する位置へ
-        const offset = currentIndex % sortedArticles.length;
-        const newIndex = sortedArticles.length * 15 + offset;
-        scrollToIndex(newIndex, 'auto');
-        setTimeout(() => {
-          setCurrentIndex(newIndex);
-        }, 0);
-      } else if (cycleNumber >= 25) {
-        // 最後の方に近づいた → 15サイクル目の対応する位置へ
-        const offset = currentIndex % sortedArticles.length;
-        const newIndex = sortedArticles.length * 15 + offset;
-        scrollToIndex(newIndex, 'auto');
-        setTimeout(() => {
-          setCurrentIndex(newIndex);
-        }, 0);
-      }
-    }, 650);
-
-    return () => {
-      clearTimeout(resetTimer);
-      clearTimeout(loopTimer);
-    };
-  }, [currentIndex, sortedArticles.length]);
-
-  // モバイルでのスクロール終了時にインデックスを更新
-  useEffect(() => {
-    if (!isMobile || !carouselRef.current || infiniteArticles.length === 0) return;
-
-    const handleScrollEnd = () => {
-      // プログラムによるスクロール中は何もしない
-      if (isScrollingRef.current) return;
-
-      const carousel = carouselRef.current!;
-      const firstCard = carousel.children[0] as HTMLElement;
-      if (!firstCard) return;
-
-      const cardWidth = firstCard.offsetWidth;
-      const gap = 8;
-      const scrollLeft = carousel.scrollLeft;
-
-      // 現在のスクロール位置から最も近いインデックスを計算
-      const calculatedIndex = Math.round(scrollLeft / (cardWidth + gap));
-      const clampedIndex = Math.max(0, Math.min(calculatedIndex, infiniteArticles.length - 1));
-
-      if (clampedIndex !== currentIndex) {
-        setCurrentIndex(clampedIndex);
-      }
-    };
-
-    const carousel = carouselRef.current;
-    carousel.addEventListener('scrollend', handleScrollEnd);
-
-    return () => {
-      carousel.removeEventListener('scrollend', handleScrollEnd);
-    };
-  }, [isMobile, currentIndex, infiniteArticles.length]);
-
-  const handlePrev = () => {
-    if (autoScrollTimerRef.current) {
-      clearTimeout(autoScrollTimerRef.current);
+  // ---- トランジション終了: クローン → 本物へジャンプ ----
+  const handleTransitionEnd = useCallback(() => {
+    const idx = currentIndexRef.current;
+    setIsAnimating(false);
+    if (idx === 0) {
+      setCurrentIndex(n);
+    } else if (idx === n + 1) {
+      setCurrentIndex(1);
     }
+    scheduleNext();
+  }, [n, scheduleNext]);
+
+  const goPrev = useCallback(() => {
+    if (isAnimating) return;
+    clearTimer();
     setCurrentIndex((prev) => prev - 1);
-  };
+    setIsAnimating(true);
+  }, [isAnimating, clearTimer]);
 
-  const handleNext = () => {
-    if (autoScrollTimerRef.current) {
-      clearTimeout(autoScrollTimerRef.current);
-    }
+  const goNext = useCallback(() => {
+    if (isAnimating) return;
+    clearTimer();
     setCurrentIndex((prev) => prev + 1);
+    setIsAnimating(true);
+  }, [isAnimating, clearTimer]);
+
+  const handleIndicatorClick = useCallback(
+    (targetIndex: number) => {
+      if (isAnimating) return;
+      clearTimer();
+      setCurrentIndex(targetIndex + 1);
+      setIsAnimating(true);
+    },
+    [isAnimating, clearTimer]
+  );
+
+  // ---- タッチスワイプ ----
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.touches[0].clientX;
   };
 
-  const handleIndicatorClick = (index: number) => {
-    if (autoScrollTimerRef.current) {
-      clearTimeout(autoScrollTimerRef.current);
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartXRef.current === null) return;
+    const diff = touchStartXRef.current - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) goNext();
+      else goPrev();
     }
-
-    // 現在位置を元の配列のインデックスに変換
-    const currentNormalized = currentIndex % sortedArticles.length;
-
-    // 前方と後方の距離を計算
-    let forwardDistance = index - currentNormalized;
-    if (forwardDistance < 0) {
-      forwardDistance += sortedArticles.length;
-    }
-
-    let backwardDistance = currentNormalized - index;
-    if (backwardDistance < 0) {
-      backwardDistance += sortedArticles.length;
-    }
-
-    // より近い方向に移動
-    if (forwardDistance <= backwardDistance) {
-      setCurrentIndex(currentIndex + forwardDistance);
-    } else {
-      setCurrentIndex(currentIndex - backwardDistance);
-    }
+    touchStartXRef.current = null;
   };
 
-  if (sortedArticles.length === 0) {
+  if (n === 0) {
     return <p className={styles.emptyMessage}>まだ記事がありません</p>;
   }
 
-  return (
-    <div className={`${styles.carouselContainer} ${isLoaded ? styles.loaded : ''}`}>
-      <div className={styles.carouselWrapperContainer}>
-        <button className={styles.navButton + ' ' + styles.navButtonPrev} onClick={handlePrev} aria-label="前の記事">
-        </button>
+  const normalizedIndex = ((currentIndex - 1) % n + n) % n;
 
-        <div className={styles.carouselWrapper} ref={carouselRef}>
-          {infiniteArticles.map((article, index) => (
-            <Link
-              key={`${article.slug}-${index}`}
-              href={`/articles/${article.slug}`}
-              className={styles.carouselItem}
-            >
-              {article.frontmatter.thumbnail && (
-                <div className={styles.thumbnailWrapper}>
-                  <Image
-                    src={article.frontmatter.thumbnail}
-                    alt={article.frontmatter.title}
-                    fill
-                    className={styles.thumbnail}
-                    sizes="(max-width: 768px) 100vw, 800px"
-                  />
-                </div>
-              )}
-            </Link>
-          ))}
+  return (
+    <div className={`${styles.carouselContainer} ${isReady ? styles.carouselReady : ''}`}>
+      <div className={styles.carouselWrapperContainer}>
+        <button
+          className={`${styles.navButton} ${styles.navButtonPrev}`}
+          onClick={goPrev}
+          aria-label="前の記事"
+        />
+
+        <div
+          ref={viewportRef}
+          className={styles.carouselViewport}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
+          <div
+            className={styles.carouselTrack}
+            style={{
+              transform: `translateX(${trackOffset}px)`,
+              transition: isAnimating ? 'transform 0.4s ease' : 'none',
+              gap: `${gap}px`,
+            }}
+            onTransitionEnd={handleTransitionEnd}
+          >
+            {items.map((article, index) => (
+              <Link
+                key={`${article.slug}-${index}`}
+                href={`/articles/${article.slug}`}
+                className={styles.carouselItem}
+                style={{ flex: `0 0 ${cardWidth}px` }}
+              >
+                {article.frontmatter.thumbnail && (
+                  <div className={styles.thumbnailWrapper}>
+                    <Image
+                      src={article.frontmatter.thumbnail}
+                      alt={article.frontmatter.title}
+                      fill
+                      className={styles.thumbnail}
+                      sizes="(max-width: 768px) 90vw, 600px"
+                      priority={true}
+                    />
+                  </div>
+                )}
+              </Link>
+            ))}
+          </div>
         </div>
 
-        <button className={styles.navButton + ' ' + styles.navButtonNext} onClick={handleNext} aria-label="次の記事">
-        </button>
+        <button
+          className={`${styles.navButton} ${styles.navButtonNext}`}
+          onClick={goNext}
+          aria-label="次の記事"
+        />
       </div>
 
-      {/* インジケーター */}
       <div className={styles.indicators}>
-        {sortedArticles.map((_, index) => {
-          const normalizedIndex = currentIndex % sortedArticles.length;
-          return (
-            <button
-              key={index}
-              className={`${styles.indicator} ${index === normalizedIndex ? styles.indicatorActive : ''}`}
-              onClick={() => handleIndicatorClick(index)}
-              aria-label={`記事${index + 1}へ移動`}
-            />
-          );
-        })}
+        {sortedArticles.map((_, index) => (
+          <button
+            key={index}
+            className={`${styles.indicator} ${index === normalizedIndex ? styles.indicatorActive : ''}`}
+            onClick={() => handleIndicatorClick(index)}
+            aria-label={`記事${index + 1}へ移動`}
+          />
+        ))}
       </div>
     </div>
   );
