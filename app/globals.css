@@ -3333,6 +3333,12 @@ h3.subsection-title:first-of-type {
   .home-content-wrapper .section.fade-in-card h2.section-title::before {
     content: none !important;
   }
+
+  .home-content-wrapper .section.fade-in-card:not(.section-this-week-venues) h3 {
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 0.625rem;
+    margin-bottom: 1rem;
+  }
 }
 
 /* ===== 馬アイコンのフェードインアニメーション ===== */
