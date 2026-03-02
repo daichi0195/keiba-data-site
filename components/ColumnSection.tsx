@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import ArticleList from './ArticleList';
 import { Article } from '@/lib/articles';
+import styles from './ColumnSection.module.css';
 
 interface ColumnSectionProps {
   articles: Article[];
@@ -40,12 +41,13 @@ export default function ColumnSection({ articles }: ColumnSectionProps) {
       <h2 className="section-title is-visible">
         コラム
       </h2>
-      <div style={{ marginTop: '12px' }}>
+      <div style={{ marginTop: '0' }}>
         <ArticleList articles={articles} />
       </div>
-      <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+      <div style={{ maxWidth: '800px', margin: '0' }}>
         <Link
           href="/articles"
+          className={styles.moreLink}
           style={{
             display: 'block',
             width: '100%',

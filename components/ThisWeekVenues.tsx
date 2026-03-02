@@ -55,42 +55,41 @@ interface Venue {
 // モックデータ（後でAPIから取得）
 const mockVenues: Venue[] = [
   {
-    id: 'tokyo',
-    name: '東京競馬場',
+    id: 'nakayama',
+    name: '中山競馬場',
     nextRace: {
-      racecourse: '東京',
+      racecourse: '中山',
       raceNumber: 1,
       raceName: '3歳未勝利',
       startTime: '10:05',
       surface: 'dirt',
-      distance: 1400,
+      distance: 1800,
     },
     courses: {
       turf: [
-        { distance: 1400 },
+        { distance: 1200 },
         { distance: 1600 },
         { distance: 1800 },
         { distance: 2000 },
-        { distance: 2400 },
+        { distance: 2200 },
+        { distance: 2500 },
       ],
       dirt: [
-        { distance: 1300 },
-        { distance: 1400 },
-        { distance: 1600 },
-        { distance: 2100 },
+        { distance: 1200 },
+        { distance: 1800 },
       ],
       steeplechase: [
-        { distance: 3000 },
-        { distance: 3100 },
-        { distance: 3110 },
+        { distance: 2880 },
+        { distance: 3270 },
+        { distance: 3600 },
       ],
     },
   },
   {
-    id: 'kyoto',
-    name: '京都競馬場',
+    id: 'hanshin',
+    name: '阪神競馬場',
     nextRace: {
-      racecourse: '京都',
+      racecourse: '阪神',
       raceNumber: 1,
       raceName: '3歳未勝利',
       startTime: '09:50',
@@ -100,12 +99,12 @@ const mockVenues: Venue[] = [
     courses: {
       turf: [
         { distance: 1200 },
-        { distance: 1400, variant: 'inner', label: '1400m(内)' },
-        { distance: 1400, variant: 'outer', label: '1400m(外)' },
+        { distance: 1400 },
         { distance: 1600, variant: 'inner', label: '1600m(内)' },
         { distance: 1600, variant: 'outer', label: '1600m(外)' },
         { distance: 1800 },
-        { distance: 2000 },
+        { distance: 2000, variant: 'inner', label: '2000m(内)' },
+        { distance: 2000, variant: 'outer', label: '2000m(外)' },
         { distance: 2200 },
         { distance: 2400 },
         { distance: 3000 },
@@ -114,41 +113,11 @@ const mockVenues: Venue[] = [
         { distance: 1200 },
         { distance: 1400 },
         { distance: 1800 },
-        { distance: 1900 },
-      ],
-      steeplechase: [
-        { distance: 2910 },
-        { distance: 3170 },
-        { distance: 3930 },
-      ],
-    },
-  },
-  {
-    id: 'kokura',
-    name: '小倉競馬場',
-    nextRace: {
-      racecourse: '小倉',
-      raceNumber: 1,
-      raceName: '3歳未勝利',
-      startTime: '09:45',
-      surface: 'dirt',
-      distance: 1700,
-    },
-    courses: {
-      turf: [
-        { distance: 1200 },
-        { distance: 1800 },
         { distance: 2000 },
-        { distance: 2600 },
-      ],
-      dirt: [
-        { distance: 1000 },
-        { distance: 1700 },
-        { distance: 2400 },
       ],
       steeplechase: [
-        { distance: 2860 },
-        { distance: 3390 },
+        { distance: 3140 },
+        { distance: 3900 },
       ],
     },
   },
@@ -240,7 +209,7 @@ export default function ThisWeekVenues() {
   const [scheduleData, setScheduleData] = useState<RaceSchedule[]>([]);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedVenueId, setSelectedVenueId] = useState<string>(mockVenues[0].id);
+  const [selectedVenueId, setSelectedVenueId] = useState<string>('nakayama');
 
   // データ取得（当日のみ）
   useEffect(() => {
@@ -439,7 +408,7 @@ export default function ThisWeekVenues() {
               className={`${styles.venueTab} ${selectedVenueId === venue.id ? styles.venueTabActive : ''}`}
               onClick={() => setSelectedVenueId(venue.id)}
             >
-              {venue.name.replace('競馬場', '')}
+              {venue.name}
             </button>
           ))}
         </div>

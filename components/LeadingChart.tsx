@@ -17,7 +17,7 @@ interface LeadingChartProps {
   title?: string;
   note?: string;
   maxNameLength?: number;
-  nameWidth?: number;
+  nameColumnWidth?: number;
 }
 
 export default function LeadingChart({
@@ -27,7 +27,7 @@ export default function LeadingChart({
   title,
   note = '2026年/勝ち数順',
   maxNameLength,
-  nameWidth,
+  nameColumnWidth,
 }: LeadingChartProps) {
   const maxWins = Math.max(...data.map((item) => item.wins));
 
@@ -39,8 +39,11 @@ export default function LeadingChart({
   };
 
   return (
-    <div className={styles.container}>
-      {title && <div className={styles.title}>{title}</div>}
+    <div
+      className={styles.container}
+      style={nameColumnWidth ? { '--name-col': `${nameColumnWidth}px` } as React.CSSProperties : undefined}
+    >
+      {title && <h3 className={styles.title}>{title}</h3>}
       {data.map((item) => (
         <div key={item.rank} className={styles.row}>
           <div
@@ -54,7 +57,7 @@ export default function LeadingChart({
             {item.rank}
           </div>
 
-          <Link href={`${linkPrefix}${item.id}`} className={styles.name} style={nameWidth ? { minWidth: nameWidth, width: nameWidth } : undefined}>
+          <Link href={`${linkPrefix}${item.id}`} className={styles.name}>
             {formatName(item.name)}
           </Link>
 

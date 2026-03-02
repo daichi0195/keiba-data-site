@@ -58,7 +58,7 @@ export default async function HomePage() {
         </section>
 
         {/* 2カラムレイアウト部分 */}
-        <article style={{ backgroundColor: '#fbfcfd' }}>
+        <article style={{ backgroundColor: 'transparent' }}>
           <ThisWeekVenues />
 
           <div className="home-content-wrapper">

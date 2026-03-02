@@ -1,0 +1,8 @@
+.moreLink {
+}
+
+@media (min-width: 769px) {
+  .moreLink {
+    font-size: 16px !important;
+  }
+}

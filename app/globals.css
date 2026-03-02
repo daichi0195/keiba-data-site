@@ -43,6 +43,35 @@ body {
   overflow-x: clip;
 }
 
+@keyframes horseshoe-drift {
+  0%   { transform: translate(0, 0); }
+  100% { transform: translate(190px, 190px); }
+}
+
+@media (min-width: 769px) {
+  body {
+    background-color: #fbfcfd;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: -380px;
+    background-image: url("/horseshoe-pattern.svg");
+    background-size: 190px 190px;
+    animation: horseshoe-drift 15s linear infinite;
+    will-change: transform;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    body::before {
+      animation: none;
+    }
+  }
+}
+
 /* ヘッダー */
 header {
   background: #fff;
@@ -69,14 +98,25 @@ header {
 /* PC表示時：ヘッダーのレイアウト調整 */
 @media (min-width: 769px) {
   header {
-    padding: 0.75rem 2rem;
-    gap: 1.5rem;
-    min-height: 70px;
+    padding: 0;
+    gap: 0;
+    min-height: 64px;
     border-bottom: 1px solid #e2e8f0;
+    justify-content: center;
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1400px;
+    padding: 0 1rem;
   }
 
   .site-name {
     font-size: 1.1rem;
+    flex-shrink: 0;
   }
 }
 
@@ -245,8 +285,8 @@ main:has(aside) {
     right: 50%;
     margin-left: -50vw;
     margin-right: -50vw;
-    margin-bottom: 0.5rem;
-    padding: 0.5rem 0;
+    margin-bottom: 0;
+    padding: 0;
   }
 
   /* メインコンテンツエリア */
@@ -270,7 +310,7 @@ main:has(aside) {
   }
 
   h2.section-title {
-    font-size: 28px;
+    font-size: 26px;
     margin-bottom: 20px;
     padding-left: 1rem;
     padding-bottom: 0;
@@ -345,7 +385,7 @@ main:has(aside) {
     right: 50%;
     margin-left: -50vw;
     margin-right: -50vw;
-    padding: 1.25rem 0 12px 0 !important;
+    padding: 0 !important;
   }
 
   /* 今週開催の競馬場セクション（PC） */
@@ -358,7 +398,7 @@ main:has(aside) {
 
   /* 見出しを強調 */
   .section-title {
-    font-size: 28px;
+    font-size: 26px;
     margin-top: 8px;
     margin-bottom: 20px;
     padding-left: 1rem;
@@ -3050,7 +3090,7 @@ h3.subsection-title:first-of-type {
   }
 
   .page-header h1 {
-    font-size: 22px;
+    font-size: 26px;
     margin: 0 0 12px 0;
   }
 
@@ -3211,6 +3251,88 @@ h3.subsection-title:first-of-type {
 .home-content-wrapper .section.fade-in-card {
   padding-left: 12px;
   padding-right: 12px;
+}
+
+/* PC: 今週開催の競馬場もカード化 */
+@media (min-width: 769px) {
+  .section-this-week-venues {
+    background: #fff !important;
+    border-radius: 12px;
+    border: 1.5px solid #e2e8f0;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+    position: relative;
+    overflow: hidden;
+    padding: 72px 24px 28px !important;
+    margin-bottom: 2rem;
+    transition: box-shadow 0.2s ease;
+  }
+
+  .section-this-week-venues:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.11);
+  }
+
+  .section-this-week-venues h2.section-title {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #1db854;
+    color: #fff;
+    font-size: 22px;
+    font-weight: 800;
+    font-style: italic;
+    padding: 10px 52px 10px 20px;
+    clip-path: polygon(0 0, 100% 0, calc(100% - 18px) 100%, 0 100%);
+    margin: 0;
+    border-left: none;
+    border-radius: 0;
+    letter-spacing: 0.05em;
+    opacity: 1 !important;
+    animation: none !important;
+  }
+
+  .section-this-week-venues h2.section-title::before {
+    content: none !important;
+  }
+}
+
+/* PC: TOPページセクションをカード化 */
+@media (min-width: 769px) {
+  .home-content-wrapper .section.fade-in-card {
+    background: #fff;
+    border-radius: 12px;
+    border: 1.5px solid #e2e8f0;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+    position: relative;
+    overflow: hidden;
+    padding: 72px 24px 28px;
+    margin-bottom: 2rem;
+    transition: box-shadow 0.2s ease;
+  }
+
+  .home-content-wrapper .section.fade-in-card:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.11);
+  }
+
+  .home-content-wrapper .section.fade-in-card h2.section-title {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #1db854;
+    color: #fff;
+    font-size: 22px;
+    font-weight: 800;
+    font-style: italic;
+    padding: 10px 52px 10px 20px;
+    clip-path: polygon(0 0, 100% 0, calc(100% - 18px) 100%, 0 100%);
+    margin: 0;
+    border-left: none;
+    border-radius: 0;
+    letter-spacing: 0.05em;
+  }
+
+  .home-content-wrapper .section.fade-in-card h2.section-title::before {
+    content: none !important;
+  }
 }
 
 /* ===== 馬アイコンのフェードインアニメーション ===== */

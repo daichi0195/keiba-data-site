@@ -17,3 +17,92 @@
     font-size: 1rem;
   }
 }
+
+/* ===== PCカードデザイン ===== */
+.cardWrapper {
+  /* SP: スタイルなし */
+}
+
+.cardHeader {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: default;
+  pointer-events: none;
+  text-align: left;
+  font-family: inherit;
+}
+
+.cardTitle {
+  font-size: 22px;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 4px 0 8px 0;
+  padding: 0;
+}
+
+.cardIcon {
+  display: none;
+}
+
+@media (min-width: 769px) {
+  .cardWrapper {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+  }
+
+  .cardWrapper:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.11);
+  }
+
+  .cardHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    cursor: pointer;
+    pointer-events: auto;
+    border-bottom: 1px solid transparent;
+    transition: background 0.2s ease, border-color 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-appearance: none;
+    appearance: none;
+    outline: none;
+  }
+
+  .cardHeader:hover {
+    background: #f8fdf9;
+  }
+
+  .cardHeader.expanded {
+    border-bottom-color: #e2e8f0;
+  }
+
+  .cardTitle {
+    font-size: 20px;
+    margin: 0;
+    padding: 0;
+  }
+
+  .cardIcon {
+    display: block;
+    font-size: 11px;
+    color: #94a3b8;
+  }
+
+  .cardBody {
+    padding: 14px 16px 16px;
+  }
+
+  .hidden {
+    display: none;
+  }
+}
