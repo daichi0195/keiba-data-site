@@ -34,9 +34,12 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
 }
 
+.articleDescription {
+  display: none;
+}
+
 /* コラムリスト */
 .articleList {
-  max-width: 800px;
   margin: 0;
   position: relative;
   z-index: 1;
@@ -105,6 +108,22 @@
   .sortButton {
     font-size: 16px;
     letter-spacing: 0.08em;
+  }
+
+  .thumbnailWrapper {
+    width: 160px;
+    height: 90px;
+  }
+
+  .articleDescription {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 0.8125rem;
+    color: #718096;
+    margin: 0.25rem 0 0 0;
+    line-height: 1.6;
   }
 }
 

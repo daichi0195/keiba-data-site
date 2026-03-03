@@ -44,7 +44,7 @@ export default function ColumnSection({ articles }: ColumnSectionProps) {
       <div style={{ marginTop: '0' }}>
         <ArticleList articles={articles} />
       </div>
-      <div style={{ maxWidth: '800px', margin: '0' }}>
+      <div style={{ margin: '0' }}>
         <Link
           href="/articles"
           className={styles.moreLink}

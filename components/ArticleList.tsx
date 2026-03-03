@@ -72,6 +72,11 @@ export default function ArticleList({ articles: allArticles }: ArticleListProps)
                 <h2 className={styles.articleTitle}>
                   {article.frontmatter.title}
                 </h2>
+                {article.frontmatter.description && (
+                  <p className={styles.articleDescription}>
+                    {article.frontmatter.description}
+                  </p>
+                )}
               </div>
             </Link>
           ))
