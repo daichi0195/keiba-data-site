@@ -5,9 +5,10 @@ import styles from '@/app/static-page.module.css';
 interface Props {
   pageName: string;
   children: React.ReactNode;
+  noToc?: boolean;
 }
 
-export default function StaticPageLayout({ pageName, children }: Props) {
+export default function StaticPageLayout({ pageName, children, noToc }: Props) {
   return (
     <div className={styles.staticPageContainer}>
       {/* パンくずリスト */}
@@ -25,7 +26,7 @@ export default function StaticPageLayout({ pageName, children }: Props) {
         </article>
 
         {/* サイドバー: バナー+目次（TableOfContentsが両方を管理） */}
-        <TableOfContents />
+        <TableOfContents hideToc={noToc} />
       </div>
     </div>
   );

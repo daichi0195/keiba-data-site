@@ -5,7 +5,7 @@ import styles from './TableOfContents.module.css';
 
 type Item = { id: string; label: string };
 
-export default function TableOfContents({ items }: { items?: Item[] }) {
+export default function TableOfContents({ items, hideToc }: { items?: Item[]; hideToc?: boolean }) {
   const [tocItems, setTocItems] = useState<Item[]>(items || []);
   const [activeId, setActiveId] = useState<string>('');
   const [isScrolling, setIsScrolling] = useState(false);
@@ -252,7 +252,8 @@ export default function TableOfContents({ items }: { items?: Item[] }) {
   };
 
   return (
-    <aside ref={tocRef} className={styles.tableOfContents}>
+    <aside ref={tocRef} className={styles.tableOfContents} style={hideToc ? { position: 'relative', top: 'auto' } : undefined}>
+      {!hideToc && (
       <nav className={`${styles.nav} ${isScrolling ? styles.scrolling : ''}`}>
         <h2 className={styles.title}>目次</h2>
         <ul className={styles.list} ref={listRef}>
@@ -279,9 +280,10 @@ export default function TableOfContents({ items }: { items?: Item[] }) {
           ))}
         </ul>
       </nav>
+      )}
 
       {/* バナーエリア */}
-      <div className={styles.bannerArea}>
+      <div className={styles.bannerArea} style={hideToc ? { marginTop: 0 } : undefined}>
         <div className={styles.bannerPlaceholder}>
           <div className={styles.bannerTitle}>競馬AI製作中！</div>
           <div className={styles.bannerSubtitle}>COMING SOON</div>

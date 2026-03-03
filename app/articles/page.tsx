@@ -1,8 +1,9 @@
 import { Metadata } from 'next';
-import Link from 'next/link';
-import { getAllArticles, getAllCategories } from '@/lib/articles';
+import { getAllArticles } from '@/lib/articles';
 import ArticleList from '@/components/ArticleList';
-import styles from './page.module.css';
+import StaticPageLayout from '@/components/StaticPageLayout';
+import styles from '@/app/static-page.module.css';
+import contentStyles from '@/components/article-content.module.css';
 
 export const metadata: Metadata = {
   title: 'コラム | 競馬データ.com',
@@ -14,24 +15,18 @@ export default function ArticlesPage() {
   const articles = getAllArticles();
 
   return (
-    <div className={styles.container}>
-      {/* パンくずリスト */}
-      <nav className={styles.breadcrumb}>
-        <Link href="/">HOME</Link>
-        <span> &gt; </span>
-        <span>コラム</span>
-      </nav>
+    <StaticPageLayout pageName="コラム" noToc>
+      <div className={styles.staticPageCard}>
+        <div className={styles.staticPageHeader}>
+          <h1 className={styles.staticPageTitle}>コラム</h1>
+        </div>
 
-      {/* ヘッダー */}
-      <header className={styles.header}>
-        <h1 className={styles.title}>コラム</h1>
-        <p className={styles.description}>
-          データを活用した分析記事や一口馬主のコラムなどを掲載しています
+        <p className={contentStyles.text}>
+          データを活用した分析記事や一口馬主のコラムなどを掲載しています。
         </p>
-      </header>
 
-      {/* 並び替えボタン & コラム一覧 */}
-      <ArticleList articles={articles} />
-    </div>
+        <ArticleList articles={articles} />
+      </div>
+    </StaticPageLayout>
   );
 }
