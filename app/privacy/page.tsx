@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import Link from 'next/link';
+import StaticPageLayout from '@/components/StaticPageLayout';
 import styles from '../static-page.module.css';
 import contentStyles from '@/components/article-content.module.css';
 
@@ -10,20 +10,12 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <div className={styles.staticPageContainer}>
-      {/* パンくずリスト */}
-      <nav className={styles.staticPageBreadcrumb}>
-        <Link href="/">HOME</Link>
-        <span> &gt; </span>
-        <span>プライバシーポリシー</span>
-      </nav>
-
-      {/* コンテンツカード */}
+    <StaticPageLayout pageName="プライバシーポリシー">
       <div className={styles.staticPageCard}>
-        {/* ヘッダー */}
         <div className={styles.staticPageHeader}>
           <h1 className={styles.staticPageTitle}>プライバシーポリシー</h1>
         </div>
+
         <h2 className={contentStyles.heading}>はじめに</h2>
         <p className={contentStyles.text}>
           競馬データ.com（以下「当サイト」といいます）は、ユーザーの皆様の個人情報の保護を重要視しており、本プライバシーポリシー（以下「本ポリシー」といいます）に基づき、適切な取り扱いに努めます。
@@ -99,6 +91,6 @@ export default function PrivacyPage() {
           本ポリシーに関するお問い合わせは、当サイトのお問い合わせフォームよりご連絡ください。
         </p>
       </div>
-    </div>
+    </StaticPageLayout>
   );
 }

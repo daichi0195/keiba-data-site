@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import listStyles from './shared-list.module.css';
 import { ALL_SIRES, type SireInfo } from '@/lib/sires';
+import LeadingChartSection from './LeadingChartSection';
+import { type LeadingData } from '@/lib/getLeadingData';
 
 const getKanaGroup = (name: string): string => {
   if (!name) return 'その他';
@@ -39,9 +41,15 @@ const siresData = (() => {
     }));
 })();
 
-export default function AllSiresList() {
+export default function AllSiresList({ leadingData }: { leadingData?: LeadingData[] }) {
   return (
     <div className={listStyles.groupList}>
+      {leadingData && leadingData.length > 0 && (
+        <div className={listStyles.groupSection}>
+          <h2 className={listStyles.groupTitle}>種牡馬リーディング（勝ち数順）</h2>
+          <LeadingChartSection data={leadingData} linkPrefix="/sires/" maxNameLength={12} nameWidth={110} />
+        </div>
+      )}
       {siresData.map((group) => (
         <div key={group.kana} className={listStyles.groupSection}>
           <h2 className={listStyles.groupTitle}>{group.kana}</h2>

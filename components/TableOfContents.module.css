@@ -11,14 +11,12 @@
     position: sticky;
     top: 90px;
     padding: 0;
-    max-height: calc(100vh - 110px);
     background: #fbfcfd;
     z-index: 50;
-    overflow-y: auto;
   }
 
   .nav {
-    background: #f5f7fa;
+    background: #f7f8fc;
     border-radius: 12px;
     padding: 1.5rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);

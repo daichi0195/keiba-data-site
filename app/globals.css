@@ -288,7 +288,7 @@ main:has(aside) {
     gap: 1rem;
     max-width: 1400px;
     margin: 0 auto;
-    padding: 0 1rem;
+    padding: 0 24px;
     box-sizing: border-box;
     width: 100%;
   }

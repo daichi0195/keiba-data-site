@@ -204,7 +204,7 @@ const getVenueName = (venueId: string): string => {
   return venueNames[venueId] || venueId;
 };
 
-export default function ThisWeekVenues() {
+export default function ThisWeekVenues({ noWrapper = false }: { noWrapper?: boolean }) {
   const sectionRef = useRef<HTMLElement>(null);
   const [scheduleData, setScheduleData] = useState<RaceSchedule[]>([]);
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -340,12 +340,11 @@ export default function ThisWeekVenues() {
     showSection: !isLoading && raceStatus.hasSchedule
   });
 
-  return (
-    <section ref={sectionRef} className="section section-this-week-venues">
-      <div style={{ width: '100%' }}>
-        {/* 次のレースセクション */}
-        {!isLoading && raceStatus.hasSchedule && (
-          <div className={styles.nextRaceSection}>
+  const inner = (
+    <div style={{ width: '100%' }}>
+      {/* 次のレースセクション */}
+      {!isLoading && raceStatus.hasSchedule && (
+        <div className={styles.nextRaceSection}>
             <h3 className={styles.nextRaceTitle}>次のレース</h3>
 
             {/* 全レース終了時のメッセージ */}
@@ -398,7 +397,7 @@ export default function ThisWeekVenues() {
           </div>
         )}
 
-        <h2 className={`section-title is-visible ${styles.mainTitle}`}>今週開催の競馬場</h2>
+        {!noWrapper && <h2 className={`section-title is-visible ${styles.mainTitle}`}>今週開催の競馬場</h2>}
 
         {/* 競馬場タブ */}
         <div className={styles.venueTabs}>
@@ -463,7 +462,12 @@ export default function ThisWeekVenues() {
             </div>
           </div>
         ))}
-      </div>
+    </div>
+  );
+
+  return noWrapper ? inner : (
+    <section ref={sectionRef} className="section section-this-week-venues">
+      {inner}
     </section>
   );
 }

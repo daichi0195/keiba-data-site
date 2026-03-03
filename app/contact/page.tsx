@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import Link from 'next/link';
+import StaticPageLayout from '@/components/StaticPageLayout';
 import styles from '../static-page.module.css';
 import contentStyles from '@/components/article-content.module.css';
 
@@ -10,17 +10,8 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <div className={styles.staticPageContainer}>
-      {/* パンくずリスト */}
-      <nav className={styles.staticPageBreadcrumb}>
-        <Link href="/">HOME</Link>
-        <span> &gt; </span>
-        <span>お問い合わせ</span>
-      </nav>
-
-      {/* コンテンツカード */}
+    <StaticPageLayout pageName="お問い合わせ">
       <div className={styles.staticPageCard}>
-        {/* ヘッダー */}
         <div className={styles.staticPageHeader}>
           <h1 className={styles.staticPageTitle}>お問い合わせ</h1>
         </div>
@@ -61,6 +52,6 @@ export default function ContactPage() {
           </div>
         </div>
       </div>
-    </div>
+    </StaticPageLayout>
   );
 }

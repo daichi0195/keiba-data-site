@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import Link from 'next/link';
+import StaticPageLayout from '@/components/StaticPageLayout';
 import SiteAbout from './content/site-about';
 import OperatorInfo from './content/operator-info';
 import RacingHistory from './content/racing-history';
@@ -13,17 +13,8 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <div className={styles.staticPageContainer}>
-      {/* パンくずリスト */}
-      <nav className={styles.staticPageBreadcrumb}>
-        <Link href="/">HOME</Link>
-        <span> &gt; </span>
-        <span>サイト情報・運営者情報</span>
-      </nav>
-
-      {/* コンテンツカード */}
+    <StaticPageLayout pageName="サイト情報・運営者情報">
       <div className={styles.staticPageCard}>
-        {/* ヘッダー */}
         <div className={styles.staticPageHeader}>
           <h1 className={styles.staticPageTitle}>サイト情報・運営者情報</h1>
         </div>
@@ -33,6 +24,6 @@ export default function AboutPage() {
         <RacingHistory />
         <ContactSection />
       </div>
-    </div>
+    </StaticPageLayout>
   );
 }

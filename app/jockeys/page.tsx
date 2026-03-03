@@ -1,7 +1,6 @@
 import { Metadata } from 'next';
-import Link from 'next/link';
+import StaticPageLayout from '@/components/StaticPageLayout';
 import AllJockeysList from '@/components/AllJockeysList';
-import LeadingChartSection from '@/components/LeadingChartSection';
 import { getJockeyLeading } from '@/lib/getLeadingData';
 import styles from '@/app/static-page.module.css';
 import contentStyles from '@/components/article-content.module.css';
@@ -15,29 +14,18 @@ export default async function JockeysPage() {
   const jockeyLeading = await getJockeyLeading();
 
   return (
-    <div className={styles.staticPageContainer}>
-      <nav className={styles.staticPageBreadcrumb}>
-        <Link href="/">HOME</Link>
-        <span> &gt; </span>
-        <span>騎手データ一覧</span>
-      </nav>
-
+    <StaticPageLayout pageName="騎手データ一覧">
       <div className={styles.staticPageCard}>
         <div className={styles.staticPageHeader}>
           <h1 className={styles.staticPageTitle}>騎手データ一覧</h1>
         </div>
 
-        <LeadingChartSection
-          data={jockeyLeading}
-          linkPrefix="/jockeys/"
-          title="騎手リーディング（勝ち数順）"
-        />
-
         <p className={contentStyles.text}>
           過去3年間に30レース以上出走している現役中央騎手のデータを集計しています。
         </p>
-        <AllJockeysList />
+
+        <AllJockeysList leadingData={jockeyLeading} />
       </div>
-    </div>
+    </StaticPageLayout>
   );
 }

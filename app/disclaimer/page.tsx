@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import Link from 'next/link';
+import StaticPageLayout from '@/components/StaticPageLayout';
 import styles from '../static-page.module.css';
 import contentStyles from '@/components/article-content.module.css';
 
@@ -10,17 +10,8 @@ export const metadata: Metadata = {
 
 export default function DisclaimerPage() {
   return (
-    <div className={styles.staticPageContainer}>
-      {/* パンくずリスト */}
-      <nav className={styles.staticPageBreadcrumb}>
-        <Link href="/">HOME</Link>
-        <span> &gt; </span>
-        <span>免責事項</span>
-      </nav>
-
-      {/* コンテンツカード */}
+    <StaticPageLayout pageName="免責事項">
       <div className={styles.staticPageCard}>
-        {/* ヘッダー */}
         <div className={styles.staticPageHeader}>
           <h1 className={styles.staticPageTitle}>免責事項</h1>
         </div>
@@ -48,6 +39,6 @@ export default function DisclaimerPage() {
           当サイトは、メンテナンスやシステム障害等により、予告なくサービスを一時的に中断または停止する場合があります。これにより生じた損害について、当サイトは一切の責任を負いません。
         </p>
       </div>
-    </div>
+    </StaticPageLayout>
   );
 }

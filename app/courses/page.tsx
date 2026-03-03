@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import Link from 'next/link';
+import StaticPageLayout from '@/components/StaticPageLayout';
 import CoursesList from '@/components/CoursesList';
 import styles from '@/app/static-page.module.css';
 import contentStyles from '@/components/article-content.module.css';
@@ -11,13 +11,7 @@ export const metadata: Metadata = {
 
 export default function CoursesPage() {
   return (
-    <div className={styles.staticPageContainer}>
-      <nav className={styles.staticPageBreadcrumb}>
-        <Link href="/">HOME</Link>
-        <span> &gt; </span>
-        <span>コースデータ一覧</span>
-      </nav>
-
+    <StaticPageLayout pageName="コースデータ一覧">
       <div className={styles.staticPageCard}>
         <div className={styles.staticPageHeader}>
           <h1 className={styles.staticPageTitle}>コースデータ一覧</h1>
@@ -26,8 +20,8 @@ export default function CoursesPage() {
         <p className={contentStyles.text}>
           直近3年間でレースが行われた全てのコースを対象としています。
         </p>
-        <CoursesList />
+<CoursesList />
       </div>
-    </div>
+    </StaticPageLayout>
   );
 }

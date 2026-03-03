@@ -2,9 +2,20 @@
 
 .staticPageContainer {
   width: 100%;
-  max-width: 800px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 2rem 0.75rem 24px 0.75rem;
+  padding: 24px 24px 24px;
+  box-sizing: border-box;
+}
+
+/* PC: 2カラムグリッド（TableOfContentsが2列目を担う） */
+@media (min-width: 769px) {
+  .staticPageColumns {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 1rem;
+    align-items: start;
+  }
 }
 
 /* パンくずリスト */
@@ -32,7 +43,7 @@
 .staticPageCard {
   background: #fff;
   border-radius: 12px;
-  padding: 12px 0.75rem 24px;
+  padding: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
@@ -46,10 +57,10 @@
 }
 
 .staticPageTitle {
-  font-size: 20px !important;
+  font-size: 24px !important;
   font-weight: 700;
   line-height: 1 !important;
-  color: #2d3748;
+  color: #4b5563;
   margin: 0 !important;
   padding: 0 !important;
   width: 100%;
@@ -66,12 +77,10 @@
 
 /* H2スタイル統一 */
 .staticPageCard :global(h2) {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
-  color: #2d3748;
+  color: #4b5563;
   margin: 2.5rem 0 1rem 0;
-  padding-left: 0.75rem;
-  border-left: 4px solid #52af77;
   line-height: 1.4;
 }
 
@@ -116,7 +125,7 @@
 /* モバイル対応 */
 @media (max-width: 768px) {
   .staticPageContainer {
-    padding: 1rem 0.75rem 24px 0.75rem;
+    padding: 1rem 0.75rem 24px;
   }
 
   .staticPageCard {
