@@ -421,5 +421,10 @@
     font-size: 0.875rem;
     padding: 1.5rem;
   }
+
+  .venueTab {
+    font-size: 15px;
+    letter-spacing: 0.02em;
+  }
 }
 
