@@ -3040,7 +3040,7 @@ h3.subsection-title:first-of-type {
 
   main.home-main .section-article-carousel {
     width: 100%;
-    margin: 0 0 1rem 0;
+    margin: 0 0 6px 0;
     padding: 16px 0 0;
   }
 
@@ -3241,7 +3241,7 @@ h3.subsection-title:first-of-type {
 @media (min-width: 769px) {
   .section-this-week-venues {
     background: #fff !important;
-    border-radius: 12px;
+    border-radius: 6px;
     border: 1.5px solid #e2e8f0;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
     position: relative;
@@ -3287,7 +3287,7 @@ h3.subsection-title:first-of-type {
 @media (min-width: 769px) {
   .home-content-wrapper .section.fade-in-card {
     background: #fff;
-    border-radius: 12px;
+    border-radius: 6px;
     border: 1.5px solid #e2e8f0;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
     position: relative;
@@ -3371,7 +3371,7 @@ h3.subsection-title:first-of-type {
   /* 今週開催の競馬場カード */
   .section-this-week-venues {
     background: #fff !important;
-    border-radius: 12px !important;
+    border-radius: 6px !important;
     border: 1.5px solid #e2e8f0;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     margin: 0 12px 12px !important;
@@ -3406,7 +3406,7 @@ h3.subsection-title:first-of-type {
   /* コンテンツラッパー内のカード */
   .home-content-wrapper .section.fade-in-card {
     background: #fff;
-    border-radius: 12px;
+    border-radius: 6px;
     border: 1.5px solid #e2e8f0;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     margin: 0 12px 12px;
@@ -3440,6 +3440,13 @@ h3.subsection-title:first-of-type {
 
   .home-content-wrapper .section.fade-in-card h2.section-title::before {
     content: none !important;
+  }
+
+  /* h3の下線（PCと同様、競馬場別データを除く） */
+  .home-content-wrapper .section.fade-in-card:not(.section-venues) h3 {
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 0.625rem;
+    margin-bottom: 1rem;
   }
 }
 

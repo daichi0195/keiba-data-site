@@ -50,7 +50,7 @@ export default function AllVenues() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="section fade-in-card">
+    <section ref={sectionRef} className="section fade-in-card section-venues">
       <h2 className="section-title is-visible">
         競馬場別データ
       </h2>

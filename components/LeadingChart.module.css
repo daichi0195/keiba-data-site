@@ -117,6 +117,17 @@
   margin-top: 4px;
 }
 
+/* SP: カード内ではフラット表示 */
+@media (max-width: 768px) {
+  .container {
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+    margin-top: 0;
+  }
+}
+
 /* PC */
 @media (min-width: 769px) {
   .container {
