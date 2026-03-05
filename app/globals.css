@@ -48,27 +48,21 @@ body {
   100% { transform: translate(190px, 190px); }
 }
 
-@media (min-width: 769px) {
-  body {
-    background-color: #fbfcfd;
-  }
+body::before {
+  content: '';
+  position: fixed;
+  inset: -380px;
+  background-image: url("/horseshoe-pattern.svg");
+  background-size: 190px 190px;
+  animation: horseshoe-drift 15s linear infinite;
+  will-change: transform;
+  z-index: -1;
+  pointer-events: none;
+}
 
+@media (prefers-reduced-motion: reduce) {
   body::before {
-    content: '';
-    position: fixed;
-    inset: -380px;
-    background-image: url("/horseshoe-pattern.svg");
-    background-size: 190px 190px;
-    animation: horseshoe-drift 15s linear infinite;
-    will-change: transform;
-    z-index: -1;
-    pointer-events: none;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    body::before {
-      animation: none;
-    }
+    animation: none;
   }
 }
 
@@ -3369,6 +3363,83 @@ h3.subsection-title:first-of-type {
   100% {
     transform: translateX(0);
     color: rgba(255, 255, 255, 1);
+  }
+}
+
+/* ===== SP: TOPページセクションのカード化 ===== */
+@media (max-width: 768px) {
+  /* 今週開催の競馬場カード */
+  .section-this-week-venues {
+    background: #fff !important;
+    border-radius: 12px !important;
+    border: 1.5px solid #e2e8f0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    margin: 0 12px 12px !important;
+    padding: 52px 12px 16px !important;
+    position: relative !important;
+    overflow: hidden !important;
+  }
+
+  .section-this-week-venues h2.section-title {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    background: linear-gradient(#1db854, #1db854) no-repeat left center;
+    background-size: 0% 100%;
+    font-size: 18px !important;
+    font-weight: 800 !important;
+    font-style: italic;
+    padding: 10px 44px 10px 16px !important;
+    clip-path: polygon(0 0, 100% 0, calc(100% - 16px) 100%, 0 100%);
+    margin: 0 !important;
+    border-left: none !important;
+    border-radius: 0 !important;
+    letter-spacing: 0.05em;
+    color: white !important;
+    animation: revealBadgeBg 0.5s ease 0.1s forwards;
+  }
+
+  .section-this-week-venues h2.section-title::before {
+    content: none !important;
+  }
+
+  /* コンテンツラッパー内のカード */
+  .home-content-wrapper .section.fade-in-card {
+    background: #fff;
+    border-radius: 12px;
+    border: 1.5px solid #e2e8f0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    margin: 0 12px 12px;
+    padding: 52px 12px 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .home-content-wrapper .section.fade-in-card h2.section-title {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: linear-gradient(#1db854, #1db854) no-repeat left center;
+    background-size: 0% 100%;
+    font-size: 18px;
+    font-weight: 800;
+    font-style: italic;
+    padding: 10px 44px 10px 16px;
+    clip-path: polygon(0 0, 100% 0, calc(100% - 16px) 100%, 0 100%);
+    margin: 0;
+    border-left: none;
+    border-radius: 0;
+    letter-spacing: 0.05em;
+    color: white;
+  }
+
+  /* スクロールで表示されたタイミングで緑背景を展開 */
+  .home-content-wrapper .section.fade-in-card.is-visible h2.section-title {
+    animation: revealBadgeBg 0.5s ease 0.1s forwards;
+  }
+
+  .home-content-wrapper .section.fade-in-card h2.section-title::before {
+    content: none !important;
   }
 }
 
