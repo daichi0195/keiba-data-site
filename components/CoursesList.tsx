@@ -2,7 +2,6 @@ import Link from 'next/link';
 import styles from './CoursesList.module.css';
 import listStyles from './shared-list.module.css';
 import { getCoursesByRacecourse, getCourseUrl } from '@/lib/courses';
-import ThisWeekVenues from '@/components/ThisWeekVenues';
 
 const racecoursesData = getCoursesByRacecourse().map(group => ({
   name: group.racecourse_ja,
@@ -13,10 +12,6 @@ const racecoursesData = getCoursesByRacecourse().map(group => ({
 export default function CoursesList() {
   return (
     <div className={listStyles.groupList}>
-      <div className={listStyles.groupSection}>
-        <h2 className={listStyles.groupTitle}>今週開催の競馬場</h2>
-        <ThisWeekVenues noWrapper />
-      </div>
       {racecoursesData.map((racecourse) => {
         const turfCourses = racecourse.courses.filter((c) => c.surface === 'turf');
         const dirtCourses = racecourse.courses.filter((c) => c.surface === 'dirt');
