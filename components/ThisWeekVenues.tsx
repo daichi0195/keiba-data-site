@@ -344,7 +344,7 @@ export default function ThisWeekVenues({ noWrapper = false }: { noWrapper?: bool
   const inner = (
     <div style={{ width: '100%' }}>
       {/* 次のレースセクション */}
-      {!isLoading && raceStatus.hasSchedule && (
+      {false && !isLoading && raceStatus.hasSchedule && (
         <div className={styles.nextRaceSection}>
             <h3 className={styles.nextRaceTitle}>次のレース</h3>
 
