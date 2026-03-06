@@ -44,7 +44,7 @@ export default function MobileTableOfContents({ headings, initialShow = 5 }: Pro
   return (
     <nav className={styles.tocContainer}>
       <div className={styles.tocHeader}>
-        <h2 className={styles.tocTitle}>目次</h2>
+        <p className={styles.tocTitle}>目次</p>
       </div>
 
       <ul className={styles.tocList}>
