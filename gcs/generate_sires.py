@@ -1559,6 +1559,66 @@ def get_sire_list(client):
         return []
 
 
+def _append_to_sires_ts(sires_ts_path, new_entries):
+    """sires.ts に新しいエントリを末尾追記し、ヘッダーコメントを更新する"""
+    import re
+
+    with open(sires_ts_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+
+    # 新エントリの行を生成
+    new_lines = '\n'.join(
+        f"  {{ id: {e['id']}, name: '{e['name']}' }},"
+        for e in new_entries
+    )
+
+    # ]; の直前に追記
+    updated_content = re.sub(
+        r'\];\s*$',
+        f'{new_lines}\n];',
+        content,
+        flags=re.MULTILINE
+    )
+
+    # ヘッダーコメントの生成日時・件数を更新
+    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    count_match = re.search(r'種牡馬数:\s*(\d+)', updated_content)
+    if count_match:
+        new_count = int(count_match.group(1)) + len(new_entries)
+        updated_content = re.sub(r'種牡馬数:\s*\d+', f'種牡馬数: {new_count}', updated_content)
+    updated_content = re.sub(r'生成日時:\s*[\d\-: ]+', f'生成日時: {now}', updated_content)
+
+    with open(sires_ts_path, 'w', encoding='utf-8') as f:
+        f.write(updated_content)
+
+
+def auto_register_new_sires(bq_sires, sire_mapping, sires_ts_path):
+    """BigQuery の種牡馬リストと sires.ts を照合し、未登録の種牡馬を自動追加する"""
+    new_sire_names = [s['name'] for s in bq_sires if s['name'] not in sire_mapping]
+    if not new_sire_names:
+        print("   ✅ 全種牡馬は既に sires.ts に登録済みです")
+        return sire_mapping
+
+    print(f"\n   📝 新しく {len(new_sire_names)} 件の種牡馬を sires.ts に登録します:")
+
+    # 現在の最大ID（整数キーのみ）を取得
+    existing_ids = [k for k in sire_mapping.keys() if isinstance(k, int)]
+    max_id = max(existing_ids) if existing_ids else 0
+
+    added_entries = []
+    for name in new_sire_names:
+        max_id += 1
+        sire_mapping[max_id] = name
+        sire_mapping[name] = max_id
+        added_entries.append({'id': max_id, 'name': name})
+        print(f"      + {name} → ID {max_id}")
+
+    _append_to_sires_ts(sires_ts_path, added_entries)
+    print(f"   📁 sires.ts を更新しました（{len(added_entries)} 件追加）")
+
+    return sire_mapping
+
+
 def main():
     """メイン処理"""
     import argparse
@@ -1656,6 +1716,10 @@ def main():
                 sys.exit(1)
 
             print(f"   Found {len(sires)} eligible sires")
+
+            # sires.ts に未登録の種牡馬を自動追加
+            sire_mapping = auto_register_new_sires(sires, sire_mapping, sires_ts_path)
+
             print(f"\n{'='*60}")
 
             success_count = 0
