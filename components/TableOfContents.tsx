@@ -2,10 +2,11 @@
 
 import { useEffect, useState, useRef } from 'react';
 import styles from './TableOfContents.module.css';
+import AIBanner from './AIBanner';
 
 type Item = { id: string; label: string };
 
-export default function TableOfContents({ items, hideToc }: { items?: Item[]; hideToc?: boolean }) {
+export default function TableOfContents({ items, hideToc, showBanner }: { items?: Item[]; hideToc?: boolean; showBanner?: boolean }) {
   const [tocItems, setTocItems] = useState<Item[]>(items || []);
   const [activeId, setActiveId] = useState<string>('');
   const [isScrolling, setIsScrolling] = useState(false);
@@ -281,14 +282,7 @@ export default function TableOfContents({ items, hideToc }: { items?: Item[]; hi
         </ul>
       </nav>
       )}
-
-      {/* バナーエリア */}
-      <div className={styles.bannerArea} style={hideToc ? { marginTop: 0 } : undefined}>
-        <div className={styles.bannerPlaceholder}>
-          <div className={styles.bannerTitle}>競馬AI製作中！</div>
-          <div className={styles.bannerSubtitle}>COMING SOON</div>
-        </div>
-      </div>
+      {(hideToc || showBanner) && <AIBanner />}
     </aside>
   );
 }

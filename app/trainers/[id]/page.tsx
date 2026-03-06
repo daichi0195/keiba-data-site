@@ -22,6 +22,8 @@ import DistanceDefinition from '@/components/DistanceDefinition';
 import JockeyTrainerHighlights from '@/components/JockeyTrainerHighlights';
 import { getTrainerDataFromGCS } from '@/lib/getTrainerDataFromGCS';
 import { ALL_TRAINERS } from '@/lib/trainers';
+import pageStyles from '@/app/static-page.module.css';
+import AIBanner from '@/components/AIBanner';
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
@@ -967,17 +969,23 @@ export default async function TrainerPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <BottomNav items={navigationItems} />
-      <main>
-        <div>
-          {/* パンくずリスト */}
-          <nav className="breadcrumb">
-            <Link href="/">HOME</Link>
-            <span> &gt; </span>
-            <Link href="/trainers">調教師一覧</Link>
-            <span> &gt; </span>
-            <span>{trainer.name}</span>
-          </nav>
+      <div className={pageStyles.staticPageContainer}>
+        {/* パンくずリスト */}
+        <nav className={pageStyles.staticPageBreadcrumb}>
+          <Link href="/">HOME</Link>
+          <span> &gt; </span>
+          <Link href="/trainers">調教師一覧</Link>
+          <span> &gt; </span>
+          <span>{trainer.name}</span>
+        </nav>
 
+        <div className={pageStyles.staticPageColumns3}>
+          {/* 左サイドバー（将来広告用） */}
+          <aside className={pageStyles.staticPageLeftSidebar}>
+            <AIBanner />
+          </aside>
+
+          <article>
           {/* 調教師ヘッダー */}
           <div className="page-header">
             <h1>{trainer.name}調教師の成績・データ</h1>
@@ -1249,10 +1257,12 @@ export default async function TrainerPage({
             />
           </section>
         </article>
+          </article>
+
+          {/* PC用：右サイドバー目次 */}
+          <TableOfContents items={navigationItems} />
         </div>
-        {/* PC用：右サイドバー目次 */}
-        <TableOfContents items={navigationItems} />
-      </main>
+      </div>
     </>
   );
 }

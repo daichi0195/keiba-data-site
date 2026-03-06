@@ -15,7 +15,7 @@ export default function ArticlesPage() {
   const articles = getAllArticles();
 
   return (
-    <StaticPageLayout pageName="コラム" noToc>
+    <StaticPageLayout pageName="コラム" noToc noLeftSidebar>
       <div className={styles.staticPageCard}>
         <div className={styles.staticPageHeader}>
           <h1 className={styles.staticPageTitle}>コラム</h1>

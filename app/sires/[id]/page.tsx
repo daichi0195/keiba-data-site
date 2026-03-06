@@ -27,6 +27,8 @@ import DistanceDefinition from '@/components/DistanceDefinition';
 import TurfConditionExplanation from '@/components/TurfConditionExplanation';
 import JockeyTrainerHighlights from '@/components/JockeyTrainerHighlights';
 import { ALL_SIRES } from '@/lib/sires';
+import pageStyles from '@/app/static-page.module.css';
+import AIBanner from '@/components/AIBanner';
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
@@ -818,17 +820,23 @@ export default async function SirePage({
   return (
     <>
       <BottomNav items={navigationItems} />
-      <main>
-        <div>
-          {/* パンくずリスト */}
-          <nav className="breadcrumb">
-            <Link href="/">HOME</Link>
-            <span> &gt; </span>
-            <Link href="/sires">種牡馬一覧</Link>
-            <span> &gt; </span>
-            <span>{sire.name}</span>
-          </nav>
+      <div className={pageStyles.staticPageContainer}>
+        {/* パンくずリスト */}
+        <nav className={pageStyles.staticPageBreadcrumb}>
+          <Link href="/">HOME</Link>
+          <span> &gt; </span>
+          <Link href="/sires">種牡馬一覧</Link>
+          <span> &gt; </span>
+          <span>{sire.name}</span>
+        </nav>
 
+        <div className={pageStyles.staticPageColumns3}>
+          {/* 左サイドバー（将来広告用） */}
+          <aside className={pageStyles.staticPageLeftSidebar}>
+            <AIBanner />
+          </aside>
+
+          <article>
           {/* 種牡馬ヘッダー */}
           <div className="page-header">
             <h1>{sire.name}産駒の成績・データ</h1>
@@ -1359,10 +1367,12 @@ export default async function SirePage({
             />
           </section>
         </article>
+          </article>
+
+          {/* PC用：右サイドバー目次 */}
+          <TableOfContents items={navigationItems} />
         </div>
-        {/* PC用：右サイドバー目次 */}
-        <TableOfContents items={navigationItems} />
-      </main>
+      </div>
     </>
   );
 }

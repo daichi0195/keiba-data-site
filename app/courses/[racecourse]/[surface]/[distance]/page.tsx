@@ -19,6 +19,8 @@ import { ALL_COURSES, getCourseUrl, getCourseDisplayName } from '@/lib/courses';
 import { ALL_JOCKEYS } from '@/lib/jockeys';
 import { ALL_SIRES } from '@/lib/sires';
 import { ALL_TRAINERS } from '@/lib/trainers';
+import pageStyles from '@/app/static-page.module.css';
+import AIBanner from '@/components/AIBanner';
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
@@ -774,10 +776,9 @@ export default async function CoursePage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <BottomNav items={navigationItems} />
-      <main>
-        <div>
+      <div className={pageStyles.staticPageContainer}>
         {/* パンくずリスト */}
-        <nav className="breadcrumb">
+        <nav className={pageStyles.staticPageBreadcrumb}>
           <Link href="/">HOME</Link>
           <span> &gt; </span>
           <Link href="/courses">コース一覧</Link>
@@ -785,25 +786,31 @@ export default async function CoursePage({ params }: Props) {
           <span>{racecourseJa}競馬場 {surfaceJa}{distanceDisplay}m{trackVariantLabel}</span>
         </nav>
 
-        {/* レース数が少ない場合の警告 */}
-        {course_info.total_races <= 10 && (
-          <div style={{
-            padding: '0.75rem 1.25rem',
-            background: '#fef9e7',
-            border: '0.5px solid #ffc107',
-            borderRadius: '6px',
-            color: '#856404',
-            fontSize: '0.9rem',
-            fontWeight: '600',
-            textAlign: 'center',
-            marginBottom: '1rem'
-          }}>
-            <i className="fa-solid fa-triangle-exclamation" style={{ marginRight: '0.5rem' }}></i>
-            対象レース数が少ないコースです
-          </div>
-        )}
+        <div className={pageStyles.staticPageColumns3}>
+          <aside className={pageStyles.staticPageLeftSidebar}>
+            <AIBanner />
+          </aside>
 
-        <div className="page-header">
+          <article>
+          {/* レース数が少ない場合の警告 */}
+          {course_info.total_races <= 10 && (
+            <div style={{
+              padding: '0.75rem 1.25rem',
+              background: '#fef9e7',
+              border: '0.5px solid #ffc107',
+              borderRadius: '6px',
+              color: '#856404',
+              fontSize: '0.9rem',
+              fontWeight: '600',
+              textAlign: 'center',
+              marginBottom: '1rem'
+            }}>
+              <i className="fa-solid fa-triangle-exclamation" style={{ marginRight: '0.5rem' }}></i>
+              対象レース数が少ないコースです
+            </div>
+          )}
+
+          <div className="page-header">
           <h1>{course_info.racecourse} {course_info.surface}{distanceDisplay}m{trackVariantLabel}</h1>
 
           {/* === データ情報セクション === */}
@@ -1235,10 +1242,12 @@ export default async function CoursePage({ params }: Props) {
 </section>
 
         </article>
+          </article>
+
+          {/* PC用：右サイドバー目次 */}
+          <TableOfContents items={navigationItems} />
         </div>
-        {/* PC用：右サイドバー目次 */}
-        <TableOfContents items={navigationItems} />
-      </main>
+      </div>
 
     </>
   );

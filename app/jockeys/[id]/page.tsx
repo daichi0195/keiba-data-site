@@ -27,6 +27,8 @@ import JockeyTrainerHighlights from '@/components/JockeyTrainerHighlights';
 import { getJockeyDataFromGCS } from '@/lib/getJockeyDataFromGCS';
 import { ALL_JOCKEYS } from '@/lib/jockeys';
 import { ALL_TRAINERS } from '@/lib/trainers';
+import pageStyles from '@/app/static-page.module.css';
+import AIBanner from '@/components/AIBanner';
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
@@ -804,10 +806,9 @@ export default async function JockeyPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <BottomNav items={navigationItems} />
-      <main>
-        <div>
+      <div className={pageStyles.staticPageContainer}>
           {/* パンくずリスト */}
-          <nav className="breadcrumb">
+          <nav className={pageStyles.staticPageBreadcrumb}>
             <Link href="/">HOME</Link>
             <span> &gt; </span>
             <Link href="/jockeys">騎手一覧</Link>
@@ -815,11 +816,15 @@ export default async function JockeyPage({
             <span>{jockey.name}</span>
           </nav>
 
+          <div className={pageStyles.staticPageColumns3}>
+          {/* 左サイドバー（将来広告用） */}
+          <aside className={pageStyles.staticPageLeftSidebar}>
+            <AIBanner />
+          </aside>
+          <article>
           {/* 騎手ヘッダー */}
           <div className="page-header">
             <h1>{jockey.name}騎手の成績・データ</h1>
-
-            {/* データ情報セクション */}
             <div className="course-meta-section">
               <div className="meta-item">
                 <span className="meta-label">データ取得期間</span>
@@ -1221,11 +1226,11 @@ export default async function JockeyPage({
               nameLabel="馬主"
             />
           </section>
-        </article>
-        </div>
-        {/* PC用：右サイドバー目次 */}
-        <TableOfContents items={navigationItems} />
-      </main>
+          </article>
+          </article>
+          <TableOfContents items={navigationItems} />
+          </div>
+      </div>
     </>
   );
 }

@@ -178,26 +178,26 @@ header {
 }
 
 .content-card h3 {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
-  color: #2d3748;
+  color: #4b5563;
 }
 
 /* PC表示時：コンテンツカードの余白を拡大 */
 @media (min-width: 769px) {
   .content-card {
-    padding: 32px 40px;
+    padding: 24px;
     border-radius: 12px;
   }
 
   .content-card .section,
   .content-card > section {
-    padding: 0 0 24px 0;
-    margin-bottom: 32px;
+    padding: 0 0 8px 0;
+    margin-bottom: 8px;
   }
 
   .content-card h3 {
-    font-size: 20px;
+    font-size: 17px;
   }
 }
 
@@ -299,11 +299,11 @@ main:has(aside) {
 
   /* ヘッダーサイズの調整 */
   .page-header h1 {
-    font-size: 28px;
+    font-size: 24px;
   }
 
   h2.section-title {
-    font-size: 26px;
+    font-size: 20px;
     margin-bottom: 20px;
     padding-left: 1rem;
     padding-bottom: 0;
@@ -1326,7 +1326,7 @@ main:has(aside) {
 .ranking-detail-title {
   font-size: 0.9rem;
   font-weight: 700;
-  color: var(--text-dark);
+  color: #4b5563;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--border-subtle);
 }
@@ -1462,7 +1462,7 @@ details[open] .evaluation-content {
   margin: 0;
   font-size: 0.9rem;
   font-weight: 700;
-  color: var(--text-dark);
+  color: #4b5563;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--border-subtle);
 }
@@ -1575,7 +1575,7 @@ details[open] .evaluation-content {
 .running-style-detail-title {
   font-size: 0.9rem;
   font-weight: 700;
-  color: var(--text-dark);
+  color: #4b5563;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--border-subtle);
 }
@@ -2522,13 +2522,13 @@ a.no-ellipsis-link * {
   }
   
   .page-header {
-    padding: 2.5rem 3rem;
-    margin-bottom: 2rem;
+    padding: 24px;
+    margin-bottom: 1rem;
     border-radius: 12px;
   }
 
   .page-header h1 {
-    font-size: 32px;
+    font-size: 24px;
     margin-bottom: 1.5rem;
   }
   
@@ -3069,12 +3069,12 @@ h3.subsection-title:first-of-type {
   }
 
   .page-header {
-    padding: 12px;
+    padding: 24px;
     margin: 0 0 1rem 0;
   }
 
   .page-header h1 {
-    font-size: 26px;
+    font-size: 24px;
     margin: 0 0 12px 0;
   }
 

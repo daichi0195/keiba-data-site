@@ -27,6 +27,7 @@ import ComparisonTable from '@/components/ComparisonTable';
 import GenderTable from '@/components/GenderTable';
 import PreviousFinishTable from '@/components/PreviousFinishTable';
 import styles from './page.module.css';
+import pageStyles from '@/app/static-page.module.css';
 
 // 見出しのIDを生成する関数
 function generateId(text: string): string {
@@ -168,17 +169,18 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
   return (
     <>
-      <div className={styles.articleMain}>
-        <div className={styles.container}>
+      <div className={pageStyles.staticPageContainer}>
+        {/* パンくずリスト */}
+        <nav className={pageStyles.staticPageBreadcrumb}>
+          <Link href="/">HOME</Link>
+          <span> &gt; </span>
+          <Link href="/articles">記事一覧</Link>
+          <span> &gt; </span>
+          <span>{title}</span>
+        </nav>
+
+        <div className={pageStyles.staticPageColumns}>
           <div className={styles.mainContent}>
-            {/* パンくずリスト */}
-            <nav className={styles.breadcrumb}>
-              <Link href="/">HOME</Link>
-              <span> &gt; </span>
-              <Link href="/articles">記事一覧</Link>
-              <span> &gt; </span>
-              <span>{title}</span>
-            </nav>
 
             <article className={styles.article}>
               {/* 記事タイトルと日付 */}
@@ -337,9 +339,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </div>
 
           {/* 右サイドバー：目次・広告エリア */}
-          <aside className={styles.sidebar}>
-            <TableOfContents />
-          </aside>
+          <TableOfContents />
         </div>
       </div>
 

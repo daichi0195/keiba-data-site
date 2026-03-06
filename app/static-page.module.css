@@ -16,6 +16,37 @@
     gap: 1rem;
     align-items: start;
   }
+
+  .staticPageColumns > article {
+    min-width: 0;
+  }
+}
+
+/* PC: 3カラムグリッド（左サイドバー＋メイン＋TOC） */
+@media (min-width: 769px) {
+  .staticPageColumns3 {
+    display: grid;
+    grid-template-columns: 240px 1fr 280px;
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .staticPageColumns3 > article {
+    min-width: 0;
+  }
+}
+
+/* 左サイドバー（広告用プレースホルダー） */
+.staticPageLeftSidebar {
+  display: none;
+}
+
+@media (min-width: 769px) {
+  .staticPageLeftSidebar {
+    display: block;
+    position: sticky;
+    top: 80px;
+  }
 }
 
 /* パンくずリスト */

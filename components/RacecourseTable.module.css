@@ -126,6 +126,7 @@
     padding: 8px 8px;
     vertical-align: middle;
     height: 45px;
+    font-size: 13px;
   }
 
   .table tbody tr:first-child td {
