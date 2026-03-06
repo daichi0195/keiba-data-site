@@ -100,13 +100,12 @@ const mockVenues: Venue[] = [
       turf: [
         { distance: 1200 },
         { distance: 1400 },
-        { distance: 1600, variant: 'inner', label: '1600m(内)' },
-        { distance: 1600, variant: 'outer', label: '1600m(外)' },
+        { distance: 1600 },
         { distance: 1800 },
-        { distance: 2000, variant: 'inner', label: '2000m(内)' },
-        { distance: 2000, variant: 'outer', label: '2000m(外)' },
+        { distance: 2000 },
         { distance: 2200 },
         { distance: 2400 },
+        { distance: 2600 },
         { distance: 3000 },
       ],
       dirt: [
@@ -116,6 +115,8 @@ const mockVenues: Venue[] = [
         { distance: 2000 },
       ],
       steeplechase: [
+        { distance: 2970 },
+        { distance: 3110 },
         { distance: 3140 },
         { distance: 3900 },
       ],
