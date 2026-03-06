@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 import ArticleCarousel from '@/components/ArticleCarousel';
-import NextRaceSection from '@/components/NextRaceSection';
 import ThisWeekVenues from '@/components/ThisWeekVenues';
 import AllVenues from '@/components/AllVenues';
 import JockeyLeading from '@/components/JockeyLeading';
@@ -61,7 +60,6 @@ export default async function HomePage() {
         {/* 2カラムレイアウト部分 */}
         <div className="home-columns">
           <article style={{ backgroundColor: 'transparent' }}>
-            {/* <NextRaceSection /> */}
             <ThisWeekVenues />
 
             <div className="home-content-wrapper">
