@@ -1566,9 +1566,14 @@ def _append_to_sires_ts(sires_ts_path, new_entries):
     with open(sires_ts_path, 'r', encoding='utf-8') as f:
         content = f.read()
 
-    # 新エントリの行を生成
+    # 新エントリの行を生成（シングルクォートを含む名前はダブルクォートで囲む）
+    def format_name(name):
+        if "'" in name:
+            return f'"{name}"'
+        return f"'{name}'"
+
     new_lines = '\n'.join(
-        f"  {{ id: {e['id']}, name: '{e['name']}' }},"
+        f"  {{ id: {e['id']}, name: {format_name(e['name'])} }},"
         for e in new_entries
     )
 
