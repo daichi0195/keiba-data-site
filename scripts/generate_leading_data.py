@@ -118,7 +118,7 @@ print(f"   公開URL: https://storage.googleapis.com/umadata/leading.json")
 
 # ローカルのpublic/dataにも保存
 print(f"\n💾 ローカルに保存中...")
-local_path = 'public/data/leading.json'
+local_path = os.path.join(PROJECT_ROOT, 'public', 'data', 'leading.json')
 with open(local_path, 'w', encoding='utf-8') as f:
     f.write(json_str)
 print(f"✅ ローカルに保存完了: {local_path}")
