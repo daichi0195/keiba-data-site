@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import ArticleCarousel from '@/components/ArticleCarousel';
+import AIBanner from '@/components/AIBanner';
 import ThisWeekVenues from '@/components/ThisWeekVenues';
 import AllVenues from '@/components/AllVenues';
 import JockeyLeading from '@/components/JockeyLeading';
@@ -77,12 +78,7 @@ export default async function HomePage() {
 
           {/* バナーエリア */}
           <aside className={styles.homeSidebar}>
-            <div className={styles.bannerArea}>
-              <div className={styles.bannerPlaceholder}>
-                <div className={styles.bannerTitle}>競馬AI製作中！</div>
-                <div className={styles.bannerSubtitle}>COMING SOON</div>
-              </div>
-            </div>
+            <AIBanner />
           </aside>
         </div>
       </main>
