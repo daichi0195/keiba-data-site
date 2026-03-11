@@ -7,13 +7,18 @@ Usage:
 """
 
 import json
+import os
 import sys
 from datetime import datetime
 from google.cloud import bigquery
 from google.cloud import storage
 
+# スクリプト自身のディレクトリを基準にパスを解決
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
+
 # lib/siresからALL_SIRESをインポート（種牡馬IDマッピング用）
-sys.path.insert(0, 'lib')
+sys.path.insert(0, os.path.join(PROJECT_ROOT, 'lib'))
 try:
     from sires_data import ALL_SIRES_DATA
     # 名前でマッピングできるように辞書を作成
@@ -31,7 +36,7 @@ current_year = datetime.now().year
 print(f"📊 {current_year}年のリーディングデータを生成中...")
 
 # SQLファイルを読み込み
-with open('scripts/generate_leading_data.sql', 'r', encoding='utf-8') as f:
+with open(os.path.join(SCRIPT_DIR, 'generate_leading_data.sql'), 'r', encoding='utf-8') as f:
     sql = f.read()
 
 # current_yearを置き換え
