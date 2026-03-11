@@ -79,10 +79,10 @@ export default function AllVenues() {
                     <span className={`${styles.surfaceBadge} ${styles.surfaceBadgeTurf}`}>芝 {turfCourses.length}コース</span>
                   )}
                   {dirtCourses.length > 0 && (
-                    <span className={`${styles.surfaceBadge} ${styles.surfaceBadgeDirt}`}>ダート {dirtCourses.length}コース</span>
+                    <span className={`${styles.surfaceBadge} ${styles.surfaceBadgeDirt}`}>ダ {dirtCourses.length}コース</span>
                   )}
                   {steeplechaseCourses.length > 0 && (
-                    <span className={`${styles.surfaceBadge} ${styles.surfaceBadgeSteeplechase}`}>障害 {steeplechaseCourses.length}コース</span>
+                    <span className={`${styles.surfaceBadge} ${styles.surfaceBadgeSteeplechase}`}>障 {steeplechaseCourses.length}コース</span>
                   )}
                 </div>
               </button>
