@@ -1642,11 +1642,11 @@ def main():
         with open(sires_ts_path, 'r', encoding='utf-8') as f:
             content = f.read()
             import re
-            # { id: 1, name: 'ロードカナロア' } のようなパターンをマッチ
-            pattern = r"\{\s*id:\s*(\d+),\s*name:\s*'([^']+)'\s*\}"
+            # { id: 1, name: 'ロードカナロア' } または { id: 1, name: "Liam's Map" } をマッチ
+            pattern = r"""\{\s*id:\s*(\d+),\s*name:\s*(?:'([^']+)'|"([^"]+)")\s*\}"""
             for match in re.finditer(pattern, content):
                 sire_id = int(match.group(1))
-                sire_name = match.group(2)
+                sire_name = match.group(2) or match.group(3)
                 sire_mapping[sire_id] = sire_name
                 sire_mapping[sire_name] = sire_id
 
