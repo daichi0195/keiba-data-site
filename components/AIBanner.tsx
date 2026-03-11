@@ -10,7 +10,8 @@ export default function AIBanner() {
       <div className={styles.bookmarkBanner}>
         <div className={styles.bookmarkIcon}>🔖</div>
         <div className={styles.bookmarkTitle}>ブックマーク登録</div>
-        <div className={styles.bookmarkSubtitle}>毎週の予想に活用！</div>
+        <div className={styles.bookmarkCommand}>Ctrl+D / ⌘+D</div>
+        <div className={styles.bookmarkSubtitle}>でブックマークに登録！</div>
       </div>
     </>
   );
