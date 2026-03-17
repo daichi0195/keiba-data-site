@@ -189,6 +189,7 @@
 
 /* 競馬場タブ（セグメントコントロール型） */
 .venueTabs {
+  position: relative;
   display: flex;
   background: #e2e8f0;
   border-radius: 8px;
@@ -197,8 +198,26 @@
   margin-bottom: 12px;
 }
 
+/* スライドするアクティブインジケーター */
+.venueTabIndicator {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: calc((100% - 6px) / var(--tab-count));
+  height: calc(100% - 6px);
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.13);
+  transform: translateX(calc(var(--active-index) * 100%));
+  transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  z-index: 0;
+}
+
 .venueTab {
   flex: 1;
+  position: relative;
+  z-index: 1;
   background: none;
   border: none;
   border-radius: 6px;
@@ -207,7 +226,7 @@
   font-weight: 600;
   color: #718096;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  transition: color 0.2s ease;
   font-family: inherit;
   text-align: center;
   letter-spacing: 0.08em;
@@ -218,9 +237,16 @@
 }
 
 .venueTabActive {
-  background: #fff;
   color: #2d3748;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+}
+
+/* ラベル切り替え（PC: フルネーム表示） */
+.tabLabelFull {
+  display: inline;
+}
+
+.tabLabelShort {
+  display: none;
 }
 
 .venueContent {
@@ -425,6 +451,15 @@
   .venueTab {
     font-size: 15px;
     letter-spacing: 0.02em;
+  }
+
+  /* SP: 競馬場を非表示、短縮名を表示 */
+  .tabLabelFull {
+    display: none;
+  }
+
+  .tabLabelShort {
+    display: inline;
   }
 }
 

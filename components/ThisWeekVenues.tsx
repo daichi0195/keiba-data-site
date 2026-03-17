@@ -44,6 +44,7 @@ interface NextRace {
 interface Venue {
   id: string;
   name: string;
+  shortName: string;
   nextRace?: NextRace;
   courses: {
     turf: Course[];
@@ -57,6 +58,7 @@ const mockVenues: Venue[] = [
   {
     id: 'nakayama',
     name: '中山競馬場',
+    shortName: '中山',
     nextRace: {
       racecourse: '中山',
       raceNumber: 1,
@@ -88,6 +90,7 @@ const mockVenues: Venue[] = [
   {
     id: 'hanshin',
     name: '阪神競馬場',
+    shortName: '阪神',
     nextRace: {
       racecourse: '阪神',
       raceNumber: 1,
@@ -119,6 +122,38 @@ const mockVenues: Venue[] = [
         { distance: 3110 },
         { distance: 3140 },
         { distance: 3900 },
+      ],
+    },
+  },
+  {
+    id: 'chukyo',
+    name: '中京競馬場',
+    shortName: '中京',
+    nextRace: {
+      racecourse: '中京',
+      raceNumber: 1,
+      raceName: '3歳未勝利',
+      startTime: '10:05',
+      surface: 'dirt',
+      distance: 1200,
+    },
+    courses: {
+      turf: [
+        { distance: 1200 },
+        { distance: 1400 },
+        { distance: 1600 },
+        { distance: 1800 },
+        { distance: 2000 },
+        { distance: 2200 },
+      ],
+      dirt: [
+        { distance: 1200 },
+        { distance: 1400 },
+        { distance: 1800 },
+      ],
+      steeplechase: [
+        { distance: 3000 },
+        { distance: 3500 },
       ],
     },
   },
@@ -401,14 +436,22 @@ export default function ThisWeekVenues({ noWrapper = false }: { noWrapper?: bool
         {!noWrapper && <h2 className={`section-title is-visible ${styles.mainTitle}`}>今週開催の競馬場</h2>}
 
         {/* 競馬場タブ */}
-        <div className={styles.venueTabs}>
+        <div
+          className={styles.venueTabs}
+          style={{
+            '--tab-count': mockVenues.length,
+            '--active-index': mockVenues.findIndex((v) => v.id === selectedVenueId),
+          } as React.CSSProperties}
+        >
+          <span className={styles.venueTabIndicator} aria-hidden="true" />
           {mockVenues.map((venue) => (
             <button
               key={venue.id}
               className={`${styles.venueTab} ${selectedVenueId === venue.id ? styles.venueTabActive : ''}`}
               onClick={() => setSelectedVenueId(venue.id)}
             >
-              {venue.name}
+              <span className={styles.tabLabelFull}>{venue.name}</span>
+              <span className={styles.tabLabelShort}>{venue.shortName}</span>
             </button>
           ))}
         </div>

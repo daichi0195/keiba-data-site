@@ -16,19 +16,20 @@ DATASET = 'umadata.keiba_data'
 
 # グローバル変数として現在処理中の種牡馬情報を保持
 SIRE_NAME = None
+SIRE_NAME_SQL = None  # SQL文字列内で安全に使えるエスケープ済み名前
 
 def get_sire_basic_info(client):
     """種牡馬の基本情報を取得"""
     # 種牡馬を父に持つ馬の数を取得
     query = f"""
     SELECT
-      '{SIRE_NAME}' as name,
-      '{SIRE_NAME}' as name_en,
+      '{SIRE_NAME_SQL}' as name,
+      '{SIRE_NAME_SQL}' as name_en,
       COUNT(DISTINCT h.horse_id) as total_horses
     FROM
       `{DATASET}.horse` h
     WHERE
-      h.father = '{SIRE_NAME}'
+      h.father = '{SIRE_NAME_SQL}'
     """
 
     try:
@@ -66,7 +67,7 @@ def get_total_stats(client):
       JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
       JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
     WHERE
-      h.father = '{SIRE_NAME}'
+      h.father = '{SIRE_NAME_SQL}'
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
     """
 
@@ -104,7 +105,7 @@ def get_yearly_stats(client):
       JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
       JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
     WHERE
-      h.father = '{SIRE_NAME}'
+      h.father = '{SIRE_NAME_SQL}'
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
     GROUP BY year
     ORDER BY year DESC
@@ -151,7 +152,7 @@ def get_yearly_leading(client):
       wins,
       ranking
     FROM ranked
-    WHERE father = '{SIRE_NAME}'
+    WHERE father = '{SIRE_NAME_SQL}'
     ORDER BY year DESC
     """
 
@@ -198,7 +199,7 @@ def get_distance_stats(client):
       JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
       JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
     WHERE
-      h.father = '{SIRE_NAME}'
+      h.father = '{SIRE_NAME_SQL}'
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
     GROUP BY category
     ORDER BY
@@ -246,7 +247,7 @@ def get_surface_stats(client):
       JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
       JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
     WHERE
-      h.father = '{SIRE_NAME}'
+      h.father = '{SIRE_NAME_SQL}'
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
     GROUP BY surface
     ORDER BY
@@ -303,7 +304,7 @@ def get_running_style_stats(client):
         all_horses ah
         JOIN `{DATASET}.horse` h ON ah.horse_id = h.horse_id
       WHERE
-        h.father = '{SIRE_NAME}'
+        h.father = '{SIRE_NAME_SQL}'
         AND ah.corner_array IS NOT NULL
         AND ARRAY_LENGTH(ah.corner_array) > 0
     ),
@@ -443,7 +444,7 @@ def get_gate_stats(client):
       JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
       JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
     WHERE
-      h.father = '{SIRE_NAME}'
+      h.father = '{SIRE_NAME_SQL}'
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
       AND rr.bracket_number BETWEEN 1 AND 8
     GROUP BY rr.bracket_number
@@ -502,7 +503,7 @@ def get_track_condition_stats(client):
       JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
       JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
     WHERE
-      h.father = '{SIRE_NAME}'
+      h.father = '{SIRE_NAME_SQL}'
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
       AND rm.track_condition IS NOT NULL
     GROUP BY surface, condition, condition_label
@@ -559,7 +560,7 @@ def get_class_stats(client):
         JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
         JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
       WHERE
-        h.father = '{SIRE_NAME}'
+        h.father = '{SIRE_NAME_SQL}'
         AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
         AND rm.race_class IS NOT NULL
       GROUP BY class_name
@@ -632,7 +633,7 @@ def get_gender_stats(client):
       JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
       JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
     WHERE
-      h.father = '{SIRE_NAME}'
+      h.father = '{SIRE_NAME_SQL}'
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
       AND rr.sex IS NOT NULL
     GROUP BY rr.sex
@@ -676,7 +677,7 @@ def get_age_stats(client):
       JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
       JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
     WHERE
-      h.father = '{SIRE_NAME}'
+      h.father = '{SIRE_NAME_SQL}'
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
       AND rr.age BETWEEN 2 AND 5
     GROUP BY age
@@ -709,7 +710,7 @@ def get_age_stats(client):
           JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
           JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
         WHERE
-          h.father = '{SIRE_NAME}'
+          h.father = '{SIRE_NAME_SQL}'
           AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
           AND rr.age >= 6
         """
@@ -757,7 +758,7 @@ def get_horse_weight_stats(client):
       JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
       JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
     WHERE
-      h.father = '{SIRE_NAME}'
+      h.father = '{SIRE_NAME_SQL}'
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
       AND rr.horse_weight IS NOT NULL
       AND rr.horse_weight > 0
@@ -808,7 +809,7 @@ def get_dam_sire_stats(client):
       JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
       JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
     WHERE
-      h.father = '{SIRE_NAME}'
+      h.father = '{SIRE_NAME_SQL}'
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
       AND h.mf IS NOT NULL
     GROUP BY name
@@ -863,7 +864,7 @@ def get_racecourse_stats(client):
       JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
       JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
     WHERE
-      h.father = '{SIRE_NAME}'
+      h.father = '{SIRE_NAME_SQL}'
       AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
     GROUP BY rm.venue_name
     ORDER BY wins DESC, places_2 DESC, places_3 DESC, races ASC
@@ -897,7 +898,7 @@ def get_racecourse_stats(client):
               JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
               JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
             WHERE
-              h.father = '{SIRE_NAME}'
+              h.father = '{SIRE_NAME_SQL}'
               AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
               AND rm.venue_name IN ('東京', '新潟', '中京', '小倉')
             """
@@ -942,7 +943,7 @@ def get_racecourse_stats(client):
               JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
               JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
             WHERE
-              h.father = '{SIRE_NAME}'
+              h.father = '{SIRE_NAME_SQL}'
               AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
               AND rm.venue_name IN ('札幌', '函館', '福島', '中山', '阪神', '京都')
             """
@@ -987,7 +988,7 @@ def get_racecourse_stats(client):
               JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
               JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
             WHERE
-              h.father = '{SIRE_NAME}'
+              h.father = '{SIRE_NAME_SQL}'
               AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
               AND rm.venue_name IN ('東京', '中山', '阪神', '京都')
             """
@@ -1032,7 +1033,7 @@ def get_racecourse_stats(client):
               JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
               JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
             WHERE
-              h.father = '{SIRE_NAME}'
+              h.father = '{SIRE_NAME_SQL}'
               AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
               AND rm.venue_name IN ('札幌', '函館', '福島', '新潟', '中京', '小倉')
             """
@@ -1093,7 +1094,7 @@ def get_course_stats(client):
         JOIN `{DATASET}.race_result` rr ON rm.race_id = rr.race_id
         JOIN `{DATASET}.horse` h ON rr.horse_id = h.horse_id
       WHERE
-        h.father = '{SIRE_NAME}'
+        h.father = '{SIRE_NAME_SQL}'
         AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
       GROUP BY
         rm.venue_name,
@@ -1188,7 +1189,7 @@ def get_surface_change_stats(client):
         JOIN `{DATASET}.race_result` rr ON h.horse_id = rr.horse_id
         JOIN `{DATASET}.race_master` rm ON rr.race_id = rm.race_id
       WHERE
-        h.father = '{SIRE_NAME}'
+        h.father = '{SIRE_NAME_SQL}'
       QUALIFY ROW_NUMBER() OVER (PARTITION BY h.horse_id ORDER BY rm.race_date ASC) = 1
     ),
     first_dirt_race AS (
@@ -1245,7 +1246,7 @@ def get_surface_change_stats(client):
         JOIN `{DATASET}.race_result` rr ON h.horse_id = rr.horse_id
         JOIN `{DATASET}.race_master` rm ON rr.race_id = rm.race_id
       WHERE
-        h.father = '{SIRE_NAME}'
+        h.father = '{SIRE_NAME_SQL}'
       QUALIFY ROW_NUMBER() OVER (PARTITION BY h.horse_id ORDER BY rm.race_date ASC) = 1
     ),
     first_turf_race AS (
@@ -1312,8 +1313,9 @@ def get_surface_change_stats(client):
 
 def process_sire(bq_client, storage_client, sire_id, sire_name):
     """1頭の種牡馬のデータを処理してGCSにアップロード"""
-    global SIRE_NAME
+    global SIRE_NAME, SIRE_NAME_SQL
     SIRE_NAME = sire_name
+    SIRE_NAME_SQL = sire_name.replace("'", "\\'")
 
     print(f"\n{'='*60}")
     print(f"🏇 Processing: {sire_name} (ID: {sire_id})")
