@@ -14,7 +14,7 @@ const navItems = [
 ];
 
 export default function SpGlobalNav() {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? '';
 
   const isActive = (href: string) => {
     if (href === '/') return pathname === '/';

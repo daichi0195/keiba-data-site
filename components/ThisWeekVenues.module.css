@@ -453,13 +453,5 @@
     letter-spacing: 0.02em;
   }
 
-  /* SP: 競馬場を非表示、短縮名を表示 */
-  .tabLabelFull {
-    display: none;
-  }
-
-  .tabLabelShort {
-    display: inline;
-  }
 }
 
