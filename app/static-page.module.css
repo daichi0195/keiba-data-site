@@ -26,7 +26,7 @@
 @media (min-width: 769px) {
   .staticPageColumns3 {
     display: grid;
-    grid-template-columns: 240px 1fr 280px;
+    grid-template-columns: 280px 1fr 280px;
     gap: 1rem;
     align-items: start;
   }

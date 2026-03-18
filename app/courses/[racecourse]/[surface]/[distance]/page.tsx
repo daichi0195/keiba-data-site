@@ -20,7 +20,9 @@ import { ALL_JOCKEYS } from '@/lib/jockeys';
 import { ALL_SIRES } from '@/lib/sires';
 import { ALL_TRAINERS } from '@/lib/trainers';
 import pageStyles from '@/app/static-page.module.css';
-import AIBanner from '@/components/AIBanner';
+import CourseSidebar from '@/components/CourseSidebar';
+import coursesListStyles from '@/components/CoursesList.module.css';
+import listStyles from '@/components/shared-list.module.css';
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
@@ -788,7 +790,7 @@ export default async function CoursePage({ params }: Props) {
 
         <div className={pageStyles.staticPageColumns3}>
           <aside className={pageStyles.staticPageLeftSidebar}>
-            <AIBanner />
+            <CourseSidebar racecourse={resolvedParams.racecourse} racecourseJa={courseShort} />
           </aside>
 
           <article>
@@ -1131,108 +1133,66 @@ export default async function CoursePage({ params }: Props) {
 </section>
 
 {/* === 他のコースデータ一覧 === */}
-<section id="other-courses-section" className="section" aria-label="他のコースデータ一覧" style={{ margin: 0 }}>
+<section id="other-courses-section" className="section sp-only" aria-label="他のコースデータ一覧" style={{ margin: 0 }}>
   <h2 className="section-title" style={{ marginBottom: '1rem' }}>{courseShort}競馬場のコースデータ一覧</h2>
-  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+  <div className={coursesListStyles.surfaceGroups}>
     {/* 芝コース */}
     {ALL_COURSES.filter(course => course.racecourse === resolvedParams.racecourse && course.surface === 'turf').length > 0 && (
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-        {ALL_COURSES
-          .filter(course => course.racecourse === resolvedParams.racecourse && course.surface === 'turf')
-          .sort((a, b) => {
-            if (a.distance !== b.distance) return a.distance - b.distance;
-            const variantOrder = { undefined: 0, inner: 1, outer: 2 };
-            return (variantOrder[a.variant as keyof typeof variantOrder] || 0) - (variantOrder[b.variant as keyof typeof variantOrder] || 0);
-          })
-          .map(course => (
-            <Link key={`${course.surface}-${course.distance}-${course.variant || 'default'}`} href={getCourseUrl(course)} style={{
-              display: 'inline-block',
-              padding: '9px 14px',
-              textDecoration: 'none',
-              borderRadius: '4px',
-              fontSize: '16px',
-              fontWeight: '500',
-              transition: 'all 0.2s ease',
-              border: '1px solid #3db866',
-              textAlign: 'center',
-              boxSizing: 'border-box',
-              whiteSpace: 'nowrap',
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.12)',
-              lineHeight: '1',
-              background: '#3db866',
-              color: '#fff'
-            }}>
-              {getCourseDisplayName(course)}
-            </Link>
-          ))}
+      <div className={`${coursesListStyles.surfaceGroup} ${coursesListStyles.surfaceGroupTurf}`}>
+        <div className={listStyles.dataCardGrid}>
+          {ALL_COURSES
+            .filter(course => course.racecourse === resolvedParams.racecourse && course.surface === 'turf')
+            .sort((a, b) => {
+              if (a.distance !== b.distance) return a.distance - b.distance;
+              const variantOrder = { undefined: 0, inner: 1, outer: 2 };
+              return (variantOrder[a.variant as keyof typeof variantOrder] || 0) - (variantOrder[b.variant as keyof typeof variantOrder] || 0);
+            })
+            .map(course => (
+              <Link key={`${course.surface}-${course.distance}-${course.variant || 'default'}`} href={getCourseUrl(course)} className={`${coursesListStyles.courseLink} ${coursesListStyles.turfLink}`}>
+                {getCourseDisplayName(course)}
+              </Link>
+            ))}
+        </div>
       </div>
     )}
 
     {/* ダートコース */}
     {ALL_COURSES.filter(course => course.racecourse === resolvedParams.racecourse && course.surface === 'dirt').length > 0 && (
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-        {ALL_COURSES
-          .filter(course => course.racecourse === resolvedParams.racecourse && course.surface === 'dirt')
-          .sort((a, b) => {
-            if (a.distance !== b.distance) return a.distance - b.distance;
-            const variantOrder = { undefined: 0, inner: 1, outer: 2 };
-            return (variantOrder[a.variant as keyof typeof variantOrder] || 0) - (variantOrder[b.variant as keyof typeof variantOrder] || 0);
-          })
-          .map(course => (
-            <Link key={`${course.surface}-${course.distance}-${course.variant || 'default'}`} href={getCourseUrl(course)} style={{
-              display: 'inline-block',
-              padding: '9px 14px',
-              textDecoration: 'none',
-              borderRadius: '4px',
-              fontSize: '16px',
-              fontWeight: '500',
-              transition: 'all 0.2s ease',
-              border: '1px solid #b89066',
-              textAlign: 'center',
-              boxSizing: 'border-box',
-              whiteSpace: 'nowrap',
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.12)',
-              lineHeight: '1',
-              background: '#b89066',
-              color: '#fff'
-            }}>
-              {getCourseDisplayName(course)}
-            </Link>
-          ))}
+      <div className={`${coursesListStyles.surfaceGroup} ${coursesListStyles.surfaceGroupDirt}`}>
+        <div className={listStyles.dataCardGrid}>
+          {ALL_COURSES
+            .filter(course => course.racecourse === resolvedParams.racecourse && course.surface === 'dirt')
+            .sort((a, b) => {
+              if (a.distance !== b.distance) return a.distance - b.distance;
+              const variantOrder = { undefined: 0, inner: 1, outer: 2 };
+              return (variantOrder[a.variant as keyof typeof variantOrder] || 0) - (variantOrder[b.variant as keyof typeof variantOrder] || 0);
+            })
+            .map(course => (
+              <Link key={`${course.surface}-${course.distance}-${course.variant || 'default'}`} href={getCourseUrl(course)} className={`${coursesListStyles.courseLink} ${coursesListStyles.dirtLink}`}>
+                {getCourseDisplayName(course)}
+              </Link>
+            ))}
+        </div>
       </div>
     )}
 
     {/* 障害コース */}
     {ALL_COURSES.filter(course => course.racecourse === resolvedParams.racecourse && course.surface === 'steeplechase').length > 0 && (
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-        {ALL_COURSES
-          .filter(course => course.racecourse === resolvedParams.racecourse && course.surface === 'steeplechase')
-          .sort((a, b) => {
-            if (a.distance !== b.distance) return a.distance - b.distance;
-            const variantOrder = { undefined: 0, inner: 1, outer: 2 };
-            return (variantOrder[a.variant as keyof typeof variantOrder] || 0) - (variantOrder[b.variant as keyof typeof variantOrder] || 0);
-          })
-          .map(course => (
-            <Link key={`${course.surface}-${course.distance}-${course.variant || 'default'}`} href={getCourseUrl(course)} style={{
-              display: 'inline-block',
-              padding: '9px 14px',
-              textDecoration: 'none',
-              borderRadius: '4px',
-              fontSize: '16px',
-              fontWeight: '500',
-              transition: 'all 0.2s ease',
-              border: '1px solid #838b97',
-              textAlign: 'center',
-              boxSizing: 'border-box',
-              whiteSpace: 'nowrap',
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.12)',
-              lineHeight: '1',
-              background: '#838b97',
-              color: '#fff'
-            }}>
-              {getCourseDisplayName(course)}
-            </Link>
-          ))}
+      <div className={`${coursesListStyles.surfaceGroup} ${coursesListStyles.surfaceGroupSteeplechase}`}>
+        <div className={listStyles.dataCardGrid}>
+          {ALL_COURSES
+            .filter(course => course.racecourse === resolvedParams.racecourse && course.surface === 'steeplechase')
+            .sort((a, b) => {
+              if (a.distance !== b.distance) return a.distance - b.distance;
+              const variantOrder = { undefined: 0, inner: 1, outer: 2 };
+              return (variantOrder[a.variant as keyof typeof variantOrder] || 0) - (variantOrder[b.variant as keyof typeof variantOrder] || 0);
+            })
+            .map(course => (
+              <Link key={`${course.surface}-${course.distance}-${course.variant || 'default'}`} href={getCourseUrl(course)} className={`${coursesListStyles.courseLink} ${coursesListStyles.steeplechaseLink}`}>
+                {getCourseDisplayName(course)}
+              </Link>
+            ))}
+        </div>
       </div>
     )}
   </div>

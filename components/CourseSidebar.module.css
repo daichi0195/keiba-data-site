@@ -1,0 +1,166 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ブックマークバナー */
+.bookmarkBanner {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  width: 100%;
+}
+
+.bookmarkIcon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.bookmarkTitle {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #2d3748;
+  letter-spacing: 0.03em;
+}
+
+.bookmarkCommand {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #2d3748;
+  background: #f5f7fa;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 3px 10px;
+  letter-spacing: 0.03em;
+  margin: 0.125rem 0;
+}
+
+.bookmarkSubtitle {
+  font-size: 0.8125rem;
+  color: #718096;
+  font-weight: 500;
+}
+
+/* コース一覧セクション */
+.coursesSection {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.sectionTitle {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 0.75rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+/* サーフェースグループ */
+.surfaceGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.surfaceGroup:last-child {
+  margin-bottom: 0;
+}
+
+/* サーフェースラベル（「芝」「ダート」「障害」） */
+.surfaceLabel {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 2px 7px;
+  border-radius: 4px;
+  align-self: flex-start;
+}
+
+.surfaceLabelTurf {
+  background: rgba(61, 184, 102, 0.12);
+  color: #2a8a52;
+}
+
+.surfaceLabelDirt {
+  background: rgba(184, 144, 102, 0.15);
+  color: #8a6030;
+}
+
+.surfaceLabelSteeplechase {
+  background: rgba(131, 139, 151, 0.15);
+  color: #4a5568;
+}
+
+/* ボタングリッド */
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* コースボタン（アウトライン） */
+.courseBtn {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 4px;
+  border: 1.5px solid;
+  white-space: nowrap;
+  line-height: 1.4;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+}
+
+.courseBtnTurf {
+  color: #2a8a52;
+  border-color: #3db866;
+  background: #fff;
+}
+
+.courseBtnTurf:hover {
+  background: #3db866;
+  color: #fff;
+  text-decoration: none;
+}
+
+.courseBtnDirt {
+  color: #8a6030;
+  border-color: #b89066;
+  background: #fff;
+}
+
+.courseBtnDirt:hover {
+  background: #b89066;
+  color: #fff;
+  text-decoration: none;
+}
+
+.courseBtnSteeplechase {
+  color: #4a5568;
+  border-color: #838b97;
+  background: #fff;
+}
+
+.courseBtnSteeplechase:hover {
+  background: #838b97;
+  color: #fff;
+  text-decoration: none;
+}

@@ -627,6 +627,16 @@ main:has(aside) {
   display: none;
 }
 
+.sp-only {
+  display: block;
+}
+
+@media (min-width: 769px) {
+  .sp-only {
+    display: none;
+  }
+}
+
 @media (max-width: 768px) {
   .sp-br {
     display: block;
