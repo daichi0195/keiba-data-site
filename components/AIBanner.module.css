@@ -1,6 +1,6 @@
 .banner {
   background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-green-dark) 100%);
-  border-radius: 12px;
+  border-radius: 6px;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -30,7 +30,7 @@
 .bookmarkBanner {
   background: #fff;
   border: 1px solid #e2e8f0;
-  border-radius: 12px;
+  border-radius: 6px;
   text-align: center;
   display: flex;
   flex-direction: column;
