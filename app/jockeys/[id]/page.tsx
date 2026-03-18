@@ -839,15 +839,12 @@ export default async function JockeyPage({
                 <span>{jockey.last_updated}</span>
               </div>
             </div>
-          </div>
-
-          <article className="content-card">
-          {/* === ページ概要セクション === */}
-          <section className="page-description-section">
             <p className="page-description">
               {jockey.name}騎手の成績・データをまとめたページです。<br className="sp-br" />独自のデータベースに基づき、直近3年間（{jockey.data_period.match(/（([^）]+)）/)?.[1] ?? ''}）で集計しています。
             </p>
-          </section>
+          </div>
+
+          <article className="content-card">
           {/* 年度別成績セクション */}
           <section id="leading" aria-label="年度別成績">
             <JockeyLeadingChart

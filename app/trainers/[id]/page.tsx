@@ -989,7 +989,6 @@ export default async function TrainerPage({
           {/* 調教師ヘッダー */}
           <div className="page-header">
             <h1>{trainer.name}調教師の成績・データ</h1>
-
             {/* データ情報セクション */}
             <div className="course-meta-section">
               <div className="meta-item">
@@ -1005,15 +1004,12 @@ export default async function TrainerPage({
                 <span>{trainer.last_updated}</span>
               </div>
             </div>
-          </div>
-
-          <article className="content-card">
-          {/* === ページ概要セクション === */}
-          <section className="page-description-section">
             <p className="page-description">
               {trainer.name}調教師の成績・データをまとめたページです。<br className="sp-br" />独自のデータベースに基づき、直近3年間（{trainer.data_period.match(/（([^）]+)）/)?.[1] ?? ''}）で集計しています。
             </p>
-          </section>
+          </div>
+
+          <article className="content-card">
           {/* 年度別成績セクション */}
           <section id="leading" aria-label="年度別成績">
             <JockeyLeadingChart

@@ -811,7 +811,7 @@ export default async function CoursePage({ params }: Props) {
           )}
 
           <div className="page-header">
-          <h1>{course_info.racecourse} {course_info.surface}{distanceDisplay}m{trackVariantLabel}</h1>
+          <h1>{course_info.racecourse}{course_info.surface}{distanceDisplay}m{trackVariantLabel} コースデータ</h1>
 
           {/* === データ情報セクション === */}
           <div className="course-meta-section">
@@ -828,16 +828,13 @@ export default async function CoursePage({ params }: Props) {
               <span>{course_info.last_updated}</span>
             </div>
           </div>
+          <p className="page-description">
+            {course_info.racecourse} {course_info.surface}{distanceDisplay}m{trackVariantLabel}のコースデータをまとめたページです。<br className="sp-br" />独自のデータベースに基づき、直近3年間（{formatDate(threeYearsAgo)}〜{formatDate(yesterday)}）で集計しています。
+          </p>
 
         </div>
 
         <article className="content-card">
-        {/* === ページ概要セクション === */}
-        <section className="page-description-section">
-          <p className="page-description">
-            {course_info.racecourse} {course_info.surface}{distanceDisplay}m{trackVariantLabel}のコースデータをまとめたページです。<br className="sp-br" />独自のデータベースに基づき、直近3年間（{formatDate(threeYearsAgo)}〜{formatDate(yesterday)}）で集計しています。
-          </p>
-        </section>
         {/* === コース特性セクション === */}
         <section id="characteristics-section" aria-label="コース特性">
         <BarChartAnimation>
