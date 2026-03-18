@@ -856,7 +856,7 @@ export default async function SirePage({
               </div>
             </div>
             <p className="page-description">
-              {sire.name}産駒の成績・データをまとめたページです。<br className="sp-br" />独自のデータベースに基づき、直近3年間（{sire.data_period.match(/（([^）]+)）/)?.[1] ?? ''}）で集計しています。
+              {sire.name}産駒の成績・データをまとめたページです。<br className="sp-br" />独自のデータベースで直近3年間分（{sire.data_period.match(/（([^）]+)）/)?.[1] ?? ''}）のデータを集計しています。
             </p>
           </div>
 

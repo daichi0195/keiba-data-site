@@ -831,7 +831,7 @@ export default async function CoursePage({ params }: Props) {
             </div>
           </div>
           <p className="page-description">
-            {course_info.racecourse} {course_info.surface}{distanceDisplay}m{trackVariantLabel}のコースデータをまとめたページです。<br className="sp-br" />独自のデータベースに基づき、直近3年間（{formatDate(threeYearsAgo)}〜{formatDate(yesterday)}）で集計しています。
+            {course_info.racecourse} {course_info.surface}{distanceDisplay}m{trackVariantLabel}のコースデータをまとめたページです。<br className="sp-br" />独自のデータベースで直近3年間分（{formatDate(threeYearsAgo)}〜{formatDate(yesterday)}）のデータを集計しています。
           </p>
 
         </div>

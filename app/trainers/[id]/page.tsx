@@ -1005,7 +1005,7 @@ export default async function TrainerPage({
               </div>
             </div>
             <p className="page-description">
-              {trainer.name}調教師の成績・データをまとめたページです。<br className="sp-br" />独自のデータベースに基づき、直近3年間（{trainer.data_period.match(/（([^）]+)）/)?.[1] ?? ''}）で集計しています。
+              {trainer.name}調教師の成績・データをまとめたページです。<br className="sp-br" />独自のデータベースで直近3年間分（{trainer.data_period.match(/（([^）]+)）/)?.[1] ?? ''}）のデータを集計しています。
             </p>
           </div>
 

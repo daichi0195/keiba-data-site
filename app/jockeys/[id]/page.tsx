@@ -840,7 +840,7 @@ export default async function JockeyPage({
               </div>
             </div>
             <p className="page-description">
-              {jockey.name}騎手の成績・データをまとめたページです。<br className="sp-br" />独自のデータベースに基づき、直近3年間（{jockey.data_period.match(/（([^）]+)）/)?.[1] ?? ''}）で集計しています。
+              {jockey.name}騎手の成績・データをまとめたページです。<br className="sp-br" />独自のデータベースで直近3年間分（{jockey.data_period.match(/（([^）]+)）/)?.[1] ?? ''}）のデータを集計しています。
             </p>
           </div>
 
