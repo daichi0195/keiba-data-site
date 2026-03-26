@@ -320,27 +320,23 @@ export default async function SirePage({
     };
   });
 
-  // 芝の馬場状態データを2グループに統合（良、重〜不良）
+  // 芝の馬場状態データを2グループに統合（良、稍〜不）
   const mergedTurfConditionStats = (() => {
     const good = turfConditionStatsData.find(s => s.condition === 'good');
+    const yielding = turfConditionStatsData.find(s => s.condition === 'yielding');
     const soft = turfConditionStatsData.find(s => s.condition === 'soft');
     const heavy = turfConditionStatsData.find(s => s.condition === 'heavy');
 
-    const mergeConditions = (cond1: any, cond2: any, label: string) => {
-      const conditions = [cond1, cond2].filter(Boolean);
+    const mergeConditions = (items: any[], label: string) => {
+      const conditions = items.filter(Boolean);
       if (conditions.length === 0) return null;
-
       const totalRaces = conditions.reduce((sum, c) => sum + c.races, 0);
       const totalWins = conditions.reduce((sum, c) => sum + c.wins, 0);
       const totalPlaces2 = conditions.reduce((sum, c) => sum + c.places_2, 0);
       const totalPlaces3 = conditions.reduce((sum, c) => sum + c.places_3, 0);
-
       return {
         condition_label: label,
-        races: totalRaces,
-        wins: totalWins,
-        places_2: totalPlaces2,
-        places_3: totalPlaces3,
+        races: totalRaces, wins: totalWins, places_2: totalPlaces2, places_3: totalPlaces3,
         win_rate: totalRaces > 0 ? (totalWins / totalRaces) * 100 : 0,
         quinella_rate: totalRaces > 0 ? ((totalWins + totalPlaces2) / totalRaces) * 100 : 0,
         place_rate: totalRaces > 0 ? ((totalWins + totalPlaces2 + totalPlaces3) / totalRaces) * 100 : 0,
@@ -350,32 +346,28 @@ export default async function SirePage({
     };
 
     const goodCondition = good ? { ...good, condition_label: '良' } : null;
-    const badConditions = mergeConditions(soft, heavy, '重〜不');
+    const badConditions = mergeConditions([yielding, soft, heavy], '稍〜不');
 
     return [goodCondition, badConditions].filter(Boolean);
   })();
 
-  // ダートの馬場状態データを2グループに統合（良、重〜不）
+  // ダートの馬場状態データを2グループに統合（良、稍〜不）
   const mergedDirtConditionStats = (() => {
     const good = dirtConditionStatsData.find(s => s.condition === 'good');
+    const yielding = dirtConditionStatsData.find(s => s.condition === 'yielding');
     const soft = dirtConditionStatsData.find(s => s.condition === 'soft');
     const heavy = dirtConditionStatsData.find(s => s.condition === 'heavy');
 
-    const mergeConditions = (cond1: any, cond2: any, label: string) => {
-      const conditions = [cond1, cond2].filter(Boolean);
+    const mergeConditions = (items: any[], label: string) => {
+      const conditions = items.filter(Boolean);
       if (conditions.length === 0) return null;
-
       const totalRaces = conditions.reduce((sum, c) => sum + c.races, 0);
       const totalWins = conditions.reduce((sum, c) => sum + c.wins, 0);
       const totalPlaces2 = conditions.reduce((sum, c) => sum + c.places_2, 0);
       const totalPlaces3 = conditions.reduce((sum, c) => sum + c.places_3, 0);
-
       return {
         condition_label: label,
-        races: totalRaces,
-        wins: totalWins,
-        places_2: totalPlaces2,
-        places_3: totalPlaces3,
+        races: totalRaces, wins: totalWins, places_2: totalPlaces2, places_3: totalPlaces3,
         win_rate: totalRaces > 0 ? (totalWins / totalRaces) * 100 : 0,
         quinella_rate: totalRaces > 0 ? ((totalWins + totalPlaces2) / totalRaces) * 100 : 0,
         place_rate: totalRaces > 0 ? ((totalWins + totalPlaces2 + totalPlaces3) / totalRaces) * 100 : 0,
@@ -385,7 +377,7 @@ export default async function SirePage({
     };
 
     const goodCondition = good ? { ...good, condition_label: '良' } : null;
-    const badConditions = mergeConditions(soft, heavy, '重〜不');
+    const badConditions = mergeConditions([yielding, soft, heavy], '稍〜不');
 
     return [goodCondition, badConditions].filter(Boolean);
   })();
@@ -395,12 +387,12 @@ export default async function SirePage({
   const runningStyleTrendPosition = sire.characteristics?.running_style_trend_position ?? 3;
   const distanceTrendPosition = sire.characteristics?.distance_trend_position ?? 3;
 
-  // 芝馬場状態別傾向を計算（良 vs 重・不良の複勝率差から判定）
+  // 芝馬場状態別傾向を計算（良 vs 稍重・重・不良の複勝率差から判定）
   const turfGoodConditions = sire.track_condition_stats.filter(s =>
     s.surface === '芝' && s.condition === 'good'
   );
   const turfBadConditions = sire.track_condition_stats.filter(s =>
-    s.surface === '芝' && (s.condition === 'soft' || s.condition === 'heavy')
+    s.surface === '芝' && (s.condition === 'yielding' || s.condition === 'soft' || s.condition === 'heavy')
   );
 
   let turfConditionTrendPosition = 3; // デフォルトは互角
@@ -424,12 +416,12 @@ export default async function SirePage({
     else turfConditionTrendPosition = 3; // 互角
   }
 
-  // ダート馬場状態別傾向を計算（良 vs 重・不良の複勝率差から判定）
+  // ダート馬場状態別傾向を計算（良 vs 稍重・重・不良の複勝率差から判定）
   const dirtGoodConditions = sire.track_condition_stats.filter(s =>
     s.surface === 'ダート' && s.condition === 'good'
   );
   const dirtBadConditions = sire.track_condition_stats.filter(s =>
-    s.surface === 'ダート' && (s.condition === 'soft' || s.condition === 'heavy')
+    s.surface === 'ダート' && (s.condition === 'yielding' || s.condition === 'soft' || s.condition === 'heavy')
   );
 
   let dirtConditionTrendPosition = 3; // デフォルトは互角
