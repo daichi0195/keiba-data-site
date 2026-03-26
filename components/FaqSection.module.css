@@ -1,0 +1,130 @@
+.faqList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.faqItem {
+  border: 1px solid #d0f0df;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.faqQuestion {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  background: #fff;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1a3d28;
+  transition: background 0.15s ease;
+}
+
+.faqQuestion:hover {
+  background: #f7faf8;
+}
+
+.faqQuestion.open {
+  background: #f7faf8;
+  border-bottom: 1px solid #d0f0df;
+}
+
+.qBadge {
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary-green);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 4px;
+  line-height: 1;
+}
+
+.questionText {
+  flex: 1;
+}
+
+.chevron {
+  flex-shrink: 0;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-right: 2px solid var(--primary-green);
+  border-bottom: 2px solid var(--primary-green);
+  transform: rotate(45deg);
+  margin-right: 0.25rem;
+  transition: transform 0.2s ease;
+}
+
+.faqQuestion.open .chevron {
+  transform: rotate(-135deg);
+}
+
+.faqAnswer {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  background: #fff;
+  font-size: 0.875rem;
+  color: #333;
+  line-height: 1.7;
+}
+
+.aBadge {
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  color: var(--primary-green);
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 4px;
+  border: 1.5px solid var(--primary-green);
+  line-height: 1;
+}
+
+.answerText {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.answerConclusion,
+.answerLine {
+  color: #444;
+}
+
+.answerConclusionBold {
+  color: #1a3d28;
+  font-weight: 700;
+}
+
+.answerNote {
+  color: #888;
+  font-size: 0.8rem;
+}
+
+.highlight {
+  font-weight: 700;
+}
+
+.link {
+  color: #2563eb;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

@@ -21,6 +21,7 @@ import { ALL_SIRES } from '@/lib/sires';
 import { ALL_TRAINERS } from '@/lib/trainers';
 import pageStyles from '@/app/static-page.module.css';
 import CourseSidebar from '@/components/CourseSidebar';
+import FaqSection from '@/components/FaqSection';
 import coursesListStyles from '@/components/CoursesList.module.css';
 import listStyles from '@/components/shared-list.module.css';
 
@@ -728,6 +729,106 @@ export default async function CoursePage({ params }: Props) {
   // 「中山芝1800m」のようなSEO用接頭辞
   const seoPrefix = `${courseShort}${course_info.surface}${distanceDisplay}m${trackVariantLabel}`;
 
+  // FAQセクション用 荒れやすさ回答
+  const { trifecta_avg_payback_rank: rankPos, trifecta_median_payback: medianPayback, trifecta_all_median_payback: allMedianPayback, total_courses: totalCourses } = course_info.characteristics;
+  const hasRankingData = rankPos > 0 && totalCourses > 0;
+  const volatilityConclusions: Record<number, string> = {
+    1: `${seoPrefix}は堅く決着しやすいコースです。`,
+    2: `${seoPrefix}はやや堅く決着しやすいコースです。`,
+    3: `${seoPrefix}は標準的なコースです。`,
+    4: `${seoPrefix}はやや荒れやすいコースです。`,
+    5: `${seoPrefix}は荒れやすいコースです。`,
+  };
+  const volatilityDescriptions: Record<number, string> = {
+    1: `上位人気馬が安定して馬券に絡みやすく、堅い決着になりやすいコースです。`,
+    2: `比較的上位人気が馬券に絡みやすい傾向があり、軸馬を人気馬に置いた予想が組みやすいコースです。`,
+    3: `人気馬と穴馬がバランスよく馬券に絡みます。`,
+    4: `穴馬が台頭しやすく、上位人気だけに頼らない幅広い予想が有効です。`,
+    5: `上位人気が馬券外になりやすく高配当が出やすい傾向があります。穴馬を積極的に絡めた予想も視野に入れましょう。`,
+  };
+  const rankText = hasRankingData ? `三連単中央値は全${totalCourses}コース中**${rankPos}位**（このコース：**¥${medianPayback.toLocaleString()}**、全コース中央値：¥${allMedianPayback.toLocaleString()}）。` : '';
+  const volatilityAnswer = [
+    volatilityConclusions[course_info.characteristics.volatility] ?? '',
+    rankText,
+    volatilityDescriptions[course_info.characteristics.volatility] ?? '',
+  ].filter(Boolean).join('\n');
+
+  // FAQ 枠順回答
+  const gateConclusions: Record<number, string> = {
+    1: `${seoPrefix}は内枠が有利なコースです。`,
+    2: `${seoPrefix}はやや内枠が有利なコースです。`,
+    3: `${seoPrefix}は内枠・外枠の差が小さいコースです。`,
+    4: `${seoPrefix}はやや外枠が有利なコースです。`,
+    5: `${seoPrefix}は外枠が有利なコースです。`,
+  };
+  const innerGate = mergedGateStats.find((g: any) => g.label === '内');
+  const outerGate = mergedGateStats.find((g: any) => g.label === '外');
+  const gateDataText = innerGate && outerGate
+    ? `内枠（1〜4番）の複勝率**${innerGate.place_rate.toFixed(1)}%** に対し、外枠（5〜8番）は**${outerGate.place_rate.toFixed(1)}%** です。`
+    : '';
+  const gateDescriptions: Record<number, string> = {
+    1: `内枠の馬を積極的に馬券に絡めるのがおすすめです。`,
+    2: `内枠の馬をやや優先して馬券に絡めるのがおすすめです。`,
+    3: `枠順にかかわらず馬の実力や展開を重視した予想がおすすめです。`,
+    4: `外枠の馬も積極的に馬券に絡めるのがおすすめです。`,
+    5: `外枠の馬を積極的に馬券に絡めるのがおすすめです。`,
+  };
+  const gateAnswer = [
+    gateConclusions[course_info.characteristics.gate_position] ?? '',
+    gateDataText,
+    gateDescriptions[course_info.characteristics.gate_position] ?? '',
+  ].filter(Boolean).join('\n');
+
+  // FAQ 脚質回答
+  const runningStyleConclusions: Record<number, string> = {
+    1: `${seoPrefix}は逃げ・先行馬が有利なコースです。`,
+    2: `${seoPrefix}はやや逃げ・先行馬が有利なコースです。`,
+    3: `${seoPrefix}は脚質による差が小さいコースです。`,
+    4: `${seoPrefix}はやや差し・追込馬が有利なコースです。`,
+    5: `${seoPrefix}は差し・追込馬が有利なコースです。`,
+  };
+  const frontRunner = mergedRunningStyleStats.find((s: any) => s.style === 'front');
+  const closer = mergedRunningStyleStats.find((s: any) => s.style === 'closer');
+  const runningStyleDataText = frontRunner && closer
+    ? `逃げ・先行の複勝率**${frontRunner.place_rate.toFixed(1)}%** に対し、差し・追込は**${closer.place_rate.toFixed(1)}%** です。`
+    : '';
+  const runningStyleDescriptions: Record<number, string> = {
+    1: `逃げ・先行馬を積極的に馬券に絡めるのがおすすめです。`,
+    2: `逃げ・先行馬をやや優先して馬券に絡めるのがおすすめです。`,
+    3: `脚質にかかわらず馬の実力を重視した予想がおすすめです。`,
+    4: `差し・追込馬をやや優先して馬券に絡めるのがおすすめです。`,
+    5: `差し・追込馬を積極的に馬券に絡めるのがおすすめです。`,
+  };
+  const runningStyleAnswer = [
+    runningStyleConclusions[course_info.characteristics.running_style_trend_position] ?? '',
+    runningStyleDataText,
+    runningStyleDescriptions[course_info.characteristics.running_style_trend_position] ?? '',
+  ].filter(Boolean).join('\n');
+
+  // FAQ 騎手回答
+  // FAQ 騎手回答
+  const buildPersonAnswer = (stats: any[], withLinks: any[], label: string, nameSuffix: string = '') => {
+    const qualified = stats.filter((s: any) => (s.races ?? 0) >= 20);
+    const fmt = (s: any, rate: number) => `${s.name}${nameSuffix}（**${rate?.toFixed(1) ?? '-'}%**）`;
+    const byWin = [...qualified].sort((a, b) => b.win_rate - a.win_rate).slice(0, 3).map((s: any) => fmt(s, s.win_rate)).join('、');
+    const byPlace = [...qualified].sort((a, b) => b.place_rate - a.place_rate).slice(0, 3).map((s: any) => fmt(s, s.place_rate)).join('、');
+    const links = withLinks
+      .filter((s: any) => s.link)
+      .map((s: any) => ({ text: s.name, href: s.link }));
+    const answer = qualified.length === 0
+      ? `レース数が少ないため、対象となるデータがありません。\n※直近3年間で20走以上を対象としています。`
+      : [
+          byWin ? `勝率が高い${label}TOP3は${byWin}です。` : '',
+          byPlace ? `複勝率が高い${label}TOP3は${byPlace}です。` : '',
+          `※直近3年間で20走以上を対象としています。`,
+        ].filter(Boolean).join('\n');
+    return { answer, links };
+  };
+
+  const { answer: jockeyAnswer, links: jockeyLinks } = buildPersonAnswer(jockey_stats, jockeyStatsWithLinks, '騎手', '騎手');
+  const { answer: trainerAnswer, links: trainerLinks } = buildPersonAnswer(trainer_stats, trainerStatsWithLinks, '調教師', '調教師');
+  const { answer: sireAnswer, links: sireLinks } = buildPersonAnswer(pedigree_stats, pedigreeStatsWithLinks, '種牡馬');
+
   // ナビゲーション用のセクションアイテム
   const navigationItems = [
     { id: 'characteristics-section', label: 'コースの特徴' },
@@ -741,6 +842,7 @@ export default async function CoursePage({ params }: Props) {
     { id: 'bloodline-section', label: '血統別(種牡馬)' },
     { id: 'dam-sire-section', label: '血統別(母父)' },
     { id: 'trainer-section', label: '調教師別' },
+    { id: 'faq-section', label: 'データQ&A' },
   ];
 
   // 構造化データ - BreadcrumbList
@@ -1198,7 +1300,21 @@ export default async function CoursePage({ params }: Props) {
   </div>
 </section>
 
+        {/* === FAQセクション === */}
+        <section id="faq-section" aria-label="データQ&A">
+          <h2 className="section-title">データQ&amp;A</h2>
+          <FaqSection items={[
+            { question: `${seoPrefix}は荒れやすい？`, answer: volatilityAnswer, boldFirstLine: true },
+            { question: `${seoPrefix}で有利な枠順は？`, answer: gateAnswer, boldFirstLine: true },
+            { question: `${seoPrefix}で有利な脚質は？`, answer: runningStyleAnswer, boldFirstLine: true },
+            { question: `${seoPrefix}が得意な騎手は？`, answer: jockeyAnswer, links: jockeyLinks },
+            { question: `${seoPrefix}が得意な調教師は？`, answer: trainerAnswer, links: trainerLinks },
+            { question: `${seoPrefix}が得意な種牡馬・血統は？`, answer: sireAnswer, links: sireLinks },
+          ]} />
+        </section>
+
         </article>
+
           </article>
 
           {/* PC用：右サイドバー目次 */}
