@@ -164,8 +164,8 @@ header {
 .content-card .section,
 .content-card > section {
   background: transparent;
-  padding: 0 0 12px 0;
-  margin-bottom: 12px;
+  padding: 0;
+  margin-bottom: 2rem;
 }
 
 .content-card > section:last-child {
@@ -192,8 +192,8 @@ header {
 
   .content-card .section,
   .content-card > section {
-    padding: 0 0 8px 0;
-    margin-bottom: 8px;
+    padding: 0;
+    margin-bottom: 2rem;
   }
 
   .content-card h3 {
@@ -1894,6 +1894,7 @@ details[open] .evaluation-content {
 #characteristics-section,
 #characteristics {
   margin-bottom: 24px;
+  padding-bottom: 1rem;
 }
 
 /* owner-stats内のsectionのマージンを0に */
@@ -1996,7 +1997,7 @@ details[open] .evaluation-content {
 /* アコーディオンボタン */
 .show-more-container {
   text-align: center;
-  padding: 1.5rem 0;
+  padding: 1.5rem 0 0 0;
 }
 
 .show-more-button {
@@ -3113,6 +3114,16 @@ h3.subsection-title:first-of-type {
 
   #highlights-section > .highlights-box {
     padding: 1.25rem;
+  }
+
+  /* セクション間の余白をSPでは3remに */
+  .content-card .section,
+  .content-card > section {
+    margin-bottom: 3rem;
+  }
+
+  .content-card > section:last-child {
+    margin-bottom: 0;
   }
 
   /* 他のコースデータ一覧 - SP対応 */

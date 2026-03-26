@@ -816,7 +816,7 @@ export default async function CoursePage({ params }: Props) {
       .filter((s: any) => s.link)
       .map((s: any) => ({ text: s.name, href: s.link }));
     const answer = qualified.length === 0
-      ? `レース数が少ないため、対象となるデータがありません。\n※直近3年間で20走以上を対象としています。`
+      ? `対象となる${label}が存在しません。\n※直近3年間で20走以上を対象としています。`
       : [
           byWin ? `勝率が高い${label}TOP3は${byWin}です。` : '',
           byPlace ? `複勝率が高い${label}TOP3は${byPlace}です。` : '',
@@ -1235,7 +1235,7 @@ export default async function CoursePage({ params }: Props) {
 </section>
 
 {/* === 他のコースデータ一覧 === */}
-<section id="other-courses-section" className="section sp-only" aria-label="他のコースデータ一覧" style={{ margin: 0 }}>
+<section id="other-courses-section" className="section sp-only" aria-label="他のコースデータ一覧">
   <h2 className="section-title" style={{ marginBottom: '1rem' }}>{courseShort}競馬場のコースデータ一覧</h2>
   <div className={coursesListStyles.surfaceGroups}>
     {/* 芝コース */}
