@@ -755,6 +755,12 @@ export default async function JockeyPage({
 
   // ナビゲーションアイテム
   // ===== データQ&A 回答生成 =====
+  const formatCourseName = (c: { racecourse: string; surface_en: string; distance: number; variant?: string }) => {
+    const rc = c.racecourse.replace('競馬場', '');
+    const surf = c.surface_en === 'turf' ? '芝' : c.surface_en === 'dirt' ? 'ダート' : '障害';
+    const variant = c.variant === 'inner' ? '(内)' : c.variant === 'outer' ? '(外)' : '';
+    return `${rc}${surf}${c.distance}m${variant}`;
+  };
   const faqStyleFullName = (style: string) => {
     const map: Record<string, string> = { escape: '逃げ', lead: '先行', pursue: '差し', close: '追い込み' };
     return map[style] || style;
@@ -791,9 +797,9 @@ export default async function JockeyPage({
   const goodCourseAnswer = (() => {
     if (courseQualified.length === 0) return '対象となるコースが存在しません。\n※直近3年間で10走以上を対象としています。';
     const byWin = [...courseQualified].sort((a, b) => b.win_rate - a.win_rate).slice(0, 3)
-      .map(c => `${c.name}（**${c.win_rate.toFixed(1)}%**）`).join('、');
+      .map(c => `${formatCourseName(c)}（**${c.win_rate.toFixed(1)}%**）`).join('、');
     const byPlace = [...courseQualified].sort((a, b) => b.place_rate - a.place_rate).slice(0, 3)
-      .map(c => `${c.name}（**${c.place_rate.toFixed(1)}%**）`).join('、');
+      .map(c => `${formatCourseName(c)}（**${c.place_rate.toFixed(1)}%**）`).join('、');
     return [
       byWin ? `勝率が高いコースTOP3は${byWin}です。` : '',
       byPlace ? `複勝率が高いコースTOP3は${byPlace}です。` : '',
@@ -803,7 +809,7 @@ export default async function JockeyPage({
   const badCourseAnswer = (() => {
     if (courseQualified.length === 0) return '対象となるコースが存在しません。\n※直近3年間で10走以上を対象としています。';
     const byPlace = [...courseQualified].sort((a, b) => a.place_rate - b.place_rate).slice(0, 3)
-      .map(c => `${c.name}（**${c.place_rate.toFixed(1)}%**）`).join('、');
+      .map(c => `${formatCourseName(c)}（**${c.place_rate.toFixed(1)}%**）`).join('、');
     return [
       byPlace ? `複勝率が低いコースTOP3は${byPlace}です。` : '',
       '※直近3年間で10走以上を対象としています。',
