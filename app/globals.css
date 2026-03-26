@@ -1901,7 +1901,13 @@ details[open] .evaluation-content {
 
 /* owner-statsセクション自体のマージンを0に */
 #owner-stats {
-  margin: 0;
+  margin-bottom: 2rem;
+}
+
+/* FAQセクションのH2左ボーダー装飾を非表示 */
+#faq-section h2.section-title {
+  border-left: none;
+  padding-left: 0;
 }
 
 .section-title {
