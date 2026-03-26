@@ -28,6 +28,7 @@ import { getJockeyDataFromGCS } from '@/lib/getJockeyDataFromGCS';
 import { ALL_JOCKEYS } from '@/lib/jockeys';
 import { ALL_TRAINERS } from '@/lib/trainers';
 import pageStyles from '@/app/static-page.module.css';
+import FaqSection from '@/components/FaqSection';
 import AIBanner from '@/components/AIBanner';
 
 // ISR: 週1回（604800秒）再生成
@@ -753,6 +754,136 @@ export default async function JockeyPage({
   })();
 
   // ナビゲーションアイテム
+  // ===== データQ&A 回答生成 =====
+  const faqStyleFullName = (style: string) => {
+    const map: Record<string, string> = { escape: '逃げ', lead: '先行', pursue: '差し', close: '追い込み' };
+    return map[style] || style;
+  };
+  const stripBoldFaq = (text: string) => text.replace(/\*\*([^*]+)\*\*/g, '$1');
+
+  // 得意な競馬場 / 苦手な競馬場
+  const racecourseQualified = (jockey.racecourse_stats ?? [])
+    .filter(r => r.name !== '中央' && r.name !== 'ローカル' && r.races >= 20);
+  const goodRacecourseAnswer = (() => {
+    if (racecourseQualified.length === 0) return '対象となる競馬場が存在しません。\n※直近3年間で20走以上を対象としています。';
+    const byWin = [...racecourseQualified].sort((a, b) => b.win_rate - a.win_rate).slice(0, 3)
+      .map(r => `${r.name}（**${r.win_rate.toFixed(1)}%**）`).join('、');
+    const byPlace = [...racecourseQualified].sort((a, b) => b.place_rate - a.place_rate).slice(0, 3)
+      .map(r => `${r.name}（**${r.place_rate.toFixed(1)}%**）`).join('、');
+    return [
+      byWin ? `勝率が高い競馬場TOP3は${byWin}です。` : '',
+      byPlace ? `複勝率が高い競馬場TOP3は${byPlace}です。` : '',
+      '※直近3年間で20走以上を対象としています。',
+    ].filter(Boolean).join('\n');
+  })();
+  const badRacecourseAnswer = (() => {
+    if (racecourseQualified.length === 0) return '対象となる競馬場が存在しません。\n※直近3年間で20走以上を対象としています。';
+    const byPlace = [...racecourseQualified].sort((a, b) => a.place_rate - b.place_rate).slice(0, 3)
+      .map(r => `${r.name}（**${r.place_rate.toFixed(1)}%**）`).join('、');
+    return [
+      byPlace ? `複勝率が低い競馬場TOP3は${byPlace}です。` : '',
+      '※直近3年間で20走以上を対象としています。',
+    ].filter(Boolean).join('\n');
+  })();
+
+  // 得意なコース / 苦手なコース
+  const courseQualified = (jockey.course_stats ?? []).filter(c => c.races >= 10);
+  const goodCourseAnswer = (() => {
+    if (courseQualified.length === 0) return '対象となるコースが存在しません。\n※直近3年間で10走以上を対象としています。';
+    const byWin = [...courseQualified].sort((a, b) => b.win_rate - a.win_rate).slice(0, 3)
+      .map(c => `${c.name}（**${c.win_rate.toFixed(1)}%**）`).join('、');
+    const byPlace = [...courseQualified].sort((a, b) => b.place_rate - a.place_rate).slice(0, 3)
+      .map(c => `${c.name}（**${c.place_rate.toFixed(1)}%**）`).join('、');
+    return [
+      byWin ? `勝率が高いコースTOP3は${byWin}です。` : '',
+      byPlace ? `複勝率が高いコースTOP3は${byPlace}です。` : '',
+      '※直近3年間で10走以上を対象としています。',
+    ].filter(Boolean).join('\n');
+  })();
+  const badCourseAnswer = (() => {
+    if (courseQualified.length === 0) return '対象となるコースが存在しません。\n※直近3年間で10走以上を対象としています。';
+    const byPlace = [...courseQualified].sort((a, b) => a.place_rate - b.place_rate).slice(0, 3)
+      .map(c => `${c.name}（**${c.place_rate.toFixed(1)}%**）`).join('、');
+    return [
+      byPlace ? `複勝率が低いコースTOP3は${byPlace}です。` : '',
+      '※直近3年間で10走以上を対象としています。',
+    ].filter(Boolean).join('\n');
+  })();
+
+  // 芝とダートどちらが得意？
+  const turfStat = jockey.surface_stats.find(s => s.surface === '芝');
+  const dirtStat = jockey.surface_stats.find(s => s.surface === 'ダート');
+  const surfaceFaqAnswer = (() => {
+    if (!turfStat && !dirtStat) return '対象となるデータが存在しません。';
+    if (!turfStat) return `ダートの成績のみあります。ダートの複勝率は**${dirtStat!.place_rate.toFixed(1)}%**です。`;
+    if (!dirtStat) return `芝の成績のみあります。芝の複勝率は**${turfStat.place_rate.toFixed(1)}%**です。`;
+    const diff = turfStat.place_rate - dirtStat.place_rate;
+    const detail = `芝の複勝率は**${turfStat.place_rate.toFixed(1)}%**、ダートは**${dirtStat.place_rate.toFixed(1)}%**です。`;
+    if (diff >= 5) return `芝の方が得意です。\n${detail}`;
+    if (diff <= -5) return `ダートの方が得意です。\n${detail}`;
+    return `芝とダートで大きな差はありません。\n${detail}`;
+  })();
+
+  // 得意な距離は？
+  const distanceFaqAnswer = (() => {
+    const qualified = jockey.distance_stats.filter(d => d.races > 0);
+    if (qualified.length === 0) return '対象となるデータが存在しません。';
+    const best = [...qualified].sort((a, b) => b.place_rate - a.place_rate)[0];
+    const allText = ['短距離', 'マイル', '中距離', '長距離'].map(cat => {
+      const d = jockey.distance_stats.find(s => s.category === cat);
+      return d && d.races > 0 ? `${cat}**${d.place_rate.toFixed(1)}%**` : null;
+    }).filter(Boolean).join('、');
+    return [
+      `最も複勝率が高い距離は${best.category}（**${best.place_rate.toFixed(1)}%**）です。`,
+      allText ? `各距離の複勝率は${allText}です。` : '',
+    ].filter(Boolean).join('\n');
+  })();
+
+  // 得意な脚質は？
+  const runningStyleFaqAnswer = (() => {
+    const qualified = jockey.running_style_stats.filter(s => s.races > 0);
+    if (qualified.length === 0) return '対象となるデータが存在しません。';
+    const best = [...qualified].sort((a, b) => b.place_rate - a.place_rate)[0];
+    const allText = qualified.map(s => `${faqStyleFullName(s.style)}**${s.place_rate.toFixed(1)}%**`).join('、');
+    return [
+      `最も複勝率が高い脚質は${faqStyleFullName(best.style)}（**${best.place_rate.toFixed(1)}%**）です。`,
+      allText ? `各脚質の複勝率は${allText}です。` : '',
+    ].filter(Boolean).join('\n');
+  })();
+
+  // 人気時の信頼度は？
+  const popularityFaqAnswer = (() => {
+    const f1 = jockey.popularity_stats?.fav1;
+    const f2 = jockey.popularity_stats?.fav2;
+    const f3 = jockey.popularity_stats?.fav3;
+    if (!f1 || f1.races === 0) return '対象となるデータが存在しません。';
+    return [
+      `1番人気時の勝率は**${f1.win_rate.toFixed(1)}%**、複勝率は**${f1.place_rate.toFixed(1)}%**です。`,
+      f2 && f2.races > 0 ? `2番人気時の勝率は**${f2.win_rate.toFixed(1)}%**、複勝率は**${f2.place_rate.toFixed(1)}%**です。` : '',
+      f3 && f3.races > 0 ? `3番人気時の勝率は**${f3.win_rate.toFixed(1)}%**、複勝率は**${f3.place_rate.toFixed(1)}%**です。` : '',
+    ].filter(Boolean).join('\n');
+  })();
+
+  // FAQ構造化データ
+  const faqJockeyJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      { question: `${jockey.name}騎手の得意な競馬場は？`, answer: goodRacecourseAnswer },
+      { question: `${jockey.name}騎手の得意なコースは？`, answer: goodCourseAnswer },
+      { question: `${jockey.name}騎手の芝とダートどちらが得意？`, answer: surfaceFaqAnswer },
+      { question: `${jockey.name}騎手の得意な距離は？`, answer: distanceFaqAnswer },
+      { question: `${jockey.name}騎手の得意な脚質は？`, answer: runningStyleFaqAnswer },
+      { question: `${jockey.name}騎手の人気時の信頼度は？`, answer: popularityFaqAnswer },
+      { question: `${jockey.name}騎手の苦手な競馬場は？`, answer: badRacecourseAnswer },
+      { question: `${jockey.name}騎手の苦手なコースは？`, answer: badCourseAnswer },
+    ].map(({ question, answer }) => ({
+      '@type': 'Question',
+      name: question,
+      acceptedAnswer: { '@type': 'Answer', text: stripBoldFaq(answer) },
+    })),
+  };
+
   const navigationItems = [
     { id: 'leading', label: '年度別' },
     { id: 'characteristics', label: '特徴' },
@@ -769,6 +900,7 @@ export default async function JockeyPage({
     { id: 'course-stats', label: 'コース別' },
     { id: 'trainer-stats', label: '調教師別' },
     { id: 'owner-stats', label: '馬主別' },
+    { id: 'faq-section', label: 'データQ&A' },
   ];
 
   // 構造化データ - BreadcrumbList
@@ -804,6 +936,10 @@ export default async function JockeyPage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJockeyJsonLd) }}
       />
       <BottomNav items={navigationItems} />
       <div className={pageStyles.staticPageContainer}>
@@ -1222,6 +1358,21 @@ export default async function JockeyPage({
               initialShow={10}
               nameLabel="馬主"
             />
+          </section>
+
+          {/* データQ&Aセクション */}
+          <section id="faq-section" aria-label="データQ&A">
+            <h2 className="section-title">データQ&amp;A</h2>
+            <FaqSection items={[
+              { question: `${jockey.name}騎手の得意な競馬場は？`, answer: goodRacecourseAnswer },
+              { question: `${jockey.name}騎手の得意なコースは？`, answer: goodCourseAnswer },
+              { question: `${jockey.name}騎手の芝とダートどちらが得意？`, answer: surfaceFaqAnswer, boldFirstLine: true },
+              { question: `${jockey.name}騎手の得意な距離は？`, answer: distanceFaqAnswer, boldFirstLine: true },
+              { question: `${jockey.name}騎手の得意な脚質は？`, answer: runningStyleFaqAnswer, boldFirstLine: true },
+              { question: `${jockey.name}騎手の人気時の信頼度は？`, answer: popularityFaqAnswer },
+              { question: `${jockey.name}騎手の苦手な競馬場は？`, answer: badRacecourseAnswer },
+              { question: `${jockey.name}騎手の苦手なコースは？`, answer: badCourseAnswer },
+            ]} />
           </section>
           </article>
           </article>
