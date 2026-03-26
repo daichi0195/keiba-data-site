@@ -832,29 +832,34 @@ export default async function JockeyPage({
 
   // 得意な距離は？
   const distanceFaqAnswer = (() => {
-    const qualified = jockey.distance_stats.filter(d => d.races > 0);
-    if (qualified.length === 0) return '対象となるデータが存在しません。';
-    const best = [...qualified].sort((a, b) => b.place_rate - a.place_rate)[0];
-    const allText = ['短距離', 'マイル', '中距離', '長距離'].map(cat => {
-      const d = jockey.distance_stats.find(s => s.category === cat);
-      return d && d.races > 0 ? `${cat}**${d.place_rate.toFixed(1)}%**` : null;
-    }).filter(Boolean).join('、');
-    return [
-      `最も複勝率が高い距離は${best.category}（**${best.place_rate.toFixed(1)}%**）です。`,
-      allText ? `各距離の複勝率は${allText}です。` : '',
-    ].filter(Boolean).join('\n');
+    const groups = mergedDistanceStats as any[];
+    if (groups.length === 0) return '対象となるデータが存在しません。';
+    const best = [...groups].sort((a, b) => b.place_rate - a.place_rate)[0];
+    const other = groups.find(g => g.category !== best.category);
+    const diff = other ? best.place_rate - other.place_rate : 0;
+    const detail = groups.map(g => `${g.category}**${g.place_rate.toFixed(1)}%**`).join('、');
+    const conclusion = diff >= 5
+      ? `${best.category}の方が得意な距離帯です。`
+      : diff <= -5
+      ? `${other!.category}の方が得意な距離帯です。`
+      : '短〜マイルと中〜長距離で大きな差はありません。';
+    return [conclusion, `各距離帯の複勝率は${detail}です。`].join('\n');
   })();
 
   // 得意な脚質は？
   const runningStyleFaqAnswer = (() => {
-    const qualified = jockey.running_style_stats.filter(s => s.races > 0);
-    if (qualified.length === 0) return '対象となるデータが存在しません。';
-    const best = [...qualified].sort((a, b) => b.place_rate - a.place_rate)[0];
-    const allText = qualified.map(s => `${faqStyleFullName(s.style)}**${s.place_rate.toFixed(1)}%**`).join('、');
-    return [
-      `最も複勝率が高い脚質は${faqStyleFullName(best.style)}（**${best.place_rate.toFixed(1)}%**）です。`,
-      allText ? `各脚質の複勝率は${allText}です。` : '',
-    ].filter(Boolean).join('\n');
+    const groups = mergedRunningStyleStats as any[];
+    if (groups.length === 0) return '対象となるデータが存在しません。';
+    const best = [...groups].sort((a, b) => b.place_rate - a.place_rate)[0];
+    const other = groups.find(g => g.category !== best.category);
+    const diff = other ? best.place_rate - other.place_rate : 0;
+    const detail = groups.map(g => `${g.category}**${g.place_rate.toFixed(1)}%**`).join('、');
+    const conclusion = diff >= 5
+      ? `${best.category}が得意な脚質です。`
+      : diff <= -5
+      ? `${other!.category}が得意な脚質です。`
+      : '逃げ・先行と差し・追込で大きな差はありません。';
+    return [conclusion, `各脚質の複勝率は${detail}です。`].join('\n');
   })();
 
   // 人気時の信頼度は？
