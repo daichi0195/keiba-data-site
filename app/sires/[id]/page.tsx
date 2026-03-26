@@ -153,43 +153,6 @@ export default async function SirePage({
     }
   });
 
-  // 距離別データを2グループに統合（短〜マ と 中〜長）
-  const mergedDistanceStats = (() => {
-    const short = sire.distance_stats.find(s => s.category === '短距離');
-    const mile = sire.distance_stats.find(s => s.category === 'マイル');
-    const middle = sire.distance_stats.find(s => s.category === '中距離');
-    const long = sire.distance_stats.find(s => s.category === '長距離');
-
-    const mergeTwoDistances = (dist1: any, dist2: any, label: string) => {
-      if (!dist1 && !dist2) return null;
-      if (!dist1) return { ...dist2, category: label, name: label };
-      if (!dist2) return { ...dist1, category: label, name: label };
-
-      const totalRaces = dist1.races + dist2.races;
-      const totalWins = dist1.wins + dist2.wins;
-      const totalPlaces2 = dist1.places_2 + dist2.places_2;
-      const totalPlaces3 = dist1.places_3 + dist2.places_3;
-
-      return {
-        category: label,
-        name: label,
-        races: totalRaces,
-        wins: totalWins,
-        places_2: totalPlaces2,
-        places_3: totalPlaces3,
-        win_rate: totalRaces > 0 ? (totalWins / totalRaces) * 100 : 0,
-        quinella_rate: totalRaces > 0 ? ((totalWins + totalPlaces2) / totalRaces) * 100 : 0,
-        place_rate: totalRaces > 0 ? ((totalWins + totalPlaces2 + totalPlaces3) / totalRaces) * 100 : 0,
-        win_payback: totalRaces > 0 ? ((dist1.win_payback * dist1.races) + (dist2.win_payback * dist2.races)) / totalRaces : 0,
-        place_payback: totalRaces > 0 ? ((dist1.place_payback * dist1.races) + (dist2.place_payback * dist2.races)) / totalRaces : 0,
-      };
-    };
-
-    const shortMile = mergeTwoDistances(short, mile, '短〜マ');
-    const middleLong = mergeTwoDistances(middle, long, '中〜長');
-
-    return [shortMile, middleLong].filter(Boolean);
-  })();
 
   // 母父統計にリンクを追加（ページが存在する種牡馬のみ）
   const damSireStatsWithLinks = sire.dam_sire_stats.map(stat => {
@@ -985,7 +948,7 @@ export default async function SirePage({
                     <div className="gate-place-rate-detail">
                       <div className="gate-detail-title">距離別複勝率</div>
                       <div className="gate-chart">
-                        {mergedDistanceStats.map((distance) => (
+                        {distanceStatsData.map((distance) => (
                           <div key={distance.category} className="gate-chart-item">
                             <div
                               className="distance-badge"
@@ -1162,7 +1125,7 @@ export default async function SirePage({
           <section id="distance-stats" aria-label="距離別データ">
             <DistanceTable
               title={`${sire.name}産駒 距離別データ`}
-              data={mergedDistanceStats}
+              data={distanceStatsData}
             />
           </section>
 
