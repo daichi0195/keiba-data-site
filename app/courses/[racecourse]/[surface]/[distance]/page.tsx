@@ -845,6 +845,28 @@ export default async function CoursePage({ params }: Props) {
     { id: 'faq-section', label: 'データQ&A' },
   ];
 
+  // 構造化データ - FAQPage
+  const stripBold = (text: string) => text.replace(/\*\*([^*]+)\*\*/g, '$1');
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      { question: `${seoPrefix}は荒れやすい？`, answer: volatilityAnswer },
+      { question: `${seoPrefix}で有利な枠順は？`, answer: gateAnswer },
+      { question: `${seoPrefix}で有利な脚質は？`, answer: runningStyleAnswer },
+      { question: `${seoPrefix}が得意な騎手は？`, answer: jockeyAnswer },
+      { question: `${seoPrefix}が得意な調教師は？`, answer: trainerAnswer },
+      { question: `${seoPrefix}が得意な種牡馬・血統は？`, answer: sireAnswer },
+    ].map(({ question, answer }) => ({
+      '@type': 'Question',
+      name: question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: stripBold(answer),
+      },
+    })),
+  };
+
   // 構造化データ - BreadcrumbList
   const baseUrl = 'https://www.keibadata.com';
   const breadcrumbJsonLd = {
@@ -878,6 +900,10 @@ export default async function CoursePage({ params }: Props) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
       <BottomNav items={navigationItems} />
       <div className={pageStyles.staticPageContainer}>
