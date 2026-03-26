@@ -758,7 +758,7 @@ export default async function JockeyPage({
   const formatCourseName = (c: { racecourse: string; surface_en: string; distance: number; variant?: string }) => {
     const rc = c.racecourse.replace('競馬場', '');
     const surf = c.surface_en === 'turf' ? '芝' : c.surface_en === 'dirt' ? 'ダート' : '障害';
-    const variant = c.variant === 'inner' ? '(内)' : c.variant === 'outer' ? '(外)' : '';
+    const variant = c.variant === 'inner' || c.variant === '内' ? '内回り' : c.variant === 'outer' || c.variant === '外' ? '外回り' : '';
     return `${rc}${surf}${c.distance}m${variant}`;
   };
   const faqStyleFullName = (style: string) => {
@@ -772,10 +772,11 @@ export default async function JockeyPage({
     .filter(r => r.name !== '中央' && r.name !== 'ローカル' && r.races >= 20);
   const goodRacecourseAnswer = (() => {
     if (racecourseQualified.length === 0) return '対象となる競馬場が存在しません。\n※直近3年間で20走以上を対象としています。';
+    const rcName = (r: { name: string }) => r.name.endsWith('競馬場') ? r.name : `${r.name}競馬場`;
     const byWin = [...racecourseQualified].sort((a, b) => b.win_rate - a.win_rate).slice(0, 3)
-      .map(r => `${r.name}（**${r.win_rate.toFixed(1)}%**）`).join('、');
+      .map(r => `${rcName(r)}（**${r.win_rate.toFixed(1)}%**）`).join('、');
     const byPlace = [...racecourseQualified].sort((a, b) => b.place_rate - a.place_rate).slice(0, 3)
-      .map(r => `${r.name}（**${r.place_rate.toFixed(1)}%**）`).join('、');
+      .map(r => `${rcName(r)}（**${r.place_rate.toFixed(1)}%**）`).join('、');
     return [
       byWin ? `勝率が高い競馬場TOP3は${byWin}です。` : '',
       byPlace ? `複勝率が高い競馬場TOP3は${byPlace}です。` : '',
@@ -784,9 +785,13 @@ export default async function JockeyPage({
   })();
   const badRacecourseAnswer = (() => {
     if (racecourseQualified.length === 0) return '対象となる競馬場が存在しません。\n※直近3年間で20走以上を対象としています。';
+    const rcName = (r: { name: string }) => r.name.endsWith('競馬場') ? r.name : `${r.name}競馬場`;
+    const byWin = [...racecourseQualified].sort((a, b) => a.win_rate - b.win_rate).slice(0, 3)
+      .map(r => `${rcName(r)}（**${r.win_rate.toFixed(1)}%**）`).join('、');
     const byPlace = [...racecourseQualified].sort((a, b) => a.place_rate - b.place_rate).slice(0, 3)
-      .map(r => `${r.name}（**${r.place_rate.toFixed(1)}%**）`).join('、');
+      .map(r => `${rcName(r)}（**${r.place_rate.toFixed(1)}%**）`).join('、');
     return [
+      byWin ? `勝率が低い競馬場TOP3は${byWin}です。` : '',
       byPlace ? `複勝率が低い競馬場TOP3は${byPlace}です。` : '',
       '※直近3年間で20走以上を対象としています。',
     ].filter(Boolean).join('\n');
@@ -808,9 +813,12 @@ export default async function JockeyPage({
   })();
   const badCourseAnswer = (() => {
     if (courseQualified.length === 0) return '対象となるコースが存在しません。\n※直近3年間で10走以上を対象としています。';
+    const byWin = [...courseQualified].sort((a, b) => a.win_rate - b.win_rate).slice(0, 3)
+      .map(c => `${formatCourseName(c)}（**${c.win_rate.toFixed(1)}%**）`).join('、');
     const byPlace = [...courseQualified].sort((a, b) => a.place_rate - b.place_rate).slice(0, 3)
       .map(c => `${formatCourseName(c)}（**${c.place_rate.toFixed(1)}%**）`).join('、');
     return [
+      byWin ? `勝率が低いコースTOP3は${byWin}です。` : '',
       byPlace ? `複勝率が低いコースTOP3は${byPlace}です。` : '',
       '※直近3年間で10走以上を対象としています。',
     ].filter(Boolean).join('\n');
@@ -831,47 +839,58 @@ export default async function JockeyPage({
   })();
 
   // 得意な距離は？
+  const distanceCategoryFullName = (cat: string) =>
+    cat === '短〜マ' ? '短距離〜マイル' : cat === '中〜長' ? '中距離〜長距離' : cat;
   const distanceFaqAnswer = (() => {
     const groups = mergedDistanceStats as any[];
     if (groups.length === 0) return '対象となるデータが存在しません。';
     const best = [...groups].sort((a, b) => b.place_rate - a.place_rate)[0];
     const other = groups.find(g => g.category !== best.category);
     const diff = other ? best.place_rate - other.place_rate : 0;
-    const detail = groups.map(g => `${g.category}**${g.place_rate.toFixed(1)}%**`).join('、');
+    const detail = groups.map(g => `${distanceCategoryFullName(g.category)}の複勝率は**${g.place_rate.toFixed(1)}%**`).join('、');
     const conclusion = diff >= 5
-      ? `${best.category}の方が得意な距離帯です。`
+      ? `${distanceCategoryFullName(best.category)}が得意です。`
       : diff <= -5
-      ? `${other!.category}の方が得意な距離帯です。`
-      : '短〜マイルと中〜長距離で大きな差はありません。';
-    return [conclusion, `各距離帯の複勝率は${detail}です。`].join('\n');
+      ? `${distanceCategoryFullName(other!.category)}が得意です。`
+      : '距離帯による大きな結果の差はみられません。';
+    return [conclusion, `${detail}です。`].join('\n');
   })();
 
   // 得意な脚質は？
+  const runningStyleCategoryFullName = (label: string) =>
+    label === '逃・先' ? '逃げ・先行' : label === '差・追' ? '差し・追込' : label;
   const runningStyleFaqAnswer = (() => {
     const groups = mergedRunningStyleStats as any[];
     if (groups.length === 0) return '対象となるデータが存在しません。';
     const best = [...groups].sort((a, b) => b.place_rate - a.place_rate)[0];
-    const other = groups.find(g => g.category !== best.category);
+    const other = groups.find(g => g.style_label !== best.style_label);
     const diff = other ? best.place_rate - other.place_rate : 0;
-    const detail = groups.map(g => `${g.category}**${g.place_rate.toFixed(1)}%**`).join('、');
+    const detail = groups.map(g => `${runningStyleCategoryFullName(g.style_label)}の複勝率は**${g.place_rate.toFixed(1)}%**`).join('、');
     const conclusion = diff >= 5
-      ? `${best.category}が得意な脚質です。`
+      ? `${runningStyleCategoryFullName(best.style_label)}が得意です。`
       : diff <= -5
-      ? `${other!.category}が得意な脚質です。`
-      : '逃げ・先行と差し・追込で大きな差はありません。';
-    return [conclusion, `各脚質の複勝率は${detail}です。`].join('\n');
+      ? `${runningStyleCategoryFullName(other!.style_label)}が得意です。`
+      : '脚質による大きな結果の差はみられません。';
+    return [conclusion, `${detail}です。`].join('\n');
   })();
 
   // 人気時の信頼度は？
   const popularityFaqAnswer = (() => {
     const f1 = jockey.popularity_stats?.fav1;
-    const f2 = jockey.popularity_stats?.fav2;
-    const f3 = jockey.popularity_stats?.fav3;
     if (!f1 || f1.races === 0) return '対象となるデータが存在しません。';
+    const chars = jockey.characteristics;
+    const allAvg = chars?.all_fav1_place_rate;
+    const diff = allAvg != null ? f1.place_rate - allAvg : null;
+    const compText = diff != null
+      ? diff >= 3
+        ? `複勝率は全騎手平均（**${allAvg!.toFixed(1)}%**）と比べると高く、馬券の軸として信頼しやすい傾向にあります。`
+        : diff <= -3
+        ? `複勝率は全騎手平均（**${allAvg!.toFixed(1)}%**）と比べると低く、人気馬でも取りこぼしが多い傾向にあります。`
+        : `複勝率は全騎手平均（**${allAvg!.toFixed(1)}%**）とほぼ同水準です。`
+      : '';
     return [
       `1番人気時の勝率は**${f1.win_rate.toFixed(1)}%**、複勝率は**${f1.place_rate.toFixed(1)}%**です。`,
-      f2 && f2.races > 0 ? `2番人気時の勝率は**${f2.win_rate.toFixed(1)}%**、複勝率は**${f2.place_rate.toFixed(1)}%**です。` : '',
-      f3 && f3.races > 0 ? `3番人気時の勝率は**${f3.win_rate.toFixed(1)}%**、複勝率は**${f3.place_rate.toFixed(1)}%**です。` : '',
+      compText,
     ].filter(Boolean).join('\n');
   })();
 
@@ -882,7 +901,7 @@ export default async function JockeyPage({
     mainEntity: [
       { question: `${jockey.name}騎手の得意な競馬場は？`, answer: goodRacecourseAnswer },
       { question: `${jockey.name}騎手の得意なコースは？`, answer: goodCourseAnswer },
-      { question: `${jockey.name}騎手の芝とダートどちらが得意？`, answer: surfaceFaqAnswer },
+      { question: `${jockey.name}騎手は芝とダートどちらが得意？`, answer: surfaceFaqAnswer },
       { question: `${jockey.name}騎手の得意な距離は？`, answer: distanceFaqAnswer },
       { question: `${jockey.name}騎手の得意な脚質は？`, answer: runningStyleFaqAnswer },
       { question: `${jockey.name}騎手の人気時の信頼度は？`, answer: popularityFaqAnswer },
@@ -1377,7 +1396,7 @@ export default async function JockeyPage({
             <FaqSection items={[
               { question: `${jockey.name}騎手の得意な競馬場は？`, answer: goodRacecourseAnswer },
               { question: `${jockey.name}騎手の得意なコースは？`, answer: goodCourseAnswer },
-              { question: `${jockey.name}騎手の芝とダートどちらが得意？`, answer: surfaceFaqAnswer, boldFirstLine: true },
+              { question: `${jockey.name}騎手は芝とダートどちらが得意？`, answer: surfaceFaqAnswer, boldFirstLine: true },
               { question: `${jockey.name}騎手の得意な距離は？`, answer: distanceFaqAnswer, boldFirstLine: true },
               { question: `${jockey.name}騎手の得意な脚質は？`, answer: runningStyleFaqAnswer, boldFirstLine: true },
               { question: `${jockey.name}騎手の人気時の信頼度は？`, answer: popularityFaqAnswer },

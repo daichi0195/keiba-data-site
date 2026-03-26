@@ -22,6 +22,7 @@ import DistanceDefinition from '@/components/DistanceDefinition';
 import JockeyTrainerHighlights from '@/components/JockeyTrainerHighlights';
 import { getTrainerDataFromGCS } from '@/lib/getTrainerDataFromGCS';
 import { ALL_TRAINERS } from '@/lib/trainers';
+import FaqSection from '@/components/FaqSection';
 import pageStyles from '@/app/static-page.module.css';
 import AIBanner from '@/components/AIBanner';
 
@@ -905,6 +906,122 @@ export default async function TrainerPage({
     ...(localData ? [localData] : [])
   ];
 
+  // ===== データQ&A 回答生成 =====
+  const formatTrainerCourseName = (c: { racecourse: string; surface_en: string; distance: number; variant?: string }) => {
+    const rc = c.racecourse.replace('競馬場', '');
+    const surf = c.surface_en === 'turf' ? '芝' : c.surface_en === 'dirt' ? 'ダート' : '障害';
+    const variant = c.variant === 'inner' || c.variant === '内' ? '内回り' : c.variant === 'outer' || c.variant === '外' ? '外回り' : '';
+    return `${rc}${surf}${c.distance}m${variant}`;
+  };
+  const stripBoldTrainer = (text: string) => text.replace(/\*\*([^*]+)\*\*/g, '$1');
+
+  // 得意な競馬場 / 苦手な競馬場
+  const trainerRacecourseQualified = (trainer.racecourse_stats ?? [])
+    .filter(r => r.name !== '中央' && r.name !== 'ローカル' && r.races >= 20);
+  const trainerGoodRacecourseAnswer = (() => {
+    if (trainerRacecourseQualified.length === 0) return '対象となる競馬場が存在しません。\n※直近3年間で20走以上を対象としています。';
+    const rcName = (r: { name: string }) => r.name.endsWith('競馬場') ? r.name : `${r.name}競馬場`;
+    const byWin = [...trainerRacecourseQualified].sort((a, b) => b.win_rate - a.win_rate).slice(0, 3)
+      .map(r => `${rcName(r)}（**${r.win_rate.toFixed(1)}%**）`).join('、');
+    const byPlace = [...trainerRacecourseQualified].sort((a, b) => b.place_rate - a.place_rate).slice(0, 3)
+      .map(r => `${rcName(r)}（**${r.place_rate.toFixed(1)}%**）`).join('、');
+    return [
+      byWin ? `勝率が高い競馬場TOP3は${byWin}です。` : '',
+      byPlace ? `複勝率が高い競馬場TOP3は${byPlace}です。` : '',
+      '※直近3年間で20走以上を対象としています。',
+    ].filter(Boolean).join('\n');
+  })();
+  const trainerBadRacecourseAnswer = (() => {
+    if (trainerRacecourseQualified.length === 0) return '対象となる競馬場が存在しません。\n※直近3年間で20走以上を対象としています。';
+    const rcName = (r: { name: string }) => r.name.endsWith('競馬場') ? r.name : `${r.name}競馬場`;
+    const byWin = [...trainerRacecourseQualified].sort((a, b) => a.win_rate - b.win_rate).slice(0, 3)
+      .map(r => `${rcName(r)}（**${r.win_rate.toFixed(1)}%**）`).join('、');
+    const byPlace = [...trainerRacecourseQualified].sort((a, b) => a.place_rate - b.place_rate).slice(0, 3)
+      .map(r => `${rcName(r)}（**${r.place_rate.toFixed(1)}%**）`).join('、');
+    return [
+      byWin ? `勝率が低い競馬場TOP3は${byWin}です。` : '',
+      byPlace ? `複勝率が低い競馬場TOP3は${byPlace}です。` : '',
+      '※直近3年間で20走以上を対象としています。',
+    ].filter(Boolean).join('\n');
+  })();
+
+  // 得意なコース / 苦手なコース
+  const trainerCourseQualified = (trainer.course_stats ?? []).filter(c => c.races >= 10 && c.surface_en !== 'obstacle');
+  const trainerGoodCourseAnswer = (() => {
+    if (trainerCourseQualified.length === 0) return '対象となるコースが存在しません。\n※直近3年間で10走以上を対象としています。';
+    const byWin = [...trainerCourseQualified].sort((a, b) => b.win_rate - a.win_rate).slice(0, 3)
+      .map(c => `${formatTrainerCourseName(c)}（**${c.win_rate.toFixed(1)}%**）`).join('、');
+    const byPlace = [...trainerCourseQualified].sort((a, b) => b.place_rate - a.place_rate).slice(0, 3)
+      .map(c => `${formatTrainerCourseName(c)}（**${c.place_rate.toFixed(1)}%**）`).join('、');
+    return [
+      byWin ? `勝率が高いコースTOP3は${byWin}です。` : '',
+      byPlace ? `複勝率が高いコースTOP3は${byPlace}です。` : '',
+      '※直近3年間で10走以上を対象としています。',
+    ].filter(Boolean).join('\n');
+  })();
+  const trainerBadCourseAnswer = (() => {
+    if (trainerCourseQualified.length === 0) return '対象となるコースが存在しません。\n※直近3年間で10走以上を対象としています。';
+    const byWin = [...trainerCourseQualified].sort((a, b) => a.win_rate - b.win_rate).slice(0, 3)
+      .map(c => `${formatTrainerCourseName(c)}（**${c.win_rate.toFixed(1)}%**）`).join('、');
+    const byPlace = [...trainerCourseQualified].sort((a, b) => a.place_rate - b.place_rate).slice(0, 3)
+      .map(c => `${formatTrainerCourseName(c)}（**${c.place_rate.toFixed(1)}%**）`).join('、');
+    return [
+      byWin ? `勝率が低いコースTOP3は${byWin}です。` : '',
+      byPlace ? `複勝率が低いコースTOP3は${byPlace}です。` : '',
+      '※直近3年間で10走以上を対象としています。',
+    ].filter(Boolean).join('\n');
+  })();
+
+  // 芝とダートどちらが得意？
+  const trainerTurfStat = trainer.surface_stats.find(s => s.surface === '芝');
+  const trainerDirtStat = trainer.surface_stats.find(s => s.surface === 'ダート');
+  const trainerSurfaceFaqAnswer = (() => {
+    if (!trainerTurfStat && !trainerDirtStat) return '対象となるデータが存在しません。';
+    if (!trainerTurfStat) return `ダートの成績のみあります。ダートの複勝率は**${trainerDirtStat!.place_rate.toFixed(1)}%**です。`;
+    if (!trainerDirtStat) return `芝の成績のみあります。芝の複勝率は**${trainerTurfStat.place_rate.toFixed(1)}%**です。`;
+    const diff = trainerTurfStat.place_rate - trainerDirtStat.place_rate;
+    const detail = `芝の複勝率は**${trainerTurfStat.place_rate.toFixed(1)}%**、ダートは**${trainerDirtStat.place_rate.toFixed(1)}%**です。`;
+    if (diff >= 5) return `芝の方が得意です。\n${detail}`;
+    if (diff <= -5) return `ダートの方が得意です。\n${detail}`;
+    return `芝とダートで大きな差はありません。\n${detail}`;
+  })();
+
+  // 得意な距離は？
+  const trainerDistanceCategoryFullName = (cat: string) =>
+    cat === '短〜マ' ? '短距離〜マイル' : cat === '中〜長' ? '中距離〜長距離' : cat;
+  const trainerDistanceFaqAnswer = (() => {
+    const groups = mergedDistanceStats as any[];
+    if (groups.length === 0) return '対象となるデータが存在しません。';
+    const best = [...groups].sort((a, b) => b.place_rate - a.place_rate)[0];
+    const other = groups.find(g => g.category !== best.category);
+    const diff = other ? best.place_rate - other.place_rate : 0;
+    const detail = groups.map(g => `${trainerDistanceCategoryFullName(g.category)}の複勝率は**${g.place_rate.toFixed(1)}%**`).join('、');
+    const conclusion = diff >= 5
+      ? `${trainerDistanceCategoryFullName(best.category)}が得意です。`
+      : diff <= -5
+      ? `${trainerDistanceCategoryFullName(other!.category)}が得意です。`
+      : '距離帯による大きな結果の差はみられません。';
+    return [conclusion, `${detail}です。`].join('\n');
+  })();
+
+  // FAQ構造化データ
+  const faqTrainerJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      { question: `${trainer.name}調教師の得意な競馬場は？`, answer: trainerGoodRacecourseAnswer },
+      { question: `${trainer.name}調教師の得意なコースは？`, answer: trainerGoodCourseAnswer },
+      { question: `${trainer.name}調教師は芝とダートどちらが得意？`, answer: trainerSurfaceFaqAnswer },
+      { question: `${trainer.name}調教師の得意な距離は？`, answer: trainerDistanceFaqAnswer },
+      { question: `${trainer.name}調教師の苦手な競馬場は？`, answer: trainerBadRacecourseAnswer },
+      { question: `${trainer.name}調教師の苦手なコースは？`, answer: trainerBadCourseAnswer },
+    ].map(({ question, answer }) => ({
+      '@type': 'Question',
+      name: question,
+      acceptedAnswer: { '@type': 'Answer', text: stripBoldTrainer(answer) },
+    })),
+  };
+
   // ナビゲーションアイテム
   const navigationItems = [
     { id: 'leading', label: '年度別' },
@@ -920,6 +1037,7 @@ export default async function TrainerPage({
     { id: 'course-stats', label: 'コース別' },
     { id: 'jockey-stats', label: '騎手別' },
     { id: 'owner-stats', label: '馬主別' },
+    { id: 'faq-section', label: 'データQ&A' },
   ];
 
   // 構造化データ - BreadcrumbList
@@ -955,6 +1073,10 @@ export default async function TrainerPage({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqTrainerJsonLd) }}
       />
       <BottomNav items={navigationItems} />
       <div className={pageStyles.staticPageContainer}>
@@ -1239,6 +1361,19 @@ export default async function TrainerPage({
               initialShow={10}
               nameLabel="馬主"
             />
+          </section>
+
+          {/* データQ&Aセクション */}
+          <section id="faq-section" aria-label="データQ&A">
+            <h2 className="section-title">データQ&amp;A</h2>
+            <FaqSection items={[
+              { question: `${trainer.name}調教師の得意な競馬場は？`, answer: trainerGoodRacecourseAnswer },
+              { question: `${trainer.name}調教師の得意なコースは？`, answer: trainerGoodCourseAnswer },
+              { question: `${trainer.name}調教師は芝とダートどちらが得意？`, answer: trainerSurfaceFaqAnswer, boldFirstLine: true },
+              { question: `${trainer.name}調教師の得意な距離は？`, answer: trainerDistanceFaqAnswer, boldFirstLine: true },
+              { question: `${trainer.name}調教師の苦手な競馬場は？`, answer: trainerBadRacecourseAnswer },
+              { question: `${trainer.name}調教師の苦手なコースは？`, answer: trainerBadCourseAnswer },
+            ]} />
           </section>
         </article>
           </article>
