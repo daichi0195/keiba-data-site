@@ -211,6 +211,9 @@ header {
   box-shadow: none !important;
 }
 
+.content-card > :last-child {
+  margin-bottom: 0;
+}
 
 /* メインコンテンツ（コースページのみ - asideを持つmain） */
 main:has(aside) {
