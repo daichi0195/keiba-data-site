@@ -153,6 +153,30 @@ export default async function SirePage({
     }
   });
 
+  // 距離別データを2グループに統合（特徴セクション用: 短〜マ と 中〜長）
+  const mergedDistanceStats = (() => {
+    const short = sire.distance_stats.find(s => s.category === '短距離');
+    const mile = sire.distance_stats.find(s => s.category === 'マイル');
+    const middle = sire.distance_stats.find(s => s.category === '中距離');
+    const long = sire.distance_stats.find(s => s.category === '長距離');
+    const merge = (d1: any, d2: any, label: string) => {
+      if (!d1 && !d2) return null;
+      if (!d1) return { ...d2, category: label, name: label };
+      if (!d2) return { ...d1, category: label, name: label };
+      const r = d1.races + d2.races;
+      return {
+        category: label, name: label,
+        races: r, wins: d1.wins + d2.wins,
+        places_2: d1.places_2 + d2.places_2, places_3: d1.places_3 + d2.places_3,
+        win_rate: r > 0 ? ((d1.wins + d2.wins) / r) * 100 : 0,
+        quinella_rate: r > 0 ? ((d1.wins + d2.wins + d1.places_2 + d2.places_2) / r) * 100 : 0,
+        place_rate: r > 0 ? ((d1.wins + d2.wins + d1.places_2 + d2.places_2 + d1.places_3 + d2.places_3) / r) * 100 : 0,
+        win_payback: r > 0 ? (d1.win_payback * d1.races + d2.win_payback * d2.races) / r : 0,
+        place_payback: r > 0 ? (d1.place_payback * d1.races + d2.place_payback * d2.races) / r : 0,
+      };
+    };
+    return [merge(short, mile, '短〜マ'), merge(middle, long, '中〜長')].filter(Boolean);
+  })();
 
   // 母父統計にリンクを追加（ページが存在する種牡馬のみ）
   const damSireStatsWithLinks = sire.dam_sire_stats.map(stat => {
@@ -948,7 +972,7 @@ export default async function SirePage({
                     <div className="gate-place-rate-detail">
                       <div className="gate-detail-title">距離別複勝率</div>
                       <div className="gate-chart">
-                        {distanceStatsData.map((distance) => (
+                        {mergedDistanceStats.map((distance) => (
                           <div key={distance.category} className="gate-chart-item">
                             <div
                               className="distance-badge"
