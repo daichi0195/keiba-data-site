@@ -982,8 +982,10 @@ export default async function TrainerPage({
     const diff = trainerTurfStat.place_rate - trainerDirtStat.place_rate;
     const detail = `芝の複勝率は**${trainerTurfStat.place_rate.toFixed(1)}%**、ダートは**${trainerDirtStat.place_rate.toFixed(1)}%**です。`;
     if (diff >= 5) return `芝の方が得意です。\n${detail}`;
+    if (diff >= 3) return `やや芝の方が得意です。\n${detail}`;
     if (diff <= -5) return `ダートの方が得意です。\n${detail}`;
-    return `芝とダートで大きな差はありません。\n${detail}`;
+    if (diff <= -3) return `ややダートの方が得意です。\n${detail}`;
+    return `大きな差はありません。\n${detail}`;
   })();
 
   // 得意な距離は？
@@ -998,9 +1000,9 @@ export default async function TrainerPage({
     const detail = groups.map(g => `${trainerDistanceCategoryFullName(g.category)}の複勝率は**${g.place_rate.toFixed(1)}%**`).join('、');
     const conclusion = diff >= 5
       ? `${trainerDistanceCategoryFullName(best.category)}が得意です。`
-      : diff <= -5
-      ? `${trainerDistanceCategoryFullName(other!.category)}が得意です。`
-      : '距離帯による大きな結果の差はみられません。';
+      : diff >= 3
+      ? `やや${trainerDistanceCategoryFullName(best.category)}が得意です。`
+      : '大きな差はありません。';
     return [conclusion, `${detail}です。`].join('\n');
   })();
 
