@@ -833,11 +833,11 @@ export default async function JockeyPage({
     if (!dirtStat) return `芝の成績のみあります。芝の複勝率は**${turfStat.place_rate.toFixed(1)}%**です。`;
     const diff = turfStat.place_rate - dirtStat.place_rate;
     const detail = `芝の複勝率は**${turfStat.place_rate.toFixed(1)}%**、ダートは**${dirtStat.place_rate.toFixed(1)}%**です。`;
-    if (diff >= 5) return `芝の方が得意です。\n${detail}`;
-    if (diff >= 3) return `やや芝の方が得意です。\n${detail}`;
-    if (diff <= -5) return `ダートの方が得意です。\n${detail}`;
-    if (diff <= -3) return `ややダートの方が得意です。\n${detail}`;
-    return `大きな差はありません。\n${detail}`;
+    if (diff >= 5) return `芝の方が得意な傾向があります。\n${detail}`;
+    if (diff >= 3) return `やや芝の方が得意な傾向があります。\n${detail}`;
+    if (diff <= -5) return `ダートの方が得意な傾向があります。\n${detail}`;
+    if (diff <= -3) return `ややダートの方が得意な傾向があります。\n${detail}`;
+    return `芝とダートで差はありません。\n${detail}`;
   })();
 
   // 得意な距離は？
@@ -851,10 +851,10 @@ export default async function JockeyPage({
     const diff = other ? best.place_rate - other.place_rate : 0;
     const detail = groups.map(g => `${distanceCategoryFullName(g.category)}の複勝率は**${g.place_rate.toFixed(1)}%**`).join('、');
     const conclusion = diff >= 5
-      ? `${distanceCategoryFullName(best.category)}が得意です。`
+      ? `${distanceCategoryFullName(best.category)}が得意な傾向があります。`
       : diff >= 3
-      ? `やや${distanceCategoryFullName(best.category)}が得意です。`
-      : '大きな差はありません。';
+      ? `やや${distanceCategoryFullName(best.category)}が得意な傾向があります。`
+      : '距離帯で差はありません。';
     return [conclusion, `${detail}です。`].join('\n');
   })();
 
@@ -869,10 +869,10 @@ export default async function JockeyPage({
     const diff = other ? best.place_rate - other.place_rate : 0;
     const detail = groups.map(g => `${runningStyleCategoryFullName(g.style_label)}の複勝率は**${g.place_rate.toFixed(1)}%**`).join('、');
     const conclusion = diff >= 5
-      ? `${runningStyleCategoryFullName(best.style_label)}が得意です。`
+      ? `${runningStyleCategoryFullName(best.style_label)}が得意な傾向があります。`
       : diff >= 3
-      ? `やや${runningStyleCategoryFullName(best.style_label)}が得意です。`
-      : '大きな差はありません。';
+      ? `やや${runningStyleCategoryFullName(best.style_label)}が得意な傾向があります。`
+      : '脚質で差はありません。';
     return [conclusion, `${detail}です。`].join('\n');
   })();
 
