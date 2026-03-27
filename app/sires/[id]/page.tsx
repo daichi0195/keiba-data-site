@@ -892,18 +892,23 @@ export default async function SirePage({
       ].filter(Boolean).join('、');
       if (!good || !bad) return `${surface}：${detail}です。`;
       const diff = good.place_rate - bad.place_rate;
-      const trend = diff >= 5 ? `${surface}は良馬場の方が得意な傾向があります。`
-        : diff >= 3 ? `${surface}はやや良馬場の方が得意な傾向があります。`
-        : diff <= -5 ? `${surface}は道悪の方が得意な傾向があります。`
-        : diff <= -3 ? `${surface}はやや道悪の方が得意な傾向があります。`
-        : `${surface}は馬場状態による差はありません。`;
-      return `${trend}\n${detail}です。`;
+      const trend = diff >= 5 ? `**${surface}は良馬場の方が得意な傾向があります。**`
+        : diff >= 3 ? `**${surface}はやや良馬場の方が得意な傾向があります。**`
+        : diff <= -5 ? `**${surface}は道悪の方が得意な傾向があります。**`
+        : diff <= -3 ? `**${surface}はやや道悪の方が得意な傾向があります。**`
+        : `**${surface}は馬場状態による差はありません。**`;
+      const rainNote = diff <= -5 ? `雨が降った馬場では有利になる傾向があります。`
+        : diff <= -3 ? `雨が降った馬場ではやや有利になる傾向があります。`
+        : diff >= 5 ? `雨が降った馬場では割引が必要です。`
+        : diff >= 3 ? `雨が降った馬場ではやや割引が必要です。`
+        : '';
+      return [trend, `${detail}です。`, rainNote].filter(Boolean).join('\n');
     };
 
     const turfText = conditionText(turfGood, turfBad, '芝');
     const dirtText = conditionText(dirtGood, dirtBad, 'ダート');
     if (!turfText && !dirtText) return '対象となるデータが存在しません。';
-    return [turfText, dirtText].filter(Boolean).join('\n');
+    return [turfText, dirtText].filter(Boolean).join('\n\n');
   })();
 
   // FAQ構造化データ

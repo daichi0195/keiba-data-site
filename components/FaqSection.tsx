@@ -57,16 +57,16 @@ function AnswerText({ text, links, boldFirstLine }: { text: string; links?: FaqL
   const lines = text.split('\n');
   return (
     <span className={styles.answerText}>
-      {lines.map((line, i) => (
-        <span key={i} className={
-          line.startsWith('※') ? styles.answerNote
+      {lines.map((line, i) => {
+        if (line === '') return <span key={i} className={styles.answerSpacer} />;
+        const isFullBold = line.startsWith('**') && line.endsWith('**');
+        const cls = line.startsWith('※') ? styles.answerNote
           : i === 0 && boldFirstLine ? styles.answerConclusionBold
+          : isFullBold ? styles.answerConclusion
           : i === 0 ? styles.answerConclusion
-          : styles.answerLine
-        }>
-          {parseLine(line, links)}
-        </span>
-      ))}
+          : styles.answerLine;
+        return <span key={i} className={cls}>{parseLine(line, links)}</span>;
+      })}
     </span>
   );
 }

@@ -104,19 +104,26 @@
   gap: 0.4rem;
 }
 
-.answerConclusion,
+.answerConclusion {
+  color: #1f2937;
+}
+
 .answerLine {
   color: #444;
 }
 
 .answerConclusionBold {
-  color: #1a3d28;
+  color: #1f2937;
   font-weight: 700;
 }
 
 .answerNote {
   color: #888;
   font-size: 0.8rem;
+}
+
+.answerSpacer {
+  height: 0.4rem;
 }
 
 .highlight {
