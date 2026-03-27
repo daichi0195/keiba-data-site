@@ -1,10 +1,12 @@
 .accordionItem {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 16px 0;
 }
 
 .accordionHeader {
   width: 100%;
-  padding: 0.75rem 0 0 0;
+  padding: 0;
   background: transparent;
   border: none;
   display: flex;
@@ -13,7 +15,7 @@
   cursor: pointer;
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--text-dark);
+  color: #2d3748;
   text-align: left;
 }
 
@@ -44,7 +46,7 @@
 @media (max-width: 768px) {
   .accordionHeader {
     font-size: 1rem;
-    padding: 0.625rem 0 0 0;
+    padding: 0;
   }
 
   .courseCount {
