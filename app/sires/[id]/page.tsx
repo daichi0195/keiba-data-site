@@ -29,6 +29,7 @@ import JockeyTrainerHighlights from '@/components/JockeyTrainerHighlights';
 import { ALL_SIRES } from '@/lib/sires';
 import pageStyles from '@/app/static-page.module.css';
 import AIBanner from '@/components/AIBanner';
+import FaqSection from '@/components/FaqSection';
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
@@ -776,6 +777,154 @@ export default async function SirePage({
     ...(localData ? [localData] : [])
   ];
 
+  // ===== データQ&A 回答生成 =====
+  const formatSireCourseName = (c: { racecourse: string; surface_en: string; distance: number; variant?: string }) => {
+    const rc = c.racecourse.replace('競馬場', '');
+    const surf = c.surface_en === 'turf' ? '芝' : c.surface_en === 'dirt' ? 'ダート' : '障害';
+    const variant = c.variant === 'inner' || c.variant === '内' ? '内回り' : c.variant === 'outer' || c.variant === '外' ? '外回り' : '';
+    return `${rc}${surf}${c.distance}m${variant}`;
+  };
+  const stripBoldSire = (text: string) => text.replace(/\*\*([^*]+)\*\*/g, '$1');
+
+  // 得意な競馬場 / 苦手な競馬場
+  const sireRacecourseQualified = (sire.racecourse_stats ?? [])
+    .filter((r: any) => r.name !== '中央' && r.name !== 'ローカル' && r.races >= 20);
+  const sireGoodRacecourseAnswer = (() => {
+    if (sireRacecourseQualified.length === 0) return '対象となる競馬場が存在しません。\n※直近3年間で20走以上を対象としています。';
+    const rcName = (r: any) => r.name.endsWith('競馬場') ? r.name : `${r.name}競馬場`;
+    const byWin = [...sireRacecourseQualified].sort((a: any, b: any) => b.win_rate - a.win_rate).slice(0, 3)
+      .map((r: any) => `${rcName(r)}（**${r.win_rate.toFixed(1)}%**）`).join('、');
+    const byPlace = [...sireRacecourseQualified].sort((a: any, b: any) => b.place_rate - a.place_rate).slice(0, 3)
+      .map((r: any) => `${rcName(r)}（**${r.place_rate.toFixed(1)}%**）`).join('、');
+    return [
+      byWin ? `勝率が高い競馬場TOP3は${byWin}です。` : '',
+      byPlace ? `複勝率が高い競馬場TOP3は${byPlace}です。` : '',
+      '※直近3年間で20走以上を対象としています。',
+    ].filter(Boolean).join('\n');
+  })();
+  const sireBadRacecourseAnswer = (() => {
+    if (sireRacecourseQualified.length === 0) return '対象となる競馬場が存在しません。\n※直近3年間で20走以上を対象としています。';
+    const rcName = (r: any) => r.name.endsWith('競馬場') ? r.name : `${r.name}競馬場`;
+    const byWin = [...sireRacecourseQualified].sort((a: any, b: any) => a.win_rate - b.win_rate).slice(0, 3)
+      .map((r: any) => `${rcName(r)}（**${r.win_rate.toFixed(1)}%**）`).join('、');
+    const byPlace = [...sireRacecourseQualified].sort((a: any, b: any) => a.place_rate - b.place_rate).slice(0, 3)
+      .map((r: any) => `${rcName(r)}（**${r.place_rate.toFixed(1)}%**）`).join('、');
+    return [
+      byWin ? `勝率が低い競馬場TOP3は${byWin}です。` : '',
+      byPlace ? `複勝率が低い競馬場TOP3は${byPlace}です。` : '',
+      '※直近3年間で20走以上を対象としています。',
+    ].filter(Boolean).join('\n');
+  })();
+
+  // 得意なコース / 苦手なコース
+  const sireCourseQualified = (sire.course_stats ?? []).filter((c: any) => c.races >= 10 && c.surface_en !== 'obstacle');
+  const sireGoodCourseAnswer = (() => {
+    if (sireCourseQualified.length === 0) return '対象となるコースが存在しません。\n※直近3年間で10走以上を対象としています。';
+    const byWin = [...sireCourseQualified].sort((a: any, b: any) => b.win_rate - a.win_rate).slice(0, 3)
+      .map((c: any) => `${formatSireCourseName(c)}（**${c.win_rate.toFixed(1)}%**）`).join('、');
+    const byPlace = [...sireCourseQualified].sort((a: any, b: any) => b.place_rate - a.place_rate).slice(0, 3)
+      .map((c: any) => `${formatSireCourseName(c)}（**${c.place_rate.toFixed(1)}%**）`).join('、');
+    return [
+      byWin ? `勝率が高いコースTOP3は${byWin}です。` : '',
+      byPlace ? `複勝率が高いコースTOP3は${byPlace}です。` : '',
+      '※直近3年間で10走以上を対象としています。',
+    ].filter(Boolean).join('\n');
+  })();
+  const sireBadCourseAnswer = (() => {
+    if (sireCourseQualified.length === 0) return '対象となるコースが存在しません。\n※直近3年間で10走以上を対象としています。';
+    const byWin = [...sireCourseQualified].sort((a: any, b: any) => a.win_rate - b.win_rate).slice(0, 3)
+      .map((c: any) => `${formatSireCourseName(c)}（**${c.win_rate.toFixed(1)}%**）`).join('、');
+    const byPlace = [...sireCourseQualified].sort((a: any, b: any) => a.place_rate - b.place_rate).slice(0, 3)
+      .map((c: any) => `${formatSireCourseName(c)}（**${c.place_rate.toFixed(1)}%**）`).join('、');
+    return [
+      byWin ? `勝率が低いコースTOP3は${byWin}です。` : '',
+      byPlace ? `複勝率が低いコースTOP3は${byPlace}です。` : '',
+      '※直近3年間で10走以上を対象としています。',
+    ].filter(Boolean).join('\n');
+  })();
+
+  // 芝とダートどちらが得意？
+  const sireTurfStat = sire.surface_stats.find((s: any) => s.surface === '芝');
+  const sireDirtStat = sire.surface_stats.find((s: any) => s.surface === 'ダート');
+  const sireSurfaceFaqAnswer = (() => {
+    if (!sireTurfStat && !sireDirtStat) return '対象となるデータが存在しません。';
+    if (!sireTurfStat) return `ダートの成績のみあります。ダートの複勝率は**${sireDirtStat!.place_rate.toFixed(1)}%**です。`;
+    if (!sireDirtStat) return `芝の成績のみあります。芝の複勝率は**${sireTurfStat.place_rate.toFixed(1)}%**です。`;
+    const diff = sireTurfStat.place_rate - sireDirtStat.place_rate;
+    const detail = `芝の複勝率は**${sireTurfStat.place_rate.toFixed(1)}%**、ダートは**${sireDirtStat.place_rate.toFixed(1)}%**です。`;
+    if (diff >= 5) return `芝の方が得意な傾向があります。\n${detail}`;
+    if (diff >= 3) return `やや芝の方が得意な傾向があります。\n${detail}`;
+    if (diff <= -5) return `ダートの方が得意な傾向があります。\n${detail}`;
+    if (diff <= -3) return `ややダートの方が得意な傾向があります。\n${detail}`;
+    return `芝とダートで差はありません。\n${detail}`;
+  })();
+
+  // 得意な距離は？
+  const sireDistanceCategoryFullName = (cat: string) =>
+    cat === '短〜マ' ? '短距離〜マイル' : cat === '中〜長' ? '中距離〜長距離' : cat;
+  const sireDistanceFaqAnswer = (() => {
+    const groups = mergedDistanceStats as any[];
+    if (groups.length === 0) return '対象となるデータが存在しません。';
+    const best = [...groups].sort((a, b) => b.place_rate - a.place_rate)[0];
+    const other = groups.find(g => g.category !== best.category);
+    const diff = other ? best.place_rate - other.place_rate : 0;
+    const detail = groups.map(g => `${sireDistanceCategoryFullName(g.category)}の複勝率は**${g.place_rate.toFixed(1)}%**`).join('、');
+    const conclusion = diff >= 5
+      ? `${sireDistanceCategoryFullName(best.category)}が得意な傾向があります。`
+      : diff >= 3
+      ? `やや${sireDistanceCategoryFullName(best.category)}が得意な傾向があります。`
+      : '距離帯で差はありません。';
+    return [conclusion, `${detail}です。`].join('\n');
+  })();
+
+  // 馬場適性（芝・ダート両方）
+  const sireTrackConditionFaqAnswer = (() => {
+    const turfGood = (mergedTurfConditionStats as any[]).find(s => s.condition_label === '良');
+    const turfBad = (mergedTurfConditionStats as any[]).find(s => s.condition_label === '稍〜不');
+    const dirtGood = (mergedDirtConditionStats as any[]).find(s => s.condition_label === '良');
+    const dirtBad = (mergedDirtConditionStats as any[]).find(s => s.condition_label === '稍〜不');
+
+    const conditionText = (good: any, bad: any, surface: string) => {
+      if (!good && !bad) return null;
+      const detail = [
+        good ? `良馬場の複勝率は**${good.place_rate.toFixed(1)}%**` : '',
+        bad ? `稍〜不良馬場は**${bad.place_rate.toFixed(1)}%**` : '',
+      ].filter(Boolean).join('、');
+      if (!good || !bad) return `${surface}：${detail}です。`;
+      const diff = good.place_rate - bad.place_rate;
+      const trend = diff >= 5 ? `${surface}は良馬場の方が得意な傾向があります。`
+        : diff >= 3 ? `${surface}はやや良馬場の方が得意な傾向があります。`
+        : diff <= -5 ? `${surface}は道悪の方が得意な傾向があります。`
+        : diff <= -3 ? `${surface}はやや道悪の方が得意な傾向があります。`
+        : `${surface}は馬場状態による差はありません。`;
+      return `${trend}\n${detail}です。`;
+    };
+
+    const turfText = conditionText(turfGood, turfBad, '芝');
+    const dirtText = conditionText(dirtGood, dirtBad, 'ダート');
+    if (!turfText && !dirtText) return '対象となるデータが存在しません。';
+    return [turfText, dirtText].filter(Boolean).join('\n');
+  })();
+
+  // FAQ構造化データ
+  const faqSireJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      { question: `${sire.name}産駒の得意な競馬場は？`, answer: sireGoodRacecourseAnswer },
+      { question: `${sire.name}産駒の得意なコースは？`, answer: sireGoodCourseAnswer },
+      { question: `${sire.name}産駒は芝とダートどちらが得意？`, answer: sireSurfaceFaqAnswer },
+      { question: `${sire.name}産駒の得意な距離は？`, answer: sireDistanceFaqAnswer },
+      { question: `${sire.name}産駒の馬場適性は？`, answer: sireTrackConditionFaqAnswer },
+      { question: `${sire.name}産駒の苦手な競馬場は？`, answer: sireBadRacecourseAnswer },
+      { question: `${sire.name}産駒の苦手なコースは？`, answer: sireBadCourseAnswer },
+    ].map(({ question, answer }) => ({
+      '@type': 'Question',
+      name: question,
+      acceptedAnswer: { '@type': 'Answer', text: stripBoldSire(answer) },
+    })),
+  };
+
   // ナビゲーションアイテム
   const navigationItems = [
     { id: 'leading', label: '年度別' },
@@ -794,10 +943,15 @@ export default async function SirePage({
     { id: 'racecourse-stats', label: '競馬場別' },
     { id: 'course-stats', label: 'コース別' },
     { id: 'dam-sire-stats', label: '母父別' },
+    { id: 'faq-section', label: 'データQ&A' },
   ];
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSireJsonLd) }}
+      />
       <BottomNav items={navigationItems} />
       <div className={pageStyles.staticPageContainer}>
         {/* パンくずリスト */}
@@ -1340,6 +1494,20 @@ export default async function SirePage({
               initialShow={10}
               nameLabel="母父"
             />
+          </section>
+
+          {/* データQ&Aセクション */}
+          <section id="faq-section" aria-label="データQ&A">
+            <h2 className="section-title">データQ&amp;A</h2>
+            <FaqSection items={[
+              { question: `${sire.name}産駒の得意な競馬場は？`, answer: sireGoodRacecourseAnswer },
+              { question: `${sire.name}産駒の得意なコースは？`, answer: sireGoodCourseAnswer },
+              { question: `${sire.name}産駒は芝とダートどちらが得意？`, answer: sireSurfaceFaqAnswer, boldFirstLine: true },
+              { question: `${sire.name}産駒の得意な距離は？`, answer: sireDistanceFaqAnswer, boldFirstLine: true },
+              { question: `${sire.name}産駒の馬場適性は？`, answer: sireTrackConditionFaqAnswer, boldFirstLine: true },
+              { question: `${sire.name}産駒の苦手な競馬場は？`, answer: sireBadRacecourseAnswer },
+              { question: `${sire.name}産駒の苦手なコースは？`, answer: sireBadCourseAnswer },
+            ]} />
           </section>
         </article>
           </article>
