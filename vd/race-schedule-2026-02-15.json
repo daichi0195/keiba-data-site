@@ -1,0 +1,273 @@
+{
+  "date": "2026-02-15",
+  "venues": {
+    "tokyo": {
+      "name": "東京競馬場",
+      "races": [
+        {
+          "raceNumber": 1,
+          "raceName": "3歳未勝利",
+          "surface": "dirt",
+          "distance": 1300,
+          "startTime": "10:05"
+        },
+        {
+          "raceNumber": 2,
+          "raceName": "3歳未勝利",
+          "surface": "dirt",
+          "distance": 2100,
+          "startTime": "10:35"
+        },
+        {
+          "raceNumber": 3,
+          "raceName": "3歳新馬",
+          "surface": "dirt",
+          "distance": 1600,
+          "startTime": "11:05"
+        },
+        {
+          "raceNumber": 4,
+          "raceName": "3歳1勝クラス",
+          "surface": "dirt",
+          "distance": 1600,
+          "startTime": "11:35"
+        },
+        {
+          "raceNumber": 5,
+          "raceName": "3歳未勝利",
+          "surface": "turf",
+          "distance": 1800,
+          "startTime": "12:25"
+        },
+        {
+          "raceNumber": 6,
+          "raceName": "4歳以上1勝クラス",
+          "surface": "turf",
+          "distance": 2400,
+          "startTime": "12:55"
+        },
+        {
+          "raceNumber": 7,
+          "raceName": "4歳以上1勝クラス",
+          "surface": "dirt",
+          "distance": 1400,
+          "startTime": "13:25"
+        },
+        {
+          "raceNumber": 8,
+          "raceName": "4歳以上2勝クラス",
+          "surface": "turf",
+          "distance": 1600,
+          "startTime": "13:55"
+        },
+        {
+          "raceNumber": 9,
+          "raceName": "雲雀S",
+          "surface": "turf",
+          "distance": 1600,
+          "startTime": "14:25"
+        },
+        {
+          "raceNumber": 10,
+          "raceName": "バレンタインS",
+          "surface": "dirt",
+          "distance": 1400,
+          "startTime": "15:00"
+        },
+        {
+          "raceNumber": 11,
+          "raceName": "共同通信杯",
+          "surface": "turf",
+          "distance": 1800,
+          "startTime": "15:45"
+        },
+        {
+          "raceNumber": 12,
+          "raceName": "4歳以上2勝クラス",
+          "surface": "dirt",
+          "distance": 1400,
+          "startTime": "16:25"
+        }
+      ]
+    },
+    "kyoto": {
+      "name": "京都競馬場",
+      "races": [
+        {
+          "raceNumber": 1,
+          "raceName": "3歳未勝利",
+          "surface": "dirt",
+          "distance": 1800,
+          "startTime": "09:55"
+        },
+        {
+          "raceNumber": 2,
+          "raceName": "3歳新馬",
+          "surface": "dirt",
+          "distance": 1200,
+          "startTime": "10:25"
+        },
+        {
+          "raceNumber": 3,
+          "raceName": "3歳未勝利",
+          "surface": "dirt",
+          "distance": 1400,
+          "startTime": "10:55"
+        },
+        {
+          "raceNumber": 4,
+          "raceName": "3歳1勝クラス",
+          "surface": "dirt",
+          "distance": 1900,
+          "startTime": "11:25"
+        },
+        {
+          "raceNumber": 5,
+          "raceName": "3歳未勝利",
+          "surface": "turf",
+          "distance": 2000,
+          "startTime": "12:15"
+        },
+        {
+          "raceNumber": 6,
+          "raceName": "3歳未勝利",
+          "surface": "turf",
+          "distance": 1600,
+          "startTime": "12:45",
+          "variant": "inner"
+        },
+        {
+          "raceNumber": 7,
+          "raceName": "4歳以上1勝クラス",
+          "surface": "dirt",
+          "distance": 1800,
+          "startTime": "13:15"
+        },
+        {
+          "raceNumber": 8,
+          "raceName": "4歳以上1勝クラス",
+          "surface": "turf",
+          "distance": 2000,
+          "startTime": "13:45"
+        },
+        {
+          "raceNumber": 9,
+          "raceName": "春日特別",
+          "surface": "turf",
+          "distance": 1800,
+          "startTime": "14:15"
+        },
+        {
+          "raceNumber": 10,
+          "raceName": "北山S",
+          "surface": "dirt",
+          "distance": 1800,
+          "startTime": "14:50"
+        },
+        {
+          "raceNumber": 11,
+          "raceName": "京都記念",
+          "surface": "turf",
+          "distance": 2200,
+          "startTime": "15:30"
+        },
+        {
+          "raceNumber": 12,
+          "raceName": "4歳以上2勝クラス",
+          "surface": "dirt",
+          "distance": 1200,
+          "startTime": "16:10"
+        }
+      ]
+    },
+    "kokura": {
+      "name": "小倉競馬場",
+      "races": [
+        {
+          "raceNumber": 1,
+          "raceName": "3歳未勝利",
+          "surface": "dirt",
+          "distance": 1700,
+          "startTime": "09:45"
+        },
+        {
+          "raceNumber": 2,
+          "raceName": "3歳未勝利",
+          "surface": "turf",
+          "distance": 1200,
+          "startTime": "10:15"
+        },
+        {
+          "raceNumber": 3,
+          "raceName": "4歳以上1勝クラス",
+          "surface": "dirt",
+          "distance": 1000,
+          "startTime": "10:45"
+        },
+        {
+          "raceNumber": 4,
+          "raceName": "障害4歳以上未勝利",
+          "surface": "turf",
+          "distance": 2860,
+          "startTime": "11:15"
+        },
+        {
+          "raceNumber": 5,
+          "raceName": "3歳未勝利",
+          "surface": "turf",
+          "distance": 1800,
+          "startTime": "12:05"
+        },
+        {
+          "raceNumber": 6,
+          "raceName": "4歳以上1勝クラス",
+          "surface": "turf",
+          "distance": 2000,
+          "startTime": "12:35"
+        },
+        {
+          "raceNumber": 7,
+          "raceName": "4歳以上1勝クラス",
+          "surface": "turf",
+          "distance": 2600,
+          "startTime": "13:05"
+        },
+        {
+          "raceNumber": 8,
+          "raceName": "4歳以上1勝クラス",
+          "surface": "dirt",
+          "distance": 2400,
+          "startTime": "13:35"
+        },
+        {
+          "raceNumber": 9,
+          "raceName": "大濠特別",
+          "surface": "turf",
+          "distance": 1200,
+          "startTime": "14:05"
+        },
+        {
+          "raceNumber": 10,
+          "raceName": "太宰府特別",
+          "surface": "turf",
+          "distance": 2000,
+          "startTime": "14:40"
+        },
+        {
+          "raceNumber": 11,
+          "raceName": "北九州短距離S",
+          "surface": "turf",
+          "distance": 1200,
+          "startTime": "15:15"
+        },
+        {
+          "raceNumber": 12,
+          "raceName": "4歳以上1勝クラス",
+          "surface": "dirt",
+          "distance": 1700,
+          "startTime": "16:00"
+        }
+      ]
+    }
+  }
+}

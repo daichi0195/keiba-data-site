@@ -1,0 +1,153 @@
+.wrapper {
+  margin: 1.5rem 0;
+  background: #fff;
+  border: 1px solid var(--border-subtle);
+  border-top: 3px solid var(--primary-green);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* ---- ヘッダーエリア ---- */
+.header {
+  padding: 1rem 1.25rem 0.75rem;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-lighter);
+}
+
+/* ティアフィルター */
+.tierFilters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.tierBtn {
+  padding: 0.3rem 0.9rem;
+  border-radius: 2px;
+  border: 1px solid var(--border-subtle);
+  background: #fff;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.tierBtn:hover {
+  border-color: var(--primary-green);
+  color: var(--primary-green-dark);
+}
+
+.tierBtnActive {
+  background: var(--primary-green-lighter);
+  border-color: var(--primary-green);
+  color: var(--primary-green-dark);
+}
+
+/* ---- 凡例 ---- */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 0.5rem 1.25rem;
+  background: var(--bg-lighter);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.legendLine {
+  display: inline-block;
+  width: 1.4rem;
+  height: 3px;
+  border-radius: 2px;
+}
+
+.legendDashed {
+  display: inline-block;
+  width: 1.4rem;
+  height: 0;
+  border-top: 2px dashed #94a3b8;
+}
+
+/* ---- 種牡馬ボタン群 ---- */
+.sireButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.sireBtn {
+  padding: 0.2rem 0.65rem;
+  border-radius: 2px;
+  border: 1px solid var(--border-subtle);
+  background: #fff;
+  color: var(--text-light);
+  font-size: 0.72rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.sireBtn:hover {
+  opacity: 0.8;
+}
+
+/* ---- グラフエリア ---- */
+.chartArea {
+  padding: 1rem 1.25rem 0.5rem;
+}
+
+.description {
+  font-size: 0.72rem;
+  color: var(--text-light);
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.canvasWrapper {
+  position: relative;
+  height: 20rem;
+  width: 100%;
+}
+
+/* ---- 注釈 ---- */
+.note {
+  padding: 0.5rem 1.25rem 0.75rem;
+  font-size: 0.7rem;
+  color: var(--text-light);
+  line-height: 1.6;
+}
+
+/* ---- モバイル ---- */
+@media (max-width: 768px) {
+  .tierFilters,
+  .sireButtons {
+    gap: 0.3rem;
+  }
+
+  .tierBtn {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.7rem;
+  }
+
+  .sireBtn {
+    font-size: 0.68rem;
+  }
+
+  .canvasWrapper {
+    height: 16rem;
+  }
+}
