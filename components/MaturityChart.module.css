@@ -150,12 +150,17 @@
 
 /* ---- モバイル ---- */
 @media (max-width: 768px) {
-  .header {
+  .filterSelect {
     display: none;
   }
 
-  .filterSelect {
-    display: block;
+  .tierFilters {
+    gap: 0.3rem;
+  }
+
+  .tierBtn {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.7rem;
   }
 
   .sireButtons {
