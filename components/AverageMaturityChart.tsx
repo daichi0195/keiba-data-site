@@ -30,6 +30,7 @@ interface Props {
   label?: string;
   showAverage?: boolean;
   maxY?: number; // 未指定時はデータから自動計算
+  alt?: string;  // アクセシビリティ用のaltテキスト
 }
 
 export default function AverageMaturityChart({
@@ -39,6 +40,7 @@ export default function AverageMaturityChart({
   label = "全体平均",
   showAverage = false,
   maxY,
+  alt,
 }: Props) {
   // maxY未指定時は自動計算（データ最大値+20を20刻みに切り上げ）
   const effectiveMaxY = maxY ?? (() => {
@@ -244,7 +246,7 @@ export default function AverageMaturityChart({
         )}
       </div>
       <div className={styles.chartArea}>
-        <div className={styles.canvasWrapper}>
+        <div className={styles.canvasWrapper} role={alt ? "img" : undefined} aria-label={alt}>
           <canvas ref={canvasRef} />
         </div>
       </div>
