@@ -42,9 +42,9 @@ const TIER_COLORS: Record<Tier, string> = {
 };
 
 const TIER_LABEL: Record<Tier, string> = {
-  top:    "上位（古馬で維持）",
-  mid:    "中位",
-  bottom: "下位（急落型）",
+  top:    "晩成型",
+  mid:    "標準型",
+  bottom: "早熟型",
 };
 
 const TIER_ORDER: Tier[] = ["top", "mid", "bottom"];
