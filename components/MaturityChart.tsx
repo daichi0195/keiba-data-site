@@ -29,6 +29,7 @@ export interface SireData {
 
 interface MaturityChartProps {
   data: SireData[];
+  featured?: string[];
 }
 
 // ----------------------------------------------------------------
@@ -59,50 +60,24 @@ function hexToRgb(hex: string) {
   return { r, g, b };
 }
 
-// ----------------------------------------------------------------
-// avgLine プラグイン
-// ----------------------------------------------------------------
-const avgLinePlugin = {
-  id: "avgLine",
-  beforeDraw(chart: Chart) {
-    const { ctx, chartArea, scales } = chart as any;
-    if (!chartArea) return;
-    ctx.save();
-    ctx.strokeStyle = "rgba(148,163,184,0.6)";
-    ctx.setLineDash([5, 4]);
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    AVG_SCORES.forEach((v, i) => {
-      const x = scales.x.getPixelForValue(i);
-      const y = scales.y.getPixelForValue(v);
-      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-    });
-    ctx.stroke();
-    ctx.setLineDash([]);
-    const lastX = scales.x.getPixelForValue(3);
-    const lastY = scales.y.getPixelForValue(AVG_SCORES[3]);
-    ctx.fillStyle = "rgba(148,163,184,0.9)";
-    ctx.font = "11px 'Hiragino Kaku Gothic ProN', sans-serif";
-    ctx.fillText("全体平均", lastX - 46, lastY - 7);
-    ctx.restore();
-  },
-};
 
 // ----------------------------------------------------------------
 // コンポーネント本体
 // ----------------------------------------------------------------
-export default function MaturityChart({ data }: MaturityChartProps) {
+export default function MaturityChart({ data, featured = [] }: MaturityChartProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const chartRef = useRef<Chart | null>(null);
 
+  // featuredで指定された種牡馬を除外
+  const featuredSet = new Set(featured);
+  const filteredData = featured.length > 0 ? data.filter((d) => !featuredSet.has(d.sire)) : data;
+
   const [activeTier, setActiveTier] = useState<Tier | "all">("all");
-  const [activeSet, setActiveSet] = useState<Set<string>>(
-    new Set(["エピファネイア", "ハーツクライ", "ルーラーシップ", "ノヴェリスト", "キタサンブラック"])
-  );
+  const [activeSet, setActiveSet] = useState<Set<string>>(new Set(filteredData.map((d) => d.sire)));
 
   const tierIndex = new Map<string, number>();
   const tierCount: Record<Tier, number> = { top: 0, mid: 0, bottom: 0 };
-  data.forEach((d) => {
+  filteredData.forEach((d) => {
     tierIndex.set(d.sire, tierCount[d.tier]);
     tierCount[d.tier]++;
   });
@@ -115,7 +90,7 @@ export default function MaturityChart({ data }: MaturityChartProps) {
   }
 
   function buildDatasets() {
-    return data
+    const sireDatasets = filteredData
       .filter((d) => activeSet.has(d.sire))
       .map((d) => {
         const color = getSireColor(d);
@@ -130,17 +105,31 @@ export default function MaturityChart({ data }: MaturityChartProps) {
           tension: 0.3,
         };
       });
+
+    // 全体平均の点線
+    sireDatasets.push({
+      label: "全体平均",
+      data: AVG_SCORES,
+      borderColor: "rgba(148,163,184,0.5)",
+      backgroundColor: "transparent",
+      borderWidth: 1.5,
+      borderDash: [5, 4],
+      pointRadius: 0,
+      tension: 0.3,
+    } as any);
+
+    return sireDatasets;
   }
 
   useEffect(() => {
     if (!canvasRef.current) return;
 
-    Chart.register(avgLinePlugin);
+    const isSP = window.innerWidth < 768;
 
     const config: ChartConfiguration = {
       type: "line",
       data: {
-        labels: ["2〜3歳（基準）", "4歳", "5歳", "6歳以上"],
+        labels: isSP ? ["2〜3歳", "4歳", "5歳", "6歳〜"] : ["2〜3歳（基準）", "4歳", "5歳", "6歳以上"],
         datasets: buildDatasets(),
       },
       options: {
@@ -166,14 +155,14 @@ export default function MaturityChart({ data }: MaturityChartProps) {
             max: 200,
             ticks: {
               callback: (v) => String(v),
-              font: { size: 11 },
+              font: { size: isSP ? 10 : 11 },
               color: "#94a3b8",
             },
             grid: { color: "rgba(226,232,240,0.6)" },
             border: { display: false },
           },
           x: {
-            ticks: { font: { size: 12 }, color: "#475569" },
+            ticks: { font: { size: isSP ? 10 : 12 }, color: "#475569" },
             grid: { display: false },
             border: { display: false },
           },
@@ -199,9 +188,9 @@ export default function MaturityChart({ data }: MaturityChartProps) {
   function handleTier(tier: Tier | "all") {
     setActiveTier(tier);
     if (tier === "all") {
-      setActiveSet(new Set(data.map((d) => d.sire)));
+      setActiveSet(new Set(filteredData.map((d) => d.sire)));
     } else {
-      setActiveSet(new Set(data.filter((d) => d.tier === tier).map((d) => d.sire)));
+      setActiveSet(new Set(filteredData.filter((d) => d.tier === tier).map((d) => d.sire)));
     }
   }
 
@@ -217,7 +206,7 @@ export default function MaturityChart({ data }: MaturityChartProps) {
   return (
     <div className={styles.wrapper}>
 
-      {/* ---- ティアフィルター ---- */}
+      {/* ---- ティアフィルター（PC: ボタン） ---- */}
       <div className={styles.header}>
         <div className={styles.tierFilters}>
           <button
@@ -243,6 +232,20 @@ export default function MaturityChart({ data }: MaturityChartProps) {
         </div>
       </div>
 
+      {/* ---- ティアフィルター（SP: プルダウン） ---- */}
+      <div className={styles.filterSelect}>
+        <select
+          value={activeTier}
+          onChange={(e) => handleTier(e.target.value as Tier | "all")}
+          className={styles.select}
+        >
+          <option value="all">すべての種牡馬</option>
+          {TIER_ORDER.map((tier) => (
+            <option key={tier} value={tier}>{TIER_LABEL[tier]}</option>
+          ))}
+        </select>
+      </div>
+
       {/* ---- 凡例 ---- */}
       <div className={styles.legend}>
         {TIER_ORDER.map((tier) => (
@@ -259,7 +262,7 @@ export default function MaturityChart({ data }: MaturityChartProps) {
 
       {/* ---- 種牡馬ボタン群 ---- */}
       <div className={styles.sireButtons}>
-        {data.map((d) => {
+        {filteredData.map((d) => {
           const on = activeSet.has(d.sire);
           const color = TIER_COLORS[d.tier];
           return (
@@ -281,18 +284,10 @@ export default function MaturityChart({ data }: MaturityChartProps) {
 
       {/* ---- グラフ ---- */}
       <div className={styles.chartArea}>
-        <p className={styles.description}>
-          2〜3歳合算複勝率を100とした相対値。数値が高いほど古馬での成績が若い頃より良い。
-        </p>
         <div className={styles.canvasWrapper}>
           <canvas ref={canvasRef} />
         </div>
       </div>
-
-      {/* ---- 注釈 ---- */}
-      <p className={styles.note}>
-        ※2021年1月〜のJRAデータ。全年齢帯30頭以上かつ総頭数200頭以上の43種牡馬が対象。
-      </p>
     </div>
   );
 }

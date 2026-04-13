@@ -2,7 +2,6 @@
   margin: 1.5rem 0;
   background: #fff;
   border: 1px solid var(--border-subtle);
-  border-top: 3px solid var(--primary-green);
   border-radius: 4px;
   overflow: hidden;
 }
@@ -19,7 +18,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-bottom: 0.75rem;
 }
 
 .tierBtn {
@@ -44,6 +42,25 @@
   background: var(--primary-green-lighter);
   border-color: var(--primary-green);
   color: var(--primary-green-dark);
+}
+
+/* SP: プルダウン式フィルター */
+.filterSelect {
+  display: none;
+}
+
+.select {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
+  font-family: inherit;
+  font-weight: 600;
+  border: none;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-lighter);
+  color: var(--text-secondary);
+  cursor: pointer;
+  appearance: auto;
 }
 
 /* ---- 凡例 ---- */
@@ -133,18 +150,24 @@
 
 /* ---- モバイル ---- */
 @media (max-width: 768px) {
-  .tierFilters,
+  .header {
+    display: none;
+  }
+
+  .filterSelect {
+    display: block;
+  }
+
   .sireButtons {
     gap: 0.3rem;
   }
 
-  .tierBtn {
-    font-size: 0.7rem;
-    padding: 0.25rem 0.7rem;
-  }
-
   .sireBtn {
     font-size: 0.68rem;
+  }
+
+  .chartArea {
+    padding: 1rem 4px 0.5rem;
   }
 
   .canvasWrapper {

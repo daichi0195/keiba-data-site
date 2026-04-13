@@ -27,6 +27,7 @@ import ComparisonTable from '@/components/ComparisonTable';
 import GenderTable from '@/components/GenderTable';
 import PreviousFinishTable from '@/components/PreviousFinishTable';
 import MaturityChart from '@/components/MaturityChart';
+import AverageMaturityChart from '@/components/AverageMaturityChart';
 import styles from './page.module.css';
 import pageStyles from '@/app/static-page.module.css';
 
@@ -148,6 +149,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     GenderTable,
     PreviousFinishTable,
     MaturityChart,
+    AverageMaturityChart,
     // 見出しにIDを付与し、最初のH2の前に目次を挿入
     h2: ({ children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => {
       const text = String(children);

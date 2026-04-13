@@ -1,0 +1,77 @@
+.wrapper {
+  margin: 0.5rem 0;
+  background: #fff;
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* ヘッダー */
+.header {
+  text-align: center;
+  padding: 0.4rem 1.25rem 0.15rem;
+}
+
+.chartTitle {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #334155;
+  margin: 1rem 0 0.15rem !important;
+}
+
+/* 凡例 */
+.legend {
+  display: flex;
+  justify-content: center;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  color: #94a3b8;
+}
+
+.legendDashed {
+  display: inline-block;
+  width: 1.4rem;
+  height: 0;
+  border-top: 2px dashed #94a3b8;
+}
+
+.chartArea {
+  padding: 0 1.25rem 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .chartArea {
+    padding: 0.5rem 0.25rem 0.25rem;
+  }
+}
+
+.description {
+  font-size: 0.72rem;
+  color: var(--text-light);
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.canvasWrapper {
+  position: relative;
+  height: 22rem;
+  width: 100%;
+}
+
+.note {
+  padding: 0.5rem 1.25rem 0.75rem;
+  font-size: 0.7rem;
+  color: var(--text-light);
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .canvasWrapper {
+    height: 18rem;
+  }
+}

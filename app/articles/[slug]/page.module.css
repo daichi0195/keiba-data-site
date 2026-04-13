@@ -610,5 +610,9 @@
   /* SP表示時、記事内のテーブルの上下余白を0に */
   .content table:not([class]) {
     margin: 0;
+    table-layout: auto;
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 }
