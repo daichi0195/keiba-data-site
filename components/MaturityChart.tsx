@@ -135,7 +135,7 @@ export default function MaturityChart({ data, featured = [] }: MaturityChartProp
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        animation: { duration: 300 },
+        animation: { duration: 600 },
         plugins: {
           legend: { display: false },
           tooltip: {
