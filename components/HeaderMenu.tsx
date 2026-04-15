@@ -325,6 +325,10 @@ export default function HeaderMenu() {
     <>
       {/* ===== PC：ヘッダー用リンクメニュー ===== */}
       <nav className={styles.pcMenu}>
+          <Link href="/ai" className={`${styles.pcMenuLink} ${isPcLinkActive('/ai') ? styles.pcMenuLinkActive : ''}`}>
+            <i className="fa-solid fa-robot"></i>
+            <span>AI予測</span>
+          </Link>
           <Link href="/courses" className={`${styles.pcMenuLink} ${isPcLinkActive('/courses') ? styles.pcMenuLinkActive : ''}`}>
             <i className="fa-solid fa-flag"></i>
             <span>コースデータ</span>
@@ -345,14 +349,14 @@ export default function HeaderMenu() {
             <i className="fa-regular fa-pen-to-square"></i>
             <span>コラム</span>
           </Link>
-          <Link href="/ai" className={`${styles.pcMenuLink} ${isPcLinkActive('/ai') ? styles.pcMenuLinkActive : ''}`}>
-            <i className="fa-solid fa-robot"></i>
-            <span>AI予測</span>
-          </Link>
         </nav>
 
       {/* ===== モバイル：下部固定メニューボタン（5つ） ===== */}
       <div className={styles.spMenu}>
+        <Link href="/ai" className={styles.menuButton}>
+          <span className={styles.menuIcon}><i className="fa-solid fa-robot"></i></span>
+          <span className={styles.menuText}>AI予測</span>
+        </Link>
         <button
           className={styles.menuButton}
           onClick={() => setOpenMenu('course')}
@@ -389,10 +393,6 @@ export default function HeaderMenu() {
           <span className={styles.menuIcon}><i className="fa-solid fa-user"></i></span>
           <span className={styles.menuText}>調教師データ</span>
         </button>
-        <Link href="/ai" className={styles.menuButton}>
-          <span className={styles.menuIcon}><i className="fa-solid fa-robot"></i></span>
-          <span className={styles.menuText}>AI予測</span>
-        </Link>
       </div>
 
       {openMenu && (
