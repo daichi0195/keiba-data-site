@@ -15,14 +15,6 @@ interface RaceSummary {
   distance: number;
 }
 
-function getToday(): string {
-  // TODO: UI確認用に日付を固定中。確認後に元に戻す。
-  return '2026-04-13';
-  // const now = new Date();
-  // now.setHours(now.getHours() + 9); // JST
-  // return now.toISOString().slice(0, 10);
-}
-
 function shortenSurface(surface: string): string {
   if (surface === 'ダート') return 'ダ';
   return surface;
@@ -37,8 +29,7 @@ export default function HomeAIPredictions() {
     fetch(url, { cache: 'no-store' })
       .then((res) => (res.ok ? res.json() : []))
       .then((data: RaceSummary[]) => {
-        const today = getToday();
-        setRaces(data.filter((r) => r.date === today));
+        setRaces(data.slice(0, 10));
       })
       .catch(() => setRaces([]))
       .finally(() => setLoaded(true));
