@@ -57,6 +57,55 @@ export default async function AIPage() {
           <h1 className={pageStyles.staticPageTitle}>競馬AI 勝率予測</h1>
         </div>
 
+        {/* 今日の予測 */}
+        <section className={styles.section}>
+          <h2 id="today">今日の予測</h2>
+          {todayRaces.length > 0 ? (
+            <div className={styles.raceGrid}>
+              {todayRaces.map((race) => (
+                <Link
+                  key={race.slug}
+                  href={`/ai/races/${race.slug}`}
+                  className={styles.raceCard}
+                >
+                  <div className={styles.raceDate}>{race.dateLabel}</div>
+                  <div className={styles.raceLabel}>{race.venueLabel}{race.raceNumber}R</div>
+                  <div className={styles.raceName}>{race.raceName}</div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <p className={styles.subNote}>予測対象レースの約10分前に公開予定です。</p>
+          )}
+        </section>
+
+        {/* 過去の予測 */}
+        <section className={styles.section}>
+          <h2 id="past">過去の予測</h2>
+          {pastRaces.length > 0 ? (
+            <>
+              <div className={styles.raceGrid}>
+                {pastRaces.map((race) => (
+                  <Link
+                    key={race.slug}
+                    href={`/ai/races/${race.slug}`}
+                    className={styles.raceCard}
+                  >
+                    <div className={styles.raceDate}>{race.dateLabel}</div>
+                    <div className={styles.raceLabel}>{race.venueLabel}{race.raceNumber}R</div>
+                    <div className={styles.raceName}>{race.raceName}</div>
+                  </Link>
+                ))}
+              </div>
+              <Link href="/ai/races" className={styles.moreButton}>
+                予測一覧
+              </Link>
+            </>
+          ) : (
+            <p className={styles.subNote}>まだ過去の予測データがありません。</p>
+          )}
+        </section>
+
         {/* このAIについて */}
         <section className={styles.section}>
           <h2 id="about">このAIについて</h2>
@@ -146,54 +195,6 @@ export default async function AIPage() {
           </table>
         </section>
 
-        {/* レース予測カード */}
-        <section className={styles.section}>
-          <h2 id="predictions">レース予測</h2>
-
-          <h3 className={styles.subHeading}>当日の予測</h3>
-          {todayRaces.length > 0 ? (
-            <div className={styles.raceGrid}>
-              {todayRaces.map((race) => (
-                <Link
-                  key={race.slug}
-                  href={`/ai/races/${race.slug}`}
-                  className={styles.raceCard}
-                >
-                  <div className={styles.raceDate}>{race.dateLabel}</div>
-                  <div className={styles.raceLabel}>{race.venueLabel}{race.raceNumber}R</div>
-                  <div className={styles.raceName}>{race.raceName}</div>
-                </Link>
-              ))}
-            </div>
-          ) : (
-            <p className={styles.subNote}>予測対象レースの約10分前に公開予定です。</p>
-          )}
-
-          <h3 className={styles.subHeading}>過去の予測</h3>
-          {pastRaces.length > 0 ? (
-            <>
-              <div className={styles.raceGrid}>
-                {pastRaces.map((race) => (
-                  <Link
-                    key={race.slug}
-                    href={`/ai/races/${race.slug}`}
-                    className={styles.raceCard}
-                  >
-                    <div className={styles.raceDate}>{race.dateLabel}</div>
-                    <div className={styles.raceLabel}>{race.venueLabel}{race.raceNumber}R</div>
-                    <div className={styles.raceName}>{race.raceName}</div>
-                  </Link>
-                ))}
-              </div>
-              <Link href="/ai/races" className={styles.moreButton}>
-                予測一覧
-              </Link>
-            </>
-          ) : (
-            <p className={styles.subNote}>まだ過去の予測データがありません。</p>
-          )}
-
-        </section>
       </div>
     </StaticPageLayout>
   );
