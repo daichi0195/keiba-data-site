@@ -199,7 +199,7 @@ export default function ArticleCarousel({ articles }: ArticleCarouselProps) {
             {items.map((article, index) => (
               <Link
                 key={`${article.slug}-${index}`}
-                href={`/articles/${article.slug}`}
+                href={article.frontmatter.link || `/articles/${article.slug}`}
                 className={styles.carouselItem}
                 style={{ flex: `0 0 ${cardWidth}px` }}
               >

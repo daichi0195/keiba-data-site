@@ -17,6 +17,7 @@ export interface ArticleFrontmatter {
   thumbnail?: string; // サムネイル画像のパス（例: /images/articles/1.png）
   featured?: boolean; // 人気記事フラグ
   priority?: number; // 人気順の優先度（数字が小さいほど上位、未指定は999）
+  link?: string; // カスタムリンク先（カルーセル用、指定時は/articles/slugの代わりに使用）
 }
 
 export interface Article {
