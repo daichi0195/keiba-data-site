@@ -69,8 +69,11 @@ export default async function AIPage() {
                   className={styles.raceCard}
                 >
                   <div className={styles.raceDate}>{race.dateLabel}</div>
-                  <div className={styles.raceLabel}>{race.venueLabel}{race.raceNumber}R</div>
                   <div className={styles.raceName}>{race.raceName}</div>
+                  <div className={styles.raceMetaRow}>
+                    <span className={styles.raceVenueChip}>{race.venueLabel}{race.raceNumber}R</span>
+                    <span className={styles.raceMeta}>{race.surface}{race.distance}m</span>
+                  </div>
                 </Link>
               ))}
             </div>
@@ -92,8 +95,11 @@ export default async function AIPage() {
                     className={styles.raceCard}
                   >
                     <div className={styles.raceDate}>{race.dateLabel}</div>
-                    <div className={styles.raceLabel}>{race.venueLabel}{race.raceNumber}R</div>
                     <div className={styles.raceName}>{race.raceName}</div>
+                    <div className={styles.raceMetaRow}>
+                      <span className={styles.raceVenueChip}>{race.venueLabel}{race.raceNumber}R</span>
+                      <span className={styles.raceMeta}>{race.surface}{race.distance}m</span>
+                    </div>
                   </Link>
                 ))}
               </div>
@@ -142,7 +148,8 @@ export default async function AIPage() {
               <span className={styles.markHeaderText}>本命（勝率が高く、かつオッズ妙味のある馬）</span>
             </div>
             <div className={styles.markBody}>
-              予測勝率が高く、オッズとの乖離から期待値が高いと判定された馬です。単勝候補として推奨します。テスト期間では回収率130%超を達成しています。
+              予測勝率が高く、オッズとの乖離から期待値が高いと判定された馬です。単勝候補として推奨します。<br />
+              テスト期間では回収率130%超を達成しています。
             </div>
 
             <div className={styles.markHeader}>
@@ -150,7 +157,8 @@ export default async function AIPage() {
               <span className={styles.markHeaderText}>紐（過小評価されている穴馬）</span>
             </div>
             <div className={styles.markBody}>
-              人気はないものの、予測勝率に対してオッズが高く、市場に過小評価されていると判定された馬です。ワイドや3連系馬券の相手候補として推奨します。
+              人気はないものの、予測勝率に対してオッズが高く、市場に過小評価されていると判定された馬です。<br />
+              ワイドや3連系馬券の相手候補として推奨します。
             </div>
 
             <div className={styles.markHeader}>
@@ -158,7 +166,8 @@ export default async function AIPage() {
               <span className={styles.markHeaderText}>危険（人気しているが、予測勝率が低い馬）</span>
             </div>
             <div className={`${styles.markBody} ${styles.markBodyLast}`}>
-              人気を集めているものの、予測勝率が低く過大評価されていると判定された馬です。テスト期間では単勝回収率60%を下回っており、長期的に購入するとマイナスになる可能性が高いです。
+              人気を集めているものの、予測勝率が低く過大評価されていると判定された馬です。<br />
+              テスト期間では単勝回収率60%を下回っており、長期的に購入するとマイナスになる可能性が高いです。
             </div>
           </div>
         </section>
