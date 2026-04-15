@@ -62,8 +62,8 @@ export default function ArticleList({ articles: allArticles }: ArticleListProps)
                   <Image
                     src={article.frontmatter.thumbnail}
                     alt={article.frontmatter.title}
-                    width={90}
-                    height={60}
+                    fill
+                    sizes="(max-width: 768px) 75px, 160px"
                     className={styles.thumbnail}
                   />
                 </div>

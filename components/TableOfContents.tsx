@@ -6,7 +6,7 @@ import AIBanner from './AIBanner';
 
 type Item = { id: string; label: string };
 
-export default function TableOfContents({ items, hideToc, showBanner }: { items?: Item[]; hideToc?: boolean; showBanner?: boolean }) {
+export default function TableOfContents({ items, hideToc, showBanner, bookmarkOnly }: { items?: Item[]; hideToc?: boolean; showBanner?: boolean; bookmarkOnly?: boolean }) {
   const [tocItems, setTocItems] = useState<Item[]>(items || []);
   const [activeId, setActiveId] = useState<string>('');
   const [isScrolling, setIsScrolling] = useState(false);
@@ -282,7 +282,7 @@ export default function TableOfContents({ items, hideToc, showBanner }: { items?
         </ul>
       </nav>
       )}
-      {(hideToc || showBanner) && <AIBanner />}
+      {(hideToc || showBanner) && <AIBanner bookmarkOnly={bookmarkOnly} />}
     </aside>
   );
 }

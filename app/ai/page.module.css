@@ -1,0 +1,289 @@
+/* セクション */
+.section {
+  margin-bottom: 1.25rem;
+  padding-bottom: 1.25rem;
+}
+
+.section:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.section h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0.5rem 0 1rem 0;
+  line-height: 1.4;
+}
+
+.section p {
+  margin: 0.375rem 0;
+  line-height: 1.7;
+  color: #2d3748;
+}
+
+.section p:last-child {
+  margin-bottom: 0;
+}
+
+.subHeading {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 1.25rem 0 0.5rem 0;
+  line-height: 1.4;
+}
+
+.subHeading:first-of-type {
+  margin-top: 0.5rem;
+}
+
+.subNote {
+  color: #718096;
+  margin: 0 0 0.5rem 0;
+}
+
+
+/* 印カード */
+/* 印テーブル */
+.markTable {
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.markHeader {
+  padding: 0.75rem 1rem;
+  background: #f5f7fa;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.5rem;
+}
+
+.markIcon {
+  display: block;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.markHeaderText {
+  font-weight: 700;
+  font-size: 0.9375rem;
+  color: #2d3748;
+  line-height: 0.9375rem;
+}
+
+.markBody {
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: #4a5568;
+}
+
+.markBodyLast {
+  border-bottom: none;
+}
+
+/* バックテスト */
+.backtestTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  border-top: 2px solid #cbd5e0;
+  border-bottom: 2px solid #cbd5e0;
+  border-left: none;
+  border-right: none;
+}
+
+.backtestTable th {
+  background: #f5f7fa;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  color: #4a5568;
+  padding: 0.5rem 0.75rem;
+  text-align: center;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.backtestTable td {
+  padding: 0.6rem 0.75rem;
+  text-align: center;
+  border-bottom: 1px solid #e2e8f0;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  height: 2.75rem;
+  vertical-align: middle;
+}
+
+.backtestTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.backtestLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.backtestPositive {
+  color: #16a34a;
+}
+
+.backtestNegative {
+  color: #dc2626;
+}
+
+.backtestLink {
+  font-size: 0.8125rem;
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.backtestLink:hover {
+  text-decoration: underline;
+}
+
+
+/* レース予測カード */
+.raceGrid {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 0.25rem;
+}
+
+.raceGrid::-webkit-scrollbar {
+  display: none;
+}
+
+.raceCard {
+  background: #fff;
+  border: 0.5px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 0.875rem 0.625rem;
+  text-decoration: none !important;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  flex: 0 0 160px;
+  width: 160px;
+  max-width: 160px;
+  box-sizing: border-box;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+}
+
+.raceCard * {
+  text-decoration: none !important;
+}
+
+.raceCardTurf,
+.raceCardDirt {
+  border-color: rgba(29, 184, 84, 0.4);
+}
+
+
+.raceDate {
+  font-size: 0.6875rem;
+  color: #718096;
+  font-weight: 500;
+  text-align: left;
+  align-self: flex-start;
+}
+
+.raceLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fff;
+  text-align: center;
+  background: var(--primary-green);
+  padding: 0.35rem 0.75rem;
+  border-radius: 4px;
+  line-height: 1;
+}
+
+.raceName {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #2d3748;
+  line-height: 1.4;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  max-width: 100%;
+  margin: 0.25rem 0;
+}
+
+
+/* モバイル対応 */
+@media (max-width: 768px) {
+  .section h2 {
+    font-size: 1.125rem;
+  }
+
+  .raceGrid {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e0 transparent;
+    padding-bottom: 0.5rem;
+  }
+
+  .raceGrid::-webkit-scrollbar {
+    display: block;
+    height: 4px;
+  }
+
+  .raceGrid::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .raceGrid::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 2px;
+  }
+
+  .raceCard {
+    flex: 0 0 140px;
+    width: 140px;
+    max-width: 140px;
+  }
+}
+
+.moreButton {
+  display: block;
+  width: 100%;
+  margin-top: 24px;
+  padding: 10px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333 !important;
+  text-align: center;
+  text-decoration: none !important;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .moreButton {
+    font-size: 13px;
+  }
+}

@@ -33,21 +33,31 @@ export default function ArticleCarousel({ articles }: ArticleCarouselProps) {
 
   const n = sortedArticles.length;
 
-  // クローン配列: [最後のクローン, 記事1...記事N, 最初のクローン]
-  const items = useMemo(
-    () =>
-      n > 0
-        ? [sortedArticles[n - 1], ...sortedArticles, sortedArticles[0]]
-        : [],
-    [sortedArticles, n]
-  );
+  // ワイド画面対応: 記事フルセット分のクローンを前後に配置
+  // n個ずつクローンすれば、どの画面幅でも隙間なくカードが並ぶ
+  const cloneCount = n;
 
-  const [currentIndex, setCurrentIndex] = useState(1);
+  const [currentIndex, setCurrentIndex] = useState(cloneCount);
   const [isAnimating, setIsAnimating] = useState(false);
   // containerWidth: 初期値0 → useLayoutEffect で描画前に更新
   const [containerWidth, setContainerWidth] = useState(0);
   // isReady: 計測完了後にフェードインアニメーションを開始するためのフラグ
   const [isReady, setIsReady] = useState(false);
+
+  // クローン配列: [末尾cloneCount個のクローン, 記事1...記事N, 先頭cloneCount個のクローン]
+  const items = useMemo(
+    () => {
+      if (n === 0) return [];
+      const prefix: Article[] = [];
+      const suffix: Article[] = [];
+      for (let i = 0; i < cloneCount; i++) {
+        prefix.push(sortedArticles[((n - cloneCount + i) % n + n) % n]);
+        suffix.push(sortedArticles[i % n]);
+      }
+      return [...prefix, ...sortedArticles, ...suffix];
+    },
+    [sortedArticles, n, cloneCount]
+  );
 
   const viewportRef    = useRef<HTMLDivElement>(null);
   const autoTimerRef   = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -108,13 +118,14 @@ export default function ArticleCarousel({ articles }: ArticleCarouselProps) {
   const handleTransitionEnd = useCallback(() => {
     const idx = currentIndexRef.current;
     setIsAnimating(false);
-    if (idx === 0) {
-      setCurrentIndex(n);
-    } else if (idx === n + 1) {
-      setCurrentIndex(1);
+    // クローン領域に入ったら本体側の同じ位置へ瞬間ジャンプ
+    if (idx < cloneCount) {
+      setCurrentIndex(idx + n);
+    } else if (idx >= cloneCount + n) {
+      setCurrentIndex(idx - n);
     }
     scheduleNext();
-  }, [n, scheduleNext]);
+  }, [n, cloneCount, scheduleNext]);
 
   const goPrev = useCallback(() => {
     if (isAnimating) return;
@@ -134,10 +145,10 @@ export default function ArticleCarousel({ articles }: ArticleCarouselProps) {
     (targetIndex: number) => {
       if (isAnimating) return;
       clearTimer();
-      setCurrentIndex(targetIndex + 1);
+      setCurrentIndex(targetIndex + cloneCount);
       setIsAnimating(true);
     },
-    [isAnimating, clearTimer]
+    [isAnimating, clearTimer, cloneCount]
   );
 
   // ---- タッチスワイプ ----
@@ -159,7 +170,7 @@ export default function ArticleCarousel({ articles }: ArticleCarouselProps) {
     return <p className={styles.emptyMessage}>まだ記事がありません</p>;
   }
 
-  const normalizedIndex = ((currentIndex - 1) % n + n) % n;
+  const normalizedIndex = ((currentIndex - cloneCount) % n + n) % n;
 
   return (
     <div className={`${styles.carouselContainer} ${isReady ? styles.carouselReady : ''}`}>

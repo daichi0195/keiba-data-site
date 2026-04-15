@@ -1,0 +1,167 @@
+.empty {
+  text-align: center;
+  color: #718096;
+  padding: 2rem 0;
+}
+
+/* レース一覧テーブル */
+.raceTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  border-top: 2px solid #cbd5e0;
+  border-bottom: 2px solid #cbd5e0;
+}
+
+.raceTable th {
+  background: #f5f7fa;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  color: #4a5568;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.thDate {
+  width: 8rem;
+  white-space: nowrap;
+}
+
+.raceTable td {
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid #e2e8f0;
+  vertical-align: middle;
+}
+
+.raceTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.raceTable tbody tr:hover {
+  background: #f8faf9;
+}
+
+.tdDate {
+  color: #718096;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.tdName {
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.raceLink {
+  color: inherit;
+  text-decoration: none !important;
+}
+
+.raceLink:hover {
+  color: var(--primary-green);
+}
+
+/* ページネーション */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 1.25rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.pageLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--primary-green) !important;
+  text-decoration: none !important;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+
+.pageLink:hover {
+  background: #f0fdf4;
+}
+
+.pageLinkActive {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #fff !important;
+  text-decoration: none !important;
+  background: var(--primary-green);
+  border: 1px solid var(--primary-green);
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.pageLinkDisabled {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #cbd5e0;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+}
+
+.pageEllipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  height: 2rem;
+  font-size: 0.8125rem;
+  color: #718096;
+}
+
+/* 戻るリンク */
+.backLink {
+  margin-top: 1.5rem;
+}
+
+.backLink a {
+  font-size: 0.875rem;
+  color: var(--primary-green) !important;
+  text-decoration: none !important;
+  font-weight: 500;
+}
+
+.backLink a:hover {
+  text-decoration: underline !important;
+}
+
+/* モバイル対応 */
+@media (max-width: 768px) {
+  .raceTable {
+    font-size: 0.8125rem;
+  }
+
+  .raceTable th,
+  .raceTable td {
+    padding: 0.5rem 0.4rem;
+  }
+
+  .thDate {
+    width: 6rem;
+  }
+}

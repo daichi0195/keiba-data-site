@@ -76,6 +76,7 @@
 }
 
 .thumbnailWrapper {
+  position: relative;
   flex-shrink: 0;
   width: 90px;
   height: 60px;
