@@ -11,6 +11,7 @@ const navItems = [
   { label: '血統データ', href: '/sires' },
   { label: '調教師データ', href: '/trainers' },
   { label: 'コラム', href: '/articles' },
+  { label: 'AI予測', href: '/ai' },
 ];
 
 export default function SpGlobalNav() {

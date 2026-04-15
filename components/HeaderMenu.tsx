@@ -345,6 +345,10 @@ export default function HeaderMenu() {
             <i className="fa-regular fa-pen-to-square"></i>
             <span>コラム</span>
           </Link>
+          <Link href="/ai" className={`${styles.pcMenuLink} ${isPcLinkActive('/ai') ? styles.pcMenuLinkActive : ''}`}>
+            <i className="fa-solid fa-robot"></i>
+            <span>AI予測</span>
+          </Link>
         </nav>
 
       {/* ===== モバイル：下部固定メニューボタン（5つ） ===== */}
@@ -385,9 +389,9 @@ export default function HeaderMenu() {
           <span className={styles.menuIcon}><i className="fa-solid fa-user"></i></span>
           <span className={styles.menuText}>調教師データ</span>
         </button>
-        <Link href="/articles" className={styles.menuButton}>
-          <span className={styles.menuIcon}><i className="fa-regular fa-pen-to-square"></i></span>
-          <span className={styles.menuText}>コラム</span>
+        <Link href="/ai" className={styles.menuButton}>
+          <span className={styles.menuIcon}><i className="fa-solid fa-robot"></i></span>
+          <span className={styles.menuText}>AI予測</span>
         </Link>
       </div>
 
