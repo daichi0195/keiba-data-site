@@ -39,12 +39,6 @@ async function fetchPredictionIndex(): Promise<RaceSummary[]> {
   }
 }
 
-function getToday(): string {
-  const now = new Date();
-  now.setHours(now.getHours() + 9); // JST
-  return now.toISOString().slice(0, 10);
-}
-
 function shortenSurface(surface: string): string {
   if (surface === 'ダート') return 'ダ';
   return surface;
@@ -52,9 +46,7 @@ function shortenSurface(surface: string): string {
 
 export default async function AIPage() {
   const allRaces = await fetchPredictionIndex();
-  const today = getToday();
-  const todayRaces = allRaces.filter((r) => r.date === today);
-  const pastRaces = allRaces.filter((r) => r.date !== today).slice(0, 10);
+  const latestRaces = allRaces.slice(0, 10);
   return (
     <StaticPageLayout pageName="競馬AI 勝率予測" noLeftSidebar>
       <div className={pageStyles.staticPageCard}>
@@ -62,38 +54,13 @@ export default async function AIPage() {
           <h1 className={pageStyles.staticPageTitle}>競馬AI 勝率予測</h1>
         </div>
 
-        {/* 今日の予測 */}
+        {/* 最新のレース予測 */}
         <section className={styles.section}>
-          <h2 id="today">今日の予測</h2>
-          {todayRaces.length > 0 ? (
-            <div className={styles.raceGrid}>
-              {todayRaces.map((race) => (
-                <Link
-                  key={race.slug}
-                  href={`/ai/races/${race.slug}`}
-                  className={styles.raceCard}
-                >
-                  <div className={styles.raceDate}>{race.dateLabel}</div>
-                  <div className={styles.raceName}>{race.raceName}</div>
-                  <div className={styles.raceMetaRow}>
-                    <span className={styles.raceVenueChip}>{race.venueLabel}{race.raceNumber}R</span>
-                    <span className={styles.raceMeta}>{shortenSurface(race.surface)}{race.distance}m</span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          ) : (
-            <p className={styles.subNote}>予測対象レースの約10分前に公開予定です。</p>
-          )}
-        </section>
-
-        {/* 過去の予測 */}
-        <section className={styles.section}>
-          <h2 id="past">過去の予測</h2>
-          {pastRaces.length > 0 ? (
+          <h2 id="latest">最新のレース予測</h2>
+          {latestRaces.length > 0 ? (
             <>
               <div className={styles.raceGrid}>
-                {pastRaces.map((race) => (
+                {latestRaces.map((race) => (
                   <Link
                     key={race.slug}
                     href={`/ai/races/${race.slug}`}
@@ -113,7 +80,7 @@ export default async function AIPage() {
               </Link>
             </>
           ) : (
-            <p className={styles.subNote}>まだ過去の予測データがありません。</p>
+            <p className={styles.subNote}>予測対象レースの約10分前に公開予定です。</p>
           )}
         </section>
 
