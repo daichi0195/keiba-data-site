@@ -8,7 +8,6 @@ import pageStyles from '@/app/static-page.module.css';
 export const metadata: Metadata = {
   title: '予測一覧 | 競馬AI 勝率予測 | 競馬データ.com',
   description: '競馬AI勝率予測の予測一覧です。',
-  robots: { index: false, follow: false },
 };
 
 const PER_PAGE = 20;
