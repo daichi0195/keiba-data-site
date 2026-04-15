@@ -28,11 +28,26 @@ export const metadata: Metadata = {
   },
 };
 
+async function fetchPredictions() {
+  try {
+    const url = `https://storage.googleapis.com/umadata/predictions/index.json?t=${Date.now()}`;
+    const res = await fetch(url, { next: { revalidate: 300 } });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.slice(0, 10);
+  } catch {
+    return [];
+  }
+}
+
 export default async function HomePage() {
-  // サーバー側でリーディングデータと記事を読み込む
-  const jockeyLeading = await getJockeyLeading();
-  const trainerLeading = await getTrainerLeading();
-  const sireLeading = await getSireLeading();
+  // サーバー側でリーディングデータ・記事・予測を読み込む
+  const [jockeyLeading, trainerLeading, sireLeading, predictions] = await Promise.all([
+    getJockeyLeading(),
+    getTrainerLeading(),
+    getSireLeading(),
+    fetchPredictions(),
+  ]);
   const articles = getAllArticles();
   const structuredData = {
     '@context': 'https://schema.org',
@@ -60,7 +75,7 @@ export default async function HomePage() {
         </section>
 
         {/* AI予測セクション */}
-        <HomeAIPredictions />
+        <HomeAIPredictions races={predictions} />
 
         {/* 2カラムレイアウト部分 */}
         <div className="home-columns">

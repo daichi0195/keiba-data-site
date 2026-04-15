@@ -1,6 +1,3 @@
-'use client';
-
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import styles from './HomeAIPredictions.module.css';
 
@@ -20,22 +17,7 @@ function shortenSurface(surface: string): string {
   return surface;
 }
 
-export default function HomeAIPredictions() {
-  const [races, setRaces] = useState<RaceSummary[]>([]);
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    const url = `/api/predictions?t=${Date.now()}`;
-    fetch(url, { cache: 'no-store' })
-      .then((res) => (res.ok ? res.json() : []))
-      .then((data: RaceSummary[]) => {
-        setRaces(data.slice(0, 10));
-      })
-      .catch(() => setRaces([]))
-      .finally(() => setLoaded(true));
-  }, []);
-
-  if (!loaded) return null;
+export default function HomeAIPredictions({ races }: { races: RaceSummary[] }) {
   if (races.length === 0) return null;
 
   return (
