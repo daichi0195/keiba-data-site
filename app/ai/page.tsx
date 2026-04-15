@@ -45,6 +45,11 @@ function getToday(): string {
   return now.toISOString().slice(0, 10);
 }
 
+function shortenSurface(surface: string): string {
+  if (surface === 'ダート') return 'ダ';
+  return surface;
+}
+
 export default async function AIPage() {
   const allRaces = await fetchPredictionIndex();
   const today = getToday();
@@ -72,7 +77,7 @@ export default async function AIPage() {
                   <div className={styles.raceName}>{race.raceName}</div>
                   <div className={styles.raceMetaRow}>
                     <span className={styles.raceVenueChip}>{race.venueLabel}{race.raceNumber}R</span>
-                    <span className={styles.raceMeta}>{race.surface}{race.distance}m</span>
+                    <span className={styles.raceMeta}>{shortenSurface(race.surface)}{race.distance}m</span>
                   </div>
                 </Link>
               ))}
@@ -98,7 +103,7 @@ export default async function AIPage() {
                     <div className={styles.raceName}>{race.raceName}</div>
                     <div className={styles.raceMetaRow}>
                       <span className={styles.raceVenueChip}>{race.venueLabel}{race.raceNumber}R</span>
-                      <span className={styles.raceMeta}>{race.surface}{race.distance}m</span>
+                      <span className={styles.raceMeta}>{shortenSurface(race.surface)}{race.distance}m</span>
                     </div>
                   </Link>
                 ))}
