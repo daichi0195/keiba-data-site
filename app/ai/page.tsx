@@ -186,7 +186,7 @@ export default async function AIPage() {
                 ))}
               </div>
               <Link href="/ai/races" className={styles.moreButton}>
-                過去の予測一覧
+                予測一覧
               </Link>
             </>
           ) : (

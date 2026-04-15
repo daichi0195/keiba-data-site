@@ -6,8 +6,8 @@ import styles from './page.module.css';
 import pageStyles from '@/app/static-page.module.css';
 
 export const metadata: Metadata = {
-  title: '過去の予測一覧 | 競馬AI 勝率予測 | 競馬データ.com',
-  description: '競馬AI勝率予測の過去の予測結果一覧です。',
+  title: '予測一覧 | 競馬AI 勝率予測 | 競馬データ.com',
+  description: '競馬AI勝率予測の予測一覧です。',
   robots: { index: false, follow: false },
 };
 
@@ -50,18 +50,18 @@ export default async function PredictionListPage({
 
   return (
     <StaticPageLayout
-      pageName="過去の予測一覧"
+      pageName="予測一覧"
       noLeftSidebar
       noToc
       bookmarkOnly
       breadcrumbs={[
         { label: '競馬AI 勝率予測', href: '/ai' },
-        { label: '過去の予測一覧' },
+        { label: '予測一覧' },
       ]}
     >
       <div className={pageStyles.staticPageCard}>
         <div className={pageStyles.staticPageHeader}>
-          <h1 className={pageStyles.staticPageTitle}>過去の予測一覧</h1>
+          <h1 className={pageStyles.staticPageTitle}>予測一覧</h1>
         </div>
 
         {races.length === 0 ? (

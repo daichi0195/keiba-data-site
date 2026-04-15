@@ -116,7 +116,7 @@ export default async function RacePredictionPage(
       bookmarkOnly
       breadcrumbs={[
         { label: '競馬AI 勝率予測', href: '/ai' },
-        { label: '過去の予測一覧', href: '/ai/races' },
+        { label: '予測一覧', href: '/ai/races' },
         { label: pageTitle },
       ]}
     >
