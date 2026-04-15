@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default function ArticlesPage() {
-  const articles = getAllArticles();
+  const articles = getAllArticles().filter((a) => !a.frontmatter.link);
 
   return (
     <StaticPageLayout pageName="コラム" noToc noLeftSidebar>

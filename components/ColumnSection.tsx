@@ -10,7 +10,8 @@ interface ColumnSectionProps {
   articles: Article[];
 }
 
-export default function ColumnSection({ articles }: ColumnSectionProps) {
+export default function ColumnSection({ articles: rawArticles }: ColumnSectionProps) {
+  const articles = rawArticles.filter((a) => !a.frontmatter.link);
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -52,13 +53,13 @@ export default function ColumnSection({ articles }: ColumnSectionProps) {
             display: 'block',
             width: '100%',
             marginTop: '16px',
-            padding: '10px',
+            padding: '0.75rem 1rem',
             background: 'white',
-            border: '1px solid #e0e0e0',
-            borderRadius: '4px',
-            fontSize: '13px',
-            fontWeight: 500,
-            color: '#333',
+            border: '1px solid #e2e8f0',
+            borderRadius: '6px',
+            fontSize: '0.9375rem',
+            fontWeight: 600,
+            color: '#4b5563',
             textAlign: 'center',
             textDecoration: 'none',
             boxSizing: 'border-box',
