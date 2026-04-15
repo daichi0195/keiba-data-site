@@ -353,10 +353,6 @@ export default function HeaderMenu() {
 
       {/* ===== モバイル：下部固定メニューボタン（5つ） ===== */}
       <div className={styles.spMenu}>
-        <Link href="/ai" className={styles.menuButton}>
-          <span className={styles.menuIcon}><i className="fa-solid fa-robot"></i></span>
-          <span className={styles.menuText}>AI予測</span>
-        </Link>
         <button
           className={styles.menuButton}
           onClick={() => setOpenMenu('course')}
@@ -393,6 +389,10 @@ export default function HeaderMenu() {
           <span className={styles.menuIcon}><i className="fa-solid fa-user"></i></span>
           <span className={styles.menuText}>調教師データ</span>
         </button>
+        <Link href="/ai" className={styles.menuButton}>
+          <span className={styles.menuIcon}><i className="fa-solid fa-robot"></i></span>
+          <span className={styles.menuText}>AI予測</span>
+        </Link>
       </div>
 
       {openMenu && (
