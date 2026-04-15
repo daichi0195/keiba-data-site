@@ -143,6 +143,10 @@
 }
 
 @media (max-width: 768px) {
+  .section {
+    margin-bottom: 16px;
+  }
+
   .inner {
     padding: 12px 12px 14px;
   }

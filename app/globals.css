@@ -1857,7 +1857,7 @@ details[open] .evaluation-content {
 .section {
   background: transparent;
   padding: 12px;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 /* 記事カルーセルセクション */
@@ -3212,7 +3212,7 @@ h3.subsection-title:first-of-type {
     position: relative;
     overflow: hidden;
     padding: 72px 24px 28px !important;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     transition: box-shadow 0.2s ease;
     opacity: 0;
     transform: translateY(24px);
@@ -3258,7 +3258,7 @@ h3.subsection-title:first-of-type {
     position: relative;
     overflow: hidden;
     padding: 72px 24px 28px;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
                 transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
                 box-shadow 0.2s ease;
