@@ -150,7 +150,7 @@ export default async function AIPage() {
           <div className={styles.markTable}>
             <div className={styles.markHeader}>
               <span className={styles.markIcon} style={{ background: '#16a34a' }} />
-              <span className={styles.markHeaderText}>本命（勝率が高く、かつオッズ妙味のある馬）</span>
+              <span className={styles.markHeaderText}>本命</span>
             </div>
             <div className={styles.markBody}>
               予測勝率が高く、オッズとの乖離から期待値が高いと判定された馬です。単勝候補として推奨します。<br />
@@ -159,7 +159,7 @@ export default async function AIPage() {
 
             <div className={styles.markHeader}>
               <span className={styles.markIcon} style={{ background: '#0ea5e9' }} />
-              <span className={styles.markHeaderText}>紐（過小評価されている穴馬）</span>
+              <span className={styles.markHeaderText}>紐</span>
             </div>
             <div className={styles.markBody}>
               人気はないものの、予測勝率に対してオッズが高く、市場に過小評価されていると判定された馬です。<br />
@@ -168,7 +168,7 @@ export default async function AIPage() {
 
             <div className={styles.markHeader}>
               <span className={styles.markIcon} style={{ background: '#dc2626' }} />
-              <span className={styles.markHeaderText}>危険（人気しているが、予測勝率が低い馬）</span>
+              <span className={styles.markHeaderText}>危険</span>
             </div>
             <div className={`${styles.markBody} ${styles.markBodyLast}`}>
               人気を集めているものの、予測勝率が低く過大評価されていると判定された馬です。<br />
