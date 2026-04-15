@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import ArticleCarousel from '@/components/ArticleCarousel';
+import HomeAIPredictions from '@/components/HomeAIPredictions';
 import AIBanner from '@/components/AIBanner';
 import ThisWeekVenues from '@/components/ThisWeekVenues';
 import AllVenues from '@/components/AllVenues';
@@ -57,6 +58,9 @@ export default async function HomePage() {
         <section className="section section-full-width section-article-carousel">
           <ArticleCarousel articles={articles} />
         </section>
+
+        {/* AI予測セクション */}
+        <HomeAIPredictions />
 
         {/* 2カラムレイアウト部分 */}
         <div className="home-columns">
