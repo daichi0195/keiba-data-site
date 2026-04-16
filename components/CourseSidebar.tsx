@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ALL_COURSES, getCourseUrl, getCourseDisplayName } from '@/lib/courses';
+import AIBanner from './AIBanner';
 import styles from './CourseSidebar.module.css';
 
 interface CourseSidebarProps {
@@ -30,13 +31,8 @@ export default function CourseSidebar({ racecourse, racecourseJa }: CourseSideba
 
   return (
     <div className={styles.sidebar}>
-      {/* ブックマーク登録バナー */}
-      <div className={styles.bookmarkBanner}>
-        <div className={styles.bookmarkIcon}>🔖</div>
-        <div className={styles.bookmarkTitle}>毎週の予想に活用しよう！</div>
-        <div className={styles.bookmarkCommand}>Ctrl+D / ⌘+D</div>
-        <div className={styles.bookmarkSubtitle}>でブックマークに登録！</div>
-      </div>
+      {/* AIバナー（画像のみ） */}
+      <AIBanner bannerOnly />
 
       {/* 他のコース一覧 */}
       <div className={styles.coursesSection}>
@@ -93,6 +89,9 @@ export default function CourseSidebar({ racecourse, racecourseJa }: CourseSideba
           </div>
         )}
       </div>
+
+      {/* ブックマーク訴求 */}
+      <AIBanner bookmarkOnly />
     </div>
   );
 }

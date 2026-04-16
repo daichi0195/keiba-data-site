@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import styles from './AIBanner.module.css';
 
-export default function AIBanner({ bookmarkOnly = false }: { bookmarkOnly?: boolean }) {
+export default function AIBanner({ bookmarkOnly = false, bannerOnly = false }: { bookmarkOnly?: boolean; bannerOnly?: boolean }) {
   return (
     <>
       {!bookmarkOnly && (
@@ -17,12 +17,14 @@ export default function AIBanner({ bookmarkOnly = false }: { bookmarkOnly?: bool
           />
         </Link>
       )}
-      <div className={`${styles.bookmarkBanner} ${bookmarkOnly ? styles.bookmarkBannerNoMargin : ''}`}>
-        <div className={styles.bookmarkIcon}>🔖</div>
-        <div className={styles.bookmarkTitle}>毎週の予想に活用しよう！</div>
-        <div className={styles.bookmarkCommand}>Ctrl+D / ⌘+D</div>
-        <div className={styles.bookmarkSubtitle}>でブックマークに登録！</div>
-      </div>
+      {!bannerOnly && (
+        <div className={`${styles.bookmarkBanner} ${bookmarkOnly ? styles.bookmarkBannerNoMargin : ''}`}>
+          <div className={styles.bookmarkIcon}>🔖</div>
+          <div className={styles.bookmarkTitle}>毎週の予想に活用しよう！</div>
+          <div className={styles.bookmarkCommand}>Ctrl+D / ⌘+D</div>
+          <div className={styles.bookmarkSubtitle}>でブックマークに登録！</div>
+        </div>
+      )}
     </>
   );
 }
