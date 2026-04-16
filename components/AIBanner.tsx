@@ -1,13 +1,21 @@
+import Image from 'next/image';
+import Link from 'next/link';
 import styles from './AIBanner.module.css';
 
 export default function AIBanner({ bookmarkOnly = false }: { bookmarkOnly?: boolean }) {
   return (
     <>
       {!bookmarkOnly && (
-        <div className={styles.banner}>
-          <div className={styles.title}>競馬AI製作中！</div>
-          <div className={styles.subtitle}>COMING SOON</div>
-        </div>
+        <Link href="/ai" className={styles.banner}>
+          <Image
+            src="/ai.png"
+            alt="回収率130%達成 AI勝率予測 無料で公開中！"
+            width={400}
+            height={400}
+            className={styles.bannerImage}
+            priority
+          />
+        </Link>
       )}
       <div className={`${styles.bookmarkBanner} ${bookmarkOnly ? styles.bookmarkBannerNoMargin : ''}`}>
         <div className={styles.bookmarkIcon}>🔖</div>
