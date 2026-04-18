@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 async function fetchPredictions() {
   try {
     const url = `https://storage.googleapis.com/umadata/predictions/index.json?t=${Date.now()}`;
-    const res = await fetch(url, { next: { revalidate: 300 } });
+    const res = await fetch(url, { cache: 'no-store' });
     if (!res.ok) return [];
     const data = await res.json();
     return data.slice(0, 10);
