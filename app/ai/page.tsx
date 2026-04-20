@@ -6,11 +6,11 @@ import styles from './page.module.css';
 import pageStyles from '@/app/static-page.module.css';
 
 export const metadata: Metadata = {
-  title: '競馬AI 勝率予測 | 競馬データ.com',
+  title: '競馬予想AI｜無料で勝率予測を公開中！ | 競馬データ.com',
   description:
     '過去の中央競馬レースデータを機械学習で分析し、各馬の勝率を予測するAIです。予測勝率とオッズから期待値を算出し、市場が過小評価・過大評価している馬を見抜きます。',
   openGraph: {
-    title: '競馬AI 勝率予測 | 競馬データ.com',
+    title: '競馬予想AI｜無料で勝率予測を公開中！ | 競馬データ.com',
     description:
       '過去の中央競馬レースデータを機械学習で分析し、各馬の勝率を予測するAIです。',
     type: 'website',
