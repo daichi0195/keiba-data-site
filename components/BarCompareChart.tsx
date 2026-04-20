@@ -56,12 +56,12 @@ export default function BarCompareChart({
 
   return (
     <div className={styles.wrapper} ref={wrapperRef}>
-      {title && <p className={styles.title}>{title}</p>}
+      {title && <div className={styles.title}>{title}</div>}
       {baseline && (
-        <p className={styles.baselineNote}>
+        <div className={styles.baselineNote}>
           <span className={styles.baselineMarker} />
           {baseline.label ?? '全体平均'}（{baseline.value.toFixed(decimals)}{unit}）
-        </p>
+        </div>
       )}
       <div className={styles.chart}>
         {items.map((item, idx) => {
