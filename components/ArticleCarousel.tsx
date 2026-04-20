@@ -28,7 +28,7 @@ const AI_BANNER: Article = {
     category: '',
     tags: [],
     author: '',
-    thumbnail: '/images/articles/ai_carousel.png',
+    thumbnail: '/images/carousel/ai.png',
     link: '/ai',
   },
   content: '',
