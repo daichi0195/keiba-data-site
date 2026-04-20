@@ -19,15 +19,32 @@ const PC_GAP  = 16;
 const MB_PEEK = 8; // SP時: centering=(viewport-cardWidth)/2=12px → コンテンツ(padding:12px)と左端を揃える
 const MB_GAP  = 8;
 
+const AI_BANNER: Article = {
+  slug: 'ai',
+  frontmatter: {
+    title: 'AI勝率予測',
+    description: '',
+    date: '',
+    category: '',
+    tags: [],
+    author: '',
+    thumbnail: '/images/articles/ai_carousel.png',
+    link: '/ai',
+  },
+  content: '',
+};
+
 export default function ArticleCarousel({ articles }: ArticleCarouselProps) {
-  // 新着順でソート
+  // AIバナーを先頭に固定し、残りは新着順でソート
   const sortedArticles = useMemo(
-    () =>
-      [...articles].sort(
+    () => [
+      AI_BANNER,
+      ...[...articles].sort(
         (a, b) =>
           new Date(b.frontmatter.date).getTime() -
           new Date(a.frontmatter.date).getTime()
       ),
+    ],
     [articles]
   );
 
