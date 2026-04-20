@@ -106,13 +106,13 @@ export default function BarCompareChart({
             />
           </div>
         )}
-        <div className={styles.scale}>
-          <span>0{unit}</span>
-          <span>
-            {effectiveMax}
-            {unit}
-          </span>
-        </div>
+      </div>
+      <div className={styles.scale}>
+        <span>0{unit}</span>
+        <span>
+          {effectiveMax}
+          {unit}
+        </span>
       </div>
     </div>
   );
