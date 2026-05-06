@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
     // Remove console logs in production
     removeConsole: process.env.NODE_ENV === 'production',
   },
+  // content/articles を動的ルート（sitemap等）のランタイムにも含める
+  outputFileTracingIncludes: {
+    '/**': ['./content/**/*'],
+  },
   // Disable polyfills for modern browsers
   experimental: {
     // Use modern JavaScript output
