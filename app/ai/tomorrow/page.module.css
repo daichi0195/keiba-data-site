@@ -1,16 +1,7 @@
-.description {
-  font-size: 0.9375rem;
-  color: #4a5568;
-  margin: 0.75rem 0 1.25rem;
-  line-height: 1.75;
-}
-
 .empty {
   text-align: center;
   color: #718096;
-  padding: 2.5rem 0;
-  line-height: 1.9;
-  font-size: 0.9375rem;
+  padding: 2rem 0;
 }
 
 /* レース一覧テーブル */
@@ -63,27 +54,12 @@
 }
 
 .raceLink {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
   color: inherit;
   text-decoration: none !important;
 }
 
 .raceLink:hover {
   color: var(--primary-green);
-}
-
-.raceInfo {
-  font-weight: 600;
-}
-
-.raceMeta {
-  font-size: 0.8125rem;
-  color: #718096;
-  font-weight: 500;
-  white-space: nowrap;
-  flex-shrink: 0;
 }
 
 /* 戻るリンク */

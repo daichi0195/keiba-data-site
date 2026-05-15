@@ -32,11 +32,6 @@ async function fetchPrevPredictionIndex(): Promise<RaceSummary[]> {
   }
 }
 
-function shortenSurface(surface: string): string {
-  if (surface === 'ダート') return 'ダ';
-  return surface;
-}
-
 export default async function TomorrowPredictionPage() {
   const races = await fetchPrevPredictionIndex();
 
@@ -56,14 +51,8 @@ export default async function TomorrowPredictionPage() {
           <h1 className={pageStyles.staticPageTitle}>前日予測一覧</h1>
         </div>
 
-        <p className={styles.description}>
-          翌日開催のレースを前日17時頃に公開します。
-        </p>
-
         {races.length === 0 ? (
-          <p className={styles.empty}>
-            本日はまだ前日予測が公開されていません。<br />17時頃にご確認ください。
-          </p>
+          <p className={styles.empty}>本日はまだ前日予測が公開されていません。</p>
         ) : (
           <table className={styles.raceTable}>
             <thead>
@@ -78,12 +67,7 @@ export default async function TomorrowPredictionPage() {
                   <td className={styles.tdDate}>{race.dateLabel}</td>
                   <td className={styles.tdName}>
                     <Link href={`/ai/tomorrow/${race.slug}`} className={styles.raceLink}>
-                      <span className={styles.raceInfo}>
-                        {race.venueLabel}{race.raceNumber}R {race.raceName}
-                      </span>
-                      <span className={styles.raceMeta}>
-                        {shortenSurface(race.surface)}{race.distance}m
-                      </span>
+                      {race.venueLabel}{race.raceNumber}R {race.raceName}
                     </Link>
                   </td>
                 </tr>
