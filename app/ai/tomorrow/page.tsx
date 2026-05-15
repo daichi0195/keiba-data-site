@@ -76,7 +76,9 @@ export default async function TomorrowPredictionPage() {
           </table>
         )}
 
-        <AIXBanner />
+        <div className={styles.bannerWrap}>
+          <AIXBanner />
+        </div>
 
         <div className={styles.backLink}>
           <Link href="/ai">← AI勝率予測トップへ</Link>

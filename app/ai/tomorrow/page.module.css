@@ -62,6 +62,11 @@
   color: var(--primary-green);
 }
 
+/* バナー上余白 */
+.bannerWrap {
+  margin-top: 1.5rem;
+}
+
 /* 戻るリンク */
 .backLink {
   margin-top: 1.5rem;
