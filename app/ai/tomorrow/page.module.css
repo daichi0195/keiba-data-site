@@ -1,0 +1,119 @@
+.description {
+  font-size: 0.9375rem;
+  color: #4a5568;
+  margin: 0.75rem 0 1.25rem;
+  line-height: 1.75;
+}
+
+.empty {
+  text-align: center;
+  color: #718096;
+  padding: 2.5rem 0;
+  line-height: 1.9;
+  font-size: 0.9375rem;
+}
+
+/* レース一覧テーブル */
+.raceTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  border-top: 2px solid #cbd5e0;
+  border-bottom: 2px solid #cbd5e0;
+}
+
+.raceTable th {
+  background: #f5f7fa;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  color: #4a5568;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.thDate {
+  width: 8rem;
+  white-space: nowrap;
+}
+
+.raceTable td {
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid #e2e8f0;
+  vertical-align: middle;
+}
+
+.raceTable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.raceTable tbody tr:hover {
+  background: #f8faf9;
+}
+
+.tdDate {
+  color: #718096;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.tdName {
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.raceLink {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: inherit;
+  text-decoration: none !important;
+}
+
+.raceLink:hover {
+  color: var(--primary-green);
+}
+
+.raceInfo {
+  font-weight: 600;
+}
+
+.raceMeta {
+  font-size: 0.8125rem;
+  color: #718096;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* 戻るリンク */
+.backLink {
+  margin-top: 1.5rem;
+}
+
+.backLink a {
+  font-size: 0.875rem;
+  color: var(--primary-green) !important;
+  text-decoration: none !important;
+  font-weight: 500;
+}
+
+.backLink a:hover {
+  text-decoration: underline !important;
+}
+
+/* モバイル対応 */
+@media (max-width: 768px) {
+  .raceTable {
+    font-size: 0.8125rem;
+  }
+
+  .raceTable th,
+  .raceTable td {
+    padding: 0.5rem 0.4rem;
+  }
+
+  .thDate {
+    width: 6rem;
+  }
+}
