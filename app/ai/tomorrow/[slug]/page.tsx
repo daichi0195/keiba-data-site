@@ -30,6 +30,7 @@ interface RacePrediction {
   raceName: string;
   surface: string;
   distance: number;
+  trackCondition?: string;
   predictions: HorsePrediction[];
 }
 
@@ -75,19 +76,6 @@ export async function generateMetadata(
   };
 }
 
-const getMarkLabel = (mark?: string) => {
-  switch (mark) {
-    case 'honmei':
-      return { text: '本命', color: '#16a34a' };
-    case 'himo':
-      return { text: '紐', color: '#0ea5e9' };
-    case 'kiken':
-      return { text: '危険', color: '#dc2626' };
-    default:
-      return null;
-  }
-};
-
 export default async function TomorrowRacePredictionPage(
   { params }: { params: Promise<{ slug: string }> }
 ) {
@@ -128,40 +116,36 @@ export default async function TomorrowRacePredictionPage(
         </div>
 
         <section className={styles.section}>
+          {data.trackCondition && (
+            <p className={styles.trackInfo}>
+              予測馬場状態: <strong>{data.trackCondition}</strong>
+            </p>
+          )}
           <table className={styles.predictionTable}>
             <thead>
               <tr>
                 <th className={styles.thRank}>順位</th>
                 <th className={styles.thRate}>予測勝率</th>
                 <th className={styles.thName}>馬名</th>
-                <th className={styles.thMark}>印</th>
               </tr>
             </thead>
             <tbody>
-              {data.predictions.map((horse) => {
-                const markInfo = getMarkLabel(horse.mark);
-                return (
-                  <tr key={horse.rank} className={horse.mark ? styles[`row_${horse.mark}`] : ''}>
-                    <td className={styles.tdRank}>{horse.rank}</td>
-                    <td className={styles.tdRate}>{horse.winRate}%</td>
-                    <td className={styles.tdName}>{horse.name}</td>
-                    <td className={styles.tdMark}>
-                      {markInfo && (
-                        <span className={styles.markBadge} style={{ background: markInfo.color }}>
-                          {markInfo.text}
-                        </span>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
+              {data.predictions.map((horse) => (
+                <tr key={horse.rank}>
+                  <td className={styles.tdRank}>{horse.rank}</td>
+                  <td className={styles.tdRate}>{horse.winRate}%</td>
+                  <td className={styles.tdName}>{horse.name}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </section>
 
-        <p className={styles.note}>
-          ※ 前日予測のため、出走取消・除外・変更が生じる場合があります。
-        </p>
+        <ul className={styles.noteList}>
+          <li>前日予測のため印（本命・紐・危険）はつきません。印はレース当日の予測をご確認ください。</li>
+          <li>馬体重・増減など前日時点で未確定の情報は直近値を使用しているため、若干の誤差が生じる場合があります。</li>
+          <li>出走取消・除外・変更が生じる場合があります。</li>
+        </ul>
 
         <AIXBanner />
 
