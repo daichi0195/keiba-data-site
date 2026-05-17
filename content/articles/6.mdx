@@ -203,7 +203,7 @@ priority: 0
       ].map(([wb, mare, male]) => (
         <tr key={wb}>
           <td style={{ padding: '10px 12px', textAlign: 'center', borderBottom: '1px solid #e2e8f0' }}>{wb}</td>
-          <td style={{ padding: '10px 12px', textAlign: 'center', borderBottom: '1px solid #e2e8f0', color: '#2d6a4f', fontWeight: 'bold' }}>{mare}</td>
+          <td style={{ padding: '10px 12px', textAlign: 'center', borderBottom: '1px solid #e2e8f0', color: mare.startsWith('−') ? '#e53e3e' : '#2d6a4f', fontWeight: 'bold' }}>{mare}</td>
           <td style={{ padding: '10px 12px', textAlign: 'center', borderBottom: '1px solid #e2e8f0', color: male.startsWith('−') ? '#e53e3e' : '#2d6a4f' }}>{male}</td>
         </tr>
       ))}
