@@ -35,7 +35,7 @@ priority: 0
 牡牝混合戦における季節別の複勝率です。
 
 <SeasonDualChart
-  title="季節別複勝率比較（牡牝混合戦）"
+  title="季節別複勝率比較"
   yMax={30}
   unit="%"
   data={[
@@ -49,7 +49,7 @@ priority: 0
 春・秋・冬は牡馬が牝馬を大きく上回っていますが、<strong>夏だけは牡馬23.0% vs 牝馬22.1%と差がほぼ埋まります。</strong>
 
 <SeasonDualChart
-  title="季節別複勝回収率比較（牡牝混合戦）"
+  title="季節別複勝回収率比較"
   yMax={100}
   unit="%"
   data={[
@@ -105,7 +105,7 @@ priority: 0
 <strong>新馬戦はすべての馬が初戦で</strong>「有力牡馬が秋に向けて調整中」という状況自体が起こりえない。そこで新馬戦の牡牝混合戦に絞り、夏と夏以外の成績を比較してみます。
 
 <SeasonDualChart
-  title="新馬戦　季節別複勝率比較（牡牝混合戦）"
+  title="新馬戦　季節別複勝率比較"
   yMax={35}
   unit="%"
   data={[
@@ -158,7 +158,7 @@ priority: 0
 />
 
 <SeasonDualChart
-  title="馬場状態別 複勝率比較（牡牝混合戦）"
+  title="馬場状態別 複勝率比較"
   yMax={30}
   unit="%"
   data={[
@@ -167,20 +167,27 @@ priority: 0
   ]}
 />
 
-道悪の開催割合は夏が9.4%で確かに高めですが、春（9.9%）の方が多いです。
-春の牝馬の成績が最も悪い以上、道悪の多さで夏の牝馬優位を説明することはできません。
+道悪の開催割合は夏が9.4%で確かに高めですが、春（9.9%）の方が多い結果になりました。
+春の牝馬の成績が最も悪い以上、道悪の多さで夏の牝馬優位を説明することは難しいでしょう。
 
 ### 「夏は重い馬が不利になる」説
 
-体重帯別に「夏と非夏の複勝率差」を出すと、きれいな構造が見えます。
+これまでの仮説がすべて否定された中、最後に残るのが「暑さそのもの」の影響です。夏場は気温・湿度ともに上昇し、体への負荷が増します。もし体重（＝馬体の大きさ）が暑さへの耐性と関係するなら、牡馬より軽い牝馬が相対的に浮上する説明になります。
+
+体重帯ごとに「夏と夏以外の複勝率の差（夏−夏以外）」を出すと、きれいな構造が見えます。
 
 <div style={{ overflowX: 'auto' }}>
-  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
+  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem', tableLayout: 'fixed' }}>
+    <colgroup>
+      <col style={{ width: '33%' }} />
+      <col style={{ width: '33%' }} />
+      <col style={{ width: '34%' }} />
+    </colgroup>
     <thead>
       <tr style={{ backgroundColor: '#f5f7fa' }}>
-        <th style={{ padding: '10px 12px', textAlign: 'left', borderBottom: '2px solid #e2e8f0' }}>体重帯</th>
-        <th style={{ padding: '10px 12px', textAlign: 'right', borderBottom: '2px solid #e2e8f0' }}>牝馬 複勝率差分</th>
-        <th style={{ padding: '10px 12px', textAlign: 'right', borderBottom: '2px solid #e2e8f0' }}>牡馬 複勝率差分</th>
+        <th style={{ padding: '10px 12px', textAlign: 'center', borderBottom: '2px solid #e2e8f0' }}>体重帯</th>
+        <th style={{ padding: '10px 12px', textAlign: 'center', borderBottom: '2px solid #e2e8f0' }}>牝馬 複勝率差分</th>
+        <th style={{ padding: '10px 12px', textAlign: 'center', borderBottom: '2px solid #e2e8f0' }}>牡馬 複勝率差分</th>
       </tr>
     </thead>
     <tbody>
@@ -193,9 +200,9 @@ priority: 0
         ['520kg以上', '−0.9pp', '−3.5pp'],
       ].map(([wb, mare, male]) => (
         <tr key={wb}>
-          <td style={{ padding: '10px 12px', borderBottom: '1px solid #e2e8f0' }}>{wb}</td>
-          <td style={{ padding: '10px 12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0', color: '#2d6a4f', fontWeight: 'bold' }}>{mare}</td>
-          <td style={{ padding: '10px 12px', textAlign: 'right', borderBottom: '1px solid #e2e8f0', color: male.startsWith('−') ? '#e53e3e' : '#2d6a4f' }}>{male}</td>
+          <td style={{ padding: '10px 12px', textAlign: 'center', borderBottom: '1px solid #e2e8f0' }}>{wb}</td>
+          <td style={{ padding: '10px 12px', textAlign: 'center', borderBottom: '1px solid #e2e8f0', color: '#2d6a4f', fontWeight: 'bold' }}>{mare}</td>
+          <td style={{ padding: '10px 12px', textAlign: 'center', borderBottom: '1px solid #e2e8f0', color: male.startsWith('−') ? '#e53e3e' : '#2d6a4f' }}>{male}</td>
         </tr>
       ))}
     </tbody>
