@@ -110,23 +110,21 @@
 
 /* 注記リスト */
 .noteList {
-  list-style: none;
   padding: 0;
-  padding-left: 0 !important;
   margin: 0 0 1.25rem;
   text-align: left;
 }
 
-.noteList li {
+.noteItem {
   font-size: 0.8125rem;
   color: #718096;
   line-height: 1.5;
   padding-left: 1em;
   position: relative;
-  margin: 0 0 0.125rem !important;
+  margin: 0 0 0.125rem;
 }
 
-.noteList li::before {
+.noteItem::before {
   content: '※';
   position: absolute;
   left: 0;

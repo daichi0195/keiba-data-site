@@ -141,11 +141,11 @@ export default async function TomorrowRacePredictionPage(
           </table>
         </section>
 
-        <ul className={styles.noteList}>
-          <li>前日予測のため印（本命・紐・危険）はつきません。印はレース当日の予測をご確認ください。</li>
-          <li>馬体重・増減など前日時点で未確定の情報は直近値を使用しているため、若干の誤差が生じる場合があります。</li>
-          <li>出走取消・除外・変更が生じる場合があります。</li>
-        </ul>
+        <div className={styles.noteList}>
+          <div className={styles.noteItem}>前日予測のため印（本命・紐・危険）はつきません。印はレース当日の予測をご確認ください。</div>
+          <div className={styles.noteItem}>馬体重・増減など前日時点で未確定の情報は直近値を使用しているため、若干の誤差が生じる場合があります。</div>
+          <div className={styles.noteItem}>出走取消・除外・変更が生じる場合があります。</div>
+        </div>
 
         <AIXBanner />
 
