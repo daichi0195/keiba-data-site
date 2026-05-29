@@ -33,7 +33,7 @@ async function fetchPrevPredictionIndex(): Promise<RaceSummary[]> {
 }
 
 export default async function TomorrowPredictionPage() {
-  const races = await fetchPrevPredictionIndex();
+  const races = (await fetchPrevPredictionIndex()).reverse();
 
   return (
     <StaticPageLayout
