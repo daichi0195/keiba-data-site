@@ -28,7 +28,9 @@ except ImportError:
     SIRE_NAME_TO_ID = {}
 
 # BigQueryクライアント
+print("BigQuery クライアント初期化中...", flush=True)
 client = bigquery.Client()
+print("BigQuery クライアント初期化完了", flush=True)
 
 # 現在の年度
 current_year = datetime.now().year

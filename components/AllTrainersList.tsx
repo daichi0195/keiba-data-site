@@ -41,15 +41,9 @@ const trainersData = (() => {
     }));
 })();
 
-export default function AllTrainersList({ leadingData }: { leadingData?: LeadingData[] }) {
+export default function AllTrainersList() {
   return (
     <div className={listStyles.groupList}>
-      {leadingData && leadingData.length > 0 && (
-        <div className={listStyles.groupSection}>
-          <h2 className={listStyles.groupTitle}>調教師リーディング（勝ち数順）</h2>
-          <LeadingChartSection data={leadingData} linkPrefix="/trainers/" />
-        </div>
-      )}
       {trainersData.map((group) => (
         <div key={group.kana} className={listStyles.groupSection}>
           <h2 className={listStyles.groupTitle}>{group.kana}</h2>
