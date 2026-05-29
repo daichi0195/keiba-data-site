@@ -82,35 +82,6 @@ const mockVenues: Venue[] = [
       ],
     },
   },
-  {
-    id: 'niigata',
-    name: '新潟競馬場',
-    shortName: '新潟',
-    courses: {
-      turf: [
-        { distance: 1000 },
-        { distance: 1200 },
-        { distance: 1400 },
-        { distance: 1600 },
-        { distance: 1800 },
-        { distance: 2000, variant: 'inner', label: '芝2000m(内)' },
-        { distance: 2000, variant: 'outer', label: '芝2000m(外)' },
-        { distance: 2200 },
-        { distance: 2400 },
-      ],
-      dirt: [
-        { distance: 1200 },
-        { distance: 1800 },
-        { distance: 2500 },
-      ],
-      steeplechase: [
-        { distance: 2850 },
-        { distance: 2890 },
-        { distance: 3250 },
-        { distance: 3290 },
-      ],
-    },
-  },
 ];
 
 export default function ThisWeekVenues({ noWrapper = false }: { noWrapper?: boolean }) {
