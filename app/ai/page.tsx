@@ -60,8 +60,8 @@ export default async function AIPage() {
     fetchPredictionIndex(),
     fetchPrevPredictionIndex(),
   ]);
-  const latestRaces = allRaces.slice(0, 10);
-  const tomorrowRaces = prevRaces.slice(0, 10);
+  const latestRaces = allRaces.reverse().slice(0, 10);
+  const tomorrowRaces = prevRaces.reverse().slice(0, 10);
   return (
     <StaticPageLayout pageName="競馬AI 勝率予測" noLeftSidebar>
       <div className={pageStyles.staticPageCard}>
