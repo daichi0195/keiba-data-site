@@ -79,6 +79,9 @@ export async function generateMetadata(
 export default async function TomorrowRacePredictionPage(
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  // 一時非表示: 前日予測ページ
+  notFound();
+
   const { slug } = await params;
   const [data, index] = await Promise.all([
     fetchPrevPrediction(slug),

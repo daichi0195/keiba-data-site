@@ -39,29 +39,14 @@ async function fetchPredictionIndex(): Promise<RaceSummary[]> {
   }
 }
 
-async function fetchPrevPredictionIndex(): Promise<RaceSummary[]> {
-  const url = `https://storage.googleapis.com/umadata/predictions_prev/index.json?t=${Date.now()}`;
-  try {
-    const res = await fetch(url, { cache: 'no-store' });
-    if (!res.ok) return [];
-    return await res.json();
-  } catch {
-    return [];
-  }
-}
-
 function shortenSurface(surface: string): string {
   if (surface === 'ダート') return 'ダ';
   return surface;
 }
 
 export default async function AIPage() {
-  const [allRaces, prevRaces] = await Promise.all([
-    fetchPredictionIndex(),
-    fetchPrevPredictionIndex(),
-  ]);
+  const allRaces = await fetchPredictionIndex();
   const latestRaces = allRaces.reverse().slice(0, 10);
-  const tomorrowRaces = prevRaces.reverse().slice(0, 10);
   return (
     <StaticPageLayout pageName="競馬AI 勝率予測" noLeftSidebar>
       <div className={pageStyles.staticPageCard}>
@@ -99,36 +84,6 @@ export default async function AIPage() {
           )}
         </section>
 
-        {/* 前日予測 */}
-        <section className={styles.section}>
-          <h2 id="tomorrow">前日予測</h2>
-          {tomorrowRaces.length > 0 ? (
-            <>
-              <div className={styles.raceGrid}>
-                {tomorrowRaces.map((race) => (
-                  <Link
-                    key={race.slug}
-                    href={`/ai/tomorrow/${race.slug}`}
-                    className={styles.raceCard}
-                  >
-                    <div className={styles.raceDate}>{race.dateLabel}</div>
-                    <div className={styles.raceName}>{race.raceName}</div>
-                    <div className={styles.raceMetaRow}>
-                      <span className={styles.raceVenueChip}>{race.venueLabel}{race.raceNumber}R</span>
-                      <span className={styles.raceMeta}>{shortenSurface(race.surface)}{race.distance}m</span>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-              <Link href="/ai/tomorrow" className={styles.moreButton}>
-                前日予測一覧をみる
-              </Link>
-            </>
-          ) : (
-            <p className={styles.subNote}>前日17時頃に翌日のレース予測を公開予定です。</p>
-          )}
-        </section>
-
         {/* このAIについて */}
         <section className={styles.section}>
           <h2 id="about">このAIについて</h2>
@@ -137,10 +92,10 @@ export default async function AIPage() {
             予測勝率とオッズから期待値を算出し、市場が過小評価・過大評価している馬を見抜きます。
           </p>
           <p>
-            未勝利・新馬レースは対象外です。障害レースは前日予測のみ公開しています。
+            未勝利・新馬レース、障害レースは対象外です。
           </p>
           <p>
-            平地レースの予測は<strong>前日17時頃</strong>（前日予測）と<strong>レース約10分前</strong>（当日予測）の2回公開しています。障害レースは前日予測のみです。
+            予測は<strong>レース約10分前</strong>に公開しています。
           </p>
           <AIXBanner />
         </section>

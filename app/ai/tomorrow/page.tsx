@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import StaticPageLayout from '@/components/StaticPageLayout';
 import AIXBanner from '@/components/AIXBanner';
@@ -33,6 +34,9 @@ async function fetchPrevPredictionIndex(): Promise<RaceSummary[]> {
 }
 
 export default async function TomorrowPredictionPage() {
+  // 一時非表示: 前日予測ページ
+  notFound();
+
   const races = (await fetchPrevPredictionIndex()).reverse();
 
   return (
