@@ -24,13 +24,14 @@ interface Venue {
 // モックデータ（後でAPIから取得）
 const mockVenues: Venue[] = [
   {
-    id: 'hakodate',
-    name: '函館競馬場',
-    shortName: '函館',
+    id: 'sapporo',
+    name: '札幌競馬場',
+    shortName: '札幌',
     courses: {
       turf: [
         { distance: 1000 },
         { distance: 1200 },
+        { distance: 1500 },
         { distance: 1800 },
         { distance: 2000 },
         { distance: 2600 },
@@ -43,47 +44,44 @@ const mockVenues: Venue[] = [
     },
   },
   {
-    id: 'fukushima',
-    name: '福島競馬場',
-    shortName: '福島',
+    id: 'niigata',
+    name: '新潟競馬場',
+    shortName: '新潟',
     courses: {
       turf: [
+        { distance: 1000 },
         { distance: 1200 },
+        { distance: 1400 },
+        { distance: 1600 },
         { distance: 1800 },
-        { distance: 2000 },
-        { distance: 2600 },
-      ],
-      dirt: [
-        { distance: 1150 },
-        { distance: 1700 },
+        { distance: 2000, variant: 'inner', label: '芝2000m（内）' },
+        { distance: 2000, variant: 'outer', label: '芝2000m（外）' },
+        { distance: 2200 },
         { distance: 2400 },
       ],
-      steeplechase: [
-        { distance: 2750 },
-        { distance: 2770 },
-        { distance: 3380 },
+      dirt: [
+        { distance: 1200 },
+        { distance: 1800 },
       ],
     },
   },
   {
-    id: 'kokura',
-    name: '小倉競馬場',
-    shortName: '小倉',
+    id: 'chukyo',
+    name: '中京競馬場',
+    shortName: '中京',
     courses: {
       turf: [
         { distance: 1200 },
-        { distance: 1800 },
+        { distance: 1400 },
+        { distance: 1600 },
         { distance: 2000 },
-        { distance: 2600 },
+        { distance: 2200 },
       ],
       dirt: [
-        { distance: 1000 },
-        { distance: 1700 },
-        { distance: 2400 },
-      ],
-      steeplechase: [
-        { distance: 2860 },
-        { distance: 3390 },
+        { distance: 1200 },
+        { distance: 1400 },
+        { distance: 1800 },
+        { distance: 1900 },
       ],
     },
   },
@@ -91,7 +89,7 @@ const mockVenues: Venue[] = [
 
 export default function ThisWeekVenues({ noWrapper = false }: { noWrapper?: boolean }) {
   const sectionRef = useRef<HTMLElement>(null);
-  const [selectedVenueId, setSelectedVenueId] = useState<string>('hakodate');
+  const [selectedVenueId, setSelectedVenueId] = useState<string>('sapporo');
 
   // Intersection Observer（アニメーション用）
   useEffect(() => {

@@ -27,9 +27,12 @@ except ImportError:
     print("⚠️  Warning: Could not import sires data. Sire IDs will not be assigned.")
     SIRE_NAME_TO_ID = {}
 
+# GCPプロジェクトID（他のスクリプトと同様にumadataを明示指定）
+PROJECT_ID = 'umadata'
+
 # BigQueryクライアント
 print("BigQuery クライアント初期化中...", flush=True)
-client = bigquery.Client()
+client = bigquery.Client(project=PROJECT_ID)
 print("BigQuery クライアント初期化完了", flush=True)
 
 # 現在の年度
@@ -102,7 +105,7 @@ print(f"   種牡馬: {len(leading_data['sire_leading'])}頭")
 
 # GCSに保存
 print(f"\n💾 GCSに保存中...")
-storage_client = storage.Client()
+storage_client = storage.Client(project=PROJECT_ID)
 bucket = storage_client.bucket('umadata')
 blob = bucket.blob('leading.json')
 
