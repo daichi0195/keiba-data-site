@@ -10,6 +10,7 @@ import TrainerLeading from '@/components/TrainerLeading';
 import ColumnSection from '@/components/ColumnSection';
 import { getJockeyLeading, getTrainerLeading, getSireLeading } from '@/lib/getLeadingData';
 import { getAllArticles } from '@/lib/articles';
+import { getThisWeekVenues } from '@/lib/thisWeekVenues';
 import styles from './page.module.css';
 
 // ISR: 1日1回（86400秒）再生成
@@ -42,11 +43,12 @@ async function fetchPredictions() {
 
 export default async function HomePage() {
   // サーバー側でリーディングデータ・記事・予測を読み込む
-  const [jockeyLeading, trainerLeading, sireLeading, predictions] = await Promise.all([
+  const [jockeyLeading, trainerLeading, sireLeading, predictions, thisWeekVenues] = await Promise.all([
     getJockeyLeading(),
     getTrainerLeading(),
     getSireLeading(),
     fetchPredictions(),
+    getThisWeekVenues(),
   ]);
   const articles = getAllArticles();
   const structuredData = {
@@ -80,7 +82,7 @@ export default async function HomePage() {
         {/* 2カラムレイアウト部分 */}
         <div className="home-columns">
           <article style={{ backgroundColor: 'transparent' }}>
-            <ThisWeekVenues />
+            <ThisWeekVenues venues={thisWeekVenues} />
 
             <div className="home-content-wrapper">
               <AllVenues />

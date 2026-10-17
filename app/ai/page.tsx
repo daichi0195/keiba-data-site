@@ -121,7 +121,7 @@ export default async function AIPage() {
             </div>
             <div className={styles.markBody}>
               予測勝率が高く、オッズとの乖離から期待値が高いと判定された馬です。単勝候補として推奨します。<br />
-              テスト期間では回収率130%超を達成しています。
+              バックテスト期間では単勝回収率130%超でした（過去の検証結果であり、将来の成績を保証するものではありません）。
             </div>
 
             <div className={styles.markHeader}>
@@ -149,6 +149,7 @@ export default async function AIPage() {
           <h2 id="backtest">バックテストの成績</h2>
           <p>
             バックテスト（学習に使用していない期間のテスト）の結果は下記です。
+            過去データに対する検証結果であり、将来の的中率や回収率を保証するものではありません。馬券の購入はご自身の判断と責任で行ってください。
           </p>
           <table className={styles.backtestTable}>
             <thead>

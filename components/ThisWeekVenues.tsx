@@ -4,92 +4,11 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import styles from './ThisWeekVenues.module.css';
 
-interface Course {
-  distance: number;
-  variant?: 'inner' | 'outer';
-  label?: string;
-}
+import type { Venue } from '@/lib/thisWeekVenues';
 
-interface Venue {
-  id: string;
-  name: string;
-  shortName: string;
-  courses: {
-    turf: Course[];
-    dirt: Course[];
-    steeplechase?: Course[];
-  };
-}
-
-// モックデータ（後でAPIから取得）
-const mockVenues: Venue[] = [
-  {
-    id: 'sapporo',
-    name: '札幌競馬場',
-    shortName: '札幌',
-    courses: {
-      turf: [
-        { distance: 1000 },
-        { distance: 1200 },
-        { distance: 1500 },
-        { distance: 1800 },
-        { distance: 2000 },
-        { distance: 2600 },
-      ],
-      dirt: [
-        { distance: 1000 },
-        { distance: 1700 },
-        { distance: 2400 },
-      ],
-    },
-  },
-  {
-    id: 'niigata',
-    name: '新潟競馬場',
-    shortName: '新潟',
-    courses: {
-      turf: [
-        { distance: 1000 },
-        { distance: 1200 },
-        { distance: 1400 },
-        { distance: 1600 },
-        { distance: 1800 },
-        { distance: 2000, variant: 'inner', label: '芝2000m（内）' },
-        { distance: 2000, variant: 'outer', label: '芝2000m（外）' },
-        { distance: 2200 },
-        { distance: 2400 },
-      ],
-      dirt: [
-        { distance: 1200 },
-        { distance: 1800 },
-      ],
-    },
-  },
-  {
-    id: 'chukyo',
-    name: '中京競馬場',
-    shortName: '中京',
-    courses: {
-      turf: [
-        { distance: 1200 },
-        { distance: 1400 },
-        { distance: 1600 },
-        { distance: 2000 },
-        { distance: 2200 },
-      ],
-      dirt: [
-        { distance: 1200 },
-        { distance: 1400 },
-        { distance: 1800 },
-        { distance: 1900 },
-      ],
-    },
-  },
-];
-
-export default function ThisWeekVenues({ noWrapper = false }: { noWrapper?: boolean }) {
+export default function ThisWeekVenues({ venues, noWrapper = false }: { venues: Venue[]; noWrapper?: boolean }) {
   const sectionRef = useRef<HTMLElement>(null);
-  const [selectedVenueId, setSelectedVenueId] = useState<string>('sapporo');
+  const [selectedVenueId, setSelectedVenueId] = useState<string>(venues[0]?.id ?? '');
 
   // Intersection Observer（アニメーション用）
   useEffect(() => {
@@ -123,12 +42,12 @@ export default function ThisWeekVenues({ noWrapper = false }: { noWrapper?: bool
         <div
           className={styles.venueTabs}
           style={{
-            '--tab-count': mockVenues.length,
-            '--active-index': mockVenues.findIndex((v) => v.id === selectedVenueId),
+            '--tab-count': venues.length,
+            '--active-index': venues.findIndex((v) => v.id === selectedVenueId),
           } as React.CSSProperties}
         >
           <span className={styles.venueTabIndicator} aria-hidden="true" />
-          {mockVenues.map((venue) => (
+          {venues.map((venue) => (
             <button
               key={venue.id}
               className={`${styles.venueTab} ${selectedVenueId === venue.id ? styles.venueTabActive : ''}`}
@@ -141,7 +60,7 @@ export default function ThisWeekVenues({ noWrapper = false }: { noWrapper?: bool
         </div>
 
         {/* 選択された競馬場のコース一覧 */}
-        {mockVenues.filter((v) => v.id === selectedVenueId).map((venue) => (
+        {venues.filter((v) => v.id === selectedVenueId).map((venue) => (
           <div key={venue.id} className={styles.venueContent}>
             <div className={styles.courseList}>
               <div className={`${styles.surfaceGroup} ${styles.surfaceGroupTurf}`}>
