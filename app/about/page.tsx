@@ -8,7 +8,9 @@ import styles from '../static-page.module.css';
 
 export const metadata: Metadata = {
   title: 'サイト情報・運営者情報 | 競馬データ.com',
-  description: '競馬データ.comの運営者情報・サイトについてのページです。',
+  description:
+    '競馬データ.comの目的、提供しているコンテンツ、運営者のプロフィール、データとの向き合い方、収益と広告についての方針を掲載しています。',
+  alternates: { canonical: 'https://www.keibadata.com/about' },
 };
 
 export default function AboutPage() {

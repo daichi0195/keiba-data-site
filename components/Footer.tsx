@@ -52,7 +52,7 @@ export default function Footer() {
           </p>
         </div>
 
-        <p className={styles.copyright}>© 2025 競馬データ.com All rights reserved.</p>
+        <p className={styles.copyright}>© {new Date().getFullYear()} 競馬データ.com All rights reserved.</p>
       </div>
     </footer>
   );

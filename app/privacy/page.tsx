@@ -47,6 +47,29 @@ export default function PrivacyPage() {
           ブラウザの設定により、Cookieの受け入れを拒否することができますが、その場合、一部のサービスが正常に機能しない可能性があります。
         </p>
 
+        <h2 className={contentStyles.heading}>広告の配信について</h2>
+        <p className={contentStyles.text}>
+          当サイトでは、第三者配信の広告サービス「Google AdSense（グーグルアドセンス）」を利用しています。
+          Googleなどの第三者配信事業者は、ユーザーの興味に応じた広告を表示するためにCookie（クッキー）を使用することがあります。
+          Cookieには氏名・住所・メールアドレス・電話番号などの個人を特定する情報は含まれません。
+        </p>
+        <p className={contentStyles.text}>
+          パーソナライズ広告に使用されるCookieは、
+          <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" className={contentStyles.link}>
+            Googleの広告設定
+          </a>
+          から無効にすることができます。また、
+          <a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer" className={contentStyles.link}>
+            www.aboutads.info
+          </a>
+          にアクセスすれば、第三者配信事業者のパーソナライズ広告用Cookieを無効にできます。
+          Googleによる広告配信の詳細は
+          <a href="https://policies.google.com/technologies/ads?hl=ja" target="_blank" rel="noopener noreferrer" className={contentStyles.link}>
+            Googleのポリシーと規約（広告）
+          </a>
+          をご確認ください。
+        </p>
+
         <h2 className={contentStyles.heading}>アクセス解析ツール</h2>
         <p className={contentStyles.text}>
           当サイトでは、Google Analytics等のアクセス解析ツールを使用しています。これらのツールはCookieを使用して、ユーザーの当サイトの訪問情報を収集します。収集される情報は匿名で処理され、個人を特定するものではありません。
@@ -88,8 +111,11 @@ export default function PrivacyPage() {
 
         <h2 className={contentStyles.heading}>お問い合わせ</h2>
         <p className={contentStyles.text}>
-          本ポリシーに関するお問い合わせは、当サイトのお問い合わせフォームよりご連絡ください。
+          本ポリシーに関するお問い合わせは、当サイトの
+          <a href="/contact" className={contentStyles.link}>お問い合わせページ</a>
+          よりご連絡ください。
         </p>
+        <p className={contentStyles.text}>制定日：2025年1月1日／最終改定日：2026年10月18日</p>
       </div>
     </StaticPageLayout>
   );
