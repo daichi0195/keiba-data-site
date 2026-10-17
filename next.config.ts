@@ -23,6 +23,16 @@ const nextConfig: NextConfig = {
   },
   // Optimize for modern browsers (ES2020+)
   pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
+  // 廃止したページのリダイレクト（空ページ・テストページの整理）
+  async redirects() {
+    return [
+      // 有馬記念ページ（データなしの空ページ）→ 中山芝2500mのコースデータへ
+      { source: '/races/arima-kinen', destination: '/courses/nakayama/turf/2500', permanent: true },
+      { source: '/races', destination: '/courses', permanent: true },
+      // テスト用ページ
+      { source: '/trainers/test', destination: '/trainers', permanent: true },
+    ];
+  },
 };
 
 const withMDX = createMDX({
