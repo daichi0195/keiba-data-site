@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import DataTable from '@/components/DataTable';
 import GateTable from '@/components/GateTable';
 import RunningStyleTable from '@/components/RunningStyleTable';
@@ -24,9 +25,17 @@ import CourseSidebar from '@/components/CourseSidebar';
 import FaqSection from '@/components/FaqSection';
 import coursesListStyles from '@/components/CoursesList.module.css';
 import listStyles from '@/components/shared-list.module.css';
+import DataSummary from '@/components/DataSummary';
+import DataSourceNote from '@/components/DataSourceNote';
+import ThinDataNotice from '@/components/ThinDataNotice';
+import { hasEnoughRaces, THIN_PAGE_ROBOTS } from '@/lib/dataPageRules';
+import { buildCourseSummary } from '@/lib/dataPageText';
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
+
+// 定義済みコース以外のURLは404を返す（ソフト404の防止）
+export const dynamicParams = false;
 
 // generateStaticParams: 全137コース（芝・ダート・障害含む、内外回り含む）を事前生成
 export async function generateStaticParams() {
@@ -406,9 +415,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = `${racecourse}${surface}${distanceDisplay}m${trackVariant}の傾向や特徴がまるわかり！騎手、血統、枠順、脚質、調教師など、豊富な統計データで予想をサポート。`;
   const url = `https://www.keibadata.com/courses/${resolvedParams.racecourse}/${resolvedParams.surface}/${resolvedParams.distance}`;
 
+  // 対象レース数が少ないコースは検索エンジンにインデックスさせない
+  let thin = false;
+  try {
+    const distanceParam = resolvedParams.distance.includes('-inner') || resolvedParams.distance.includes('-outer')
+      ? resolvedParams.distance
+      : parseInt(resolvedParams.distance);
+    const gcsData = await getCourseDataFromGCS(resolvedParams.racecourse, resolvedParams.surface, distanceParam);
+    const totalRaces = gcsData?.total_races ?? gcsData?.course_info?.total_races ?? 0;
+    thin = !hasEnoughRaces(totalRaces);
+  } catch {
+    thin = true;
+  }
+
   return {
     title,
     description,
+    ...(thin ? { robots: THIN_PAGE_ROBOTS } : {}),
     alternates: {
       canonical: url,
     },
@@ -556,17 +579,8 @@ export default async function CoursePage({ params }: Props) {
 
   } catch (error) {
     console.error('❌ Failed to load data from GCS:', error);
-    // GCSからデータが取得できない場合はエラーページを表示
-    return (
-      <div style={{ padding: '2rem', textAlign: 'center' }}>
-        <h1>データ取得エラー</h1>
-        <p>このコースのデータを取得できませんでした。</p>
-        <p>コース: {racecourseJa}競馬場 {surfaceJa} {distanceNum}m{trackVariant}</p>
-        <p style={{ marginTop: '1rem', fontSize: '0.9rem', color: '#666' }}>
-          エラー詳細: {error instanceof Error ? error.message : String(error)}
-        </p>
-      </div>
-    );
+    // データが取得できないコースは404（エラー内容を公開ページに出さない）
+    notFound();
   }
   // ===== ここまで =====
 
@@ -610,6 +624,9 @@ export default async function CoursePage({ params }: Props) {
   const volatilityText = volatilityLabels[course_info.characteristics.volatility] ?? '';
   const gatePositionText = gatePositionLabels[course_info.characteristics.gate_position] ?? '';
   const runningStyleText = course_info.characteristics.running_style_trend_position ? runningStyleLabels[course_info.characteristics.running_style_trend_position] ?? '' : '';
+
+  // 対象レース数が十分か（不足時は傾向判定・注目ポイント・Q&Aを表示しない）
+  const enoughRaces = hasEnoughRaces(course_info.total_races);
 
   // 脚質データを2つに統合（逃げ・先行、差し・追込）
   const mergedRunningStyleStats = (() => {
@@ -829,10 +846,29 @@ export default async function CoursePage({ params }: Props) {
   const { answer: trainerAnswer, links: trainerLinks } = buildPersonAnswer(trainer_stats, trainerStatsWithLinks, '調教師', '調教師');
   const { answer: sireAnswer, links: sireLinks } = buildPersonAnswer(pedigree_stats, pedigreeStatsWithLinks, '種牡馬');
 
+  // このページ固有の解説文（実データから生成）
+  const summaryParagraphs = buildCourseSummary({
+    courseName: seoPrefix,
+    totalRaces: course_info.total_races,
+    periodText: `${formatDate(threeYearsAgo)}〜${formatDate(yesterday)}`,
+    popularity: popularity_stats,
+    gateStats: gate_stats,
+    runningStyleStats: running_style_stats,
+    jockeyStats: jockey_stats,
+    trainerStats: trainer_stats,
+    sireStats: pedigree_stats,
+    damSireStats: dam_sire_stats,
+    characteristics: course_info.characteristics,
+    labels: { volatility: volatilityText, gate: gatePositionText, runningStyle: runningStyleText },
+  });
+
   // ナビゲーション用のセクションアイテム
   const navigationItems = [
-    { id: 'characteristics-section', label: 'コースの特徴' },
-    { id: 'highlights-section', label: '注目ポイント' },
+    { id: 'summary-section', label: 'データ概要' },
+    ...(enoughRaces ? [
+      { id: 'characteristics-section', label: 'コースの特徴' },
+      { id: 'highlights-section', label: '注目ポイント' },
+    ] : []),
     { id: 'popularity-section', label: '人気別' },
     { id: 'gate-section', label: '枠順別' },
     { id: 'running-style-section', label: '脚質別' },
@@ -842,7 +878,7 @@ export default async function CoursePage({ params }: Props) {
     { id: 'bloodline-section', label: '血統別(種牡馬)' },
     { id: 'dam-sire-section', label: '血統別(母父)' },
     { id: 'trainer-section', label: '調教師別' },
-    { id: 'faq-section', label: 'データQ&A' },
+    ...(enoughRaces ? [{ id: 'faq-section', label: 'データQ&A' }] : []),
   ];
 
   // 構造化データ - FAQPage
@@ -901,10 +937,12 @@ export default async function CoursePage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-      />
+      {enoughRaces && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        />
+      )}
       <BottomNav items={navigationItems} />
       <div className={pageStyles.staticPageContainer}>
         {/* パンくずリスト */}
@@ -922,22 +960,9 @@ export default async function CoursePage({ params }: Props) {
           </aside>
 
           <article>
-          {/* レース数が少ない場合の警告 */}
-          {course_info.total_races <= 10 && (
-            <div style={{
-              padding: '0.75rem 1.25rem',
-              background: '#fef9e7',
-              border: '0.5px solid #ffc107',
-              borderRadius: '6px',
-              color: '#856404',
-              fontSize: '0.9rem',
-              fontWeight: '600',
-              textAlign: 'center',
-              marginBottom: '1rem'
-            }}>
-              <i className="fa-solid fa-triangle-exclamation" style={{ marginRight: '0.5rem' }}></i>
-              対象レース数が少ないコースです
-            </div>
+          {/* 対象レース数が少ない場合の注意 */}
+          {!enoughRaces && (
+            <ThinDataNotice totalRaces={course_info.total_races} hiddenItems="「コースの特徴」「注目ポイント」「データQ&A」" />
           )}
 
           <div className="page-header">
@@ -965,7 +990,11 @@ export default async function CoursePage({ params }: Props) {
         </div>
 
         <article className="content-card">
+        {/* === データ概要（固有解説文） === */}
+        <DataSummary title={`${seoPrefix}のデータ概要`} paragraphs={summaryParagraphs} />
+
         {/* === コース特性セクション === */}
+        {enoughRaces && (
         <section id="characteristics-section" aria-label="コース特性">
         <BarChartAnimation>
           <h2 className="section-title">{course_info.racecourse.replace('競馬場', '')}{course_info.surface}{distanceDisplay}mの特徴</h2>
@@ -1165,8 +1194,10 @@ export default async function CoursePage({ params }: Props) {
           )}
         </BarChartAnimation>
         </section>
+        )}
 
         {/* === 注目ポイント === */}
+        {enoughRaces && (
         <section id="highlights-section" aria-label="注目ポイント">
           <HighlightsSection
             jockey_stats={jockey_stats}
@@ -1176,6 +1207,7 @@ export default async function CoursePage({ params }: Props) {
             sectionTitle={`${course_info.racecourse.replace('競馬場', '')}${course_info.surface}${distanceDisplay}mの注目ポイント`}
           />
         </section>
+        )}
         {/* === 人気別 === */}
 <section id="popularity-section" aria-label="人気別データ">
   <PopularityTable
@@ -1326,7 +1358,11 @@ export default async function CoursePage({ params }: Props) {
   </div>
 </section>
 
+        {/* === データの出典・集計方法 === */}
+        <DataSourceNote periodText={`${formatDate(threeYearsAgo)}〜${formatDate(yesterday)}`} lastUpdated={course_info.last_updated} />
+
         {/* === FAQセクション === */}
+        {enoughRaces && (
         <section id="faq-section" aria-label="データQ&A">
           <h2 className="section-title">データQ&amp;A</h2>
           <FaqSection items={[
@@ -1338,6 +1374,7 @@ export default async function CoursePage({ params }: Props) {
             { question: `${seoPrefix}が得意な種牡馬・血統は？`, answer: sireAnswer, links: sireLinks },
           ]} />
         </section>
+        )}
 
         </article>
 

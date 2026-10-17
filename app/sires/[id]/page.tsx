@@ -30,6 +30,9 @@ import { ALL_SIRES } from '@/lib/sires';
 import pageStyles from '@/app/static-page.module.css';
 import AIBanner from '@/components/AIBanner';
 import FaqSection from '@/components/FaqSection';
+import DataSummary from '@/components/DataSummary';
+import DataSourceNote from '@/components/DataSourceNote';
+import { buildSireSummary } from '@/lib/dataPageText';
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
@@ -40,6 +43,9 @@ export async function generateStaticParams() {
     id: String(sire.id),
   }));
 }
+
+// 定義済みID以外のURLは404を返す（ソフト404の防止）
+export const dynamicParams = false;
 
 // generateMetadata: 動的メタデータ生成
 export async function generateMetadata({
@@ -932,6 +938,7 @@ export default async function SirePage({
 
   // ナビゲーションアイテム
   const navigationItems = [
+    { id: 'summary-section', label: 'データ概要' },
     { id: 'leading', label: '年度別' },
     { id: 'characteristics', label: '特徴' },
     { id: 'highlights-section', label: '注目ポイント' },
@@ -999,6 +1006,9 @@ export default async function SirePage({
           </div>
 
           <article className="content-card">
+          {/* データ概要（固有解説文） */}
+          <DataSummary title={`${sire.name}産駒のデータ概要`} paragraphs={buildSireSummary(sire as any)} />
+
           {/* 年度別成績セクション */}
           <section id="leading" aria-label="年度別成績">
             <JockeyLeadingChart
@@ -1500,6 +1510,9 @@ export default async function SirePage({
               nameLabel="母父"
             />
           </section>
+
+          {/* データの出典・集計方法 */}
+          <DataSourceNote periodText={sire.data_period.match(/（([^）]+)）/)?.[1]} lastUpdated={sire.last_updated} />
 
           {/* データQ&Aセクション */}
           <section id="faq-section" aria-label="データQ&A">

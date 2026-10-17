@@ -1,0 +1,70 @@
+/* データ概要（固有解説文）セクション */
+.summary {
+  margin-bottom: 2rem;
+}
+
+.paragraph {
+  margin: 0 0 0.9rem 0;
+  font-size: 15px;
+  line-height: 1.9;
+  color: #2d3748;
+}
+
+.paragraph:last-child {
+  margin-bottom: 0;
+}
+
+/* 対象レース数が少ない場合の注意 */
+.thinNotice {
+  padding: 0.75rem 1rem;
+  background: #fef9e7;
+  border: 1px solid #f3d36b;
+  border-radius: 6px;
+  color: #7a5a00;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+.thinNotice strong {
+  font-weight: 700;
+}
+
+/* データの出典・集計方法ノート */
+.sourceNote {
+  margin: 2rem 0 0.5rem 0;
+  padding: 1rem 1.25rem;
+  background: #f5f7fa;
+  border-left: 4px solid #52af77;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  line-height: 1.8;
+  color: #4a5568;
+}
+
+.sourceNote h2 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin: 0 0 0.4rem 0;
+  color: #2d3748;
+}
+
+.sourceNote p {
+  margin: 0 0 0.4rem 0;
+  font-size: 0.85rem;
+}
+
+.sourceNote p:last-child {
+  margin-bottom: 0;
+}
+
+.sourceNote a {
+  color: #3d8b5c;
+  text-decoration: underline;
+}
+
+@media (min-width: 769px) {
+  .paragraph {
+    font-size: 16px;
+  }
+}

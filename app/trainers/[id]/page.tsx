@@ -23,6 +23,9 @@ import JockeyTrainerHighlights from '@/components/JockeyTrainerHighlights';
 import { getTrainerDataFromGCS } from '@/lib/getTrainerDataFromGCS';
 import { ALL_TRAINERS } from '@/lib/trainers';
 import FaqSection from '@/components/FaqSection';
+import DataSummary from '@/components/DataSummary';
+import DataSourceNote from '@/components/DataSourceNote';
+import { buildTrainerSummary } from '@/lib/dataPageText';
 import pageStyles from '@/app/static-page.module.css';
 import AIBanner from '@/components/AIBanner';
 
@@ -35,6 +38,9 @@ export async function generateStaticParams() {
     id: String(trainer.id),
   }));
 }
+
+// 定義済みID以外のURLは404を返す（ソフト404の防止）
+export const dynamicParams = false;
 
 // 調教師データ型定義
 interface TrainerData {
@@ -1026,6 +1032,7 @@ export default async function TrainerPage({
 
   // ナビゲーションアイテム
   const navigationItems = [
+    { id: 'summary-section', label: 'データ概要' },
     { id: 'leading', label: '年度別' },
     { id: 'characteristics', label: '特徴' },
     { id: 'highlights-section', label: '注目ポイント' },
@@ -1122,6 +1129,9 @@ export default async function TrainerPage({
           </div>
 
           <article className="content-card">
+          {/* データ概要（固有解説文） */}
+          <DataSummary title={`${trainer.name}調教師のデータ概要`} paragraphs={buildTrainerSummary(trainer as any)} />
+
           {/* 年度別成績セクション */}
           <section id="leading" aria-label="年度別成績">
             <JockeyLeadingChart
@@ -1364,6 +1374,9 @@ export default async function TrainerPage({
               nameLabel="馬主"
             />
           </section>
+
+          {/* データの出典・集計方法 */}
+          <DataSourceNote periodText={trainer.data_period.match(/（([^）]+)）/)?.[1]} lastUpdated={trainer.last_updated} />
 
           {/* データQ&Aセクション */}
           <section id="faq-section" aria-label="データQ&A">

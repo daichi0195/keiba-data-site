@@ -29,6 +29,9 @@ import { ALL_JOCKEYS } from '@/lib/jockeys';
 import { ALL_TRAINERS } from '@/lib/trainers';
 import pageStyles from '@/app/static-page.module.css';
 import FaqSection from '@/components/FaqSection';
+import DataSummary from '@/components/DataSummary';
+import DataSourceNote from '@/components/DataSourceNote';
+import { buildJockeySummary } from '@/lib/dataPageText';
 import AIBanner from '@/components/AIBanner';
 
 // ISR: 週1回（604800秒）再生成
@@ -40,6 +43,9 @@ export async function generateStaticParams() {
     id: String(jockey.id),
   }));
 }
+
+// 定義済みID以外のURLは404を返す（ソフト404の防止）
+export const dynamicParams = false;
 
 // 騎手データ型定義
 interface JockeyData {
@@ -917,6 +923,7 @@ export default async function JockeyPage({
   };
 
   const navigationItems = [
+    { id: 'summary-section', label: 'データ概要' },
     { id: 'leading', label: '年度別' },
     { id: 'characteristics', label: '特徴' },
     { id: 'highlights-section', label: '注目ポイント' },
@@ -1013,6 +1020,9 @@ export default async function JockeyPage({
           </div>
 
           <article className="content-card">
+          {/* データ概要（固有解説文） */}
+          <DataSummary title={`${jockey.name}騎手のデータ概要`} paragraphs={buildJockeySummary(jockey as any)} />
+
           {/* 年度別成績セクション */}
           <section id="leading" aria-label="年度別成績">
             <JockeyLeadingChart
@@ -1391,6 +1401,9 @@ export default async function JockeyPage({
               nameLabel="馬主"
             />
           </section>
+
+          {/* データの出典・集計方法 */}
+          <DataSourceNote periodText={jockey.data_period.match(/（([^）]+)）/)?.[1]} lastUpdated={jockey.last_updated} />
 
           {/* データQ&Aセクション */}
           <section id="faq-section" aria-label="データQ&A">
