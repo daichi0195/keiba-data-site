@@ -189,6 +189,12 @@ DISTANCE = 1800
 VENUE_EN = 'nakayama'
 SURFACE_EN = 'dirt'
 TRACK_VARIANT = None  # None=内回り, '外'=外回り
+YEARS = 3  # 集計期間（年）。レース数が少ないコースは process_course で延ばす
+
+# 集計期間の延長: 直近3年で MIN_RACES_FOR_TRENDS 未満のコースは 5年→7年と延ばす
+# (サイト側 lib/dataPageRules.ts の MIN_RACES_FOR_TRENDS と同じ値。マートは 2019 年以降なので 7 年まで)
+MIN_RACES_FOR_TRENDS = 30
+EXTENDED_YEARS = [5, 7]
 
 
 def get_gate_stats(client):
@@ -225,7 +231,7 @@ def get_gate_stats(client):
       AND rm.surface = '{SURFACE}'
       AND rm.distance = {DISTANCE}
       {track_variant_condition}
-      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL {YEARS} YEAR)
     GROUP BY rr.bracket_number
     ORDER BY rr.bracket_number
     """
@@ -279,7 +285,7 @@ def get_popularity_stats(client):
       AND rm.distance = {DISTANCE}
       {track_variant_condition}
       AND rr.popularity IS NOT NULL
-      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL {YEARS} YEAR)
     GROUP BY popularity_group
     """
     
@@ -336,7 +342,7 @@ def get_jockey_stats(client):
       {track_variant_condition}
       AND rr.jockey_id IS NOT NULL
       AND j.is_active = true
-      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL {YEARS} YEAR)
     GROUP BY j.jockey_name
     ORDER BY
       wins DESC,
@@ -395,7 +401,7 @@ def get_trainer_stats(client):
       {track_variant_condition}
       AND rr.trainer_id IS NOT NULL
       AND t.is_active = true
-      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL {YEARS} YEAR)
     GROUP BY t.trainer_name
     ORDER BY
       wins DESC,
@@ -446,7 +452,7 @@ def get_volatility_stats(client):
         AND rm.distance = {DISTANCE}
         {track_variant_condition}
         AND rm.sanrentan IS NOT NULL
-        AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+        AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL {YEARS} YEAR)
     ),
     course_median AS (
       SELECT
@@ -465,7 +471,7 @@ def get_volatility_stats(client):
         `{DATASET}.race_master` rm
       WHERE
         rm.sanrentan IS NOT NULL
-        AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+        AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL {YEARS} YEAR)
       GROUP BY
         venue_name,
         surface,
@@ -491,7 +497,7 @@ def get_volatility_stats(client):
         `{DATASET}.race_master` rm
       WHERE
         rm.sanrentan IS NOT NULL
-        AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+        AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL {YEARS} YEAR)
     )
     SELECT
       cm.course_median as trifecta_median_payback,
@@ -588,7 +594,7 @@ def get_pedigree_stats(client):
       AND rm.distance = {DISTANCE}
       {track_variant_condition}
       AND h.father IS NOT NULL
-      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL {YEARS} YEAR)
     GROUP BY h.father
     ORDER BY
       wins DESC,
@@ -646,7 +652,7 @@ def get_dam_sire_stats(client):
       AND rm.distance = {DISTANCE}
       {track_variant_condition}
       AND h.mf IS NOT NULL
-      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL {YEARS} YEAR)
     GROUP BY h.mf
     ORDER BY
       wins DESC,
@@ -699,7 +705,7 @@ def get_running_style_stats(client):
         AND rm.surface = '{SURFACE}'
         AND rm.distance = {DISTANCE}
         {track_variant_condition}
-        AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+        AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL {YEARS} YEAR)
         AND rr.corner_positions IS NOT NULL
         AND ARRAY_LENGTH(SPLIT(rr.corner_positions, '-')) > 0
     ),
@@ -835,7 +841,7 @@ def get_running_style_trends(client):
         AND rm.surface = '{SURFACE}'
         AND rm.distance = {DISTANCE}
         {track_variant_condition}
-        AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+        AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL {YEARS} YEAR)
         AND rr.corner_positions IS NOT NULL
         AND ARRAY_LENGTH(SPLIT(rr.corner_positions, '-')) > 0
     ),
@@ -966,7 +972,7 @@ def get_total_races(client):
       AND rm.surface = '{SURFACE}'
       AND rm.distance = {DISTANCE}
       {track_variant_condition}
-      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL {YEARS} YEAR)
     """
 
     try:
@@ -1016,7 +1022,7 @@ def get_gender_stats(client):
       AND rm.surface = '{SURFACE}'
       AND rm.distance = {DISTANCE}
       {track_variant_condition}
-      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL {YEARS} YEAR)
       AND rr.sex IS NOT NULL
     GROUP BY rr.sex
     ORDER BY
@@ -1079,7 +1085,7 @@ def get_horse_weight_stats(client):
       AND rm.surface = '{SURFACE}'
       AND rm.distance = {DISTANCE}
       {track_variant_condition}
-      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL 3 YEAR)
+      AND rm.race_date >= DATE_SUB(CURRENT_DATE(), INTERVAL {YEARS} YEAR)
       AND rr.horse_weight IS NOT NULL
       AND rr.horse_weight > 0
     GROUP BY weight_category
@@ -1107,7 +1113,7 @@ def get_horse_weight_stats(client):
 
 def process_course(bq_client, storage_client, venue, venue_en, surface, surface_en, distance, track_variant):
     """単一コースのデータを処理してGCSにアップロード"""
-    global VENUE, SURFACE, DISTANCE, VENUE_EN, SURFACE_EN, TRACK_VARIANT
+    global VENUE, SURFACE, DISTANCE, VENUE_EN, SURFACE_EN, TRACK_VARIANT, YEARS
 
     # グローバル変数を更新
     VENUE = venue
@@ -1124,6 +1130,17 @@ def process_course(bq_client, storage_client, venue, venue_en, surface, surface_
     try:
         print(f"  🚀 Processing {venue} {surface} {distance}m{track_label}")
 
+        # レース数が少ないコースは集計期間を延ばす（noindex にせず、十分なサンプルでページを作るため）
+        YEARS = 3
+        total_races = get_total_races(bq_client)
+        for years in EXTENDED_YEARS:
+            if total_races >= MIN_RACES_FOR_TRENDS:
+                break
+            YEARS = years
+            total_races = get_total_races(bq_client)
+        if YEARS != 3:
+            print(f"    ↔️  集計期間を{YEARS}年に延長 ({total_races}レース)")
+
         # 各データを取得
         gate_stats = get_gate_stats(bq_client)
         popularity_stats = get_popularity_stats(bq_client)
@@ -1136,7 +1153,6 @@ def process_course(bq_client, storage_client, venue, venue_en, surface, surface_
         running_style_trends = get_running_style_trends(bq_client)
         gender_stats = get_gender_stats(bq_client)
         horse_weight_stats = get_horse_weight_stats(bq_client)
-        total_races = get_total_races(bq_client)
 
         # 傾向計算
         # 1. 枠順傾向（内枠 vs 外枠）
@@ -1176,6 +1192,7 @@ def process_course(bq_client, storage_client, venue, venue_en, surface, surface_
         # 統合データ作成
         course_data = {
             'total_races': total_races,
+            'period_years': YEARS,
             'gate_stats': gate_stats,
             'popularity_stats': popularity_stats,
             'jockey_stats': jockey_stats,

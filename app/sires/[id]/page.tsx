@@ -993,8 +993,23 @@ export default async function SirePage({
     dateModified: jaDateToIso(sire.last_updated),
   });
 
+  // 構造化データ - BreadcrumbList
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'ホーム', item: 'https://www.keibadata.com' },
+      { '@type': 'ListItem', position: 2, name: '種牡馬一覧', item: 'https://www.keibadata.com/sires' },
+      { '@type': 'ListItem', position: 3, name: sire.name, item: `https://www.keibadata.com/sires/${id}` },
+    ],
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageJsonLd) }}

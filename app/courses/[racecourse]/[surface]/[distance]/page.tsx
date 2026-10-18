@@ -421,18 +421,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // 対象レース数が少ないコースは検索エンジンにインデックスさせない
   let thin = false;
   let totalRaces = 0;
+  let periodYears = 3;
   try {
     const distanceParam = resolvedParams.distance.includes('-inner') || resolvedParams.distance.includes('-outer')
       ? resolvedParams.distance
       : parseInt(resolvedParams.distance);
     const gcsData = await getCourseDataFromGCS(resolvedParams.racecourse, resolvedParams.surface, distanceParam);
     totalRaces = gcsData?.total_races ?? gcsData?.course_info?.total_races ?? 0;
+    periodYears = gcsData?.period_years ?? 3;
     thin = !hasEnoughRaces(totalRaces);
   } catch {
     thin = true;
   }
 
-  const description = `${courseLabel}の傾向を直近3年${totalRaces ? `・${totalRaces.toLocaleString()}レース` : ''}のデータで分析。有利な枠順・脚質、得意な騎手・種牡馬・調教師、荒れやすさまで。毎週更新。`;
+  const description = `${courseLabel}の傾向を直近${periodYears}年${totalRaces ? `・${totalRaces.toLocaleString()}レース` : ''}のデータで分析。有利な枠順・脚質、得意な騎手・種牡馬・調教師、荒れやすさまで。毎週更新。`;
 
   return {
     title,
@@ -593,14 +595,15 @@ export default async function CoursePage({ params }: Props) {
   // データ更新日（週次パイプラインの更新日時）を基準に集計期間と最終更新日を決める
   const updatedAt = getDataUpdatedAt() ?? new Date();
 
-  // 集計期間: 更新日の前日〜3年前
+  // 集計期間: 更新日の前日〜N年前（通常3年。レース数が少ないコースは生成時に5年・7年へ延長される）
+  const periodYears: number = data.period_years ?? 3;
   const yesterday = new Date(updatedAt.getTime() - 86400000);
-  const threeYearsAgo = new Date(yesterday);
-  threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 3);
+  const periodStart = new Date(yesterday);
+  periodStart.setFullYear(periodStart.getFullYear() - periodYears);
 
-  // 開始日は年月まで（3年前の日付が日単位で並ぶと、検索結果に古い日付が出やすいため）
-  const periodText = `${formatJaDate(threeYearsAgo).replace(/\d+日$/, '')}〜${formatJaDate(yesterday)}`;
-  const dataPeriod = `直近3年間分（${periodText}）`;
+  // 開始日は年月まで（数年前の日付が日単位で並ぶと、検索結果に古い日付が出やすいため）
+  const periodText = `${formatJaDate(periodStart).replace(/\d+日$/, '')}〜${formatJaDate(yesterday)}`;
+  const dataPeriod = `直近${periodYears}年間分（${periodText}）`;
   const formattedDate = formatJaDate(updatedAt);
   const dateModifiedIso = toIsoDate(updatedAt);
 
@@ -828,11 +831,11 @@ export default async function CoursePage({ params }: Props) {
       .filter((s: any) => s.link)
       .map((s: any) => ({ text: s.name, href: s.link }));
     const answer = qualified.length === 0
-      ? `対象となる${label}が存在しません。\n※直近3年間で20走以上を対象としています。`
+      ? `対象となる${label}が存在しません。\n※直近${periodYears}年間で20走以上を対象としています。`
       : [
           byWin ? `勝率が高い${label}TOP3は${byWin}です。` : '',
           byPlace ? `複勝率が高い${label}TOP3は${byPlace}です。` : '',
-          `※直近3年間で20走以上を対象としています。`,
+          `※直近${periodYears}年間で20走以上を対象としています。`,
         ].filter(Boolean).join('\n');
     return { answer, links };
   };
@@ -929,7 +932,7 @@ export default async function CoursePage({ params }: Props) {
   const webPageJsonLd = buildWebPageJsonLd({
     url: `${baseUrl}/courses/${resolvedParams.racecourse}/${resolvedParams.surface}/${resolvedParams.distance}`,
     name: `${seoPrefix}のコースデータ`,
-    description: `${seoPrefix}の直近3年間のレース結果から、人気・枠順・脚質・騎手・血統・調教師別の成績を集計したデータページ`,
+    description: `${seoPrefix}の直近${periodYears}年間のレース結果から、人気・枠順・脚質・騎手・血統・調教師別の成績を集計したデータページ`,
     dateModified: dateModifiedIso,
   });
 
@@ -973,13 +976,13 @@ export default async function CoursePage({ params }: Props) {
           )}
 
           <div className="page-header">
-          <h1>{course_info.racecourse}{course_info.surface}{distanceDisplay}m{trackVariantLabel} コースデータ</h1>
+          <h1>{seoPrefix}の傾向と特徴</h1>
 
           {/* === データ情報セクション === */}
           <div className="course-meta-section">
             <div className="meta-item">
               <span className="meta-label">データ取得期間</span>
-              <span>直近3年間分</span>
+              <span>直近{periodYears}年間分</span>
             </div>
             <div className="meta-item">
               <span className="meta-label">対象レース数</span>
@@ -991,7 +994,7 @@ export default async function CoursePage({ params }: Props) {
             </div>
           </div>
           <p className="page-description">
-            {course_info.racecourse} {course_info.surface}{distanceDisplay}m{trackVariantLabel}のコースデータをまとめたページです。<br className="sp-br" />独自のデータベースで直近3年間・{course_info.total_races}レースのデータを集計し、毎週更新しています。
+            {course_info.racecourse} {course_info.surface}{distanceDisplay}m{trackVariantLabel}のコースデータをまとめたページです。<br className="sp-br" />独自のデータベースで直近{periodYears}年間・{course_info.total_races}レースのデータを集計し、毎週更新しています。
           </p>
 
         </div>

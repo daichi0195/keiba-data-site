@@ -17,6 +17,9 @@ import styles from './page.module.css';
 export const revalidate = 86400;
 
 export const metadata: Metadata = {
+  alternates: {
+    canonical: 'https://www.keibadata.com',
+  },
   title: '競馬データ.com｜コース・騎手・血統の競馬データ分析【毎週更新】',
   description: '競馬データ.comは、競馬の予想に役立つあらゆるデータを網羅した競馬分析サイトです。コース別成績、騎手・調教師・種牡馬データ、人気・枠順・脚質傾向など、豊富な統計情報で競馬予想を徹底サポート。',
   openGraph: {
@@ -50,7 +53,8 @@ export default async function HomePage() {
     fetchPredictions(),
     getThisWeekVenues(),
   ]);
-  const articles = getAllArticles();
+  // 本文はトップでは使わない。クライアントコンポーネントに渡すと HTML に丸ごと埋め込まれるため空にする
+  const articles = getAllArticles().map((article) => ({ ...article, content: '' }));
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
@@ -71,6 +75,7 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
       <main className="home-main">
+        <h1 className="visually-hidden">競馬データ.com｜コース・騎手・血統の競馬データ分析</h1>
         {/* 記事カルーセル - 全幅 */}
         <section className="section section-full-width section-article-carousel">
           <ArticleCarousel articles={articles} />
