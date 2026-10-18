@@ -6,8 +6,8 @@ import styles from '@/app/static-page.module.css';
 import contentStyles from '@/components/article-content.module.css';
 
 export const metadata: Metadata = {
-  title: '血統（種牡馬）別データ一覧｜種牡馬の成績・特徴がまるわかり！- 競馬データ.com',
-  description: '血統（種牡馬）別の成績や特徴がまるわかり！豊富な統計データで予想をサポート。',
+  title: '種牡馬別データ一覧｜産駒の特徴・成績を血統ごとに比較【毎週更新】',
+  description: '種牡馬（血統）別に産駒の特徴と成績を比較できるデータ一覧。直近3年のデータで、得意距離・コース・重馬場成績まで分析。毎週更新。',
 };
 
 export default async function SiresPage() {

@@ -32,7 +32,10 @@ import AIBanner from '@/components/AIBanner';
 import FaqSection from '@/components/FaqSection';
 import DataSummary from '@/components/DataSummary';
 import DataSourceNote from '@/components/DataSourceNote';
+import RelatedLinks from '@/components/RelatedLinks';
+import { ALL_COURSES, getCourseUrl } from '@/lib/courses';
 import { buildSireSummary } from '@/lib/dataPageText';
+import { jaDateToIso, periodFromDataPeriod, buildWebPageJsonLd } from '@/lib/dataDate';
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
@@ -57,9 +60,30 @@ export async function generateMetadata({
   const sireInfo = ALL_SIRES.find(s => s.id === parseInt(id));
   const sireName = sireInfo?.name || '種牡馬';
 
+  // 検索語の上位は「〇〇産駒 特徴」「〇〇産駒 重馬場」のため、両方をタイトルの前半に入れる
+  const title = `${sireName}産駒の特徴・傾向｜得意距離・コース・重馬場成績【毎週更新】`;
+  const description = `${sireName}産駒の特徴を直近3年のデータで分析。芝・ダート、得意距離、競馬場別、重馬場・道悪の成績、母父別の相性まで。毎週更新。`;
+  const url = `https://www.keibadata.com/sires/${id}`;
+
   return {
-    title: `${sireName}産駒の成績・データ | 競馬データ.com`,
-    description: `${sireName}産駒の詳細な成績データを掲載。年度別成績、距離別・芝ダート別・競馬場別の詳細データを網羅。`,
+    title,
+    description,
+    alternates: {
+      canonical: url,
+    },
+    openGraph: {
+      title,
+      description,
+      url,
+      siteName: '競馬データ.com',
+      locale: 'ja_JP',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary',
+      title,
+      description,
+    },
   };
 }
 
@@ -677,6 +701,9 @@ export default async function SirePage({
     };
   });
 
+  // 関連リンク用: 実在するコースページのURL
+  const courseUrls = new Set(ALL_COURSES.map((c) => getCourseUrl(c)));
+
   // DataTableコンポーネント用にデータ整形（linkプロパティを追加）
   // 障害コースを除外
   const courseTableData = sire.course_stats
@@ -958,8 +985,20 @@ export default async function SirePage({
     { id: 'faq-section', label: 'データQ&A' },
   ];
 
+  // 構造化データ - WebPage（データ更新日を dateModified で明示）
+  const webPageJsonLd = buildWebPageJsonLd({
+    url: `https://www.keibadata.com/sires/${id}`,
+    name: `${sire.name}産駒の成績データ`,
+    description: `${sire.name}産駒の直近3年間の成績を、コース・距離・馬場状態・馬齢・母父別などで集計したデータページ`,
+    dateModified: jaDateToIso(sire.last_updated),
+  });
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageJsonLd) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSireJsonLd) }}
@@ -984,7 +1023,7 @@ export default async function SirePage({
           <article>
           {/* 種牡馬ヘッダー */}
           <div className="page-header">
-            <h1>{sire.name}産駒の成績・データ</h1>
+            <h1>{sire.name}産駒の特徴・傾向</h1>
             {/* データ情報セクション */}
             <div className="course-meta-section">
               <div className="meta-item">
@@ -997,17 +1036,24 @@ export default async function SirePage({
               </div>
               <div className="meta-item">
                 <span className="meta-label">最終更新日</span>
-                <span>{sire.last_updated}</span>
+                <time dateTime={jaDateToIso(sire.last_updated)}>{sire.last_updated}</time>
               </div>
             </div>
             <p className="page-description">
-              {sire.name}産駒の成績・データをまとめたページです。<br className="sp-br" />独自のデータベースで直近3年間分（{sire.data_period.match(/（([^）]+)）/)?.[1] ?? ''}）のデータを集計しています。
+              {sire.name}産駒の成績・データをまとめたページです。<br className="sp-br" />独自のデータベースで直近3年間・{sire.total_races.toLocaleString()}レースのデータを集計し、毎週更新しています。
             </p>
           </div>
 
           <article className="content-card">
           {/* データ概要（固有解説文） */}
           <DataSummary title={`${sire.name}産駒のデータ概要`} paragraphs={buildSireSummary(sire as any)} />
+          <RelatedLinks
+            title={`${sire.name}産駒の関連データ`}
+            groups={[
+              { heading: '得意なコース（複勝率上位）', rows: courseTableData.filter((c: { link: string }) => courseUrls.has(c.link)), label: (r) => (r.name ?? '').replace('競馬場', '').replace(/\s+/g, '') },
+              { heading: '相性の良い母父', rows: damSireStatsWithLinks },
+            ]}
+          />
 
           {/* 年度別成績セクション */}
           <section id="leading" aria-label="年度別成績">
@@ -1512,7 +1558,7 @@ export default async function SirePage({
           </section>
 
           {/* データの出典・集計方法 */}
-          <DataSourceNote periodText={sire.data_period.match(/（([^）]+)）/)?.[1]} lastUpdated={sire.last_updated} />
+          <DataSourceNote periodText={periodFromDataPeriod(sire.data_period)} lastUpdated={sire.last_updated} />
 
           {/* データQ&Aセクション */}
           <section id="faq-section" aria-label="データQ&A">

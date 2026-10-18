@@ -6,6 +6,7 @@
 #   3. マートをローカル Parquet に落とし、DuckDB で全ページの JSON を生成する (BigQuery の課金なし)
 #   4. gs://umadata へ同期し、一覧 (lib/*.ts) とリーディング (public/data/leading.json) をリポジトリに commit → push
 #      (push で Vercel が再ビルドし、全ページが新しい JSON で生成し直される)
+#   5. 本番反映を待って IndexNow に全 URL を通知 (gcs/v2/indexnow.py)
 #
 # 使い方: gcs/v2/weekly.sh [--no-upload] [--no-push]
 #   --no-upload: 生成だけ (out/ に残る)   --no-push: lib/*.ts と leading.json をリポジトリにコピーするが commit しない
@@ -20,7 +21,7 @@ PY=/Users/kubotataichi/venvs/keiba-gcs/bin/python
 PY2=/Users/kubotataichi/keiba-ai/venv/bin/python
 LOG=$HERE/logs/weekly_$(date +%Y%m%d).log
 mkdir -p $HERE/logs
-UPLOAD=1; PUSH=1
+UPLOAD=1; PUSH=1; pushed=0
 for a in "$@"; do case $a in --no-upload) UPLOAD=0;; --no-push) PUSH=0;; esac; done
 log() { echo "[$(date '+%F %T')] $*" | tee -a $LOG; }
 fail() { log "FAILED: $*"; exit 1; }
@@ -63,11 +64,15 @@ if [[ $UPLOAD -eq 1 ]]; then
 
 騎手・調教師・種牡馬の一覧とリーディングを JRA-VAN 準拠 DB から再生成 (gcs/v2/weekly.sh)
 
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>" && git push -q origin main ) >> $LOG 2>&1 && log "lists/leading committed & pushed (Vercel が再ビルド)" || log "WARN: commit/push に失敗"
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>" && git push -q origin main ) >> $LOG 2>&1 && pushed=1 && log "lists/leading committed & pushed (Vercel が再ビルド)" || log "WARN: commit/push に失敗"
   elif [[ $changed -eq 1 ]]; then
     log "lists/leading changed (未 commit: --no-push)"
   else
     log "lists/leading unchanged"
   fi
+fi
+# 5. 本番反映を待って IndexNow (Bing・Yahoo! など) に全 URL の更新を通知
+if [[ $pushed -eq 1 ]]; then
+  $PY indexnow.py >> $LOG 2>&1 && log "indexnow submitted" || log "WARN: indexnow に失敗"
 fi
 log "== weekly done"

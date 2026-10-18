@@ -31,7 +31,10 @@ import pageStyles from '@/app/static-page.module.css';
 import FaqSection from '@/components/FaqSection';
 import DataSummary from '@/components/DataSummary';
 import DataSourceNote from '@/components/DataSourceNote';
+import RelatedLinks from '@/components/RelatedLinks';
+import { ALL_COURSES, getCourseUrl } from '@/lib/courses';
 import { buildJockeySummary } from '@/lib/dataPageText';
+import { jaDateToIso, periodFromDataPeriod, buildWebPageJsonLd } from '@/lib/dataDate';
 import AIBanner from '@/components/AIBanner';
 
 // ISR: 週1回（604800秒）再生成
@@ -260,8 +263,8 @@ export async function generateMetadata({
     };
   }
 
-  const title = `${jockey.name}騎手の成績・特徴まとめ｜得意な条件がまるわかり！`;
-  const description = `${jockey.name}騎手の成績や特徴を徹底分析！得意なコースや得意な距離など、豊富な統計データで予想をサポート。`;
+  const title = `${jockey.name}騎手の特徴・成績｜得意コース・距離と回収率【毎週更新】`;
+  const description = `${jockey.name}騎手の特徴を直近3年のデータで分析。勝率・複勝率・回収率、得意な競馬場・コース・距離、人気別成績、相性の良い調教師まで。毎週更新。`;
   const url = `https://www.keibadata.com/jockeys/${id}`;
 
   return {
@@ -470,6 +473,9 @@ export default async function JockeyPage({
   const surfaceTrendPosition = jockey.characteristics?.surface_trend_position ?? 3;
   const runningStyleTrendPosition = jockey.characteristics?.running_style_trend_position ?? 3;
   const distanceTrendPosition = jockey.characteristics?.distance_trend_position ?? 3;
+
+  // 関連リンク用: 実在するコースページのURL
+  const courseUrls = new Set(ALL_COURSES.map((c) => getCourseUrl(c)));
 
   // DataTableコンポーネント用にデータ整形（linkプロパティを追加）
   // 障害コースを除外
@@ -969,8 +975,20 @@ export default async function JockeyPage({
     ],
   };
 
+  // 構造化データ - WebPage（データ更新日を dateModified で明示）
+  const webPageJsonLd = buildWebPageJsonLd({
+    url: `https://www.keibadata.com/jockeys/${id}`,
+    name: `${jockey.name}騎手の成績データ`,
+    description: `${jockey.name}騎手の直近3年間の成績を、コース・距離・馬場・脚質・人気別などで集計したデータページ`,
+    dateModified: jaDateToIso(jockey.last_updated),
+  });
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageJsonLd) }}
+      />
       {/* 構造化データの埋め込み */}
       <script
         type="application/ld+json"
@@ -1011,17 +1029,24 @@ export default async function JockeyPage({
               </div>
               <div className="meta-item">
                 <span className="meta-label">最終更新日</span>
-                <span>{jockey.last_updated}</span>
+                <time dateTime={jaDateToIso(jockey.last_updated)}>{jockey.last_updated}</time>
               </div>
             </div>
             <p className="page-description">
-              {jockey.name}騎手の成績・データをまとめたページです。<br className="sp-br" />独自のデータベースで直近3年間分（{jockey.data_period.match(/（([^）]+)）/)?.[1] ?? ''}）のデータを集計しています。
+              {jockey.name}騎手の成績・データをまとめたページです。<br className="sp-br" />独自のデータベースで直近3年間・{jockey.total_races.toLocaleString()}レースのデータを集計し、毎週更新しています。
             </p>
           </div>
 
           <article className="content-card">
           {/* データ概要（固有解説文） */}
           <DataSummary title={`${jockey.name}騎手のデータ概要`} paragraphs={buildJockeySummary(jockey as any)} />
+          <RelatedLinks
+            title={`${jockey.name}騎手の関連データ`}
+            groups={[
+              { heading: '得意なコース（複勝率上位）', rows: courseTableData.filter((c) => courseUrls.has(c.link)), label: (r) => (r.name ?? '').replace('競馬場', '').replace(/\s+/g, '') },
+              { heading: '相性の良い調教師', rows: jockey.trainer_stats.map((t) => { const tr = ALL_TRAINERS.find((x) => x.name === t.name); return { ...t, link: tr ? `/trainers/${tr.id}` : undefined }; }) },
+            ]}
+          />
 
           {/* 年度別成績セクション */}
           <section id="leading" aria-label="年度別成績">
@@ -1403,7 +1428,7 @@ export default async function JockeyPage({
           </section>
 
           {/* データの出典・集計方法 */}
-          <DataSourceNote periodText={jockey.data_period.match(/（([^）]+)）/)?.[1]} lastUpdated={jockey.last_updated} />
+          <DataSourceNote periodText={periodFromDataPeriod(jockey.data_period)} lastUpdated={jockey.last_updated} />
 
           {/* データQ&Aセクション */}
           <section id="faq-section" aria-label="データQ&A">

@@ -6,6 +6,7 @@ import { ALL_SIRES } from '@/lib/sires';
 import { getAllArticles } from '@/lib/articles';
 import { getCourseDataFromGCS } from '@/lib/getCourseDataFromGCS';
 import { hasEnoughRaces } from '@/lib/dataPageRules';
+import { getDataUpdatedAt } from '@/lib/dataDate';
 
 // 1日1回再生成
 export const revalidate = 86400;
@@ -31,13 +32,14 @@ async function getIndexableCourses() {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // ベースURL
   const baseUrl = 'https://www.keibadata.com';
-  const now = new Date();
+  // lastmod はデータの実際の更新日（週次）にする。毎回「今日」にすると Google に lastmod を信用されなくなる
+  const dataUpdatedAt = getDataUpdatedAt() ?? new Date();
 
   // ホームページ
   const homeEntry: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
-      lastModified: now,
+      lastModified: dataUpdatedAt,
       changeFrequency: 'weekly',
       priority: 1,
     },
@@ -47,7 +49,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const indexableCourses = await getIndexableCourses();
   const courseEntries: MetadataRoute.Sitemap = indexableCourses.map((course) => ({
     url: `${baseUrl}${getCourseUrl(course)}`,
-    lastModified: now,
+    lastModified: dataUpdatedAt,
     changeFrequency: 'weekly' as const,
     priority: 0.8,
   }));
@@ -55,7 +57,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 騎手ページ（リストは直近3年で30レース以上の現役騎手に限定済み）
   const jockeyEntries: MetadataRoute.Sitemap = ALL_JOCKEYS.map((jockey) => ({
     url: `${baseUrl}/jockeys/${jockey.id}`,
-    lastModified: now,
+    lastModified: dataUpdatedAt,
     changeFrequency: 'weekly' as const,
     priority: 0.7,
   }));
@@ -63,7 +65,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 調教師ページ
   const trainerEntries: MetadataRoute.Sitemap = ALL_TRAINERS.map((trainer) => ({
     url: `${baseUrl}/trainers/${trainer.id}`,
-    lastModified: now,
+    lastModified: dataUpdatedAt,
     changeFrequency: 'weekly' as const,
     priority: 0.7,
   }));
@@ -71,7 +73,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 種牡馬ページ
   const sireEntries: MetadataRoute.Sitemap = ALL_SIRES.map((sire) => ({
     url: `${baseUrl}/sires/${sire.id}`,
-    lastModified: now,
+    lastModified: dataUpdatedAt,
     changeFrequency: 'weekly' as const,
     priority: 0.7,
   }));
@@ -81,7 +83,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .filter((article) => !article.frontmatter.link)
     .map((article) => ({
       url: `${baseUrl}/articles/${article.slug}`,
-      lastModified: article.frontmatter.date ? new Date(article.frontmatter.date) : now,
+      lastModified: article.frontmatter.date ? new Date(article.frontmatter.date) : dataUpdatedAt,
       changeFrequency: 'monthly' as const,
       priority: 0.8,
     }));
@@ -90,17 +92,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // 静的ページ
   const staticEntries: MetadataRoute.Sitemap = [
-    { url: `${baseUrl}/courses`, lastModified: now, changeFrequency: 'weekly' as const, priority: 0.9 },
-    { url: `${baseUrl}/jockeys`, lastModified: now, changeFrequency: 'weekly' as const, priority: 0.9 },
-    { url: `${baseUrl}/trainers`, lastModified: now, changeFrequency: 'weekly' as const, priority: 0.9 },
-    { url: `${baseUrl}/sires`, lastModified: now, changeFrequency: 'weekly' as const, priority: 0.9 },
-    { url: `${baseUrl}/articles`, lastModified: now, changeFrequency: 'weekly' as const, priority: 0.9 },
-    { url: `${baseUrl}/ai`, lastModified: now, changeFrequency: 'weekly' as const, priority: 0.8 },
-    { url: `${baseUrl}/about`, lastModified: now, changeFrequency: 'monthly' as const, priority: 0.5 },
-    { url: `${baseUrl}/about/data`, lastModified: now, changeFrequency: 'monthly' as const, priority: 0.5 },
-    { url: `${baseUrl}/disclaimer`, lastModified: now, changeFrequency: 'yearly' as const, priority: 0.3 },
-    { url: `${baseUrl}/privacy`, lastModified: now, changeFrequency: 'yearly' as const, priority: 0.3 },
-    { url: `${baseUrl}/contact`, lastModified: now, changeFrequency: 'yearly' as const, priority: 0.3 },
+    { url: `${baseUrl}/courses`, lastModified: dataUpdatedAt, changeFrequency: 'weekly' as const, priority: 0.9 },
+    { url: `${baseUrl}/jockeys`, lastModified: dataUpdatedAt, changeFrequency: 'weekly' as const, priority: 0.9 },
+    { url: `${baseUrl}/trainers`, lastModified: dataUpdatedAt, changeFrequency: 'weekly' as const, priority: 0.9 },
+    { url: `${baseUrl}/sires`, lastModified: dataUpdatedAt, changeFrequency: 'weekly' as const, priority: 0.9 },
+    { url: `${baseUrl}/articles`, lastModified: dataUpdatedAt, changeFrequency: 'weekly' as const, priority: 0.9 },
+    { url: `${baseUrl}/ai`, lastModified: dataUpdatedAt, changeFrequency: 'weekly' as const, priority: 0.8 },
+    { url: `${baseUrl}/about`, changeFrequency: 'monthly' as const, priority: 0.5 },
+    { url: `${baseUrl}/about/data`, changeFrequency: 'monthly' as const, priority: 0.5 },
+    { url: `${baseUrl}/disclaimer`, changeFrequency: 'yearly' as const, priority: 0.3 },
+    { url: `${baseUrl}/privacy`, changeFrequency: 'yearly' as const, priority: 0.3 },
+    { url: `${baseUrl}/contact`, changeFrequency: 'yearly' as const, priority: 0.3 },
   ];
 
   return [

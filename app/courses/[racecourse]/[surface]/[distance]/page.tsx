@@ -27,9 +27,11 @@ import coursesListStyles from '@/components/CoursesList.module.css';
 import listStyles from '@/components/shared-list.module.css';
 import DataSummary from '@/components/DataSummary';
 import DataSourceNote from '@/components/DataSourceNote';
+import RelatedLinks from '@/components/RelatedLinks';
 import ThinDataNotice from '@/components/ThinDataNotice';
 import { hasEnoughRaces, THIN_PAGE_ROBOTS } from '@/lib/dataPageRules';
 import { buildCourseSummary } from '@/lib/dataPageText';
+import { getDataUpdatedAt, formatJaDate, toIsoDate, buildWebPageJsonLd } from '@/lib/dataDate';
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
@@ -411,22 +413,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     trackVariant = '（外回り）';
   }
 
-  const title = `${racecourse}${surface}${distanceDisplay}m${trackVariant}の傾向・特徴まとめ｜騎手や血統などのデータをどこよりも見やすく`;
-  const description = `${racecourse}${surface}${distanceDisplay}m${trackVariant}の傾向や特徴がまるわかり！騎手、血統、枠順、脚質、調教師など、豊富な統計データで予想をサポート。`;
+  const courseLabel = `${racecourse}${surface}${distanceDisplay}m${trackVariant}`;
+  // 検索語（「東京芝1600m 傾向」「〜 血統」「〜 騎手」）に合わせ、省略されても意味が通るよう重要語を前半に置く
+  const title = `${courseLabel}の傾向と特徴｜枠順・脚質・血統・騎手データ【毎週更新】`;
   const url = `https://www.keibadata.com/courses/${resolvedParams.racecourse}/${resolvedParams.surface}/${resolvedParams.distance}`;
 
   // 対象レース数が少ないコースは検索エンジンにインデックスさせない
   let thin = false;
+  let totalRaces = 0;
   try {
     const distanceParam = resolvedParams.distance.includes('-inner') || resolvedParams.distance.includes('-outer')
       ? resolvedParams.distance
       : parseInt(resolvedParams.distance);
     const gcsData = await getCourseDataFromGCS(resolvedParams.racecourse, resolvedParams.surface, distanceParam);
-    const totalRaces = gcsData?.total_races ?? gcsData?.course_info?.total_races ?? 0;
+    totalRaces = gcsData?.total_races ?? gcsData?.course_info?.total_races ?? 0;
     thin = !hasEnoughRaces(totalRaces);
   } catch {
     thin = true;
   }
+
+  const description = `${courseLabel}の傾向を直近3年${totalRaces ? `・${totalRaces.toLocaleString()}レース` : ''}のデータで分析。有利な枠順・脚質、得意な騎手・種牡馬・調教師、荒れやすさまで。毎週更新。`;
 
   return {
     title,
@@ -584,30 +590,19 @@ export default async function CoursePage({ params }: Props) {
   }
   // ===== ここまで =====
 
-  // ビルド時の動的な日付を設定
-  const today = new Date();
+  // データ更新日（週次パイプラインの更新日時）を基準に集計期間と最終更新日を決める
+  const updatedAt = getDataUpdatedAt() ?? new Date();
 
-  // data_period: 前日〜3年前
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
-
+  // 集計期間: 更新日の前日〜3年前
+  const yesterday = new Date(updatedAt.getTime() - 86400000);
   const threeYearsAgo = new Date(yesterday);
   threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 3);
 
-  const formatDate = (date: Date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1);
-    const day = String(date.getDate());
-    return `${year}年${month}月${day}日`;
-  };
-
-  const dataPeriod = `直近3年間分（${formatDate(threeYearsAgo)}〜${formatDate(yesterday)}）`;
-
-  // last_updated: ビルド時の日付
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1);
-  const day = String(today.getDate());
-  const formattedDate = `${year}年${month}月${day}日`;
+  // 開始日は年月まで（3年前の日付が日単位で並ぶと、検索結果に古い日付が出やすいため）
+  const periodText = `${formatJaDate(threeYearsAgo).replace(/\d+日$/, '')}〜${formatJaDate(yesterday)}`;
+  const dataPeriod = `直近3年間分（${periodText}）`;
+  const formattedDate = formatJaDate(updatedAt);
+  const dateModifiedIso = toIsoDate(updatedAt);
 
   if (!data.course_info) {
     data.course_info = {};
@@ -850,7 +845,7 @@ export default async function CoursePage({ params }: Props) {
   const summaryParagraphs = buildCourseSummary({
     courseName: seoPrefix,
     totalRaces: course_info.total_races,
-    periodText: `${formatDate(threeYearsAgo)}〜${formatDate(yesterday)}`,
+    periodText,
     popularity: popularity_stats,
     gateStats: gate_stats,
     runningStyleStats: running_style_stats,
@@ -930,9 +925,21 @@ export default async function CoursePage({ params }: Props) {
     ],
   };
 
+  // 構造化データ - WebPage（データ更新日を dateModified で明示）
+  const webPageJsonLd = buildWebPageJsonLd({
+    url: `${baseUrl}/courses/${resolvedParams.racecourse}/${resolvedParams.surface}/${resolvedParams.distance}`,
+    name: `${seoPrefix}のコースデータ`,
+    description: `${seoPrefix}の直近3年間のレース結果から、人気・枠順・脚質・騎手・血統・調教師別の成績を集計したデータページ`,
+    dateModified: dateModifiedIso,
+  });
+
   return (
     <>
       {/* 構造化データの埋め込み */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageJsonLd) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
@@ -980,11 +987,11 @@ export default async function CoursePage({ params }: Props) {
             </div>
             <div className="meta-item">
               <span className="meta-label">最終更新日</span>
-              <span>{course_info.last_updated}</span>
+              <time dateTime={dateModifiedIso}>{course_info.last_updated}</time>
             </div>
           </div>
           <p className="page-description">
-            {course_info.racecourse} {course_info.surface}{distanceDisplay}m{trackVariantLabel}のコースデータをまとめたページです。<br className="sp-br" />独自のデータベースで直近3年間分（{formatDate(threeYearsAgo)}〜{formatDate(yesterday)}）のデータを集計しています。
+            {course_info.racecourse} {course_info.surface}{distanceDisplay}m{trackVariantLabel}のコースデータをまとめたページです。<br className="sp-br" />独自のデータベースで直近3年間・{course_info.total_races}レースのデータを集計し、毎週更新しています。
           </p>
 
         </div>
@@ -992,6 +999,14 @@ export default async function CoursePage({ params }: Props) {
         <article className="content-card">
         {/* === データ概要（固有解説文） === */}
         <DataSummary title={`${seoPrefix}のデータ概要`} paragraphs={summaryParagraphs} />
+        <RelatedLinks
+          title={`${seoPrefix}が得意な騎手・血統・厩舎`}
+          groups={[
+            { heading: '騎手（複勝率上位）', rows: jockeyStatsWithLinks },
+            { heading: '種牡馬（複勝率上位）', rows: pedigreeStatsWithLinks },
+            { heading: '調教師（複勝率上位）', rows: trainerStatsWithLinks },
+          ]}
+        />
 
         {/* === コース特性セクション === */}
         {enoughRaces && (
@@ -1359,7 +1374,7 @@ export default async function CoursePage({ params }: Props) {
 </section>
 
         {/* === データの出典・集計方法 === */}
-        <DataSourceNote periodText={`${formatDate(threeYearsAgo)}〜${formatDate(yesterday)}`} lastUpdated={course_info.last_updated} />
+        <DataSourceNote periodText={periodText} lastUpdated={course_info.last_updated} />
 
         {/* === FAQセクション === */}
         {enoughRaces && (

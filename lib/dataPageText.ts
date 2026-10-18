@@ -7,6 +7,7 @@
  */
 
 import { MIN_RACES_FOR_MENTION, MIN_RACES_FOR_TRENDS, hasEnoughRaces } from './dataPageRules';
+import { periodFromDataPeriod } from './dataDate';
 
 // 汎用の成績行
 export interface StatRow {
@@ -264,7 +265,7 @@ interface PersonLike {
   };
 }
 
-const periodOf = (p?: string): string => p?.match(/（([^）]+)）/)?.[1] ?? '直近3年間';
+const periodOf = (p?: string): string => periodFromDataPeriod(p) ?? '直近3年間';
 
 // 「東京」「中山」など単独の競馬場だけを対象（中央/ローカルの集計行を除く）
 const RACECOURSE_NAMES = ['札幌', '函館', '福島', '新潟', '東京', '中山', '中京', '京都', '阪神', '小倉'];

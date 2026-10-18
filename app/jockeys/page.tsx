@@ -6,8 +6,8 @@ import styles from '@/app/static-page.module.css';
 import contentStyles from '@/components/article-content.module.css';
 
 export const metadata: Metadata = {
-  title: '騎手別データ一覧｜騎手の成績・特徴がまるわかり！- 競馬データ.com',
-  description: '騎手の成績や特徴がまるわかり！豊富な統計データで予想をサポート。',
+  title: '騎手別データ一覧｜成績・特徴・回収率を比較【毎週更新】',
+  description: 'JRA騎手の成績・特徴・回収率を比較できるデータ一覧。直近3年のデータで、得意なコース・距離まで分析。毎週更新。',
 };
 
 export default async function JockeysPage() {

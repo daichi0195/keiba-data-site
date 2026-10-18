@@ -17,10 +17,10 @@ import styles from './page.module.css';
 export const revalidate = 86400;
 
 export const metadata: Metadata = {
-  title: '競馬データ.com - 予想に役立つ競馬データの分析サイト',
+  title: '競馬データ.com｜コース・騎手・血統の競馬データ分析【毎週更新】',
   description: '競馬データ.comは、競馬の予想に役立つあらゆるデータを網羅した競馬分析サイトです。コース別成績、騎手・調教師・種牡馬データ、人気・枠順・脚質傾向など、豊富な統計情報で競馬予想を徹底サポート。',
   openGraph: {
-    title: '競馬データ.com - 予想に役立つ競馬データの分析サイト',
+    title: '競馬データ.com｜コース・騎手・血統の競馬データ分析【毎週更新】',
     description: '競馬データ.comは、競馬の予想に役立つあらゆるデータを網羅した競馬分析サイトです。コース別成績、騎手・調教師・種牡馬データ、人気・枠順・脚質傾向など、豊富な統計情報で競馬予想を徹底サポート。',
     url: 'https://www.keibadata.com',
     siteName: '競馬データ.com',
@@ -54,7 +54,7 @@ export default async function HomePage() {
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
-    name: '競馬データ.com - 予想に役立つ競馬データの分析サイト',
+    name: '競馬データ.com｜コース・騎手・血統の競馬データ分析【毎週更新】',
     description: '競馬データ.comは、競馬の予想に役立つあらゆるデータを網羅した競馬分析サイトです。コース別成績、騎手・調教師・種牡馬データ、人気・枠順・脚質傾向など、豊富な統計情報で競馬予想を徹底サポート。',
     url: 'https://www.keibadata.com',
     publisher: {
