@@ -31,6 +31,9 @@ const nextConfig: NextConfig = {
       { source: '/races', destination: '/courses', permanent: true },
       // テスト用ページ
       { source: '/trainers/test', destination: '/trainers', permanent: true },
+      // 直近3年に騎乗がなくなりデータが空になった騎手ページ（URL は残し一覧へ）
+      { source: '/jockeys/5621', destination: '/jockeys', permanent: true },
+      { source: '/jockeys/5620', destination: '/jockeys', permanent: true },
     ];
   },
 };

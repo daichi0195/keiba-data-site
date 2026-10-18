@@ -1,8 +1,8 @@
 /**
  * 全騎手のIDリスト
- *
- * 過去3年間に30レース以上出走している現役中央騎手のリスト
- * BigQueryから自動生成（2025-12-21時点: 156騎手）
+ * 
+ * 過去3年間に出走記録のある騎手 (既存ページは維持し、現役で30レース以上の騎手を追加)
+ * gcs/v2/generate_lists.py が JRA-VAN 由来のデータから自動生成（2026-10-18時点: 160騎手）
  */
 
 export interface JockeyInfo {
@@ -27,7 +27,7 @@ export const ALL_JOCKEYS: JockeyInfo[] = [
   { id: 1171, name: '西村淳也', kana: 'にしむらあつや' },
   { id: 1018, name: '和田竜二', kana: 'わだりゅうじ' },
   { id: 1184, name: '原優介', kana: 'はらゆうすけ' },
-  { id: 1162, name: '木幡巧也', kana: 'こわたこうや' },
+  { id: 1162, name: '木幡巧也', kana: 'こわたたくや' },
   { id: 1092, name: '津村明秀', kana: 'つむらあきひで' },
   { id: 1187, name: '永島まなみ', kana: 'ながしままなみ' },
   { id: 1122, name: '三浦皇成', kana: 'みうらこうせい' },
@@ -41,7 +41,7 @@ export const ALL_JOCKEYS: JockeyInfo[] = [
   { id: 1102, name: '北村友一', kana: 'きたむらゆういち' },
   { id: 1150, name: '石川裕紀人', kana: 'いしかわゆきと' },
   { id: 1178, name: '斎藤新', kana: 'さいとうあらた' },
-  { id: 1144, name: '菱田裕二', kana: 'ひしたゆうじ' },
+  { id: 1144, name: '菱田裕二', kana: 'ひしだゆうじ' },
   { id: 1154, name: '松若風馬', kana: 'まつわかふうま' },
   { id: 1088, name: '川田将雅', kana: 'かわだゆうが' },
   { id: 1075, name: '田辺裕信', kana: 'たなべひろのぶ' },
@@ -82,7 +82,7 @@ export const ALL_JOCKEYS: JockeyInfo[] = [
   { id: 1125, name: '国分優作', kana: 'こくぶんゆうさく' },
   { id: 1190, name: '古川奈穂', kana: 'ふるかわなほ' },
   { id: 1128, name: '川須栄彦', kana: 'かわすはるひこ' },
-  { id: 1176, name: '亀田温心', kana: 'かめだはあと' },
+  { id: 1176, name: '亀田温心', kana: 'かめだはーと' },
   { id: 689, name: '江田照男', kana: 'えだてるお' },
   { id: 1152, name: '小崎綾也', kana: 'こざきりょうや' },
   { id: 1191, name: '松本大輝', kana: 'まつもとひろき' },
@@ -90,12 +90,12 @@ export const ALL_JOCKEYS: JockeyInfo[] = [
   { id: 1202, name: '鷲頭虎太', kana: 'わしずこた' },
   { id: 1203, name: '石田拓郎', kana: 'いしだたくろう' },
   { id: 1212, name: '柴田裕一郎', kana: 'しばたゆういちろう' },
-  { id: 1142, name: '長岡禎仁', kana: 'ながおかやすひと' },
+  { id: 1142, name: '長岡禎仁', kana: 'ながおかよしひと' },
   { id: 1209, name: '石神深道', kana: 'いしがみふかみち' },
   { id: 1183, name: '小林脩斗', kana: 'こばやししゅうと' },
   { id: 1177, name: '小林凌大', kana: 'こばやしりょうた' },
   { id: 1201, name: '水沼元輝', kana: 'みずぬまげんき' },
-  { id: 1207, name: '佐藤翔馬', kana: 'さとうしょううま' },
+  { id: 1207, name: '佐藤翔馬', kana: 'さとうしょうま' },
   { id: 1182, name: '泉谷楓真', kana: 'いずみやふうま' },
   { id: 1037, name: '太宰啓介', kana: 'だざいけいすけ' },
   { id: 1134, name: '嶋田純次', kana: 'しまだじゅんじ' },
@@ -114,7 +114,7 @@ export const ALL_JOCKEYS: JockeyInfo[] = [
   { id: 1114, name: '田中健', kana: 'たなかけん' },
   { id: 1167, name: '木幡育也', kana: 'こわたいくや' },
   { id: 5626, name: 'T.マーカンド', kana: 'まーかんど' },
-  { id: 1198, name: '土田真翔', kana: 'つちだまこと' },
+  { id: 1198, name: '土田真翔', kana: 'つちだまなと' },
   { id: 1059, name: '石神深一', kana: 'いしがみしんいち' },
   { id: 1196, name: '小牧加矢太', kana: 'こまきかやた' },
   { id: 1215, name: '橋木太希', kana: 'はしきたいき' },
@@ -124,14 +124,14 @@ export const ALL_JOCKEYS: JockeyInfo[] = [
   { id: 1087, name: '上野翔', kana: 'うえのしょう' },
   { id: 1069, name: '五十嵐雄祐', kana: 'いがらしゆうすけ' },
   { id: 1120, name: '大江原圭', kana: 'おおえはらけい' },
-  { id: 1220, name: '田山旺佑', kana: 'たやまおうせい' },
+  { id: 1220, name: '田山旺佑', kana: 'たやまおうすけ' },
   { id: 1218, name: '遠藤汰月', kana: 'えんどうたつき' },
   { id: 1123, name: '小野寺祐太', kana: 'おのでらゆうた' },
   { id: 5659, name: 'A.ルメートル', kana: 'るめーとる' },
   { id: 5115, name: 'A.シュタルケ', kana: 'しゅたるけ' },
   { id: 1113, name: '草野太郎', kana: 'くさのたろう' },
   { id: 1099, name: '鮫島良太', kana: 'さめしまりょうた' },
-  { id: 1149, name: '伴啓太', kana: 'はんけいた' },
+  { id: 1149, name: '伴啓太', kana: 'ばんけいた' },
   { id: 1156, name: '加藤祥太', kana: 'かとうしょうた' },
   { id: 5625, name: 'H.ドイル', kana: 'どいる' },
   { id: 1119, name: '伊藤工真', kana: 'いとうたくま' },
@@ -150,10 +150,8 @@ export const ALL_JOCKEYS: JockeyInfo[] = [
   { id: 1194, name: '大久保友雅', kana: 'おおくぼゆうが' },
   { id: 1046, name: '高田潤', kana: 'たかだじゅん' },
   { id: 1023, name: '江田勇亮', kana: 'えだゆうすけ' },
-  { id: 5621, name: 'T.バシュロ', kana: 'ばしゅろ' },
   { id: 5366, name: 'R.ムーア', kana: 'むーあ' },
   { id: 1131, name: '西村太一', kana: 'にしむらたいち' },
-  { id: 5620, name: 'D.イーガン', kana: 'いーがん' },
   { id: 5661, name: 'R.ピーヒュレク', kana: 'ぴーひゅれく' },
   { id: 1063, name: '小坂忠士', kana: 'こさかただし' },
   { id: 1052, name: '金子光希', kana: 'かねこみつき' },
@@ -168,4 +166,10 @@ export const ALL_JOCKEYS: JockeyInfo[] = [
   { id: 5495, name: 'W.ビュイック', kana: 'びゅいっく' },
   { id: 1219, name: '谷原柚希', kana: 'たにはらゆずき' },
   { id: 5533, name: 'K.ティータン', kana: 'てぃーたん' },
+  { id: 5675, name: 'F.ゴンサルベス', kana: 'ごんさるべす' },
+  { id: 5678, name: 'A.プーシャン', kana: 'ぷーしゃん' },
+  { id: 5676, name: 'T.ハマーハンセン', kana: 'はまーはんせん' },
+  { id: 5691, name: 'J.コレット', kana: 'これっと' },
+  { id: 5680, name: 'F.ジェルー', kana: 'じぇるー' },
+  { id: 5586, name: 'M.ミシェル', kana: 'みしぇる' },
 ];

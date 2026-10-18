@@ -1,8 +1,8 @@
 /**
  * 全調教師のIDリスト
- *
- * 過去3年間に30レース以上出走している現役中央調教師のリスト
- * trainer_kana_mapping.csvから自動生成（2025-12-21時点: 185調教師）
+ * 
+ * 過去3年間に出走記録のある調教師 (既存ページは維持し、現役で30レース以上の調教師を追加)
+ * gcs/v2/generate_lists.py が JRA-VAN 由来のデータから自動生成（2026-10-18時点: 193調教師）
  */
 
 export interface TrainerInfo {
@@ -45,7 +45,7 @@ export const ALL_TRAINERS: TrainerInfo[] = [
   { id: 1054, name: '戸田博文', kana: 'とだひろふみ' },
   { id: 1055, name: '藤原英昭', kana: 'ふじわらひであき' },
   { id: 1056, name: '本間忍', kana: 'ほんましのぶ' },
-  { id: 1058, name: '大久保龍志', kana: 'おおくぼたつし' },
+  { id: 1058, name: '大久保龍志', kana: 'おおくぼりゅうじ' },
   { id: 1059, name: '加藤征弘', kana: 'かとうゆきひろ' },
   { id: 1061, name: '友道康夫', kana: 'ともみちやすお' },
   { id: 1062, name: '藤岡健一', kana: 'ふじおかけんいち' },
@@ -81,7 +81,7 @@ export const ALL_TRAINERS: TrainerInfo[] = [
   { id: 1094, name: '水野貴広', kana: 'みずのたかひろ' },
   { id: 1095, name: '荒川義之', kana: 'あらかわよしゆき' },
   { id: 1096, name: '粕谷昌央', kana: 'かすやまさお' },
-  { id: 1097, name: '鹿戸雄一', kana: 'しかどゆういち' },
+  { id: 1097, name: '鹿戸雄一', kana: 'しかとゆういち' },
   { id: 1098, name: '野中賢二', kana: 'のなかけんじ' },
   { id: 1099, name: '本田優', kana: 'ほんだまさる' },
   { id: 1100, name: '松山将樹', kana: 'まつやままさき' },
@@ -147,7 +147,7 @@ export const ALL_TRAINERS: TrainerInfo[] = [
   { id: 1162, name: '田中博康', kana: 'たなかひろやす' },
   { id: 1163, name: '林徹', kana: 'はやしとおる' },
   { id: 1164, name: '安田翔伍', kana: 'やすだしょうご' },
-  { id: 1165, name: '和田勇介', kana: 'わだ ゆうすけ' },
+  { id: 1165, name: '和田勇介', kana: 'わだゆうすけ' },
   { id: 1166, name: '石坂公一', kana: 'いしざかこういち' },
   { id: 1167, name: '稲垣幸雄', kana: 'いながきゆきお' },
   { id: 1168, name: '上村洋行', kana: 'うえむらひろゆき' },
@@ -197,4 +197,12 @@ export const ALL_TRAINERS: TrainerInfo[] = [
   { id: 1212, name: '秋山真一郎', kana: 'あきやましんいちろう' },
   { id: 1214, name: '井上智史', kana: 'いのうえさとし' },
   { id: 1215, name: '加藤公太', kana: 'かとうこうた' },
+  { id: 1216, name: '柴田卓', kana: 'しばたすぐる' },
+  { id: 1218, name: '橋田宜長', kana: 'はしだよしたけ' },
+  { id: 1221, name: '室井潔', kana: 'むろいきよし' },
+  { id: 1219, name: '平岩大典', kana: 'ひらいわだいすけ' },
+  { id: 1217, name: '手塚貴徳', kana: 'てづかたかのり' },
+  { id: 1213, name: '秋本大介', kana: 'あきもとだいすけ' },
+  { id: 1220, name: '松尾卓哉', kana: 'まつおたくや' },
+  { id: 1222, name: '古賀大生', kana: 'こがひろき' },
 ];

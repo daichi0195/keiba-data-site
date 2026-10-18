@@ -1,0 +1,6 @@
+{
+  "_comment": "JRA-VAN 側の正規化後の名前 → サイトで使っている名前 (lib/sires.ts の表記。URL の ID は名前のハッシュなので変えない)。gcs/v2 の make_aliases で生成",
+  "アメリカンファラオ": "American Pharoah",
+  "クリエイター２": "クリエイターII",
+  "ダークエンジェル": "Dark Angel"
+}
