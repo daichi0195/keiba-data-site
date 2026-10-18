@@ -584,6 +584,8 @@ export default async function CoursePage({ params }: Props) {
       }
       data.course_info.total_races = gcsData.course_info.total_races;
     }
+    // 集計期間（年）。レース数が少ないコースは生成時に延長されている
+    data.period_years = gcsData.period_years;
 
   } catch (error) {
     console.error('❌ Failed to load data from GCS:', error);

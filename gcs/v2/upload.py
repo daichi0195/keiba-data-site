@@ -44,9 +44,10 @@ def main():
         if not src.exists():
             print(f'  skip {d} (なし)')
             continue
-        run(['gcloud', 'storage', 'rsync', '-r', str(src), base + d, '--content-type=application/json', *common])
+        # 既定の Cache-Control (public, max-age=3600) だと、再ビルド時に CDN から更新前の JSON が返ることがあるため no-cache にする
+        run(['gcloud', 'storage', 'rsync', '-r', str(src), base + d, '--content-type=application/json', '--cache-control=no-cache', *common])
     if (OUT_DIR / 'leading.json').exists():
-        run(['gcloud', 'storage', 'cp', str(OUT_DIR / 'leading.json'), base + 'leading.json', '--content-type=application/json', *common])
+        run(['gcloud', 'storage', 'cp', str(OUT_DIR / 'leading.json'), base + 'leading.json', '--content-type=application/json', '--cache-control=no-cache', *common])
     print(f'✅ upload done → {base}')
     return 0
 
