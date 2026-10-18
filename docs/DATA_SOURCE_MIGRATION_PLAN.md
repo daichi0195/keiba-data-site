@@ -126,20 +126,22 @@ JRA-VAN (VM jvlink-win, 蓄積 差分: 月曜 14:00 以降)  →  gs://keibaai-v
 - 種牡馬名の一致: 209 件中 208 件（不一致は `クリエイターII` → JRA-VAN では `クリエイター２`）
 - 既存コード: `keibaai_v2/sql/v1compat/keiba_data.sql`、`keibaai_v2/etl/v1compat_check.py`、`keibaai_v2/etl/live_ingest.py`、`keibaai_v2/ops/night.sh`
 
-## 7. 進捗（2026-10-18）
+## 7. 進捗（2026-10-18 時点、本番切替済み）
 
 | # | ステップ | 状態 |
 |---|---|---|
-| 0 | 方針決定 | URL 全維持はユーザー決定。JRA-VAN の規約確認・実行場所・切替時期は未決 |
-| 1 | v2 週次取り込み（F-18） | 未着手（VM の起動が必要。ユーザー許可待ち） |
+| 0 | 方針決定 | URL 全維持・本番切替・自動化はユーザー決定（2026-10-18）。JRA-VAN の規約確認は未決 |
+| 1 | v2 週次取り込み（F-18） | 完了: `keibaai_v2/etl/weekly_ingest.py`（差分 zip → raw_jv に同一ファイル単位で置換、速報段階の行は除外）、`keibaai_v2/ops/weekly_ingest.sh`（VM 起動 → 差分取得 → 取り込み → core 再構築 → サイト更新） |
 | 2 | サイト向けマート | 完了: `keibaai-v2.site`（`keibaai_v2/sql/site/keiba_data.sql`、`etl/build_site.py`、0.2GB・20 秒） |
 | 3 | 旧データとの突合 | 完了: 同一期間で全 681 ページを比較。セクション構成・行数は一致、リーディングは完全一致（`gcs/v2/README.md`） |
 | 4 | 生成スクリプト改修 | 完了: `gcs/v2/`（DuckDB 互換層で旧 SQL をそのまま実行、課金なし、全ページ 2 分）。一覧は既存を維持して追加 |
 | 5 | ステージング生成と比較 | 完了: `gs://umadata/v2staging/` に 701 ファイル |
-| 6 | サイト側の切替 | 準備済み（`/about/data` の出典文、空ページ 2 件のリダイレクト）。本番パスへの同期と `lib/*.ts` の差し替えは未実施 |
-| 7 | 自動化 | `gcs/v2/weekly.sh` 作成。launchd 登録と ISR 再検証 URL は未設定 |
-| 8 | 旧パイプライン停止 | 未着手 |
+| 6 | サイト側の切替 | 完了（commit 72c5396）: 本番パス `gs://umadata/{course,jockey,trainer,sires,index}` と `leading.json` を同期、`lib/*.ts` と `public/data/leading.json` を差し替え、Vercel 再ビルド |
+| 7 | 自動化 | `gcs/v2/weekly.sh`（JSON 生成 → GCS → lib/leading を commit/push）と launchd 定義 `keibaai_v2/ops/com.keibadata.weekly.plist`（毎週火曜 20:00）。launchd の登録はユーザーが実行 |
+| 8 | 旧パイプライン停止 | 未着手（netkeiba スクレイパーの停止、`umadata.keiba_data` の凍結、ARCHITECTURE.md の更新） |
 
 設計上の変更点（計画からの差分）
 - BigQuery 上で一括集計に書き換える案をやめ、マートをローカル Parquet に落として DuckDB で旧 SQL をそのまま実行する方式にした（書き換え量が少なく、BigQuery の消費もマート作成の 0.2GB のみ）。
-- 一覧（`lib/*.ts`）は GCS 化せず、週次ジョブが差分を commit → push して Vercel を再ビルドする方式にした（`dynamicParams = false` のため、新ページにはビルドが必要）。
+- 一覧（`lib/*.ts`）は GCS 化せず、週次ジョブが差分を commit → push して Vercel を再ビルドする方式にした（`dynamicParams = false` のため、新ページにはビルドが必要）。`public/data/leading.json` もリポジトリから読まれるため同じ commit に含める。
+- 週次の確定成績は、速報運用（`ops/night.sh`）と同じ VM の差分取得（`jv_live_fetch.ps1`、JVOpen option 1）を流用する。確定ファイルは開催翌日 13:40 頃に出るため、月曜開催も含めて火曜 20:00 に実行する。費用は週 1 回あたり VM 約 1 時間（十数円）+ BigQuery 約 15〜20GB（core 再構築 11GB を含む、十数円）。
+- 読み（kana）は、日本人は姓名を詰め、外国人（氏名に「.」を含む）は「ﾙﾒｰﾙ.ｸﾘｽﾄﾌ」「ｼｭﾀﾙｹ ｱﾝﾄﾞﾚｱｼｭ」の区切りより前（姓）だけを使う。

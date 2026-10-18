@@ -22,7 +22,10 @@ out/{course,jockey,trainer,sires}/*.json, out/leading.json, out/lib/*.ts, out/in
 Next.js (lib/get*DataFromGCS.ts、変更なし)
 ```
 
-`weekly.sh` が 2〜5 を一括で行う (月曜に core が更新された後)。
+`weekly.sh` が 2〜5 を一括で行う。さらに上流の確定成績の取り込み (VM 起動 → JV-Link 差分取得 → raw_jv → core 再構築) を含めた全体は
+`keibaai_v2/ops/weekly_ingest.sh` が行い、毎週火曜 20:00 に launchd (`keibaai_v2/ops/com.keibadata.weekly.plist`、ラベル `com.keibadata.weekly`) から実行する。
+ログは `keibaai_v2/data/ops/weekly/<日付>.log` と `gcs/v2/logs/weekly_<日付>.log`。手動で流すときは `keibaai_v2/ops/weekly_ingest.sh` (VM あり) か
+`gcs/v2/weekly.sh` (core が最新のとき、サイト側だけ)。
 
 ## 生成スクリプトについて
 

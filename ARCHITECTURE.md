@@ -98,9 +98,16 @@
 └─────────────────────────────────────────────────────────────┘
 ```
 
+### データの生成元（2026-10-18 以降）
+GCS の JSON は `gcs/v2/` のスクリプトが生成する。元データは JRA-VAN DataLab.（`keibaai-v2` プロジェクトの BigQuery）で、
+`keibaai-v2.site` マート → ローカル Parquet → DuckDB で集計 → `gs://umadata` へ同期、という流れ。
+騎手・調教師・種牡馬の一覧（`lib/*.ts`）とリーディング（`public/data/leading.json`）はリポジトリから読まれるため、
+週次ジョブ（`keibaai_v2/ops/weekly_ingest.sh`、毎週火曜 20:00 の launchd）が差分を commit → push して Vercel を再ビルドする。
+詳細は `gcs/v2/README.md` と `docs/DATA_SOURCE_MIGRATION_PLAN.md`。旧 `gcs/*.py`（netkeiba 版）は使わない。
+
 ### データフロー
 1. **ビルド時**: Next.js が GCS からデータを取得し、静的ページを生成
-2. **ISR**: 週1回（604,800秒）自動再生成
+2. **ISR**: 週1回（604,800秒）自動再生成（週次ジョブの push による再ビルドの方が先に来る）
 3. **配信**: Vercel CDN経由でエンドユーザーに配信
 4. **インタラクション**: クライアントコンポーネントで動的UI（スクロール、展開、モーダル等）
 
