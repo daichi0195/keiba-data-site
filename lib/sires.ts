@@ -2,7 +2,7 @@
  * 全種牡馬のIDリスト
  * 
  * 過去3年間に産駒が出走している種牡馬 (既存ページは維持し、50レース以上・産駒10頭以上の種牡馬を追加)
- * gcs/v2/generate_lists.py が JRA-VAN 由来のデータから自動生成（2026-10-18時点: 210頭）
+ * gcs/v2/generate_lists.py が JRA-VAN 由来のデータから自動生成（2026-10-18時点: 211頭）
  */
 
 export interface SireInfo {
@@ -221,4 +221,5 @@ export const ALL_SIRES: SireInfo[] = [
   { id: 99570, name: 'ウォータービルド' },
   { id: 99571, name: 'エフフォーリア' },
   { id: 99572, name: 'サリオス' },
+  { id: 36700, name: 'タイセイレジェンド' },
 ];

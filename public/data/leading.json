@@ -1,14 +1,14 @@
 {
   "year": 2026,
-  "last_updated": "2026-10-18T11:51:05.048743+09:00",
+  "last_updated": "2026-10-18T12:21:55.486449+09:00",
   "jockey_leading": [
     {
       "rank": 1,
       "id": 5339,
       "name": "C.ルメール",
-      "wins": 123,
-      "rides": 428,
-      "winRate": 28.7
+      "wins": 134,
+      "rides": 451,
+      "winRate": 29.7
     },
     {
       "rank": 2,
@@ -22,65 +22,65 @@
       "rank": 3,
       "id": 1126,
       "name": "松山弘平",
-      "wins": 109,
-      "rides": 648,
-      "winRate": 16.8
+      "wins": 113,
+      "rides": 675,
+      "winRate": 16.7
     },
     {
       "rank": 4,
       "id": 1088,
       "name": "川田将雅",
-      "wins": 86,
-      "rides": 389,
-      "winRate": 22.1
+      "wins": 89,
+      "rides": 400,
+      "winRate": 22.3
     },
     {
       "rank": 5,
       "id": 1170,
       "name": "横山武史",
-      "wins": 85,
-      "rides": 605,
+      "wins": 87,
+      "rides": 621,
       "winRate": 14.0
     },
     {
       "rank": 6,
       "id": 1163,
       "name": "坂井瑠星",
-      "wins": 81,
-      "rides": 483,
-      "winRate": 16.8
+      "wins": 86,
+      "rides": 503,
+      "winRate": 17.1
     },
     {
       "rank": 7,
       "id": 1171,
       "name": "西村淳也",
-      "wins": 79,
-      "rides": 604,
-      "winRate": 13.1
+      "wins": 81,
+      "rides": 625,
+      "winRate": 13.0
     },
     {
       "rank": 8,
       "id": 1091,
       "name": "丹内祐次",
-      "wins": 68,
-      "rides": 716,
-      "winRate": 9.5
+      "wins": 70,
+      "rides": 742,
+      "winRate": 9.4
     },
     {
       "rank": 9,
       "id": 1140,
       "name": "横山和生",
-      "wins": 65,
-      "rides": 467,
-      "winRate": 13.9
+      "wins": 68,
+      "rides": 487,
+      "winRate": 14.0
     },
     {
       "rank": 10,
       "id": 5386,
       "name": "戸崎圭太",
-      "wins": 64,
-      "rides": 506,
-      "winRate": 12.6
+      "wins": 65,
+      "rides": 520,
+      "winRate": 12.5
     }
   ],
   "trainer_leading": [
@@ -88,81 +88,81 @@
       "rank": 1,
       "id": 1157,
       "name": "杉山晴紀",
-      "wins": 51,
-      "rides": 306,
-      "winRate": 16.7
+      "wins": 52,
+      "rides": 317,
+      "winRate": 16.4
     },
     {
       "rank": 2,
       "id": 1086,
       "name": "斎藤誠",
-      "wins": 37,
-      "rides": 315,
+      "wins": 38,
+      "rides": 324,
       "winRate": 11.7
     },
     {
       "rank": 3,
       "id": 1075,
       "name": "矢作芳人",
-      "wins": 36,
-      "rides": 392,
-      "winRate": 9.2
+      "wins": 37,
+      "rides": 405,
+      "winRate": 9.1
     },
     {
       "rank": 4,
-      "id": 1102,
-      "name": "大竹正博",
-      "wins": 34,
-      "rides": 234,
-      "winRate": 14.5
+      "id": 1153,
+      "name": "中舘英二",
+      "wins": 35,
+      "rides": 299,
+      "winRate": 11.7
     },
     {
       "rank": 5,
-      "id": 1071,
-      "name": "池江泰寿",
-      "wins": 34,
-      "rides": 249,
-      "winRate": 13.7
+      "id": 1102,
+      "name": "大竹正博",
+      "wins": 35,
+      "rides": 240,
+      "winRate": 14.6
     },
     {
       "rank": 6,
-      "id": 1038,
-      "name": "手塚貴久",
-      "wins": 33,
-      "rides": 243,
-      "winRate": 13.6
+      "id": 1071,
+      "name": "池江泰寿",
+      "wins": 35,
+      "rides": 254,
+      "winRate": 13.8
     },
     {
       "rank": 7,
-      "id": 1055,
-      "name": "藤原英昭",
-      "wins": 32,
-      "rides": 255,
-      "winRate": 12.5
+      "id": 1158,
+      "name": "寺島良",
+      "wins": 33,
+      "rides": 268,
+      "winRate": 12.3
     },
     {
       "rank": 8,
-      "id": 1153,
-      "name": "中舘英二",
-      "wins": 31,
-      "rides": 286,
-      "winRate": 10.8
+      "id": 1038,
+      "name": "手塚貴久",
+      "wins": 33,
+      "rides": 249,
+      "winRate": 13.3
     },
     {
       "rank": 9,
-      "id": 1175,
-      "name": "宮田敬介",
-      "wins": 31,
-      "rides": 177,
-      "winRate": 17.5
+      "id": 1203,
+      "name": "福永祐一",
+      "wins": 32,
+      "rides": 210,
+      "winRate": 15.2
     },
     {
       "rank": 10,
-      "id": 1158,
-      "name": "寺島良",
-      "wins": 30,
-      "rides": 261,
-      "winRate": 11.5
+      "id": 1055,
+      "name": "藤原英昭",
+      "wins": 32,
+      "rides": 262,
+      "winRate": 12.2
     }
   ],
   "sire_leading": [
@@ -170,80 +170,80 @@
       "rank": 1,
       "id": 99556,
       "name": "キズナ",
-      "wins": 118,
-      "rides": 969,
+      "wins": 122,
+      "rides": 999,
       "winRate": 12.2
     },
     {
       "rank": 2,
       "id": 37724,
       "name": "エピファネイア",
-      "wins": 90,
-      "rides": 887,
-      "winRate": 10.1
+      "wins": 96,
+      "rides": 908,
+      "winRate": 10.6
     },
     {
       "rank": 3,
-      "id": 88034,
-      "name": "ロードカナロア",
-      "wins": 80,
-      "rides": 869,
-      "winRate": 9.2
+      "id": 62458,
+      "name": "キタサンブラック",
+      "wins": 83,
+      "rides": 697,
+      "winRate": 11.9
     },
     {
       "rank": 4,
-      "id": 62458,
-      "name": "キタサンブラック",
-      "wins": 80,
-      "rides": 677,
-      "winRate": 11.8
+      "id": 88034,
+      "name": "ロードカナロア",
+      "wins": 81,
+      "rides": 891,
+      "winRate": 9.1
     },
     {
       "rank": 5,
       "id": 52183,
       "name": "サートゥルナーリア",
-      "wins": 75,
-      "rides": 737,
-      "winRate": 10.2
+      "wins": 78,
+      "rides": 757,
+      "winRate": 10.3
     },
     {
       "rank": 6,
       "id": 87469,
       "name": "ドレフォン",
-      "wins": 69,
-      "rides": 857,
-      "winRate": 8.1
+      "wins": 70,
+      "rides": 871,
+      "winRate": 8.0
     },
     {
       "rank": 7,
       "id": 48441,
       "name": "ルヴァンスレーヴ",
-      "wins": 67,
-      "rides": 600,
-      "winRate": 11.2
+      "wins": 68,
+      "rides": 624,
+      "winRate": 10.9
     },
     {
       "rank": 8,
-      "id": 36694,
-      "name": "モーリス",
-      "wins": 62,
-      "rides": 705,
-      "winRate": 8.8
+      "id": 72149,
+      "name": "レイデオロ",
+      "wins": 64,
+      "rides": 685,
+      "winRate": 9.3
     },
     {
       "rank": 9,
-      "id": 72149,
-      "name": "レイデオロ",
-      "wins": 62,
-      "rides": 674,
-      "winRate": 9.2
+      "id": 36694,
+      "name": "モーリス",
+      "wins": 63,
+      "rides": 718,
+      "winRate": 8.8
     },
     {
       "rank": 10,
       "id": 12916,
       "name": "シルバーステート",
       "wins": 58,
-      "rides": 760,
+      "rides": 768,
       "winRate": 7.6
     }
   ]
