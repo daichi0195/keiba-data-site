@@ -59,7 +59,7 @@ const sectionTitle = (id: string) => SECTIONS.find((x) => x.id === id)!.label;
 export default async function AIPage() {
   const allRaces = await fetchPredictionIndex();
   // index.json の並び順に依存せず、開催日の新しい順に並べる（同日内はデータの順）
-  const latestRaces = [...allRaces].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 10);
+  const latestRaces = [...allRaces].sort((x, y) => y.date.localeCompare(x.date)).slice(0, 10);
   return (
     <StaticPageLayout pageName="競馬AI 勝率予測" title="競馬AI 勝率予測" noLeftSidebar>
       {/* スマホ：ヘッダー直下に固定するページ内ナビ（PCは右の目次） */}
@@ -200,7 +200,7 @@ export default async function AIPage() {
                 <tr>
                   <td className={s.key}><Mark mark="kiken" /></td>
                   <td>18.2%</td>
-                  <td className={a.strong}>57.3%</td>
+                  <td>57.3%</td>
                   <td className={a.left}><a href="https://docs.google.com/spreadsheets/d/1dZJW2Der108fv6kxTl84GsMD2xU8CKr_joNlvdWU4A0/edit?hl=ja&gid=1187675975#gid=1187675975" target="_blank" rel="noopener noreferrer" className={a.tblLink}>過去の結果をみる</a></td>
                 </tr>
               </tbody>

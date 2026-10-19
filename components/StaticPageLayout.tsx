@@ -18,90 +18,45 @@ interface Props {
   noLeftSidebar?: boolean;
   breadcrumbs?: BreadcrumbItem[];
   bookmarkOnly?: boolean;
-  /**
-   * 指定すると新デザイン（docs/redesign/tonmana.md）で描画する。
-   * キャンバス上にパンくず → h1 → リードを置き、本文は StaticSection の白カードで並べる。
-   * 未指定のページ（AI・コラムなど）は従来の見た目のまま。
-   */
-  title?: string;
+  /** キャンバス上にパンくず → h1 → リードを置き、本文は StaticSection の白カードで並べる（docs/redesign/tonmana.md） */
+  title: string;
   lead?: React.ReactNode;
 }
 
 export default function StaticPageLayout({ pageName, children, noToc, noLeftSidebar, breadcrumbs, bookmarkOnly, title, lead }: Props) {
-  if (title) {
-    const crumbs: BreadcrumbItem[] = breadcrumbs ?? [{ label: pageName }];
-    return (
-      <div className={s.canvas}>
-        <div className={styles.staticPageContainer}>
-          <div className={noLeftSidebar ? styles.staticPageColumns : styles.staticPageColumns3}>
-            {!noLeftSidebar && (
-              <aside className={styles.staticPageLeftSidebar}>
-                <AIBanner />
-              </aside>
-            )}
-
-            {/* article にすることでTOCの自動検出（h2）が機能する */}
-            <article>
-              <nav className={s.crumb} aria-label="パンくず">
-                <Link href="/">HOME</Link>
-                {crumbs.map((item, i) => (
-                  <Fragment key={i}>
-                    <span aria-hidden="true">/</span>
-                    {item.href ? <Link href={item.href}>{item.label}</Link> : <span>{item.label}</span>}
-                  </Fragment>
-                ))}
-              </nav>
-
-              <div className={s.hero}>
-                <h1 className={s.title}>{title}</h1>
-                {lead && <p className={`${s.lead} ${st.lead}`}>{lead}</p>}
-              </div>
-
-              {children}
-            </article>
-
-            <TableOfContents hideToc={noToc} bookmarkOnly={bookmarkOnly} />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
+  const crumbs: BreadcrumbItem[] = breadcrumbs ?? [{ label: pageName }];
   return (
-    <div className={styles.staticPageContainer}>
-      {/* パンくずリスト */}
-      <nav className={styles.staticPageBreadcrumb}>
-        <Link href="/">HOME</Link>
-        {breadcrumbs ? (
-          breadcrumbs.map((item, i) => (
-            <span key={i}>
-              <span> &gt; </span>
-              {item.href ? <Link href={item.href}>{item.label}</Link> : <span>{item.label}</span>}
-            </span>
-          ))
-        ) : (
-          <>
-            <span> &gt; </span>
-            <span>{pageName}</span>
-          </>
-        )}
-      </nav>
+    <div className={s.canvas}>
+      <div className={styles.staticPageContainer}>
+        <div className={noLeftSidebar ? styles.staticPageColumns : styles.staticPageColumns3}>
+          {!noLeftSidebar && (
+            <aside className={styles.staticPageLeftSidebar}>
+              <AIBanner />
+            </aside>
+          )}
 
-      <div className={noLeftSidebar ? styles.staticPageColumns : styles.staticPageColumns3}>
-        {/* 左サイドバー */}
-        {!noLeftSidebar && (
-          <aside className={styles.staticPageLeftSidebar}>
-            <AIBanner />
-          </aside>
-        )}
+          {/* article にすることでTOCの自動検出（h2）が機能する */}
+          <article>
+            <nav className={s.crumb} aria-label="パンくず">
+              <Link href="/">HOME</Link>
+              {crumbs.map((item, i) => (
+                <Fragment key={i}>
+                  <span aria-hidden="true">/</span>
+                  {item.href ? <Link href={item.href}>{item.label}</Link> : <span>{item.label}</span>}
+                </Fragment>
+              ))}
+            </nav>
 
-        {/* メインコンテンツ（article にすることでTOCの自動検出が機能する） */}
-        <article className={styles.staticPageMain}>
-          {children}
-        </article>
+            <div className={s.hero}>
+              <h1 className={s.title}>{title}</h1>
+              {lead && <p className={`${s.lead} ${st.lead}`}>{lead}</p>}
+            </div>
 
-        {/* 右サイドバー: 目次 */}
-        <TableOfContents hideToc={noToc} bookmarkOnly={bookmarkOnly} />
+            {children}
+          </article>
+
+          <TableOfContents hideToc={noToc} bookmarkOnly={bookmarkOnly} />
+        </div>
       </div>
     </div>
   );

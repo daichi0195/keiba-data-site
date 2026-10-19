@@ -324,7 +324,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                     <div className={styles.articleNavItem}>
                       <Link
                         href={`/articles/${prev.slug}`}
-                        className={`${styles.articleNavLink} ${styles.articleNavPrev}`}
+                        className={styles.articleNavLink}
                       >
                         <span className={styles.articleNavLabel}>前の記事</span>
                         <span className={styles.articleNavTitle}>{prev.frontmatter.title}</span>

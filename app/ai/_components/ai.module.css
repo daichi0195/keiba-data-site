@@ -275,8 +275,8 @@
 .pg::after {
   content: "";
   position: absolute;
-  left: 0;
-  right: 0;
+  left: -4px;
+  right: -4px;
   top: -4px;
   bottom: -4px;
 }

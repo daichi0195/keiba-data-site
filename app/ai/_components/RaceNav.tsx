@@ -30,7 +30,7 @@ export default function RaceNav({
           </span>
         </Link>
       ) : (
-        <span className={a.raceNavEmpty} />
+        <span aria-hidden="true" />
       )}
       {nextRace ? (
         <Link href={`${basePath}/${nextRace.slug}`} className={`${a.raceNavLink} ${a.raceNavNext}`}>
@@ -41,7 +41,7 @@ export default function RaceNav({
           </span>
         </Link>
       ) : (
-        <span className={a.raceNavEmpty} />
+        <span aria-hidden="true" />
       )}
     </nav>
   );

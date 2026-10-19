@@ -106,10 +106,6 @@ export default function TableOfContents({ items, hideToc, showBanner, bookmarkOn
 
   // activeIdが変わったら、目次をスクロールして該当項目を表示
   useEffect(() => {
-    if (document.activeElement instanceof HTMLElement) {
-      document.activeElement.blur();
-    }
-
     // アクティブな項目を目次の表示範囲に自動スクロール
     const activeElement = activeItemRefs.current.get(activeId);
     if (activeElement && listRef.current) {
