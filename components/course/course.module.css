@@ -30,7 +30,8 @@
   --motion-gauge: 700ms;
 
   position: relative;
-  background: var(--canvas);
+  /* 背景は body の #F7F7F7 と蹄鉄パターン（globals.css）を透過させる */
+  background: transparent;
   color: var(--ink);
   font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", system-ui, sans-serif;
 }

@@ -1,64 +1,77 @@
+/* AIバナー＋ブックマーク訴求（docs/redesign/tonmana.md に準拠）
+   新旧どちらのページにも置かれるため、トークンはこのファイル内で完結させる */
+
+/* AI予測バナー（画像） */
 .banner {
-  border-radius: 6px;
-  overflow: hidden;
-  width: 100%;
-  border: 1px solid #e2e8f0;
   display: block;
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
   line-height: 0;
+  background: #FFFFFF;
+  box-sizing: border-box;
+}
+
+.banner:focus-visible {
+  outline: 2px solid #096B32;
+  outline-offset: 2px;
 }
 
 .bannerImage {
+  display: block;
   width: 100%;
   height: auto;
-  display: block;
 }
 
+/* ブックマーク訴求カード */
 .bookmarkBanner {
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 16px;
+  padding: 20px;
+  background: #FFFFFF;
+  border-radius: 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.25rem;
-  padding: 1rem;
-  margin-top: 0.75rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  width: 100%;
-}
-
-.bookmarkIcon {
-  font-size: 1.5rem;
-  line-height: 1;
-}
-
-.bookmarkTitle {
-  font-size: 0.9375rem;
-  font-weight: 700;
-  color: #2d3748;
-  letter-spacing: 0.03em;
-}
-
-.bookmarkCommand {
-  font-size: 0.8125rem;
-  font-weight: 700;
-  color: #2d3748;
-  background: #f5f7fa;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  padding: 3px 10px;
-  letter-spacing: 0.03em;
-  margin: 0.125rem 0;
-}
-
-.bookmarkSubtitle {
-  font-size: 0.8125rem;
-  color: #718096;
-  font-weight: 500;
+  gap: 8px;
+  text-align: center;
+  color: #222222;
+  font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", system-ui, sans-serif;
 }
 
 .bookmarkBannerNoMargin {
   margin-top: 0;
+}
+
+.bookmarkTitle {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  color: #222222;
+}
+
+/* キー表記（操作できない要素なのでボタンに見せない） */
+.bookmarkCommand {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 9999px;
+  background: #F3F3F3;
+  color: #222222;
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.bookmarkSubtitle {
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 400;
+  color: #6A6A6A;
 }

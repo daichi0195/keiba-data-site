@@ -19,7 +19,6 @@ export default function AIBanner({ bookmarkOnly = false, bannerOnly = false }: {
       )}
       {!bannerOnly && (
         <div className={`${styles.bookmarkBanner} ${bookmarkOnly ? styles.bookmarkBannerNoMargin : ''}`}>
-          <div className={styles.bookmarkIcon}>🔖</div>
           <div className={styles.bookmarkTitle}>毎週の予想に活用しよう！</div>
           <div className={styles.bookmarkCommand}>Ctrl+D / ⌘+D</div>
           <div className={styles.bookmarkSubtitle}>でブックマークに登録！</div>

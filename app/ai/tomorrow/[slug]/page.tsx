@@ -3,8 +3,9 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import StaticPageLayout from '@/components/StaticPageLayout';
 import AIXBanner from '@/components/AIXBanner';
-import styles from './page.module.css';
-import pageStyles from '@/app/static-page.module.css';
+import RaceNav from '../../_components/RaceNav';
+import s from '@/components/course/course.module.css';
+import a from '../../_components/ai.module.css';
 
 interface RaceIndexEntry {
   slug: string;
@@ -101,6 +102,7 @@ export default async function TomorrowRacePredictionPage(
   return (
     <StaticPageLayout
       pageName="AI勝率予測（前日）"
+      title={pageTitle}
       noLeftSidebar
       noToc
       bookmarkOnly
@@ -110,78 +112,59 @@ export default async function TomorrowRacePredictionPage(
         { label: pageTitle },
       ]}
     >
-      <div className={pageStyles.staticPageCard}>
-        <div className={pageStyles.staticPageHeader}>
-          <h1 className={pageStyles.staticPageTitle}>
-            <span className={styles.prevBadge}>前日予測</span>
-            {pageTitle}
-          </h1>
-        </div>
+      <div className={s.badges}>
+        <span className={`${s.badge} ${a.badgeSub}`}>前日予測</span>
+      </div>
 
-        <section className={styles.section}>
+      <section className={s.section} aria-label="AI勝率予測（前日）">
+        <div className={`${s.card} ${a.tblCard}`}>
           {data.trackCondition && (
-            <p className={styles.trackInfo}>
+            <p className={a.trackInfo}>
               予測馬場状態: <strong>{data.trackCondition}</strong>
             </p>
           )}
-          <table className={styles.predictionTable}>
-            <thead>
-              <tr>
-                <th className={styles.thRank}>順位</th>
-                <th className={styles.thRate}>予測勝率</th>
-                <th className={styles.thName}>馬名</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.predictions.map((horse) => (
-                <tr key={horse.rank}>
-                  <td className={styles.tdRank}>{horse.rank}</td>
-                  <td className={styles.tdRate}>{horse.winRate}%</td>
-                  <td className={styles.tdName}>{horse.name}</td>
+          <div className={`${s.tbl} ${a.tblWrap} ${a.rankRows}`}>
+            <table>
+              <thead>
+                <tr>
+                  <th className={`${s.key} ${a.center}`}>順位</th>
+                  <th>予測勝率</th>
+                  <th className={`${a.left} ${a.nameCol}`}>馬名</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
-
-        <div className={styles.noteList}>
-          <div className={styles.noteItem}>前日予測のため印（本命・紐・危険）はつきません。印はレース当日の予測をご確認ください。</div>
-          <div className={styles.noteItem}>馬体重・増減など前日時点で未確定の情報は直近値を使用しているため、若干の誤差が生じる場合があります。</div>
-          <div className={styles.noteItem}>出走取消・除外・変更が生じる場合があります。</div>
+              </thead>
+              <tbody>
+                {data.predictions.map((horse) => (
+                  <tr key={horse.rank}>
+                    <td className={`${s.key} ${a.center}`}>
+                      {horse.rank <= 3 ? (
+                        <span className={`${s.rkb} ${s[`rk${horse.rank}`]}`}>{horse.rank}</span>
+                      ) : (
+                        horse.rank
+                      )}
+                    </td>
+                    <td className={a.strong}>{horse.winRate}%</td>
+                    <td className={`${a.left} ${a.nameCell}`}>{horse.name}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className={a.notes}>
+            <div className={a.noteItem}>前日予測のため印（本命・紐・危険）はつきません。印はレース当日の予測をご確認ください。</div>
+            <div className={a.noteItem}>馬体重・増減など前日時点で未確定の情報は直近値を使用しているため、若干の誤差が生じる場合があります。</div>
+            <div className={a.noteItem}>出走取消・除外・変更が生じる場合があります。</div>
+          </div>
         </div>
+      </section>
 
+      <div className={a.foot}>
         <AIXBanner />
-
-        <div className={styles.backLink}>
+        <p className={a.back}>
           <Link href="/ai/tomorrow">← 前日予測一覧へ</Link>
-        </div>
+        </p>
       </div>
 
-      {(prevRace || nextRace) && (
-        <nav className={styles.raceNav}>
-          <div className={styles.raceNavItem}>
-            {prevRace && (
-              <Link href={`/ai/tomorrow/${prevRace.slug}`} className={`${styles.raceNavLink} ${styles.raceNavPrev}`}>
-                <span className={styles.raceNavLabel}>前の予測</span>
-                <p className={styles.raceNavTitle}>
-                  {prevRace.venueLabel}{prevRace.raceNumber}R {prevRace.raceName}
-                </p>
-              </Link>
-            )}
-          </div>
-          <div className={styles.raceNavDivider} />
-          <div className={styles.raceNavItem}>
-            {nextRace && (
-              <Link href={`/ai/tomorrow/${nextRace.slug}`} className={`${styles.raceNavLink} ${styles.raceNavNext}`}>
-                <span className={styles.raceNavLabel}>次の予測</span>
-                <p className={styles.raceNavTitle}>
-                  {nextRace.venueLabel}{nextRace.raceNumber}R {nextRace.raceName}
-                </p>
-              </Link>
-            )}
-          </div>
-        </nav>
-      )}
+      <RaceNav basePath="/ai/tomorrow" prevRace={prevRace} nextRace={nextRace} />
     </StaticPageLayout>
   );
 }

@@ -2,8 +2,8 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import StaticPageLayout from '@/components/StaticPageLayout';
 import AIXBanner from '@/components/AIXBanner';
-import styles from './page.module.css';
-import pageStyles from '@/app/static-page.module.css';
+import s from '@/components/course/course.module.css';
+import a from '../_components/ai.module.css';
 
 export const metadata: Metadata = {
   title: '予測一覧 | 競馬AI 勝率予測 | 競馬データ.com',
@@ -58,6 +58,14 @@ export default async function PredictionListPage({
   return (
     <StaticPageLayout
       pageName="予測一覧"
+      title="予測一覧"
+      lead={
+        <>
+          直近{RECENT_DAYS}日間に公開した予測を掲載しています。予測は対象レースの約10分前に公開され、結果の検証は
+          <Link href="/ai#backtest" className={a.link}>バックテストの成績</Link>
+          にまとめています。
+        </>
+      }
       noLeftSidebar
       noToc
       bookmarkOnly
@@ -66,63 +74,60 @@ export default async function PredictionListPage({
         { label: '予測一覧' },
       ]}
     >
-      <div className={pageStyles.staticPageCard}>
-        <div className={pageStyles.staticPageHeader}>
-          <h1 className={pageStyles.staticPageTitle}>予測一覧</h1>
-        </div>
-
-        <p className={styles.empty} style={{ marginBottom: '1rem' }}>
-          直近{RECENT_DAYS}日間に公開した予測を掲載しています。予測は対象レースの約10分前に公開され、結果の検証は
-          <Link href="/ai#backtest">バックテストの成績</Link>
-          にまとめています。
-        </p>
-
+      <section className={s.section} aria-label="予測一覧">
         {races.length === 0 ? (
-          <p className={styles.empty}>直近{RECENT_DAYS}日間の予測データはありません。</p>
+          <div className={`${s.card} ${a.empty}`}>
+            <p>直近{RECENT_DAYS}日間の予測データはありません。</p>
+          </div>
         ) : (
           <>
-            <table className={styles.raceTable}>
-              <thead>
-                <tr>
-                  <th className={styles.thDate}>日付</th>
-                  <th className={styles.thName}>レース名</th>
-                </tr>
-              </thead>
-              <tbody>
-                {pageRaces.map((race) => (
-                  <tr key={race.slug}>
-                    <td className={styles.tdDate}>{race.dateLabel}</td>
-                    <td className={styles.tdName}>
-                      <Link href={`/ai/races/${race.slug}`} className={styles.raceLink}>
-                        {race.venueLabel}{race.raceNumber}R {race.raceName}
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <div className={s.card}>
+              <div className={`${s.tbl} ${a.tblWrap}`}>
+                <table>
+                  <thead>
+                    <tr>
+                      <th className={s.key}>日付</th>
+                      <th className={a.left}>レース名</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {pageRaces.map((race) => (
+                      <tr key={race.slug}>
+                        <td className={`${s.key} ${a.dateCell}`}>{race.dateLabel}</td>
+                        <td className={a.left}>
+                          <Link href={`/ai/races/${race.slug}`} className={a.tblLink}>
+                            {race.venueLabel}{race.raceNumber}R {race.raceName}
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
 
             {totalPages > 1 && (
-              <nav className={styles.pagination}>
+              <nav className={a.pager} aria-label="ページ送り">
                 {safePage > 1 ? (
                   <Link
                     href={safePage === 2 ? '/ai/races' : `/ai/races?page=${safePage - 1}`}
-                    className={styles.pageLink}
+                    className={a.pg}
                   >
                     前へ
                   </Link>
                 ) : (
-                  <span className={styles.pageLinkDisabled}>前へ</span>
+                  <span className={`${a.pg} ${a.pgOff}`} aria-disabled="true">前へ</span>
                 )}
 
                 {generatePageNumbers(safePage, totalPages).map((p, i) =>
                   p === '...' ? (
-                    <span key={`ellipsis-${i}`} className={styles.pageEllipsis}>…</span>
+                    <span key={`ellipsis-${i}`} className={a.pgGap}>…</span>
                   ) : (
                     <Link
                       key={p}
                       href={p === 1 ? '/ai/races' : `/ai/races?page=${p}`}
-                      className={p === safePage ? styles.pageLinkActive : styles.pageLink}
+                      className={p === safePage ? `${a.pg} ${a.pgOn}` : a.pg}
+                      aria-current={p === safePage ? 'page' : undefined}
                     >
                       {p}
                     </Link>
@@ -130,24 +135,23 @@ export default async function PredictionListPage({
                 )}
 
                 {safePage < totalPages ? (
-                  <Link href={`/ai/races?page=${safePage + 1}`} className={styles.pageLink}>
+                  <Link href={`/ai/races?page=${safePage + 1}`} className={a.pg}>
                     次へ
                   </Link>
                 ) : (
-                  <span className={styles.pageLinkDisabled}>次へ</span>
+                  <span className={`${a.pg} ${a.pgOff}`} aria-disabled="true">次へ</span>
                 )}
               </nav>
             )}
           </>
         )}
+      </section>
 
-        <div className={styles.bannerWrap}>
-          <AIXBanner />
-        </div>
-
-        <div className={styles.backLink}>
+      <div className={a.foot}>
+        <AIXBanner />
+        <p className={a.back}>
           <Link href="/ai">← AI勝率予測トップへ</Link>
-        </div>
+        </p>
       </div>
     </StaticPageLayout>
   );

@@ -3,8 +3,8 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import StaticPageLayout from '@/components/StaticPageLayout';
 import AIXBanner from '@/components/AIXBanner';
-import styles from './page.module.css';
-import pageStyles from '@/app/static-page.module.css';
+import s from '@/components/course/course.module.css';
+import a from '../_components/ai.module.css';
 
 export const metadata: Metadata = {
   title: '前日予測一覧 | 競馬AI 勝率予測 | 競馬データ.com',
@@ -42,6 +42,7 @@ export default async function TomorrowPredictionPage() {
   return (
     <StaticPageLayout
       pageName="前日予測一覧"
+      title="前日予測一覧"
       noLeftSidebar
       noToc
       bookmarkOnly
@@ -50,43 +51,44 @@ export default async function TomorrowPredictionPage() {
         { label: '前日予測一覧' },
       ]}
     >
-      <div className={pageStyles.staticPageCard}>
-        <div className={pageStyles.staticPageHeader}>
-          <h1 className={pageStyles.staticPageTitle}>前日予測一覧</h1>
-        </div>
-
+      <section className={s.section} aria-label="前日予測一覧">
         {races.length === 0 ? (
-          <p className={styles.empty}>本日はまだ前日予測が公開されていません。</p>
+          <div className={`${s.card} ${a.empty}`}>
+            <p>本日はまだ前日予測が公開されていません。</p>
+          </div>
         ) : (
-          <table className={styles.raceTable}>
-            <thead>
-              <tr>
-                <th className={styles.thDate}>日付</th>
-                <th className={styles.thName}>レース名</th>
-              </tr>
-            </thead>
-            <tbody>
-              {races.map((race) => (
-                <tr key={race.slug}>
-                  <td className={styles.tdDate}>{race.dateLabel}</td>
-                  <td className={styles.tdName}>
-                    <Link href={`/ai/tomorrow/${race.slug}`} className={styles.raceLink}>
-                      {race.venueLabel}{race.raceNumber}R {race.raceName}
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className={s.card}>
+            <div className={`${s.tbl} ${a.tblWrap}`}>
+              <table>
+                <thead>
+                  <tr>
+                    <th className={s.key}>日付</th>
+                    <th className={a.left}>レース名</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {races.map((race) => (
+                    <tr key={race.slug}>
+                      <td className={`${s.key} ${a.dateCell}`}>{race.dateLabel}</td>
+                      <td className={a.left}>
+                        <Link href={`/ai/tomorrow/${race.slug}`} className={a.tblLink}>
+                          {race.venueLabel}{race.raceNumber}R {race.raceName}
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         )}
+      </section>
 
-        <div className={styles.bannerWrap}>
-          <AIXBanner />
-        </div>
-
-        <div className={styles.backLink}>
+      <div className={a.foot}>
+        <AIXBanner />
+        <p className={a.back}>
           <Link href="/ai">← AI勝率予測トップへ</Link>
-        </div>
+        </p>
       </div>
     </StaticPageLayout>
   );

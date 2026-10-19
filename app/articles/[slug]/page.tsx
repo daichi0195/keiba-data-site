@@ -32,6 +32,7 @@ import BarCompareChart from '@/components/BarCompareChart';
 import SeasonDualChart from '@/components/SeasonDualChart';
 import styles from './page.module.css';
 import pageStyles from '@/app/static-page.module.css';
+import s from '@/components/course/course.module.css';
 
 // 見出しのIDを生成する関数
 function generateId(text: string): string {
@@ -177,24 +178,30 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
   return (
     <>
+      <div className={s.canvas}>
       <div className={pageStyles.staticPageContainer}>
-        {/* パンくずリスト */}
-        <nav className={pageStyles.staticPageBreadcrumb}>
-          <Link href="/">HOME</Link>
-          <span> &gt; </span>
-          <Link href="/articles">記事一覧</Link>
-          <span> &gt; </span>
-          <span>{title}</span>
-        </nav>
-
         <div className={pageStyles.staticPageColumns}>
           <div className={styles.mainContent}>
 
             <article className={styles.article}>
-              {/* 記事タイトルと日付 */}
-              <div className={styles.articleHeader}>
-                <h1 className={styles.articleTitle}>{title}</h1>
+              {/* パンくずリスト */}
+              <nav className={s.crumb} aria-label="パンくず">
+                <Link href="/">HOME</Link>
+                <span aria-hidden="true">/</span>
+                <Link href="/articles">記事一覧</Link>
+                <span aria-hidden="true">/</span>
+                <span>{title}</span>
+              </nav>
 
+              {/* 記事タイトルと日付 */}
+              <div className={s.hero}>
+                <h1 className={s.title}>{title}</h1>
+                <div className={s.meta}>
+                  <time dateTime={date}>{formattedDate}</time>
+                </div>
+              </div>
+
+              <div className={styles.bodyCard}>
                 {/* サムネイル画像 */}
                 {thumbnail && (
                   <div className={styles.thumbnailWrapper}>
@@ -208,9 +215,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                     />
                   </div>
                 )}
-
-                <time className={styles.articleDate}>{formattedDate}</time>
-              </div>
 
               {/* 記事本文（最初のH2の前に目次が挿入される） */}
               <div className={styles.content}>
@@ -309,6 +313,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                   </div>
                 </div>
               </footer>
+              </div>
             </article>
 
             {/* 前後の記事ナビゲーション */}
@@ -349,6 +354,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           {/* 右サイドバー：目次・広告エリア */}
           <TableOfContents />
         </div>
+      </div>
       </div>
 
       {/* 構造化データ */}

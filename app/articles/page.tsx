@@ -1,9 +1,10 @@
 import { Metadata } from 'next';
+import Link from 'next/link';
 import { getAllArticles } from '@/lib/articles';
 import ArticleList from '@/components/ArticleList';
-import StaticPageLayout from '@/components/StaticPageLayout';
+import TableOfContents from '@/components/TableOfContents';
 import styles from '@/app/static-page.module.css';
-import contentStyles from '@/components/article-content.module.css';
+import s from '@/components/course/course.module.css';
 
 export const metadata: Metadata = {
   title: 'コラム | 競馬データ.com',
@@ -18,18 +19,33 @@ export default function ArticlesPage() {
     .map((article) => ({ ...article, content: '' }));
 
   return (
-    <StaticPageLayout pageName="コラム" noToc noLeftSidebar>
-      <div className={styles.staticPageCard}>
-        <div className={styles.staticPageHeader}>
-          <h1 className={styles.staticPageTitle}>コラム</h1>
+    <div className={s.canvas}>
+      <div className={styles.staticPageContainer}>
+        <div className={styles.staticPageColumns}>
+          {/* メインコンテンツ（article にすることでTOCの自動検出が機能する） */}
+          <article>
+            <nav className={s.crumb} aria-label="パンくず">
+              <Link href="/">HOME</Link>
+              <span aria-hidden="true">/</span>
+              <span>コラム</span>
+            </nav>
+
+            <div className={s.hero}>
+              <h1 className={s.title}>コラム</h1>
+              <p className={s.lead}>
+                データを活用した分析記事や一口馬主のコラムなどを掲載しています。
+              </p>
+            </div>
+
+            <div className={s.card}>
+              <ArticleList articles={articles} />
+            </div>
+          </article>
+
+          {/* 右サイドバー（目次は出さず、AIバナーのみ） */}
+          <TableOfContents hideToc />
         </div>
-
-        <p className={contentStyles.text}>
-          データを活用した分析記事や一口馬主のコラムなどを掲載しています。
-        </p>
-
-        <ArticleList articles={articles} />
       </div>
-    </StaticPageLayout>
+    </div>
   );
 }

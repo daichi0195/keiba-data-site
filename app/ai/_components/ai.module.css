@@ -1,0 +1,460 @@
+/* AI予測ページ（/ai, /ai/races, /ai/tomorrow）
+   components/course/course.module.css（.canvas のトークン・.section・.card・.tbl など）と組み合わせて使う。
+   docs/redesign/tonmana.md に準拠。 */
+
+/* 固定ヘッダー＋ページ内ナビの分だけずらして見出しで止める */
+.h2Anchor {
+  scroll-margin-top: 120px;
+}
+
+/* カード内の本文 */
+.prose {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 16px;
+  line-height: 26px;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+/* カードは他のカードと幅を揃え、長文の行長だけ720pxに収める */
+.prose p {
+  margin: 0;
+  max-width: 720px;
+}
+.prose strong {
+  font-weight: 700;
+}
+
+.link {
+  color: var(--link);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.link:hover {
+  color: var(--link-hover);
+}
+.link:focus-visible,
+.moreBtn:focus-visible,
+.raceCard:focus-visible,
+.pg:focus-visible,
+.raceNavLink:focus-visible {
+  outline: 2px solid var(--brand-strong);
+  outline-offset: 2px;
+}
+
+/* ---------- 空状態 ---------- */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 28px 16px;
+  text-align: center;
+}
+.empty p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--ink-sub);
+}
+.empty b {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* ---------- 最新のレース予測（横スワイプ） ---------- */
+.raceRail {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  scroll-snap-type: x proximity;
+  /* ページの左右余白（static-page の SP 余白 0.75rem）と同じ幅だけ外へ広げる。広げすぎると画面幅を超えて固定メニューがずれる */
+  margin-inline: -0.75rem;
+  padding-inline: 0.75rem;
+  scroll-padding-inline: 0.75rem;
+}
+.raceRail::-webkit-scrollbar {
+  display: none;
+}
+.raceCard {
+  flex: 0 0 168px;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 14px;
+  text-decoration: none;
+  color: var(--ink);
+  box-sizing: border-box;
+  min-width: 0;
+}
+.raceDate {
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--ink-sub);
+  font-variant-numeric: tabular-nums;
+}
+.raceName {
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.raceMeta {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.badgeSub {
+  background: var(--surface-subtle);
+  color: var(--ink);
+}
+
+/* 副次ボタン（白＋枠、高さ48・角丸12） */
+.moreBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.moreBtn:hover {
+  border-color: var(--ink-sub);
+}
+
+/* ---------- 印 ---------- */
+/* 得意/苦手チップと同じ作法：白地＋黒文字＋1.5pxの枠。色を付けるのは枠だけ */
+.mk {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 24px;
+  padding: 0 9px 0 7px;
+  border-radius: 9999px;
+  border: 1.5px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+.mkSym {
+  font-weight: 700;
+  font-size: 13px;
+}
+.mkHonmei {
+  border-color: var(--good-line);
+}
+.mkHimo {
+  border-color: var(--ink-sub);
+  border-style: dashed;
+}
+.mkKiken {
+  border-color: var(--bad-line);
+}
+
+/* 印の説明（行ごとに区切る） */
+.markList {
+  display: flex;
+  flex-direction: column;
+}
+.markItem {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+.markItem:first-child {
+  padding-top: 0;
+}
+.markItem:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+.markItem p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 24px;
+  color: var(--ink);
+}
+
+
+/* ---------- 表 ---------- */
+.tblCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+/* 表の最終行まで外枠を付ける（course.module.css の .tbl は外枠1px・角丸なし） */
+.tblWrap {
+  margin-bottom: 0 !important;
+}
+.left {
+  text-align: left !important;
+}
+.center {
+  text-align: center !important;
+}
+.strong {
+  font-weight: 600;
+}
+.nameCol {
+  min-width: 0;
+}
+.nameCell {
+  white-space: nowrap;
+  font-weight: 500;
+}
+/* ランキング（予測）の行は36px */
+.rankRows td {
+  height: 36px !important;
+}
+.rankRows thead th {
+  height: 32px !important;
+}
+.tblLink {
+  color: var(--link);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  font-weight: 500;
+}
+.tblLink:hover {
+  color: var(--link-hover);
+}
+.dateCell {
+  color: var(--ink-sub);
+}
+
+/* ---------- ページ送り ---------- */
+.pager {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+.pg {
+  position: relative;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 9999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-variant-numeric: tabular-nums;
+  box-sizing: border-box;
+}
+/* 見た目36pxのまま、タップ領域を44pxに広げる */
+.pg::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -4px;
+  bottom: -4px;
+}
+.pg:hover {
+  border-color: var(--ink-sub);
+}
+.pgOn {
+  background: #222222;
+  border-color: #222222;
+  color: #FFFFFF;
+  font-weight: 700;
+}
+.pgOn:hover {
+  border-color: #222222;
+}
+.pgOff {
+  color: var(--ink-disabled);
+  background: transparent;
+}
+.pgOff:hover {
+  border-color: var(--line);
+}
+.pgGap {
+  min-width: 20px;
+  text-align: center;
+  color: var(--ink-sub);
+  font-size: 14px;
+}
+
+/* ---------- 注記 ---------- */
+/* グローバルCSSの ul/li の干渉を避けるため div で組む */
+.notes {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--ink-sub);
+}
+.noteItem {
+  position: relative;
+  padding-left: 1em;
+}
+.noteItem::before {
+  content: "※";
+  position: absolute;
+  left: 0;
+}
+.trackInfo {
+  margin: 0;
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--ink-sub);
+}
+.trackInfo strong {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+/* ---------- ページ末尾 ---------- */
+.foot {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 28px;
+}
+.back {
+  margin: 0;
+  font-size: 14px;
+  line-height: 20px;
+}
+.back a {
+  color: var(--link);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.back a:hover {
+  color: var(--link-hover);
+}
+
+/* ---------- 前後の予測 ---------- */
+.raceNav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding-top: 16px;
+}
+.raceNavLink {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 72px;
+  min-width: 0;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+  box-sizing: border-box;
+}
+.raceNavNext {
+  text-align: right;
+}
+.raceNavLabel {
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--ink-sub);
+}
+.raceNavPrev .raceNavLabel::before {
+  content: "‹ ";
+}
+.raceNavNext .raceNavLabel::after {
+  content: " ›";
+}
+.raceNavTitle {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  color: var(--link);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+.raceNavLink:hover .raceNavTitle {
+  color: var(--link-hover);
+}
+
+@media (min-width: 769px) {
+  .raceRail {
+    margin-inline: 0;
+    padding-inline: 0;
+    scroll-padding-inline: 0;
+  }
+  .raceCard {
+    flex-basis: 184px;
+  }
+  .prose {
+    gap: 16px;
+  }
+  .raceNavLink {
+    padding: 14px 18px;
+  }
+}
+
+/* スマホ：予測表の4列（順位・予測勝率・馬名・印）が横スクロールなしで収まるよう、
+   セル余白とカード余白を詰め、狭い画面では馬名だけ折り返す */
+@media (max-width: 768px) {
+  .tblCard {
+    padding-inline: 12px;
+  }
+  .rankRows table {
+    width: 100%;
+  }
+  .rankRows th,
+  .rankRows td {
+    padding: 0 8px !important;
+  }
+  /* 馬名以外の列は中身の幅に縮め、残りを馬名に回す */
+  .rankRows th:not(.nameCol),
+  .rankRows td:not(.nameCell) {
+    width: 1%;
+  }
+  .nameCell {
+    white-space: normal !important;
+    min-width: 5.5em;
+    line-height: 17px;
+  }
+  .rankRows td {
+    height: auto !important;
+    min-height: 36px;
+  }
+  .rankRows tbody tr {
+    height: 36px;
+  }
+}

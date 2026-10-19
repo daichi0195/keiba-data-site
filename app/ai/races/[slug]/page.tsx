@@ -3,8 +3,10 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import StaticPageLayout from '@/components/StaticPageLayout';
 import AIXBanner from '@/components/AIXBanner';
-import styles from './page.module.css';
-import pageStyles from '@/app/static-page.module.css';
+import Mark, { normalizeMark } from '../../_components/Mark';
+import RaceNav from '../../_components/RaceNav';
+import s from '@/components/course/course.module.css';
+import a from '../../_components/ai.module.css';
 
 interface RaceIndexEntry {
   slug: string;
@@ -17,7 +19,8 @@ interface HorsePrediction {
   rank: number;
   winRate: number;
   name: string;
-  mark?: 'honmei' | 'himo' | 'kiken';
+  /** 'honmei' | 'himo' | 'kiken'（旧形式）または '【本命】' | '【紐】' | '【危険】'（現行形式） */
+  mark?: string;
 }
 
 interface RacePrediction {
@@ -76,19 +79,6 @@ async function fetchPredictionIndex(): Promise<RaceIndexEntry[]> {
   }
 }
 
-const getMarkLabel = (mark?: string) => {
-  switch (mark) {
-    case 'honmei':
-      return { text: '本命', color: '#16a34a' };
-    case 'himo':
-      return { text: '紐', color: '#0ea5e9' };
-    case 'kiken':
-      return { text: '危険', color: '#dc2626' };
-    default:
-      return null;
-  }
-};
-
 export default async function RacePredictionPage(
   { params }: { params: Promise<{ slug: string }> }
 ) {
@@ -111,6 +101,7 @@ export default async function RacePredictionPage(
   return (
     <StaticPageLayout
       pageName="AI勝率予測"
+      title={pageTitle}
       noLeftSidebar
       noToc
       bookmarkOnly
@@ -120,75 +111,50 @@ export default async function RacePredictionPage(
         { label: pageTitle },
       ]}
     >
-      <div className={pageStyles.staticPageCard}>
-        <div className={pageStyles.staticPageHeader}>
-          <h1 className={pageStyles.staticPageTitle}>{pageTitle}</h1>
+      <section className={s.section} aria-label="AI勝率予測">
+        <div className={`${s.card} ${a.tblCard}`}>
+          <div className={`${s.tbl} ${a.tblWrap} ${a.rankRows}`}>
+            <table>
+              <thead>
+                <tr>
+                  <th className={`${s.key} ${a.center}`}>順位</th>
+                  <th>予測勝率</th>
+                  <th className={`${a.left} ${a.nameCol}`}>馬名</th>
+                  <th className={a.center}>印</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.predictions.map((horse) => {
+                  const mark = normalizeMark(horse.mark);
+                  return (
+                    <tr key={horse.rank}>
+                      <td className={`${s.key} ${a.center}`}>
+                        {horse.rank <= 3 ? (
+                          <span className={`${s.rkb} ${s[`rk${horse.rank}`]}`}>{horse.rank}</span>
+                        ) : (
+                          horse.rank
+                        )}
+                      </td>
+                      <td className={a.strong}>{horse.winRate}%</td>
+                      <td className={`${a.left} ${a.nameCell}`}>{horse.name}</td>
+                      <td className={a.center}>{mark && <Mark mark={mark} />}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
+      </section>
 
-        <section className={styles.section}>
-          <table className={styles.predictionTable}>
-            <thead>
-              <tr>
-                <th className={styles.thRank}>順位</th>
-                <th className={styles.thRate}>予測勝率</th>
-                <th className={styles.thName}>馬名</th>
-                <th className={styles.thMark}>印</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.predictions.map((horse) => {
-                const markInfo = getMarkLabel(horse.mark);
-                return (
-                  <tr key={horse.rank} className={horse.mark ? styles[`row_${horse.mark}`] : ''}>
-                    <td className={styles.tdRank}>{horse.rank}</td>
-                    <td className={styles.tdRate}>{horse.winRate}%</td>
-                    <td className={styles.tdName}>{horse.name}</td>
-                    <td className={styles.tdMark}>
-                      {markInfo && (
-                        <span className={styles.markBadge} style={{ background: markInfo.color }}>
-                          {markInfo.text}
-                        </span>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </section>
-
+      <div className={a.foot}>
         <AIXBanner />
-
-        <div className={styles.backLink}>
+        <p className={a.back}>
           <Link href="/ai">← AI勝率予測トップへ</Link>
-        </div>
+        </p>
       </div>
 
-      {(prevRace || nextRace) && (
-        <nav className={styles.raceNav}>
-          <div className={styles.raceNavItem}>
-            {prevRace && (
-              <Link href={`/ai/races/${prevRace.slug}`} className={`${styles.raceNavLink} ${styles.raceNavPrev}`}>
-                <span className={styles.raceNavLabel}>前の予測</span>
-                <p className={styles.raceNavTitle}>
-                  {prevRace.venueLabel}{prevRace.raceNumber}R {prevRace.raceName}
-                </p>
-              </Link>
-            )}
-          </div>
-          <div className={styles.raceNavDivider} />
-          <div className={styles.raceNavItem}>
-            {nextRace && (
-              <Link href={`/ai/races/${nextRace.slug}`} className={`${styles.raceNavLink} ${styles.raceNavNext}`}>
-                <span className={styles.raceNavLabel}>次の予測</span>
-                <p className={styles.raceNavTitle}>
-                  {nextRace.venueLabel}{nextRace.raceNumber}R {nextRace.raceName}
-                </p>
-              </Link>
-            )}
-          </div>
-        </nav>
-      )}
+      <RaceNav basePath="/ai/races" prevRace={prevRace} nextRace={nextRace} />
     </StaticPageLayout>
   );
 }

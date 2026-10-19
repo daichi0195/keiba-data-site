@@ -1,0 +1,151 @@
+/* 固定ページ（サイト情報・お問い合わせ・免責事項・プライバシーポリシー・404）
+   components/course/course.module.css（.canvas のトークン・.crumb・.hero・.section・.card など）と組み合わせて使う。
+   docs/redesign/tonmana.md に準拠。 */
+
+/* 冒頭のリードは本文と同じく長文の幅に収める */
+.lead {
+  max-width: 720px;
+}
+
+/* ---------- 本文カード ---------- */
+.prose {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 16px;
+  line-height: 26px;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.prose p {
+  margin: 0;
+}
+.prose ul {
+  margin: 0;
+  padding-left: 1.25em;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.prose li {
+  list-style: disc;
+}
+.prose li::marker {
+  color: var(--ink-sub);
+}
+.prose strong {
+  font-weight: 700;
+}
+
+/* 本文中のリンク（.textLink 相当） */
+.link {
+  color: var(--link);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.link:hover {
+  color: var(--link-hover);
+}
+.link:focus-visible,
+.btnPrimary:focus-visible {
+  outline: 2px solid var(--brand-strong);
+  outline-offset: 2px;
+}
+
+/* 補足（制定日など） */
+.meta {
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--ink-sub);
+}
+
+/* ---------- 運営者 ---------- */
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 9999px;
+  object-fit: cover;
+  flex: none;
+}
+.profile > div {
+  min-width: 0;
+}
+.profileName {
+  font-weight: 700;
+}
+
+/* ---------- 動画 ---------- */
+.video {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--surface-subtle);
+}
+.video iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* ---------- お問い合わせ ---------- */
+.actions {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
+}
+/* 主要ボタン：#222＋白、高さ48、角丸12 */
+.btnPrimary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 24px;
+  border-radius: 12px;
+  background: var(--cta-bg, #222222);
+  color: #FFFFFF;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  text-decoration: none;
+  text-align: center;
+  max-width: 100%;
+  transition: background-color 150ms cubic-bezier(.2, 0, 0, 1);
+}
+.btnPrimary:hover {
+  background: #3A3A3A;
+  color: #FFFFFF;
+}
+.btnPrimary:active {
+  background: #111111;
+}
+
+/* 補助領域（フォームが開かない場合の連絡先） */
+.subtle {
+  background: var(--surface-subtle);
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  text-align: center;
+}
+
+@media (min-width: 769px) {
+  .prose {
+    gap: 16px;
+  }
+}

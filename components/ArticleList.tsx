@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Article } from '@/lib/articles';
+import s from '@/components/course/course.module.css';
 import styles from './ArticleList.module.css';
 
 type SortOrder = 'newest' | 'popular';
@@ -31,19 +32,18 @@ export default function ArticleList({ articles: allArticles }: ArticleListProps)
   return (
     <>
       {/* 並び替えボタン */}
-      <div className={styles.sortButtons}>
-        <button
-          className={`${styles.sortButton} ${sortOrder === 'newest' ? styles.active : ''}`}
-          onClick={() => setSortOrder('newest')}
-        >
-          新着順
-        </button>
-        <button
-          className={`${styles.sortButton} ${sortOrder === 'popular' ? styles.active : ''}`}
-          onClick={() => setSortOrder('popular')}
-        >
-          人気順
-        </button>
+      <div className={styles.sortButtons} role="group" aria-label="並び替え">
+        {([['newest', '新着順'], ['popular', '人気順']] as const).map(([key, label]) => (
+          <button
+            key={key}
+            type="button"
+            className={`${s.chip} ${sortOrder === key ? s.chipOn : ''}`}
+            aria-pressed={sortOrder === key}
+            onClick={() => setSortOrder(key)}
+          >
+            {label}
+          </button>
+        ))}
       </div>
 
       {/* コラム一覧 */}
@@ -57,17 +57,17 @@ export default function ArticleList({ articles: allArticles }: ArticleListProps)
               href={`/articles/${article.slug}`}
               className={styles.articleItem}
             >
-              {article.frontmatter.thumbnail && (
-                <div className={styles.thumbnailWrapper}>
+              <div className={styles.thumbnailWrapper}>
+                {article.frontmatter.thumbnail && (
                   <Image
                     src={article.frontmatter.thumbnail}
                     alt={article.frontmatter.title}
                     fill
-                    sizes="(max-width: 768px) 75px, 160px"
+                    sizes="(max-width: 768px) 112px, 176px"
                     className={styles.thumbnail}
                   />
-                </div>
-              )}
+                )}
+              </div>
               <div className={styles.articleInfo}>
                 <p className={styles.articleTitle}>
                   {article.frontmatter.title}

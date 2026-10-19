@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { ALL_COURSES, getCourseUrl, getCourseDisplayName } from '@/lib/courses';
 import AIBanner from './AIBanner';
 import styles from './CourseSidebar.module.css';
@@ -19,6 +22,16 @@ const sortCourses = (a: CourseItem, b: CourseItem) => {
 };
 
 export default function CourseSidebar({ racecourse, racecourseJa }: CourseSidebarProps) {
+  // 表示中のコースを選択色で示す（URL末尾のスラッシュは無視）
+  const pathname = (usePathname() || '').replace(/\/$/, '');
+  const linkProps = (href: string, extra: string) => {
+    const current = pathname === href;
+    return {
+      href,
+      className: `${styles.courseBtn} ${extra} ${current ? styles.courseBtnCurrent : ''}`,
+      'aria-current': current ? ('page' as const) : undefined,
+    };
+  };
   const turfCourses = ALL_COURSES
     .filter(c => c.racecourse === racecourse && c.surface === 'turf')
     .sort(sortCourses);
@@ -45,8 +58,7 @@ export default function CourseSidebar({ racecourse, racecourseJa }: CourseSideba
               {turfCourses.map(course => (
                 <Link
                   key={`turf-${course.distance}-${('variant' in course ? course.variant : undefined) || 'default'}`}
-                  href={getCourseUrl(course)}
-                  className={`${styles.courseBtn} ${styles.courseBtnTurf}`}
+                  {...linkProps(getCourseUrl(course), styles.courseBtnTurf)}
                 >
                   {getCourseDisplayName(course)}
                 </Link>
@@ -62,8 +74,7 @@ export default function CourseSidebar({ racecourse, racecourseJa }: CourseSideba
               {dirtCourses.map(course => (
                 <Link
                   key={`dirt-${course.distance}-${('variant' in course ? course.variant : undefined) || 'default'}`}
-                  href={getCourseUrl(course)}
-                  className={`${styles.courseBtn} ${styles.courseBtnDirt}`}
+                  {...linkProps(getCourseUrl(course), styles.courseBtnDirt)}
                 >
                   {getCourseDisplayName(course)}
                 </Link>
@@ -79,8 +90,7 @@ export default function CourseSidebar({ racecourse, racecourseJa }: CourseSideba
               {steeplechaseCourses.map(course => (
                 <Link
                   key={`steeplechase-${course.distance}-${('variant' in course ? course.variant : undefined) || 'default'}`}
-                  href={getCourseUrl(course)}
-                  className={`${styles.courseBtn} ${styles.courseBtnSteeplechase}`}
+                  {...linkProps(getCourseUrl(course), styles.courseBtnSteeplechase)}
                 >
                   {getCourseDisplayName(course)}
                 </Link>

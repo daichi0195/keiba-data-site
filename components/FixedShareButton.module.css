@@ -1,36 +1,41 @@
-/* SP専用固定シェアボタン */
+/* SP専用固定シェアボタン（docs/redesign/tonmana.md に準拠：主要ボタン #222＋白、浮遊要素の影） */
 .fixedShareButton {
   position: fixed;
   bottom: 70px; /* ボトムナビの上 */
   left: 50%;
   transform: translateX(-50%);
-  padding: 12px 24px;
-  background: #000000; /* Xのブランドカラー */
+  height: 48px;
+  padding: 0 24px;
+  background: #222222;
   border: none;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px #00000012, 0 0 0 1px #00000008;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   z-index: 100;
-  transition: all 0.3s ease;
+  font-family: inherit;
+  transition: background 160ms cubic-bezier(.2, 0, 0, 1);
 }
 
 .fixedShareButton:hover {
-  background: #1a1a1a;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
-  transform: translateX(-50%) scale(1.02);
+  background: #3A3A3A;
 }
 
 .fixedShareButton:active {
-  transform: translateX(-50%) scale(0.98);
+  background: #111111;
+}
+
+.fixedShareButton:focus-visible {
+  outline: 2px solid #096B32;
+  outline-offset: 2px;
 }
 
 .icon {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   color: #ffffff;
   flex-shrink: 0;
 }
@@ -38,6 +43,7 @@
 .buttonText {
   color: #ffffff;
   font-size: 14px;
+  line-height: 20px;
   font-weight: 600;
   white-space: nowrap;
 }

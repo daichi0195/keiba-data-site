@@ -1,28 +1,31 @@
+/* Xでの予測配信の案内（AI予測ページ専用）。docs/redesign/tonmana.md に準拠：白カード・影なし・枠なし */
 .banner {
   display: block;
   width: 100%;
-  background: #f5f6f7;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  padding: 14px 20px;
+  box-sizing: border-box;
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 14px 16px;
   text-decoration: none !important;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  margin-top: 0.25rem;
-  margin-bottom: 1.25rem;
+  color: #222222;
 }
 
+.banner:focus-visible {
+  outline: 2px solid #096B32;
+  outline-offset: 2px;
+}
 
 .content {
   display: flex;
   align-items: center;
   gap: 12px;
+  min-height: 44px;
 }
 
 .icon {
-  width: 24px;
-  height: 24px;
-  color: #000;
+  width: 20px;
+  height: 20px;
+  color: #222222;
   flex-shrink: 0;
 }
 
@@ -31,46 +34,38 @@
   flex-direction: column;
   gap: 2px;
   flex: 1;
+  min-width: 0;
 }
 
 .mainText {
-  font-size: 0.9375rem;
+  font-size: 15px;
+  line-height: 22px;
   font-weight: 700;
-  color: #1f2937 !important;
-  line-height: 1.3;
+  color: #2563EB !important;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.banner:hover .mainText {
+  color: #1D4ED8 !important;
 }
 
 .subText {
-  font-size: 0.8125rem;
-  color: #6b7280 !important;
-  line-height: 1.4;
+  font-size: 13px;
+  line-height: 20px;
+  color: #6A6A6A !important;
 }
 
 .arrow {
   width: 16px;
   height: 16px;
-  color: #6b7280;
+  color: #6A6A6A;
   flex-shrink: 0;
-  opacity: 0.8;
-  transition: transform 0.2s ease;
 }
 
-
-@media (max-width: 768px) {
+@media (min-width: 769px) {
   .banner {
-    padding: 12px 16px;
-  }
-
-  .icon {
-    width: 20px;
-    height: 20px;
-  }
-
-  .mainText {
-    font-size: 0.875rem;
-  }
-
-  .subText {
-    font-size: 0.75rem;
+    padding: 16px 24px;
   }
 }

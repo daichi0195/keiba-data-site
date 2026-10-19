@@ -1,4 +1,5 @@
-/* PC専用の右サイドバー目次 */
+/* PC専用の右サイドバー目次（docs/redesign/tonmana.md に準拠）
+   新旧どちらのページにも置かれるため、トークンはこのファイル内で完結させる */
 .tableOfContents {
   display: none;
 }
@@ -9,32 +10,34 @@
     display: flex;
     flex-direction: column;
     position: sticky;
-    top: 90px;
+    top: 80px;
     padding: 0;
-    background: #fbfcfd;
+    background: transparent;
     z-index: 50;
+    color: #222222;
+    font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", system-ui, sans-serif;
   }
 
   .nav {
-    background: #f7f8fc;
-    border-radius: 6px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-    border: 1px solid #e8eef5;
+    background: #FFFFFF;
+    border-radius: 16px;
+    padding: 20px 12px 12px;
     flex-shrink: 0;
     max-height: calc(100vh - 140px);
     overflow-y: auto;
     display: flex;
     flex-direction: column;
+    box-sizing: border-box;
   }
 
   .title {
-    font-size: 1.0625rem;
-    font-weight: 700;
-    color: #0f172a;
-    margin: 0 0 0.75rem 0;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--primary-green);
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 600;
+    color: #222222;
+    margin: 0 0 8px 0;
+    padding: 0 12px 12px;
+    border-bottom: 1px solid #E9E9E9;
     flex-shrink: 0;
   }
 
@@ -44,7 +47,7 @@
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 2px;
     flex: 1;
     overflow-y: auto;
   }
@@ -57,30 +60,39 @@
   .link {
     display: block;
     width: 100%;
+    box-sizing: border-box;
     text-align: left;
-    padding: 0.75rem 1rem;
-    font-size: 0.9375rem;
-    color: #334155;
+    padding: 9px 12px;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    color: #6A6A6A;
     text-decoration: none;
-    border-radius: 6px;
-    transition: all 0.2s ease;
     border: none;
+    border-radius: 12px;
     background: transparent;
     cursor: pointer;
-    font-weight: 600;
-    line-height: 1.5;
+    transition: background 160ms cubic-bezier(.2, 0, 0, 1), color 160ms cubic-bezier(.2, 0, 0, 1);
   }
 
   .link:hover {
-    color: var(--primary-green);
+    background: #F3F3F3;
+    color: #222222;
   }
 
   .scrolling .link:hover:not(.active) {
-    color: #334155;
+    background: transparent;
+    color: #6A6A6A;
   }
 
   .link:focus {
     outline: none;
+  }
+
+  .link:focus-visible {
+    outline: 2px solid #096B32;
+    outline-offset: 2px;
   }
 
   .link:focus:not(.active) {
@@ -91,18 +103,14 @@
     background: transparent;
   }
 
-  .link.active {
-    background: #ffffff;
-    color: var(--primary-green-dark);
-    font-weight: 700;
-    box-shadow: 0 2px 6px rgba(29, 184, 84, 0.1);
-  }
-
+  /* 表示中のセクション：テーマカラー塗り＋白の太字（SPのセクションナビと同じ表現） */
+  .link.active,
+  .link.active:hover,
   .link.active:focus {
-    background: #ffffff;
-    color: var(--primary-green-dark);
+    background: #1DB854;
+    color: #FFFFFF;
+    font-weight: 700;
   }
-
 }
 
 /* 中画面では非表示 */

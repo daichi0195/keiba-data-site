@@ -34,7 +34,7 @@ html {
 
 body {
   font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
-  background: #fbfcfd;
+  background: #f7f7f7;
   color: var(--text-dark);
   min-height: 100vh;
   height: auto;

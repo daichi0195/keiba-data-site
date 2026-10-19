@@ -1,166 +1,137 @@
+/* PC左サイドバー：同じ競馬場のコース一覧（docs/redesign/tonmana.md に準拠）
+   新旧どちらのページにも置かれるため、トークンはこのファイル内で完結させる */
+
 .sidebar {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
+  color: #222222;
+  font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", system-ui, sans-serif;
 }
 
-/* ブックマークバナー */
-.bookmarkBanner {
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.25rem;
-  padding: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  width: 100%;
-}
-
-.bookmarkIcon {
-  font-size: 1.5rem;
-  line-height: 1;
-}
-
-.bookmarkTitle {
-  font-size: 0.9375rem;
-  font-weight: 700;
-  color: #2d3748;
-  letter-spacing: 0.03em;
-}
-
-.bookmarkCommand {
-  font-size: 0.8125rem;
-  font-weight: 700;
-  color: #2d3748;
-  background: #f5f7fa;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  padding: 3px 10px;
-  letter-spacing: 0.03em;
-  margin: 0.125rem 0;
-}
-
-.bookmarkSubtitle {
-  font-size: 0.8125rem;
-  color: #718096;
-  font-weight: 500;
-}
-
-/* コース一覧セクション */
+/* コース一覧カード */
 .coursesSection {
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  padding: 14px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 20px;
 }
 
 .sectionTitle {
-  font-size: 1.0625rem;
-  font-weight: 700;
-  color: #0f172a;
-  margin: 0 0 0.75rem 0;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid #e2e8f0;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  color: #222222;
+  margin: 0 0 16px 0;
+  padding: 0;
+  border: 0;
 }
 
-/* サーフェースグループ */
+/* 馬場ごとのまとまり */
 .surfaceGroup {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-bottom: 10px;
+  gap: 8px;
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid #E9E9E9;
 }
 
 .surfaceGroup:last-child {
+  padding-bottom: 0;
   margin-bottom: 0;
+  border-bottom: 0;
 }
 
-/* サーフェースラベル（「芝」「ダート」「障害」） */
+/* 芝・ダート・障害バッジ（操作できない要素） */
 .surfaceLabel {
   display: inline-flex;
   align-items: center;
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  padding: 2px 7px;
-  border-radius: 4px;
   align-self: flex-start;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 .surfaceLabelTurf {
-  background: rgba(61, 184, 102, 0.12);
-  color: #2a8a52;
+  background: #E2F7EB;
+  color: #0C532A;
 }
 
 .surfaceLabelDirt {
-  background: rgba(184, 144, 102, 0.15);
-  color: #8a6030;
+  background: #FDE9D7;
+  color: #633D1E;
 }
 
 .surfaceLabelSteeplechase {
-  background: rgba(131, 139, 151, 0.15);
-  color: #4a5568;
+  background: #F3F3F3;
+  color: #6A6A6A;
 }
 
-/* ボタングリッド */
+/* 距離チップ（折り返し） */
 .grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: 6px;
 }
 
-/* コースボタン（アウトライン） */
 .courseBtn {
-  display: inline-block;
-  padding: 4px 8px;
-  font-size: 0.75rem;
-  font-weight: 600;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 9999px;
+  border: 1px solid #E9E9E9;
+  background: #FFFFFF;
+  color: #222222;
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
   text-decoration: none;
-  border-radius: 4px;
-  border: 1.5px solid;
   white-space: nowrap;
-  line-height: 1.4;
-  transition: all 0.15s ease;
   box-sizing: border-box;
+  transition: background 160ms cubic-bezier(.2, 0, 0, 1), border-color 160ms cubic-bezier(.2, 0, 0, 1);
 }
 
-.courseBtnTurf {
-  color: #2a8a52;
-  border-color: #3db866;
-  background: #fff;
+/* 見た目の高さは変えず、タップ領域だけ上下に広げる */
+.courseBtn::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -3px;
+  bottom: -3px;
 }
 
-.courseBtnTurf:hover {
-  background: #3db866;
-  color: #fff;
+.courseBtn:hover {
+  background: #F3F3F3;
+  border-color: #DDDDDD;
+  color: #222222;
   text-decoration: none;
 }
 
-.courseBtnDirt {
-  color: #8a6030;
-  border-color: #b89066;
-  background: #fff;
+.courseBtn:focus-visible {
+  outline: 2px solid #096B32;
+  outline-offset: 2px;
 }
 
-.courseBtnDirt:hover {
-  background: #b89066;
-  color: #fff;
-  text-decoration: none;
-}
-
+/* 馬場別の旧スタイル用クラス（色は付けず、バッジで馬場を示す） */
+.courseBtnTurf,
+.courseBtnDirt,
 .courseBtnSteeplechase {
-  color: #4a5568;
-  border-color: #838b97;
-  background: #fff;
+  color: #222222;
 }
 
-.courseBtnSteeplechase:hover {
-  background: #838b97;
-  color: #fff;
-  text-decoration: none;
+/* 表示中のコース：ナビと同じ選択色 */
+.courseBtnCurrent,
+.courseBtnCurrent:hover {
+  background: #1DB854;
+  border-color: #1DB854;
+  color: #FFFFFF;
+  font-weight: 700;
 }
