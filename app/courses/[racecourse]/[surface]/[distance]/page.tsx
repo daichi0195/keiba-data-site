@@ -20,6 +20,8 @@ import s from '@/components/course/course.module.css';
 import CourseSectionNav from '@/components/course/CourseSectionNav';
 import RankingTable from '@/components/course/RankingTable';
 import { ConditionCard, Dots, Meter, PickCard, RichText, type ConditionRow, type NameLink } from '@/components/course/CourseParts';
+import RelatedLinksCard from '@/components/datapage/shared/RelatedLinksCard';
+import { MIN_RACES_FOR_MENTION } from '@/lib/dataPageRules';
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
@@ -838,6 +840,7 @@ export default async function CoursePage({ params }: Props) {
   // ナビゲーション用のセクションアイテム
   const navigationItems = [
     { id: 'summary-section', label: 'データ概要' },
+    { id: 'related-section', label: '関連データ' },
     ...(enoughRaces ? [
       { id: 'characteristics-section', label: 'コースの特徴' },
       { id: 'highlights-section', label: '注目ポイント' },
@@ -948,6 +951,7 @@ export default async function CoursePage({ params }: Props) {
     characteristics: course_info.characteristics,
     labels: { volatility: volatilityText, gate: gatePositionText, runningStyle: runningStyleText },
   });
+  const summaryBlocksShown = enoughRaces ? summaryBlocks : summaryBlocks.map((b) => ({ ...b, text: b.text.replace(/\*\*([^*]+)\*\*/g, '$1') }));
   const summaryTitles: Record<string, string | undefined> = {
     popularity: '人気', gate: '枠順', runningStyle: '脚質', people: '騎手・調教師', pedigree: '血統',
   };
@@ -956,6 +960,18 @@ export default async function CoursePage({ params }: Props) {
     people: [...toNameLinks(jockeyStatsWithLinks), ...toNameLinks(trainerStatsWithLinks)],
     pedigree: [...toNameLinks(pedigreeStatsWithLinks), ...toNameLinks(damSireStatsWithLinks)],
   };
+
+  // 関連データ（旧 RelatedLinks と同じ選び方：出走20以上・詳細ページあり・複勝率の高い順に5件）
+  const pickRelated = (rows: any[]) => rows
+    .filter((r) => r.link && (r.races ?? 0) >= MIN_RACES_FOR_MENTION)
+    .sort((a, b) => (b.place_rate ?? 0) - (a.place_rate ?? 0))
+    .slice(0, 5)
+    .map((r) => ({ label: r.name, href: r.link, place_rate: r.place_rate }));
+  const relatedGroups = [
+    { heading: `騎手（${MIN_RACES_FOR_MENTION}走以上・複勝率上位）`, items: pickRelated(jockeyStatsWithLinks) },
+    { heading: `種牡馬（${MIN_RACES_FOR_MENTION}走以上・複勝率上位）`, items: pickRelated(pedigreeStatsWithLinks) },
+    { heading: `調教師（${MIN_RACES_FOR_MENTION}走以上・複勝率上位）`, items: pickRelated(trainerStatsWithLinks) },
+  ];
 
   // 注目ポイント
   const toPick = (rows: any[]) => rows.map((r) => ({ name: r.name, link: r.link }));
@@ -982,7 +998,7 @@ export default async function CoursePage({ params }: Props) {
 
   // ページ内ナビ（チップの表示名は短く、id は目次と共通）
   const chipLabels: Record<string, string> = {
-    'summary-section': '概要', 'characteristics-section': '特徴', 'highlights-section': '注目',
+    'summary-section': '概要', 'related-section': '関連', 'characteristics-section': '特徴', 'highlights-section': '注目',
     'popularity-section': '人気別', 'gate-section': '枠順別', 'running-style-section': '脚質別',
     'gender-section': '性別', 'horse-weight-section': '馬体重別', 'jockey-section': '騎手',
     'bloodline-section': '種牡馬', 'dam-sire-section': '母父', 'trainer-section': '調教師', 'faq-section': 'Q&A',
@@ -1081,7 +1097,7 @@ export default async function CoursePage({ params }: Props) {
             <section id="summary-section" className={s.section} aria-label="データ概要">
               <div className={s.sh}><h2 className={s.h2}>{seoPrefix}のデータ概要</h2></div>
               <div className={`${s.card} ${s.article}`}>
-                {summaryBlocks.map((block) => (
+                {summaryBlocksShown.map((block) => (
                   <div key={block.key} className={s.blk}>
                     {summaryTitles[block.key] && <h3>{summaryTitles[block.key]}</h3>}
                     <p><RichText text={block.text} links={summaryLinks[block.key]} /></p>
@@ -1089,6 +1105,14 @@ export default async function CoursePage({ params }: Props) {
                 ))}
               </div>
             </section>
+
+            {/* 関連データ */}
+            {relatedGroups.some((g) => g.items.length > 0) && (
+              <section id="related-section" className={s.section} aria-label="関連データ">
+                <div className={s.sh}><h2 className={s.h2}>{seoPrefix}が得意な騎手・血統・厩舎</h2></div>
+                <RelatedLinksCard groups={relatedGroups} />
+              </section>
+            )}
 
             {/* コースの特徴 */}
             {enoughRaces && (
@@ -1127,6 +1151,14 @@ export default async function CoursePage({ params }: Props) {
                       ] : undefined}
                     />
                   )}
+                  <details className={s.more}>
+                    <summary>判定の基準</summary>
+                    <div className={s.criteria}>
+                      <p><b>荒れやすさ</b>：三連単配当の中央値をコースごとに求め、全コースの中で相対比較して5段階で評価しています。中央値が高いほど、人気どおりに決まりにくく荒れやすいコースです。障害コースと、集計期間の実施回数が少ないコースは比較の対象外です。</p>
+                      <p><b>枠順傾向</b>：内枠（1〜4枠）と外枠（5〜8枠）の複勝率を比べています。差が5%以上で「内枠有利／外枠有利」、2%以上で「やや内枠有利／やや外枠有利」、それ未満は「互角」です。</p>
+                      <p><b>脚質傾向</b>：逃げ・先行と差し・追込の複勝率を比べています。差が5%以上で「逃げ・先行有利／差し・追込有利」、2%以上で「やや」を付け、それ未満は「互角」です。</p>
+                    </div>
+                  </details>
                 </div>
                 {hasRankingData && (
                   <p className={s.note}>三連単配当の中央値は全{totalCourses}コース中{rankPos}位（配当の高い順）</p>
@@ -1140,11 +1172,12 @@ export default async function CoursePage({ params }: Props) {
                 <div className={s.sh}>
                   <h2 className={s.h2}>{seoPrefix}の注目ポイント</h2>
                   <p>このコースで成績が目立つ騎手・血統・厩舎。名前をタップすると詳細へ</p>
+                  <p>出走20以上が対象。得意＝勝利数が上位5位以内で単勝または複勝回収率100%以上、よく穴をあける＝複勝率が上位5位未満で複勝回収率100%以上、苦手＝複勝率20%以下かつ複勝回収率30%未満</p>
                 </div>
                 <div className={s.legend}>
-                  <span><i style={{ borderColor: '#5FC28A' }} />得意</span>
-                  <span><i style={{ borderColor: '#6A6A6A', borderStyle: 'dashed' }} />よく穴をあける</span>
-                  <span><i style={{ borderColor: '#D98A9E' }} />苦手</span>
+                  <span><i className={s.good} />得意</span>
+                  <span><i className={s.hole} />よく穴をあける</span>
+                  <span><i className={s.bad} />苦手</span>
                 </div>
                 <div className={s.rail}>
                   <PickCard title="騎手" label="騎手" strong={toPick(jockeyPicks.strong)} upset={toPick(jockeyPicks.upset)} weak={toPick(jockeyPicks.weak)} />
@@ -1211,7 +1244,7 @@ export default async function CoursePage({ params }: Props) {
             </section>
 
             {/* 同じ競馬場の他コース */}
-            <section id="other-courses-section" className={s.section} aria-label="他のコースデータ一覧">
+            <section id="other-courses-section" className={`${s.section} ${s.spOnly}`} aria-label="他のコースデータ一覧">
               <div className={s.sh}><h2 className={s.h2}>{courseShort}競馬場のコースデータ一覧</h2></div>
               <div className={`${s.card} ${s.courses}`}>
                 {otherCourseGroups.map((group) => (
@@ -1228,7 +1261,7 @@ export default async function CoursePage({ params }: Props) {
                             className={`${s.chip} ${current ? s.chipOn : ''}`}
                             aria-current={current ? 'page' : undefined}
                           >
-                            {getCourseDisplayName(c).replace(c.surface_ja, '')}
+                            <span className={s.srOnly}>{c.surface_ja}</span>{getCourseDisplayName(c).replace(c.surface_ja, '')}
                           </Link>
                         );
                       })}

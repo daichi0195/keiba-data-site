@@ -101,7 +101,7 @@ export function SummaryConditionCard({
         <p className={s.note}>
           {best ? (
             <>
-              複勝率が最も高いのは<b>{best.label}の{formatStat(best.place_rate, 'pct')}</b>
+              出走{MIN_RACES_FOR_BAR_HIGHLIGHT}以上で複勝率が最も高いのは<b>{best.label}の{formatStat(best.place_rate, 'pct')}</b>
             </>
           ) : (
             '出走数が少ないため、数値は参考程度にご覧ください'
@@ -169,90 +169,5 @@ export function CourseGroupsCard({ groups }: { groups: CourseGroup[] }) {
   );
 }
 
-// ------------------------------------------------------------
-// 注目ポイント（得意・苦手なコース）
-// ------------------------------------------------------------
-
-function CourseChips({ rows, kind }: { rows: LinkStatRow[]; kind: 'good' | 'bad' }) {
-  if (rows.length === 0) return <span className={s.none}>該当なし</span>;
-  return (
-    <div className={s.chips}>
-      {rows.map((r) =>
-        r.href ? (
-          <Link key={r.href} href={r.href} className={`${s.nm} ${s[kind]}`}>
-            {r.label}
-          </Link>
-        ) : (
-          <span key={r.label} className={`${s.nm} ${s[kind]}`}>
-            {r.label}
-          </span>
-        )
-      )}
-    </div>
-  );
-}
-
-/** 得意なコース TOP5／苦手なコース TOP5。名前のチップ＋開閉で13項目の表 */
-export function CourseHighlightCard({ top, bottom }: { top: LinkStatRow[]; bottom: LinkStatRow[] }) {
-  return (
-    <div className={`${s.card} ${j.pickCard}`}>
-      <div className={s.grp}>
-        <span className={s.gl}>得意なコース TOP5（複勝率が高い順）</span>
-        <CourseChips rows={top} kind="good" />
-      </div>
-      <div className={s.grp}>
-        <span className={s.gl}>苦手なコース TOP5（複勝率が低い順）</span>
-        <CourseChips rows={bottom} kind="bad" />
-      </div>
-      <div>
-        {top.length > 0 && (
-          <details className={s.more}>
-            <summary>
-              得意なコース TOP5<small>13項目・横にスクロール</small>
-            </summary>
-            <LinkStatsTable rows={top} keyLabel="コース" />
-          </details>
-        )}
-        {bottom.length > 0 && (
-          <details className={s.more}>
-            <summary>
-              苦手なコース TOP5<small>13項目・横にスクロール</small>
-            </summary>
-            <LinkStatsTable rows={bottom} keyLabel="コース" />
-          </details>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// ------------------------------------------------------------
-// 関連データ（得意なコース・相性の良い調教師へのリンク）
-// ------------------------------------------------------------
-
-export interface RelatedGroup {
-  heading: string;
-  items: { label: string; href: string; place_rate?: number }[];
-}
-
-export function RelatedLinksCard({ groups }: { groups: RelatedGroup[] }) {
-  return (
-    <div className={`${s.card} ${s.article}`}>
-      {groups.map((g) => (
-        <div key={g.heading} className={s.blk}>
-          <h3>{g.heading}</h3>
-          <ul className={j.relList}>
-            {g.items.map((it) => (
-              <li key={it.href}>
-                <Link href={it.href} className={s.textLink}>
-                  {it.label}
-                </Link>
-                <span className={j.relRate}>複勝率{formatStat(it.place_rate, 'pct')}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
-    </div>
-  );
-}
+// 注目ポイント（得意・苦手なコース）と関連データは3ページ共通の部品へ移動
+// （components/datapage/shared/HighlightCoursesCard・RelatedLinksCard）

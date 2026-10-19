@@ -1,7 +1,7 @@
 import s from '@/components/course/course.module.css';
 import AnimateOnView from '@/components/course/AnimateOnView';
 import { formatStat } from '@/components/course/statColumns';
-import LinkStatsTable, { type LinkStatRow } from './LinkStatsTable';
+import LinkStatsTable, { type LinkStatRow } from '@/components/datapage/shared/LinkStatsTable';
 
 const MIN_RACES_FOR_BAR_HIGHLIGHT = 30;
 
@@ -38,7 +38,7 @@ export default function BarTableCard({
         <p className={s.note}>
           {best ? (
             <>
-              複勝率が最も高いのは<b>{best.label}の{formatStat(best.place_rate, 'pct')}</b>
+              出走{MIN_RACES_FOR_BAR_HIGHLIGHT}以上で複勝率が最も高いのは<b>{best.label}の{formatStat(best.place_rate, 'pct')}</b>
             </>
           ) : (
             '出走数が少ないため、数値は参考程度にご覧ください'

@@ -1,0 +1,103 @@
+/* データページ共通の追加部品（components/course/course.module.css と組み合わせて使う） */
+
+.relList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.relList li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  border-bottom: 1px solid #E9E9E9;
+  font-size: 15px;
+  line-height: 22px;
+}
+.relList li:last-child {
+  border-bottom: 0;
+}
+.relRate {
+  flex: none;
+  font-size: 13px;
+  color: #6A6A6A;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ---------- 表：中央・ローカルなどの集計行 ---------- */
+.sumFirst td {
+  border-top: 1px solid var(--ink-disabled);
+}
+.sumLabel {
+  font-weight: 600;
+}
+
+/* ---------- 注目ポイント（得意・苦手なコース） ---------- */
+.pickCard {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.pickCard > div {
+  min-width: 0;
+}
+
+/* ---------- 結論カード（判定の文言が長くても幅320pxではみ出さない） ---------- */
+/* 行どうしで5段階の位置が揃うよう、列は親（.vRowsFit）で決めて各行は subgrid で受ける */
+div.vRowsFit {
+  display: grid;
+  grid-template-columns: max-content minmax(56px, 1fr) minmax(0, max-content);
+  column-gap: 8px;
+}
+a.vRowFit {
+  grid-column: 1 / -1;
+  grid-template-columns: max-content minmax(56px, 1fr) minmax(0, max-content);
+  grid-template-columns: subgrid;
+  column-gap: 8px;
+}
+a.vRowFit > span:first-child {
+  white-space: nowrap;
+}
+a.vRowFit > span:last-child {
+  min-width: 0;
+  font-size: 15px;
+  line-height: 20px;
+  white-space: normal;
+  padding: 4px 0;
+}
+/* 判定の文言は「やや」の後ろでだけ折り返す（「得」「意」のような途中での改行を避ける） */
+a.vRowFit > span:last-child > span {
+  white-space: nowrap;
+}
+@media (max-width: 360px) {
+  a.vRowFit > span:last-child {
+    font-size: 14px;
+  }
+}
+
+/* ---------- 判定の基準（特徴カード末尾の開閉） ---------- */
+.criteria {
+  margin: 0 0 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 13px;
+  line-height: 21px;
+}
+.criteria h3 {
+  margin: 0 0 2px;
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 600;
+}
+.criteria ul {
+  margin: 0;
+  padding-left: 1.2em;
+}
+.criteria p {
+  margin: 0;
+}

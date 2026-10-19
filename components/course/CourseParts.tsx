@@ -155,7 +155,7 @@ export function ConditionCard({
         <p className={styles.note}>
           {best ? (
             <>
-              複勝率が最も高いのは<b>{best.gate ? `${best.gate.number}枠` : best.label}の{formatStat(best.place_rate, 'pct')}</b>
+              出走30以上で複勝率が最も高いのは<b>{best.gate ? `${best.gate.number}枠` : best.label}の{formatStat(best.place_rate, 'pct')}</b>
             </>
           ) : (
             '出走数が少ないため、数値は参考程度にご覧ください'

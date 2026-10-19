@@ -5,6 +5,9 @@ import { TRAINER_GROUPS } from '@/components/datapage/list/kana';
 export const metadata: Metadata = {
   title: '調教師（厩舎）別データ一覧｜成績・特徴を比較【毎週更新】',
   description: 'JRA調教師（厩舎）の成績・特徴を比較できるデータ一覧。直近3年のデータで、得意条件や騎手との相性まで分析。毎週更新。',
+  alternates: {
+    canonical: 'https://www.keibadata.com/trainers',
+  },
 };
 
 export default function TrainersPage() {

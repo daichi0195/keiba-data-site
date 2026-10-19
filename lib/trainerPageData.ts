@@ -1,10 +1,10 @@
 /**
  * 調教師詳細ページ（新デザイン）用の補助処理
  * - データ概要の段落に見出しを付ける
- * - コース別成績の行から、実在するコースページの URL を求める
+ * - コース別成績の行から、実在するコースページの URL を求める（lib/courseLinks.ts）
  */
 
-import { ALL_COURSES, getCourseUrl } from './courses';
+import { emphasizeBestPlaceRate } from './summaryEmphasis';
 
 // ------------------------------------------------------------
 // データ概要（buildTrainerSummary の段落を見出し付きのブロックにする）
@@ -28,10 +28,8 @@ const BLOCK_RULES: { key: string; title: string; test: (p: string) => boolean }[
   { key: 'surfaceDistance', title: '芝・ダート・距離', test: (p) => p.includes('の芝は') || p.includes('距離別では') },
 ];
 
-// 各段落の最初の「複勝率○○%」だけを強調表示（**〜**）にする。文言は変えない（騎手ページと同じ規則）
-function emphasize(text: string): string {
-  return text.replace(/(複勝率は?)(\d+(?:\.\d+)?%)/, '$1**$2**');
-}
+// 段落内で最も高い「複勝率○○%」を1つだけ強調表示（**〜**）にする。文言は変えない（3ページ共通の規則）
+const emphasize = emphasizeBestPlaceRate;
 
 export function toTrainerSummaryBlocks(paragraphs: string[]): TrainerSummaryBlock[] {
   return paragraphs.map((text, i) => {
@@ -41,53 +39,8 @@ export function toTrainerSummaryBlocks(paragraphs: string[]): TrainerSummaryBloc
 }
 
 // ------------------------------------------------------------
-// コース別成績 → コースページの URL
+// コース別成績 → コースページの URL（3ページ共通の lib/courseLinks.ts へ移動。互換のため再エクスポート）
 // ------------------------------------------------------------
 
-export interface TrainerCourseRow {
-  name: string;
-  racecourse: string;
-  racecourse_en: string;
-  surface_en: string;
-  distance: number;
-  variant?: string;
-  link?: string;
-}
-
-const COURSE_URLS = new Set(ALL_COURSES.map((c) => getCourseUrl(c)));
-
-/** 内回り・外回りの区別（データの variant、またはコース名末尾の「内」「外」） */
-export function courseVariantOf(row: TrainerCourseRow): 'inner' | 'outer' | undefined {
-  const v = row.variant ?? '';
-  if (v === 'inner' || v === '内' || v === '内回り') return 'inner';
-  if (v === 'outer' || v === '外' || v === '外回り') return 'outer';
-  const m = row.name.match(/m(内|外)(回り)?$|（(内|外)回り）$/);
-  const mark = m?.[1] ?? m?.[3];
-  if (mark === '内') return 'inner';
-  if (mark === '外') return 'outer';
-  return undefined;
-}
-
-/**
- * 実在するコースページの URL（内回り・外回りのページがあるコースはそちらへ）。
- * ページが存在しないコースは undefined（リンク切れを作らない）
- */
-export function resolveCourseUrl(row: TrainerCourseRow): string | undefined {
-  const base = `/courses/${row.racecourse_en}/${row.surface_en}/${row.distance}`;
-  const variant = courseVariantOf(row);
-  if (variant && COURSE_URLS.has(`${base}-${variant}`)) return `${base}-${variant}`;
-  if (COURSE_URLS.has(base)) return base;
-  if (row.link && COURSE_URLS.has(row.link)) return row.link;
-  return undefined;
-}
-
-/**
- * 表示用のコース名（データのコース名から競馬場名と空白を除く。例：「京都競馬場 芝 1400m外」→「芝1400m外」）
- * withRacecourse で「京都芝1400m外」、shortDirt で「ダ」表記
- */
-export function courseLabel(row: TrainerCourseRow, opts: { withRacecourse?: boolean; shortDirt?: boolean } = {}): string {
-  const rc = String(row.racecourse ?? '').replace(/競馬場$/, '');
-  let label = row.name.replace(/[^\s]*競馬場/, '').replace(/\s+/g, '').replace(/（外回り）/g, '外').replace(/（内回り）/g, '内');
-  if (opts.shortDirt) label = label.replace(/ダート/g, 'ダ');
-  return opts.withRacecourse ? `${rc}${label}` : label;
-}
+export { courseVariantOf, resolveCourseUrl, courseLabel } from './courseLinks';
+export type { CourseRowLike as TrainerCourseRow } from './courseLinks';

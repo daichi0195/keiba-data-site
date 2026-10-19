@@ -2,7 +2,6 @@ import Link from 'next/link';
 import s from '@/components/course/course.module.css';
 import AnimateOnView from '@/components/course/AnimateOnView';
 import { STAT_COLUMNS, formatStat, maxByColumn, type StatRowLike } from '@/components/course/statColumns';
-import { Dots } from '@/components/course/CourseParts';
 import x from './sire.module.css';
 
 // ------------------------------------------------------------
@@ -57,16 +56,7 @@ export function SireMeter({
   );
 }
 
-/** 結論カードの1行（指標名｜5段階｜判定） */
-export function VerdictRow({ label, value, result, href }: { label: string; value: number; result: string; href: string }) {
-  return (
-    <a className={`${s.vRow} ${x.vRowWide}`} href={href}>
-      <span className={s.vKey}>{label}</span>
-      <Dots value={value} />
-      <span className={s.vVal}>{result}</span>
-    </a>
-  );
-}
+// 結論カードの1行は3ページ共通の部品（components/datapage/shared/VerdictRow）を使う
 
 // ------------------------------------------------------------
 // 13項目の表（名前リンク・集計行に対応）
@@ -176,7 +166,7 @@ export function SireConditionCard({
         <p className={s.note}>
           {best ? (
             <>
-              複勝率が最も高いのは<b>{best.gate ? `${best.gate.number}枠` : best.label}の{formatStat(best.place_rate, 'pct')}</b>
+              出走{MIN_RACES_FOR_BAR_HIGHLIGHT}以上で複勝率が最も高いのは<b>{best.gate ? `${best.gate.number}枠` : best.label}の{formatStat(best.place_rate, 'pct')}</b>
             </>
           ) : (
             '出走数が少ないため、数値は参考程度にご覧ください'
@@ -247,30 +237,4 @@ export function CourseGroups({ groups }: { groups: RacecourseCourseGroup[] }) {
   );
 }
 
-// ------------------------------------------------------------
-// 得意・苦手のチップ（白地＋色の枠。名前は詳細ページへ）
-// ------------------------------------------------------------
-
-export interface PickItem {
-  name: string;
-  link?: string;
-}
-
-export function PickChips({ items, kind }: { items: PickItem[]; kind: 'good' | 'bad' }) {
-  if (items.length === 0) return <span className={s.none}>該当なし</span>;
-  return (
-    <div className={s.chips}>
-      {items.map((p) =>
-        p.link ? (
-          <Link key={p.name} href={p.link} className={`${s.nm} ${s[kind]}`}>
-            {p.name}
-          </Link>
-        ) : (
-          <span key={p.name} className={`${s.nm} ${s[kind]}`}>
-            {p.name}
-          </span>
-        )
-      )}
-    </div>
-  );
-}
+// 注目ポイント（得意・苦手のチップ）は3ページ共通の部品（components/datapage/shared/HighlightCoursesCard）を使う

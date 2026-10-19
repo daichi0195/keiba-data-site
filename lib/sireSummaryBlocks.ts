@@ -5,6 +5,8 @@
  * 段落の内容から見出しを決める。表示では要所（複勝率）を強調し、名前を詳細ページへリンクする。
  */
 
+import { emphasizeBestPlaceRate } from './summaryEmphasis';
+
 export type SireSummaryKey =
   | 'overall' | 'surface' | 'racecourse' | 'style' | 'age' | 'condition' | 'damSire' | 'payback' | 'other';
 
@@ -39,10 +41,8 @@ function classify(subject: string, text: string): SireSummaryKey {
   return 'other';
 }
 
-// 段落の中で最初に出てくる「複勝率xx.x%」だけを強調する（強調しすぎない）
-function emphasize(text: string): string {
-  return text.replace(/複勝率(\d+(?:\.\d+)?%)/, '複勝率**$1**');
-}
+// 段落内で最も高い「複勝率xx.x%」を1つだけ強調する（強調しすぎない）
+const emphasize = emphasizeBestPlaceRate;
 
 export function buildSireSummaryBlocks(sireName: string, paragraphs: string[]): SireSummaryBlock[] {
   const subject = `${sireName}産駒`;

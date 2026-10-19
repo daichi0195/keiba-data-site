@@ -8,6 +8,9 @@ import { getDataUpdatedAt, formatJaDate, toIsoDate } from '@/lib/dataDate';
 export const metadata: Metadata = {
   title: 'コース別データ一覧｜全競馬場の傾向・特徴【毎週更新】',
   description: 'JRA全10競馬場のコース別に、枠順・脚質・血統・騎手の傾向を比較できるデータ一覧。直近3年のデータで毎週更新。',
+  alternates: {
+    canonical: 'https://www.keibadata.com/courses',
+  },
 };
 
 export default function CoursesPage() {

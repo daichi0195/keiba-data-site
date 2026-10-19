@@ -933,3 +933,58 @@ thead .rnm {
     flex-basis: 300px;
   }
 }
+
+/* ---------- レビュー対応で追加 ---------- */
+/* 見た目の高さは変えず、タップ領域だけ上下に広げて44px以上にする */
+.chip,
+.nm,
+.btn {
+  position: relative;
+}
+.chip::after,
+.nm::after,
+.btn::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -5px;
+  bottom: -5px;
+}
+.legend i.good { border-color: var(--good-line); }
+.legend i.hole { border-color: var(--ink-sub); border-style: dashed; }
+.legend i.bad { border-color: var(--bad-line); }
+.criteria {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 12px;
+  font-size: 13px;
+  line-height: 22px;
+}
+.criteria p {
+  margin: 0;
+}
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+/* PCは右に目次があるので、ページ内のチップナビは出さない */
+@media (min-width: 769px) {
+  .snav {
+    display: none;
+  }
+}
+/* PCは左サイドバーに同じ一覧があるので、スマホだけ表示する */
+@media (min-width: 769px) {
+  .spOnly {
+    display: none;
+  }
+}

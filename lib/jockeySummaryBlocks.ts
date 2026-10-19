@@ -7,6 +7,7 @@
  */
 
 import { buildJockeySummary } from './dataPageText';
+import { emphasizeBestPlaceRate } from './summaryEmphasis';
 
 export type JockeySummaryBlockKey =
   | 'overall'
@@ -46,15 +47,10 @@ function classify(text: string, subject: string): JockeySummaryBlockKey {
   return 'other';
 }
 
-// 各段落の最初の「複勝率○○%」だけを強調表示（**〜**）にする。文言は変えない
-function emphasize(text: string): string {
-  return text.replace(/(複勝率は?)(\d+(?:\.\d+)?%)/, '$1**$2**');
-}
-
 export function buildJockeySummaryBlocks(jockey: Parameters<typeof buildJockeySummary>[0]): JockeySummaryBlock[] {
   const subject = `${jockey.name}騎手`;
   return buildJockeySummary(jockey).map((text) => {
     const key = classify(text, subject);
-    return { key, title: TITLES[key], text: emphasize(text) };
+    return { key, title: TITLES[key], text: emphasizeBestPlaceRate(text) };  // 段落内で最も高い複勝率を1つだけ強調
   });
 }

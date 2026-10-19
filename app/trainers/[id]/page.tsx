@@ -8,19 +8,26 @@ import DataSourceNote from '@/components/DataSourceNote';
 import { ALL_JOCKEYS } from '@/lib/jockeys';
 import { buildTrainerSummary } from '@/lib/dataPageText';
 import { jaDateToIso, periodFromDataPeriod, buildWebPageJsonLd } from '@/lib/dataDate';
-import { toTrainerSummaryBlocks, resolveCourseUrl, courseLabel } from '@/lib/trainerPageData';
+import { toTrainerSummaryBlocks } from '@/lib/trainerPageData';
+import { resolveCourseUrl, courseLabel } from '@/lib/courseLinks';
+import { MIN_RACES_FOR_MENTION, hasEnoughRaces, THIN_PAGE_ROBOTS } from '@/lib/dataPageRules';
+import ThinDataNotice from '@/components/ThinDataNotice';
 import pageStyles from '@/app/static-page.module.css';
 import AIBanner from '@/components/AIBanner';
 import s from '@/components/course/course.module.css';
 import CourseSectionNav from '@/components/course/CourseSectionNav';
 import RankingTable from '@/components/course/RankingTable';
 import CourseFaq from '@/components/course/CourseFaq';
-import { ConditionCard, Dots, Meter, RichText, StatsTable, type ConditionRow, type NameLink } from '@/components/course/CourseParts';
+import { ConditionCard, Meter, RichText, StatsTable, type ConditionRow, type NameLink } from '@/components/course/CourseParts';
 import t from '@/components/datapage/trainer/trainer.module.css';
 import TrainerLeadingChart from '@/components/datapage/trainer/TrainerLeadingChart';
 import BarTableCard from '@/components/datapage/trainer/BarTableCard';
 import { type LinkStatRow } from '@/components/datapage/trainer/LinkStatsTable';
-import { CourseGroupsCard, HighlightCoursesCard, RelatedSection, type CourseGroup, type HighlightCourse } from '@/components/datapage/trainer/TrainerParts';
+import { CourseGroupsCard, type CourseGroup } from '@/components/datapage/trainer/TrainerParts';
+import RelatedLinksCard, { type RelatedGroup } from '@/components/datapage/shared/RelatedLinksCard';
+import HighlightCoursesCard, { MIN_RACES_FOR_HIGHLIGHT, type HighlightCourseRow } from '@/components/datapage/shared/HighlightCoursesCard';
+import VerdictRow, { VerdictRows } from '@/components/datapage/shared/VerdictRow';
+import CriteriaDetails, { SURFACE_CRITERIA, DISTANCE_CRITERIA, DISTANCE_DEFINITION } from '@/components/datapage/shared/CriteriaDetails';
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
@@ -583,6 +590,8 @@ export async function generateMetadata({
   return {
     title,
     description,
+    // 対象レース数が少ないページは傾向判定を出さず、インデックスもさせない（コースページと同じ方針）
+    ...(hasEnoughRaces(trainer.total_races) ? {} : { robots: THIN_PAGE_ROBOTS }),
     alternates: {
       canonical: url,
     },
@@ -1001,15 +1010,19 @@ export default async function TrainerPage({
   const dateModifiedIso = jaDateToIso(trainer.last_updated);
   const jockeyIds = new Set(ALL_JOCKEYS.map((j) => String(j.id)));
 
-  // 判定の表示名（現行の特徴セクションと同じ文言）
+  // 判定の表示名（3ページ共通の文言・向き：左＝芝／短距離、右＝ダート／長距離）
   const surfaceTrendTexts: Record<number, string> = {
-    1: 'ダートが得意', 2: 'ややダートが得意', 3: '互角', 4: 'やや芝が得意', 5: '芝が得意',
+    1: '芝が得意', 2: 'やや芝が得意', 3: '差分なし', 4: 'ややダートが得意', 5: 'ダートが得意',
   };
   const distanceTrendTexts: Record<number, string> = {
-    1: '短距離が得意', 2: 'やや短距離が得意', 3: '互角', 4: 'やや長距離が得意', 5: '長距離が得意',
+    1: '短距離が得意', 2: 'やや短距離が得意', 3: '差分なし', 4: 'やや長距離が得意', 5: '長距離が得意',
   };
-  const surfaceTrend = trainer.characteristics?.gate_position;
+  // 調教師データでは芝・ダートの判定が gate_position に入っており、1＝ダートが得意。表示用に反転する（6 - 値）
+  const rawSurfaceTrend = trainer.characteristics?.gate_position;
+  const surfaceTrend = typeof rawSurfaceTrend === 'number' ? 6 - rawSurfaceTrend : undefined;
   const distanceTrend = trainer.characteristics?.distance_trend_position;
+  // 対象レース数が少ないページは傾向判定を出さない（コースページと同じ方針）
+  const enoughRaces = hasEnoughRaces(trainer.total_races);
   const hasSurfaceTrend = typeof surfaceTrend === 'number' && surfaceTrend >= 1 && surfaceTrend <= 5;
   const hasDistanceTrend = typeof distanceTrend === 'number' && distanceTrend >= 1 && distanceTrend <= 5;
   const mergedShort = (mergedDistanceStats as any[]).find((d) => d.category === '短〜マ');
@@ -1066,8 +1079,8 @@ export default async function TrainerPage({
   const leadingData = yearsForChart.map((year) => trainer.yearly_leading.find((stat) => stat.year === year) || { year, wins: 0, ranking: 0 });
 
   // 注目ポイント（現行の JockeyTrainerHighlights と同じ：出走10回以上、複勝率の上位5・下位5）
-  const highlightPool = courseRowsWithUrl.filter((c) => c.races >= 10).sort((a, b) => b.place_rate - a.place_rate);
-  const toHighlight = (c: (typeof courseRowsWithUrl)[number]): HighlightCourse => ({
+  const highlightPool = courseRowsWithUrl.filter((c) => c.races >= MIN_RACES_FOR_HIGHLIGHT).sort((a, b) => b.place_rate - a.place_rate);
+  const toHighlight = (c: (typeof courseRowsWithUrl)[number]): HighlightCourseRow => ({
     ...c,
     label: courseLabel(c, { withRacecourse: true, shortDirt: true }),
     shortName: courseLabel(c, { withRacecourse: true, shortDirt: true }),
@@ -1096,7 +1109,32 @@ export default async function TrainerPage({
     'interval-stats': '間隔別', 'surface-stats': '芝ダート別', 'racecourse-stats': '競馬場別', 'course-stats': 'コース別',
     'jockey-stats': '騎手', 'owner-stats': '馬主', 'faq-section': 'Q&A',
   };
-  const tocItems = navigationItems.filter((item) => item.id !== 'highlights-section' || hasHighlights);
+  // 対象レース数が少ないページは「特徴」「注目ポイント」「データQ&A」を出さないので、ナビ・目次からも外す
+  const thinHiddenIds = new Set(['characteristics', 'highlights-section', 'faq-section']);
+  const tocItems = navigationItems.filter(
+    (item) => (item.id !== 'highlights-section' || hasHighlights) && (enoughRaces || !thinHiddenIds.has(item.id))
+  );
+
+  // 関連データ（現行 RelatedLinks と同じ選び方：リンク先があり20走以上の行を複勝率順に5件）
+  const pickTop = <T extends { link?: string; name?: string; races?: number; place_rate?: number }>(rows: T[]) =>
+    rows
+      .filter((r) => r.link && r.name && (r.races ?? 0) >= MIN_RACES_FOR_MENTION)
+      .sort((a, b) => (b.place_rate ?? 0) - (a.place_rate ?? 0))
+      .slice(0, 5);
+  const relatedGroups: RelatedGroup[] = [
+    {
+      heading: `得意なコース（${MIN_RACES_FOR_MENTION}走以上・複勝率上位）`,
+      items: pickTop(courseRowsWithUrl.map((c) => ({ ...c, link: c.url }))).map((c) => ({
+        label: courseLabel(c, { withRacecourse: true }),
+        href: c.link as string,
+        place_rate: c.place_rate,
+      })),
+    },
+    {
+      heading: `相性の良い騎手（${MIN_RACES_FOR_MENTION}走以上・複勝率上位）`,
+      items: pickTop(jockeyRows).map((j) => ({ label: j.name, href: j.link as string, place_rate: j.place_rate })),
+    },
+  ].filter((g) => g.items.length > 0);
   const chipItems = tocItems.map((item) => ({ id: item.id, label: chipLabels[item.id] ?? item.label }));
 
   return (
@@ -1110,10 +1148,12 @@ export default async function TrainerPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqTrainerJsonLd) }}
-      />
+      {enoughRaces && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqTrainerJsonLd) }}
+        />
+      )}
       <div className={s.canvas}>
       <div className={pageStyles.staticPageContainer}>
         <div className={pageStyles.staticPageColumns3}>
@@ -1150,29 +1190,26 @@ export default async function TrainerPage({
               </div>
             </div>
 
+            {/* 対象レース数が少ない場合の注意 */}
+            {!enoughRaces && (
+              <ThinDataNotice totalRaces={trainer.total_races} hiddenItems="「調教師の傾向」「調教師の特徴」「注目ポイント」「データQ&A」" />
+            )}
+
             {/* 結論カード */}
-            {(hasSurfaceTrend || hasDistanceTrend) && (
+            {enoughRaces && (hasSurfaceTrend || hasDistanceTrend) && (
               <div className={`${s.card} ${s.verdict}`}>
                 <div className={s.vHead}>
                   <h2>{trainer.name}調教師の傾向</h2>
                   <span className={s.note}>{trainer.total_races.toLocaleString()}レース</span>
                 </div>
-                <div className={s.vRows}>
+                <VerdictRows>
                   {hasSurfaceTrend && (
-                    <a className={s.vRow} href="#characteristics">
-                      <span className={s.vKey}>芝・ダート</span>
-                      <Dots value={surfaceTrend} />
-                      <span className={s.vVal}>{surfaceTrendTexts[surfaceTrend]}</span>
-                    </a>
+                    <VerdictRow label="芝・ダート" value={surfaceTrend} result={surfaceTrendTexts[surfaceTrend]} href="#characteristics" />
                   )}
                   {hasDistanceTrend && (
-                    <a className={s.vRow} href="#characteristics">
-                      <span className={s.vKey}>距離</span>
-                      <Dots value={distanceTrend} />
-                      <span className={s.vVal}>{distanceTrendTexts[distanceTrend]}</span>
-                    </a>
+                    <VerdictRow label="距離" value={distanceTrend} result={distanceTrendTexts[distanceTrend]} href="#characteristics" />
                   )}
-                </div>
+                </VerdictRows>
               </div>
             )}
 
@@ -1194,17 +1231,12 @@ export default async function TrainerPage({
             )}
 
             {/* 関連データ（得意なコース・相性の良い騎手へのリンク） */}
-            <RelatedSection
-              title={`${trainer.name}調教師の関連データ`}
-              groups={[
-                {
-                  heading: '得意なコース（複勝率上位）',
-                  rows: courseRowsWithUrl.map((c) => ({ ...c, link: c.url })),
-                  label: (r) => (r.name ?? '').replace('競馬場', '').replace(/\s+/g, ''),
-                },
-                { heading: '相性の良い騎手', rows: jockeyRows },
-              ]}
-            />
+            {relatedGroups.length > 0 && (
+              <nav className={s.section} aria-label={`${trainer.name}調教師の関連データ`}>
+                <div className={s.sh}><h2 className={s.h2}>{trainer.name}調教師の関連データ</h2></div>
+                <RelatedLinksCard groups={relatedGroups} />
+              </nav>
+            )}
 
             {/* 年度別成績 */}
             <section id="leading" className={s.section} aria-label="年度別成績">
@@ -1219,7 +1251,7 @@ export default async function TrainerPage({
             </section>
 
             {/* 調教師の特徴 */}
-            {trainer.characteristics && (
+            {enoughRaces && trainer.characteristics && (
               <section id="characteristics" className={`${s.section} ${t.resetSection}`} aria-label="調教師特徴">
                 <div className={s.sh}><h2 className={s.h2}>{trainer.name}調教師の特徴</h2><p>判定と、その根拠になった数字</p></div>
                 <div className={s.card}>
@@ -1228,7 +1260,7 @@ export default async function TrainerPage({
                       label="得意なコース傾向"
                       result={surfaceTrendTexts[surfaceTrend]}
                       value={surfaceTrend}
-                      scale={['ダート', '互角', '芝']}
+                      scale={['芝が得意', '差分なし', 'ダートが得意']}
                       pair={trainerTurfStat || trainerDirtStat ? [
                         ['芝 複勝率', trainerTurfStat ? `${trainerTurfStat.place_rate.toFixed(1)}%` : '-'],
                         ['ダート 複勝率', trainerDirtStat ? `${trainerDirtStat.place_rate.toFixed(1)}%` : '-'],
@@ -1240,51 +1272,29 @@ export default async function TrainerPage({
                       label="得意な距離傾向"
                       result={distanceTrendTexts[distanceTrend]}
                       value={distanceTrend}
-                      scale={['短距離が得意', '互角', '長距離が得意']}
+                      scale={['短距離が得意', '差分なし', '長距離が得意']}
                       pair={mergedShort || mergedLong ? [
                         ['短〜マ 複勝率', mergedShort ? `${mergedShort.place_rate.toFixed(1)}%` : '-'],
                         ['中〜長 複勝率', mergedLong ? `${mergedLong.place_rate.toFixed(1)}%` : '-'],
                       ] : undefined}
                     />
                   )}
-                  <details className={s.more}>
-                    <summary>判定の基準と距離の定義</summary>
-                    <p className={t.ruleTitle}>得意なコース傾向</p>
-                    <p className={s.note}>芝とダートの複勝率を比較し、得意なコース傾向を判定しています。</p>
-                    <ul className={t.rule}>
-                      <li>ダートの複勝率が芝より5%以上高い：ダートが得意</li>
-                      <li>ダートの複勝率が芝より2%以上高い：ややダートが得意</li>
-                      <li>複勝率の差がほぼない：差分なし</li>
-                      <li>芝の複勝率がダートより2%以上高い：やや芝が得意</li>
-                      <li>芝の複勝率がダートより5%以上高い：芝が得意</li>
-                    </ul>
-                    <p className={t.ruleTitle}>得意な距離傾向</p>
-                    <p className={s.note}>短距離・マイルと中距離・長距離の複勝率を比較し、得意な距離傾向を判定しています。</p>
-                    <ul className={t.rule}>
-                      <li>短距離・マイルの複勝率が中距離・長距離より5%以上高い：短距離が得意</li>
-                      <li>短距離・マイルの複勝率が中距離・長距離より2%以上高い：やや短距離が得意</li>
-                      <li>複勝率の差がほぼない：差分なし</li>
-                      <li>中距離・長距離の複勝率が短距離・マイルより2%以上高い：やや長距離が得意</li>
-                      <li>中距離・長距離の複勝率が短距離・マイルより5%以上高い：長距離が得意</li>
-                    </ul>
-                    <p className={t.ruleTitle}>距離の定義</p>
-                    <ul className={t.rule}>
-                      <li><b>短距離</b>：〜1400m</li>
-                      <li><b>マイル</b>：1401m〜1800m</li>
-                      <li><b>中距離</b>：1801m〜2100m</li>
-                      <li><b>長距離</b>：2101m〜</li>
-                    </ul>
-                    <p className={s.note} style={{ marginBottom: 12 }}>集計に使っている区分です。</p>
-                  </details>
+                  <CriteriaDetails
+                    items={[
+                      ...(hasSurfaceTrend ? [SURFACE_CRITERIA] : []),
+                      ...(hasDistanceTrend ? [DISTANCE_CRITERIA] : []),
+                      DISTANCE_DEFINITION,
+                    ]}
+                  />
                 </div>
               </section>
             )}
 
             {/* 注目ポイント */}
-            {hasHighlights && (
+            {enoughRaces && hasHighlights && (
               <section id="highlights-section" className={s.section} aria-label="注目ポイント">
                 <div className={s.sh}>
-                  <h2 className={s.h2}>注目ポイント</h2>
+                  <h2 className={s.h2}>{trainer.name}調教師の注目ポイント</h2>
                   <p>{trainer.name}調教師の管理馬が得意・苦手なコース。コース名をタップすると詳細へ</p>
                 </div>
                 <div className={s.legend}>
@@ -1292,7 +1302,7 @@ export default async function TrainerPage({
                   <span><i style={{ borderColor: '#D98A9E' }} />苦手</span>
                 </div>
                 <HighlightCoursesCard top={highlightTop} bottom={highlightBottom} />
-                <p className={s.note}>※出走回数10回以上のコースを対象に、複勝率で評価しています</p>
+                <p className={s.note}>※出走回数{MIN_RACES_FOR_HIGHLIGHT}回以上のコースを対象に、複勝率で評価しています</p>
               </section>
             )}
 
@@ -1356,6 +1366,7 @@ export default async function TrainerPage({
             </section>
 
             {/* データQ&A */}
+            {enoughRaces && (
             <section id="faq-section" className={s.section} aria-label="データQ&A">
               <div className={s.sh}><h2 className={s.h2}>データQ&amp;A</h2></div>
               <div className={s.card}>
@@ -1369,6 +1380,7 @@ export default async function TrainerPage({
                 ]} />
               </div>
             </section>
+            )}
 
             {/* データの出典・集計方法 */}
             <div className={s.section}>

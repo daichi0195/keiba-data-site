@@ -7,27 +7,31 @@ import { ALL_JOCKEYS } from '@/lib/jockeys';
 import { ALL_TRAINERS } from '@/lib/trainers';
 import pageStyles from '@/app/static-page.module.css';
 import DataSourceNote from '@/components/DataSourceNote';
-import { ALL_COURSES, getCourseUrl } from '@/lib/courses';
+import { resolveCourseUrl, courseLabel } from '@/lib/courseLinks';
 import { jaDateToIso, periodFromDataPeriod, buildWebPageJsonLd } from '@/lib/dataDate';
-import { MIN_RACES_FOR_MENTION } from '@/lib/dataPageRules';
+import { MIN_RACES_FOR_MENTION, hasEnoughRaces, THIN_PAGE_ROBOTS } from '@/lib/dataPageRules';
+import ThinDataNotice from '@/components/ThinDataNotice';
 import { buildJockeySummaryBlocks } from '@/lib/jockeySummaryBlocks';
 import AIBanner from '@/components/AIBanner';
 import s from '@/components/course/course.module.css';
 import CourseSectionNav from '@/components/course/CourseSectionNav';
 import CourseFaq from '@/components/course/CourseFaq';
 import RankingTable, { type RankingRow } from '@/components/course/RankingTable';
-import { ConditionCard, Dots, Meter, RichText, StatsTable, type ConditionRow, type NameLink } from '@/components/course/CourseParts';
+import { ConditionCard, Meter, RichText, StatsTable, type ConditionRow, type NameLink } from '@/components/course/CourseParts';
 import j from '@/components/datapage/jockey/jockey.module.css';
 import JockeyLeadingCard from '@/components/datapage/jockey/JockeyLeadingCard';
 import {
   CourseGroupsCard,
-  CourseHighlightCard,
-  RelatedLinksCard,
   SummaryConditionCard,
   type CourseGroup,
   type LinkStatRow,
-  type RelatedGroup,
 } from '@/components/datapage/jockey/JockeyParts';
+import RelatedLinksCard, { type RelatedGroup } from '@/components/datapage/shared/RelatedLinksCard';
+import HighlightCoursesCard, { MIN_RACES_FOR_HIGHLIGHT, type HighlightCourseRow } from '@/components/datapage/shared/HighlightCoursesCard';
+import VerdictRow, { VerdictRows } from '@/components/datapage/shared/VerdictRow';
+import CriteriaDetails, {
+  SURFACE_CRITERIA, DISTANCE_CRITERIA, RUNNING_STYLE_CRITERIA, DISTANCE_DEFINITION, RUNNING_STYLE_DEFINITION,
+} from '@/components/datapage/shared/CriteriaDetails';
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
@@ -286,6 +290,8 @@ export async function generateMetadata({
   return {
     title,
     description,
+    // 対象レース数が少ないページは傾向判定を出さず、インデックスもさせない（コースページと同じ方針）
+    ...(hasEnoughRaces(jockey.total_races) ? {} : { robots: THIN_PAGE_ROBOTS }),
     alternates: {
       canonical: url,
     },
@@ -490,18 +496,12 @@ export default async function JockeyPage({
   const runningStyleTrendPosition = jockey.characteristics?.running_style_trend_position ?? 3;
   const distanceTrendPosition = jockey.characteristics?.distance_trend_position ?? 3;
 
-  // 関連リンク用: 実在するコースページのURL
-  const courseUrls = new Set(ALL_COURSES.map((c) => getCourseUrl(c)));
-
-  // DataTableコンポーネント用にデータ整形（linkプロパティを追加）
-  // 障害コースを除外
+  // コース別成績：実在するコースページだけにリンクする（データの variant は「外」や空のこともあるため共通処理で解決）
   const courseTableData = jockey.course_stats
     .filter((stat) => stat.surface_en !== 'obstacle')
     .map((stat) => ({
       ...stat,
-      link: `/courses/${stat.racecourse_en}/${stat.surface_en}/${
-        stat.variant ? `${stat.distance}-${stat.variant}` : stat.distance
-      }`,
+      link: resolveCourseUrl(stat),
     }));
 
   // 競馬場別にグループ化（HeaderMenuの順序に合わせる）
@@ -1007,11 +1007,16 @@ export default async function JockeyPage({
 
   // 判定の文言（5段階）
   const reliabilityLabels = ['低い', 'やや低い', '標準', 'やや高い', '高い'];
-  const surfaceLabels = ['ダートが得意', 'ややダートが得意', '差分なし', 'やや芝が得意', '芝が得意'];
+  // 芝・ダートは3ページ共通の向き（左＝芝が得意／右＝ダートが得意）に揃える。
+  // 騎手データの surface_trend_position は 1＝ダートが得意 なので、表示用に反転する（6 - 値）
+  const surfaceLabels = ['芝が得意', 'やや芝が得意', '差分なし', 'ややダートが得意', 'ダートが得意'];
+  const surfacePos = 6 - surfaceTrendPosition;
   const styleLabels = ['逃げ・先行が得意', 'やや逃げ・先行が得意', '差分なし', 'やや差し・追込が得意', '差し・追込が得意'];
   const distanceLabels = ['短距離が得意', 'やや短距離が得意', '差分なし', 'やや長距離が得意', '長距離が得意'];
   const labelOf = (labels: string[], v: number) => labels[v - 1] ?? '';
   const reliabilityValue = chars.volatility;
+  // 対象レース数が少ないページは傾向判定を出さない（コースページと同じ方針）
+  const enoughRaces = hasEnoughRaces(jockey.total_races);
 
   // 年度別（グラフは古い順、表は新しい順＝現行どおり）
   const leadingData = [currentYear - 2, currentYear - 1, currentYear].map((year) => {
@@ -1069,14 +1074,15 @@ export default async function JockeyPage({
   const courseGroups: CourseGroup[] = coursesByRacecourse.map((g) => ({
     key: g.racecourse_en,
     title: g.racecourse_ja,
-    rows: g.courses.map((c) => ({ ...c, label: c.name.replace(g.racecourse_ja, '').trim().replace(/\s+/g, ''), href: c.link })),
+    rows: g.courses.map((c) => ({ ...c, label: courseLabel(c), href: c.link })),
   }));
 
   // 注目ポイント（出走10回以上のコースを複勝率で評価。現行の JockeyTrainerHighlights と同じ）
-  const shortCourseName = (name: string) =>
-    name.replace(/競馬場/g, '').replace(/\s+/g, '').replace(/ダート/g, 'ダ').replace(/（外回り）/g, '外').replace(/（内回り）/g, '内');
-  const highlightSorted = courseTableData.filter((c) => c.races >= 10).sort((a, b) => b.place_rate - a.place_rate);
-  const toHighlightRow = (c: (typeof courseTableData)[number]): LinkStatRow => ({ ...c, label: shortCourseName(c.name), href: c.link });
+  const highlightSorted = courseTableData.filter((c) => c.races >= MIN_RACES_FOR_HIGHLIGHT).sort((a, b) => b.place_rate - a.place_rate);
+  const toHighlightRow = (c: (typeof courseTableData)[number]): HighlightCourseRow => {
+    const name = courseLabel(c, { withRacecourse: true, shortDirt: true });
+    return { ...c, label: name, shortName: name, link: c.link };
+  };
   const highlightTop = highlightSorted.slice(0, 5).map(toHighlightRow);
   const highlightBottom = highlightSorted.slice(-5).reverse().map(toHighlightRow);
 
@@ -1089,7 +1095,7 @@ export default async function JockeyPage({
 
   // データ概要（見出し付きブロック。コース名・調教師名は詳細ページへリンク）
   const summaryBlocks = buildJockeySummaryBlocks(jockey as any);
-  const courseNameLinks: NameLink[] = courseTableData.filter((c) => courseUrls.has(c.link)).map((c) => ({ name: c.name, href: c.link }));
+  const courseNameLinks: NameLink[] = courseTableData.filter((c) => c.link).map((c) => ({ name: c.name, href: c.link as string }));
   const trainerNameLinks: NameLink[] = trainerRows.filter((t) => t.link).map((t) => ({ name: `${t.name}調教師`, href: t.link as string }));
   const summaryLinks: Partial<Record<string, NameLink[]>> = {
     racecourse: courseNameLinks,
@@ -1104,15 +1110,15 @@ export default async function JockeyPage({
       .slice(0, 5);
   const relatedGroups: RelatedGroup[] = [
     {
-      heading: '得意なコース（複勝率上位）',
-      items: pickTop(courseTableData.filter((c) => courseUrls.has(c.link))).map((r) => ({
-        label: (r.name ?? '').replace('競馬場', '').replace(/\s+/g, ''),
-        href: r.link,
+      heading: `得意なコース（${MIN_RACES_FOR_MENTION}走以上・複勝率上位）`,
+      items: pickTop(courseTableData).map((r) => ({
+        label: courseLabel(r, { withRacecourse: true }),
+        href: r.link as string,
         place_rate: r.place_rate,
       })),
     },
     {
-      heading: '相性の良い調教師',
+      heading: `相性の良い調教師（${MIN_RACES_FOR_MENTION}走以上・複勝率上位）`,
       items: pickTop(trainerRows).map((r) => ({ label: r.name, href: r.link as string, place_rate: r.place_rate })),
     },
   ].filter((g) => g.items.length > 0);
@@ -1143,7 +1149,10 @@ export default async function JockeyPage({
     'distance-stats': '距離別', 'gender-stats': '性別', 'surface-stats': '芝・ダート', 'track-condition-stats': '馬場状態',
     'racecourse-stats': '競馬場別', 'course-stats': 'コース別', 'trainer-stats': '調教師', 'owner-stats': '馬主', 'faq-section': 'Q&A',
   };
-  const chipItems = navigationItems.map((item) => ({ id: item.id, label: chipLabels[item.id] ?? item.label }));
+  // 対象レース数が少ないページは「特徴」「注目ポイント」「データQ&A」を出さないので、ナビ・目次からも外す
+  const thinHiddenIds = new Set(['characteristics', 'highlights-section', 'faq-section']);
+  const tocItems = navigationItems.filter((item) => enoughRaces || !thinHiddenIds.has(item.id));
+  const chipItems = tocItems.map((item) => ({ id: item.id, label: chipLabels[item.id] ?? item.label }));
 
   const runningStyleDefinition = (
     <details className={s.more}>
@@ -1181,10 +1190,12 @@ export default async function JockeyPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJockeyJsonLd) }}
-      />
+      {enoughRaces && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJockeyJsonLd) }}
+        />
+      )}
       <div className={s.canvas}>
       <div className={pageStyles.staticPageContainer}>
         <div className={pageStyles.staticPageColumns3}>
@@ -1222,35 +1233,26 @@ export default async function JockeyPage({
               </div>
             </div>
 
+            {/* 対象レース数が少ない場合の注意 */}
+            {!enoughRaces && (
+              <ThinDataNotice totalRaces={jockey.total_races} hiddenItems="「騎手の傾向」「騎手の特徴」「注目ポイント」「データQ&A」" />
+            )}
+
             {/* 結論カード */}
-            <div className={`${s.card} ${s.verdict}`}>
-              <div className={s.vHead}>
-                <h2>{jockey.name}騎手の傾向</h2>
-                <span className={s.note}>{jockey.total_races.toLocaleString()}レース</span>
+            {enoughRaces && (
+              <div className={`${s.card} ${s.verdict}`}>
+                <div className={s.vHead}>
+                  <h2>{jockey.name}騎手の傾向</h2>
+                  <span className={s.note}>{jockey.total_races.toLocaleString()}レース</span>
+                </div>
+                <VerdictRows>
+                  <VerdictRow label="信頼度" value={reliabilityValue} result={labelOf(reliabilityLabels, reliabilityValue)} href="#characteristics" />
+                  <VerdictRow label="芝・ダート" value={surfacePos} result={labelOf(surfaceLabels, surfacePos)} href="#characteristics" />
+                  <VerdictRow label="脚質" value={runningStyleTrendPosition} result={labelOf(styleLabels, runningStyleTrendPosition)} href="#characteristics" />
+                  <VerdictRow label="距離" value={distanceTrendPosition} result={labelOf(distanceLabels, distanceTrendPosition)} href="#characteristics" />
+                </VerdictRows>
               </div>
-              <div className={s.vRows}>
-                <a className={s.vRow} href="#characteristics">
-                  <span className={s.vKey}>信頼度</span>
-                  <Dots value={reliabilityValue} />
-                  <span className={s.vVal}>{labelOf(reliabilityLabels, reliabilityValue)}</span>
-                </a>
-                <a className={s.vRow} href="#characteristics">
-                  <span className={s.vKey}>芝・ダート</span>
-                  <Dots value={surfaceTrendPosition} />
-                  <span className={s.vVal}>{labelOf(surfaceLabels, surfaceTrendPosition)}</span>
-                </a>
-                <a className={s.vRow} href="#characteristics">
-                  <span className={s.vKey}>脚質</span>
-                  <Dots value={runningStyleTrendPosition} />
-                  <span className={s.vVal}>{labelOf(styleLabels, runningStyleTrendPosition)}</span>
-                </a>
-                <a className={s.vRow} href="#characteristics">
-                  <span className={s.vKey}>距離</span>
-                  <Dots value={distanceTrendPosition} />
-                  <span className={s.vVal}>{labelOf(distanceLabels, distanceTrendPosition)}</span>
-                </a>
-              </div>
-            </div>
+            )}
 
             <CourseSectionNav items={chipItems} />
 
@@ -1269,7 +1271,7 @@ export default async function JockeyPage({
 
             {/* 関連データ（詳細ページへのリンク） */}
             {relatedGroups.length > 0 && (
-              <nav className={s.section} aria-label={`${jockey.name}騎手の関連データ`}>
+              <nav id="related-section" className={s.section} aria-label={`${jockey.name}騎手の関連データ`}>
                 <div className={s.sh}><h2 className={s.h2}>{jockey.name}騎手の関連データ</h2></div>
                 <RelatedLinksCard groups={relatedGroups} />
               </nav>
@@ -1285,104 +1287,77 @@ export default async function JockeyPage({
             </section>
 
             {/* 騎手の特徴 */}
-            <section id="characteristics" className={s.section} aria-label="騎手特徴">
-              <div className={s.sh}><h2 className={s.h2}>{jockey.name}騎手の特徴</h2><p>判定と、その根拠になった数字</p></div>
-              <div className={s.card}>
-                <Meter
-                  label="人気時の信頼度"
-                  result={labelOf(reliabilityLabels, reliabilityValue)}
-                  value={reliabilityValue}
-                  scale={['低い', '標準', '高い']}
-                  pair={reliabilityPair}
-                />
-                <Meter
-                  label="得意なコース傾向"
-                  result={labelOf(surfaceLabels, surfaceTrendPosition)}
-                  value={surfaceTrendPosition}
-                  scale={['ダートが得意', '差分なし', '芝が得意']}
-                  pair={surfacePair}
-                />
-                <Meter
-                  label="得意な脚質傾向"
-                  result={labelOf(styleLabels, runningStyleTrendPosition)}
-                  value={runningStyleTrendPosition}
-                  scale={['逃げ・先行が得意', '差分なし', '差し・追込が得意']}
-                  pair={stylePair}
-                />
-                <Meter
-                  label="得意な距離傾向"
-                  result={labelOf(distanceLabels, distanceTrendPosition)}
-                  value={distanceTrendPosition}
-                  scale={['短距離が得意', '差分なし', '長距離が得意']}
-                  pair={distancePair}
-                />
-                <details className={s.more} style={{ marginTop: 14 }}>
-                  <summary>判定の基準</summary>
-                  <div className={j.criteria}>
-                    <div>
-                      <h3>人気時の信頼度</h3>
-                      <p>1番人気に支持されたときの複勝率が高いほど、信頼度が高いことを示します。直近3年間のレースデータを使用し、1番人気での騎乗が10回以上の騎手のみを対象にしています。</p>
-                    </div>
-                    <div>
-                      <h3>得意なコース傾向</h3>
-                      <p>芝とダートの複勝率を比較しています。</p>
-                      <ul>
-                        <li>ダートの複勝率が芝より5%以上高い：ダートが得意</li>
-                        <li>ダートの複勝率が芝より2%以上高い：ややダートが得意</li>
-                        <li>複勝率の差がほぼない：差分なし</li>
-                        <li>芝の複勝率がダートより2%以上高い：やや芝が得意</li>
-                        <li>芝の複勝率がダートより5%以上高い：芝が得意</li>
-                      </ul>
-                    </div>
-                    <div>
-                      <h3>得意な脚質傾向</h3>
-                      <p>逃げ・先行と差し・追込の複勝率を比較しています。</p>
-                      <ul>
-                        <li>逃げ・先行の複勝率が差し・追込より5%以上高い：逃げ・先行が得意</li>
-                        <li>逃げ・先行の複勝率が差し・追込より2%以上高い：やや逃げ・先行が得意</li>
-                        <li>複勝率の差がほぼない：差分なし</li>
-                        <li>差し・追込の複勝率が逃げ・先行より2%以上高い：やや差し・追込が得意</li>
-                        <li>差し・追込の複勝率が逃げ・先行より5%以上高い：差し・追込が得意</li>
-                      </ul>
-                    </div>
-                    <div>
-                      <h3>得意な距離傾向</h3>
-                      <p>短距離・マイルと中距離・長距離の複勝率を比較しています。</p>
-                      <ul>
-                        <li>短距離・マイルの複勝率が中距離・長距離より5%以上高い：短距離が得意</li>
-                        <li>短距離・マイルの複勝率が中距離・長距離より2%以上高い：やや短距離が得意</li>
-                        <li>複勝率の差がほぼない：差分なし</li>
-                        <li>中距離・長距離の複勝率が短距離・マイルより2%以上高い：やや長距離が得意</li>
-                        <li>中距離・長距離の複勝率が短距離・マイルより5%以上高い：長距離が得意</li>
-                      </ul>
-                    </div>
-                  </div>
-                </details>
-                {runningStyleDefinition}
-                {distanceDefinition}
-              </div>
-              <p className={s.note}>※複勝率ランキングは1番人気が10走以上の騎手を対象</p>
-            </section>
+            {enoughRaces && (
+              <section id="characteristics" className={s.section} aria-label="騎手特徴">
+                <div className={s.sh}><h2 className={s.h2}>{jockey.name}騎手の特徴</h2><p>判定と、その根拠になった数字</p></div>
+                <div className={s.card}>
+                  <Meter
+                    label="人気時の信頼度"
+                    result={labelOf(reliabilityLabels, reliabilityValue)}
+                    value={reliabilityValue}
+                    scale={['低い', '標準', '高い']}
+                    pair={reliabilityPair}
+                  />
+                  <Meter
+                    label="得意なコース傾向"
+                    result={labelOf(surfaceLabels, surfacePos)}
+                    value={surfacePos}
+                    scale={['芝が得意', '差分なし', 'ダートが得意']}
+                    pair={surfacePair}
+                  />
+                  <Meter
+                    label="得意な脚質傾向"
+                    result={labelOf(styleLabels, runningStyleTrendPosition)}
+                    value={runningStyleTrendPosition}
+                    scale={['逃げ・先行が得意', '差分なし', '差し・追込が得意']}
+                    pair={stylePair}
+                  />
+                  <Meter
+                    label="得意な距離傾向"
+                    result={labelOf(distanceLabels, distanceTrendPosition)}
+                    value={distanceTrendPosition}
+                    scale={['短距離が得意', '差分なし', '長距離が得意']}
+                    pair={distancePair}
+                  />
+                  <CriteriaDetails
+                    items={[
+                      {
+                        title: '人気時の信頼度',
+                        lead: '1番人気に支持されたときの複勝率が高いほど、信頼度が高いことを示します。直近3年間のレースデータを使用し、1番人気での騎乗が10回以上の騎手のみを対象にしています。',
+                      },
+                      SURFACE_CRITERIA,
+                      RUNNING_STYLE_CRITERIA,
+                      DISTANCE_CRITERIA,
+                      DISTANCE_DEFINITION,
+                      RUNNING_STYLE_DEFINITION,
+                    ]}
+                  />
+                </div>
+                <p className={s.note}>※複勝率ランキングは1番人気が10走以上の騎手を対象</p>
+              </section>
+            )}
 
             {/* 注目ポイント */}
-            <section id="highlights-section" className={s.section} aria-label="注目ポイント">
-              <div className={s.sh}>
-                <h2 className={s.h2}>注目ポイント</h2>
-                <p>成績が目立つコース。名前をタップすると詳細へ</p>
-              </div>
-              {highlightTop.length > 0 || highlightBottom.length > 0 ? (
-                <>
-                  <div className={s.legend}>
-                    <span><i style={{ borderColor: '#5FC28A' }} />得意</span>
-                    <span><i style={{ borderColor: '#D98A9E' }} />苦手</span>
-                  </div>
-                  <CourseHighlightCard top={highlightTop} bottom={highlightBottom} />
-                </>
-              ) : (
-                <div className={s.card}><p className={s.note}>出走回数10回以上のコースがありません。</p></div>
-              )}
-              <p className={s.note}>※出走回数10回以上のコースを対象に、複勝率で評価しています</p>
-            </section>
+            {enoughRaces && (
+              <section id="highlights-section" className={s.section} aria-label="注目ポイント">
+                <div className={s.sh}>
+                  <h2 className={s.h2}>{jockey.name}騎手の注目ポイント</h2>
+                  <p>成績が目立つコース。コース名をタップすると詳細へ</p>
+                </div>
+                {highlightTop.length > 0 || highlightBottom.length > 0 ? (
+                  <>
+                    <div className={s.legend}>
+                      <span><i style={{ borderColor: '#5FC28A' }} />得意</span>
+                      <span><i style={{ borderColor: '#D98A9E' }} />苦手</span>
+                    </div>
+                    <HighlightCoursesCard top={highlightTop} bottom={highlightBottom} />
+                  </>
+                ) : (
+                  <div className={s.card}><p className={s.note}>出走回数{MIN_RACES_FOR_HIGHLIGHT}回以上のコースがありません。</p></div>
+                )}
+                <p className={s.note}>※出走回数{MIN_RACES_FOR_HIGHLIGHT}回以上のコースを対象に、複勝率で評価しています</p>
+              </section>
+            )}
 
             {/* 条件別 */}
             <section id="class-stats" className={s.section} aria-label="クラス別データ">
@@ -1437,6 +1412,7 @@ export default async function JockeyPage({
             </section>
 
             {/* データQ&A */}
+            {enoughRaces && (
             <section id="faq-section" className={s.section} aria-label="データQ&A">
               <div className={s.sh}><h2 className={s.h2}>データQ&amp;A</h2></div>
               <div className={s.card}>
@@ -1452,6 +1428,7 @@ export default async function JockeyPage({
                 ]} />
               </div>
             </section>
+            )}
 
             {/* データの出典・集計方法 */}
             <div className={s.section}>
@@ -1460,7 +1437,7 @@ export default async function JockeyPage({
           </article>
 
           {/* PC用：右サイドバー目次 */}
-          <TableOfContents items={navigationItems} />
+          <TableOfContents items={tocItems} />
         </div>
       </div>
       </div>
