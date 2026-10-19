@@ -95,13 +95,27 @@ export interface CourseSummaryInput {
   };
 }
 
+// データ概要の段落。key で段落の種類を表し、text の **…** は強調する箇所
+export type CourseSummaryBlockKey = 'intro' | 'popularity' | 'gate' | 'runningStyle' | 'people' | 'pedigree';
+export interface CourseSummaryBlock {
+  key: CourseSummaryBlockKey;
+  text: string;
+}
+
+const stripEmphasis = (text: string): string => text.replace(/\*\*([^*]+)\*\*/g, '$1');
+
 export function buildCourseSummary(input: CourseSummaryInput): string[] {
+  return buildCourseSummaryBlocks(input).map((b) => stripEmphasis(b.text));
+}
+
+export function buildCourseSummaryBlocks(input: CourseSummaryInput): CourseSummaryBlock[] {
   const {
     courseName, totalRaces, periodText, popularity, gateStats, runningStyleStats,
     jockeyStats, trainerStats, sireStats, damSireStats, characteristics, labels,
   } = input;
   const enough = hasEnoughRaces(totalRaces);
-  const paragraphs: string[] = [];
+  const blocks: CourseSummaryBlock[] = [];
+  const push = (key: CourseSummaryBlockKey, text: string) => blocks.push({ key, text });
 
   // 1. サンプル数と期間
   {
@@ -111,7 +125,7 @@ export function buildCourseSummary(input: CourseSummaryInput): string[] {
     } else {
       p += `このページでは、人気・枠順・脚質・騎手・血統・調教師の切り口で成績を集計し、コースの傾向を読み解く材料をまとめています。`;
     }
-    paragraphs.push(p);
+    push('intro', p);
   }
 
   // 2. 人気と配当
@@ -121,7 +135,7 @@ export function buildCourseSummary(input: CourseSummaryInput): string[] {
     const parts: string[] = [];
     if (fav1 && num(fav1.races)) {
       parts.push(
-        `1番人気馬の成績は${int(fav1.races)}走${int(fav1.wins)}勝で勝率${pct(fav1.win_rate)}、複勝率${pct(fav1.place_rate)}、単勝回収率${pct(fav1.win_payback)}です。`
+        `1番人気馬の成績は${int(fav1.races)}走${int(fav1.wins)}勝で勝率${pct(fav1.win_rate)}、**複勝率${pct(fav1.place_rate)}**、単勝回収率${pct(fav1.win_payback)}です。`
       );
     }
     if (fav10 && num(fav10.races)) {
@@ -134,10 +148,10 @@ export function buildCourseSummary(input: CourseSummaryInput): string[] {
     if (enough && median && allMedian && rank && total) {
       const diff = median > allMedian ? '上回って' : median < allMedian ? '下回って' : 'ほぼ同じで';
       parts.push(
-        `三連単配当の中央値は${yen(median)}で、全${int(total)}コースの中央値${yen(allMedian)}を${diff}おり（配当の高い順に${int(rank)}位）、総合的な荒れやすさは「${labels.volatility ?? '標準'}」と判定しています。`
+        `三連単配当の中央値は**${yen(median)}**で、全${int(total)}コースの中央値${yen(allMedian)}を${diff}おり（配当の高い順に${int(rank)}位）、総合的な荒れやすさは**「${labels.volatility ?? '標準'}」**と判定しています。`
       );
     }
-    if (parts.length) paragraphs.push(parts.join(''));
+    if (parts.length) push('popularity', parts.join(''));
   }
 
   // 3. 枠順
@@ -160,12 +174,12 @@ export function buildCourseSummary(input: CourseSummaryInput): string[] {
         parts.push(`枠順別では、内枠（1〜4枠）の複勝率が${innerRate.toFixed(1)}%、外枠（5〜8枠）が${outerRate.toFixed(1)}%です。`);
       }
       if (best && worst && best !== worst) {
-        parts.push(`枠番ごとに見ると${int(best.gate)}枠の複勝率${pct(best.place_rate)}が最も高く、${int(worst.gate)}枠の${pct(worst.place_rate)}が最も低くなっています。`);
+        parts.push(`枠番ごとに見ると**${int(best.gate)}枠の複勝率${pct(best.place_rate)}**が最も高く、${int(worst.gate)}枠の${pct(worst.place_rate)}が最も低くなっています。`);
       }
       if (enough && labels.gate) {
-        parts.push(`内外の差を総合すると「${labels.gate}」と判定しています。`);
+        parts.push(`内外の差を総合すると**「${labels.gate}」**と判定しています。`);
       }
-      if (parts.length) paragraphs.push(parts.join(''));
+      if (parts.length) push('gate', parts.join(''));
     }
   }
 
@@ -175,15 +189,15 @@ export function buildCourseSummary(input: CourseSummaryInput): string[] {
     if (styles.length >= 2) {
       const list = styles.map((s) => `${String(s.style_label ?? s.label)}${pct(s.place_rate)}`);
       const best = maxBy(styles, 'place_rate');
-      const parts: string[] = [`脚質別の複勝率は${joinJa(list)}で、${String(best?.style_label ?? best?.label)}が最も好成績です。`];
+      const parts: string[] = [`脚質別の複勝率は${joinJa(list)}で、**${String(best?.style_label ?? best?.label)}が最も好成績**です。`];
       const payback = styles.filter((s) => (num(s.win_payback) ?? 0) >= 100);
       if (payback.length) {
         parts.push(`単勝回収率が100%を超えているのは${joinJa(payback.map((s) => String(s.style_label ?? s.label)))}で、馬券的な妙味がある脚質と言えます。`);
       }
       if (enough && labels.runningStyle) {
-        parts.push(`展開面では「${labels.runningStyle}」と判定しています。`);
+        parts.push(`展開面では**「${labels.runningStyle}」**と判定しています。`);
       }
-      paragraphs.push(parts.join(''));
+      push('runningStyle', parts.join(''));
     }
   }
 
@@ -195,7 +209,7 @@ export function buildCourseSummary(input: CourseSummaryInput): string[] {
       const topWins = maxBy(jq, 'wins');
       const topRate = maxBy(jq, 'win_rate');
       if (topWins) {
-        const base = `騎手別（${MIN_RACES_FOR_MENTION}走以上）では${nameOf(topWins)}騎手が${int(topWins.wins)}勝（勝率${pct(topWins.win_rate)}）で最多勝`;
+        const base = `騎手別（${MIN_RACES_FOR_MENTION}走以上）では**${nameOf(topWins)}騎手が${int(topWins.wins)}勝**（勝率${pct(topWins.win_rate)}）で最多勝`;
         parts.push(topRate && topRate !== topWins
           ? `${base}、勝率では${nameOf(topRate)}騎手の${pct(topRate.win_rate)}がトップです。`
           : `${base}です。`);
@@ -210,7 +224,7 @@ export function buildCourseSummary(input: CourseSummaryInput): string[] {
       const topWins = maxBy(tq, 'wins');
       if (topWins) parts.push(`調教師別では${nameOf(topWins)}厩舎が${int(topWins.wins)}勝（複勝率${pct(topWins.place_rate)}）で最多勝です。`);
     }
-    if (parts.length) paragraphs.push(parts.join(''));
+    if (parts.length) push('people', parts.join(''));
   }
 
   // 6. 血統
@@ -221,7 +235,7 @@ export function buildCourseSummary(input: CourseSummaryInput): string[] {
       const topWins = maxBy(sq, 'wins');
       const topPlace = maxBy(sq, 'place_rate');
       if (topWins) {
-        const base = `種牡馬別（${MIN_RACES_FOR_MENTION}走以上）では${nameOf(topWins)}産駒が${int(topWins.wins)}勝で最多`;
+        const base = `種牡馬別（${MIN_RACES_FOR_MENTION}走以上）では**${nameOf(topWins)}産駒が${int(topWins.wins)}勝**で最多`;
         parts.push(topPlace && topPlace !== topWins
           ? `${base}、複勝率では${nameOf(topPlace)}産駒の${pct(topPlace.place_rate)}が最も高くなっています。`
           : `${base}です。`);
@@ -232,10 +246,10 @@ export function buildCourseSummary(input: CourseSummaryInput): string[] {
       const topWins = maxBy(dq, 'wins');
       if (topWins) parts.push(`母父別では${nameOf(topWins)}が${int(topWins.wins)}勝（複勝率${pct(topWins.place_rate)}）でトップです。`);
     }
-    if (parts.length) paragraphs.push(parts.join(''));
+    if (parts.length) push('pedigree', parts.join(''));
   }
 
-  return paragraphs;
+  return blocks;
 }
 
 // ------------------------------------------------------------

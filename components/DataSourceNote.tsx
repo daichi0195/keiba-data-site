@@ -5,14 +5,16 @@ import { MIN_RACES_FOR_MENTION, MIN_RACES_FOR_TRENDS } from '@/lib/dataPageRules
 interface Props {
   periodText?: string;
   lastUpdated?: string;
+  /** 見た目を差し替える場合のクラス（未指定なら共通の見た目） */
+  className?: string;
 }
 
 /**
  * データの出典・集計方法の注記（全データページ共通）
  */
-export default function DataSourceNote({ periodText, lastUpdated }: Props) {
+export default function DataSourceNote({ periodText, lastUpdated, className }: Props) {
   return (
-    <aside className={styles.sourceNote} aria-label="データの出典と集計方法">
+    <aside className={className ?? styles.sourceNote} aria-label="データの出典と集計方法">
       <h2>このデータについて</h2>
       <p>
         掲載している数値は、中央競馬（JRA）の過去レース結果をもとに当サイトが独自に構築したデータベースから集計したものです。

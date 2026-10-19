@@ -1,0 +1,600 @@
+<title>札幌ダート1700m 表ランキング案</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap">
+<style>
+/* レイアウト：#F7F7F7 のキャンバスに白カード。結論カード→読み物→横スワイプの注目カード→グラフ→タブ付きランキング。サイト本体と同じライト固定 */
+:root{
+  color-scheme: light;
+  --brand:#1DB854; --brand-strong:#096B32; --focus-ring:#096B32;
+  --cta-bg:#222222; --cta-hover:#3A3A3A; --cta-fg:#FFFFFF;
+  --ink:#222222; --ink-sub:#6A6A6A; --ink-disabled:#A3A3A3;
+  --canvas:#F7F7F7; --surface:#FFFFFF; --surface-subtle:#F3F3F3;
+  --line:#E9E9E9; --table-head:#F7F7F7; --table-highlight:#F1F1F1;
+  --turf-bg:#E2F7EB; --turf-fg:#0C532A; --dirt-bg:#FDE9D7; --dirt-fg:#633D1E;
+  --turf-wash:#F1FAF4; --dirt-wash:#FCF3EA;
+  --good-line:#5FC28A; --bad-line:#D98A9E;
+  --hl-bg:#E3F6EA; --hl-fg:#222222;
+  --link:#2563EB; --link-hover:#1D4ED8;
+  --data-4:#1DB854; --data-5:#0F7F3E; --chart-track:#E9E9E9;
+  --font-body:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",system-ui,sans-serif;
+  --radius-card:16px; --radius-inner:12px; --radius-pill:9999px;
+  --shadow-floating:0 4px 16px #00000012,0 0 0 1px #00000008;
+  --motion-bar:650ms; --motion-gauge:700ms; --motion-ui:160ms;
+  --ease-out:cubic-bezier(.22,1,.36,1); --ease-ui:cubic-bezier(.2,0,0,1);
+  --gutter:max(16px,env(safe-area-inset-left,0px));
+}
+@media (prefers-reduced-motion: reduce){ :root{ --motion-bar:0ms; --motion-gauge:0ms; --motion-ui:0ms; } }
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+body{background:var(--canvas);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:26px;
+  padding-left:var(--gutter);padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:20;background:var(--surface)}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px;border-radius:4px}
+.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.wrap{max-width:720px;margin:0 auto}
+.bleed{margin-inline:calc(-1 * var(--gutter));padding-inline:var(--gutter)}
+
+/* ヘッダー */
+.hdr{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--surface);height:56px;display:flex;align-items:center;justify-content:space-between;transition:box-shadow var(--motion-ui) var(--ease-ui)}
+.hdr-in{max-width:720px;margin:0 auto;width:100%;display:flex;align-items:center;justify-content:space-between}
+.hdr.scrolled{box-shadow:var(--shadow-floating)}
+.logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:16px;text-decoration:none}
+.logo svg{display:block}
+.hdr-link{font-size:14px;font-weight:500;text-decoration:none;height:36px;padding:0 14px;border-radius:var(--radius-pill);border:1px solid var(--line);display:inline-flex;align-items:center}
+
+/* ページ冒頭 */
+.heroband{padding:0 0 16px}
+.heroband .art{position:absolute;right:-44px;top:40px;width:140px;height:auto;pointer-events:none}
+.heroband > *:not(.art){position:relative}
+.crumb{font-size:12px;line-height:18px;color:var(--ink-sub);padding-top:16px;display:flex;flex-wrap:wrap;gap:4px}
+.crumb a{text-decoration:none}
+.crumb span[aria-hidden]{color:var(--ink-disabled)}
+.title{padding:10px 0 0;display:flex;flex-direction:column;gap:10px}
+.badges{display:flex;gap:6px;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:var(--radius-pill);font-size:12px;line-height:18px;font-weight:500;white-space:nowrap;background:var(--surface);color:var(--ink-sub)}
+.badge.dirt{background:var(--dirt-bg);color:var(--dirt-fg);box-shadow:none}
+.badge.turf{background:var(--turf-bg);color:var(--turf-fg);box-shadow:none}
+h1{font-size:26px;line-height:36px;font-weight:700;margin:0;letter-spacing:-.01em;text-wrap:balance}
+.lead{max-width:30em;margin:0;font-size:15px;line-height:24px;color:var(--ink-sub)}
+.meta{display:flex;flex-wrap:wrap;gap:2px 14px;font-size:12px;line-height:18px;color:var(--ink-sub)}
+.meta b{font-weight:600;color:var(--ink)}
+
+/* 結論カード */
+.card{background:var(--surface);border-radius:var(--radius-card);padding:20px 16px;min-width:0}
+.verdict{display:flex;flex-direction:column;gap:14px}
+.v-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.v-head h2{font-size:17px;line-height:24px;margin:0}
+.v-rows{display:flex;flex-direction:column}
+.v-row{display:grid;grid-template-columns:76px 1fr auto;align-items:center;gap:12px;min-height:44px;border-bottom:1px solid var(--line);text-decoration:none}
+.v-row:last-child{border-bottom:0}
+.v-row .k{font-size:13px;color:var(--ink-sub)}
+.v-row .v{font-size:16px;font-weight:700;text-align:right;white-space:nowrap}
+.dots{display:flex;gap:4px;align-items:center}
+.dots i{width:100%;max-width:28px;height:6px;border-radius:var(--radius-pill);background:var(--chart-track)}
+.dots i.on{background:var(--brand)}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kpi{background:var(--surface-subtle);border-radius:var(--radius-inner);padding:14px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.kpi .l{font-size:12px;line-height:18px;color:var(--ink-sub)}
+.kpi .n{font-size:28px;line-height:34px;font-weight:700;letter-spacing:-.01em}
+.kpi .n small{font-size:14px;font-weight:600;margin-left:2px;letter-spacing:0}
+.kpi .s{font-size:12px;line-height:18px;color:var(--ink-sub)}
+
+/* 広告・AI導線 */
+.ad{height:90px;border-radius:var(--radius-inner);background:#EFEFEF;display:grid;place-items:center;font-size:12px;color:var(--ink-disabled);margin:20px 0}
+.ai{display:flex;align-items:center;gap:14px;text-decoration:none;background:var(--surface);border-radius:var(--radius-card);padding:16px}
+.ai .ic{width:44px;height:44px;border-radius:12px;background:var(--turf-bg);display:grid;place-items:center;flex:none}
+.ai .t{display:flex;flex-direction:column;flex:1;min-width:0}
+.ai .t b{font-size:15px;line-height:22px}
+.ai .t span{font-size:13px;line-height:20px;color:var(--ink-sub)}
+.ai .go{font-size:13px;font-weight:600;white-space:nowrap}
+
+/* セクションナビ */
+.snav{position:sticky;top:calc(env(safe-area-inset-top,0px) + 56px);z-index:9;background:var(--canvas);display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-block:8px}
+.snav::-webkit-scrollbar{display:none}
+.chip{flex:none;height:36px;padding:0 14px;border-radius:var(--radius-pill);border:1px solid var(--line);background:var(--surface);color:var(--ink);font:500 14px/20px var(--font-body);display:inline-flex;align-items:center;text-decoration:none;cursor:pointer;white-space:nowrap;transition:background var(--motion-ui) var(--ease-ui),color var(--motion-ui) var(--ease-ui)}
+.chip.on{background:var(--brand);border-color:var(--brand);color:#FFFFFF;font-weight:700}
+.verdict + .snav{margin-top:16px}
+
+/* セクション */
+section{scroll-margin-top:110px;padding-top:28px;display:flex;flex-direction:column;gap:14px}
+.sh{display:flex;flex-direction:column;gap:2px}
+h2.s{font-size:20px;line-height:28px;font-weight:700;margin:0;text-wrap:balance}
+.sh p{margin:0;font-size:13px;line-height:20px;color:var(--ink-sub)}
+.stack{display:flex;flex-direction:column;gap:12px}
+
+/* 読み物 */
+.article{display:flex;flex-direction:column}
+.blk{display:grid;grid-template-columns:1fr;gap:4px;padding:14px 0;border-bottom:1px solid var(--line)}
+.blk:first-child{padding-top:0}
+.blk:last-child{border-bottom:0;padding-bottom:0}
+.blk h3{font-size:13px;line-height:20px;font-weight:600;color:var(--ink-sub);margin:0;letter-spacing:.04em}
+.blk p{margin:0;font-size:15px;line-height:26px}
+.blk p b{font-weight:700;color:var(--hl-fg);background:var(--hl-bg);border-radius:4px;padding:1px 4px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.blk p a,.qa p a,.qa .links a,.rtbl td.rnm a{color:var(--link);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+.blk p a:hover,.qa p a:hover,.qa .links a:hover,.rtbl td.rnm a:hover{color:var(--link-hover)}
+.qa .links{display:flex;flex-wrap:wrap;gap:6px;margin:-6px 0 16px}
+.qa .links{gap:4px 14px}
+.qa .links a{font-size:14px;line-height:28px}
+.facts{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.fact{display:inline-flex;align-items:baseline;gap:6px;height:32px;padding:0 12px;border-radius:var(--radius-pill);background:var(--surface-subtle);font-size:12px;color:var(--ink-sub);line-height:32px}
+.fact b{font-size:14px;color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+
+/* メーター */
+.meter{display:flex;flex-direction:column;gap:8px;padding:14px 0;border-bottom:1px solid var(--line)}
+.meter:first-child{padding-top:0}
+.meter:last-child{border-bottom:0;padding-bottom:0}
+.m-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.m-head span{font-size:14px;color:var(--ink-sub)}
+.m-head b{font-size:17px}
+.track{position:relative;display:grid;gap:4px;height:8px}
+.track i{background:var(--chart-track);border-radius:var(--radius-pill)}
+.track i.on{background:var(--brand)}
+.marker{position:absolute;top:50%;left:0;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;background:var(--cta-bg);border:4px solid var(--surface);box-shadow:0 1px 4px #00000040;
+  transform:translateX(calc(var(--tw,0px) * var(--p)));transition:transform var(--motion-gauge) var(--ease-out)}
+.pending .marker{transform:translateX(0)}
+.scale{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;font-size:12px;line-height:18px;color:var(--ink-sub)}
+.scale span:last-child{text-align:right}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pair div{background:var(--surface-subtle);border-radius:var(--radius-inner);padding:10px 12px;display:flex;flex-direction:column}
+.pair span{font-size:12px;line-height:18px;color:var(--ink-sub)}
+.pair b{font-size:18px;line-height:26px;text-align:right}
+
+/* 注目ポイント：横スワイプ */
+.rail{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:var(--gutter);scrollbar-width:none;padding-bottom:4px}
+.rail::-webkit-scrollbar{display:none}
+.pick{flex:0 0 84%;max-width:340px;scroll-snap-align:start;display:flex;flex-direction:column;gap:14px}
+.pick h3{font-size:16px;line-height:24px;margin:0;display:flex;justify-content:space-between;align-items:baseline}
+.pick h3 a{font-size:13px;font-weight:500;color:var(--brand-strong);text-decoration:none}
+.grp{display:flex;flex-direction:column;gap:6px}
+.grp .gl{font-size:12px;line-height:18px;color:var(--ink-sub)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.nm{height:34px;padding:0 13px;border-radius:var(--radius-pill);background:var(--surface);border:1.5px solid var(--line);font-size:14px;font-weight:500;display:inline-flex;align-items:center;text-decoration:none;white-space:nowrap}
+.nm.good{border-color:var(--good-line)}
+.nm.hole{border-color:var(--ink-sub);border-style:dashed}
+.nm.bad{border-color:var(--bad-line)}
+.none{font-size:13px;color:var(--ink-disabled)}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--ink-sub)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:16px;height:10px;border-radius:5px;border:1.5px solid}
+
+/* セグメント */
+.c-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.c-head .note:first-child{flex:1;min-width:0}
+.c-head .note:last-child{flex:none}
+.c-head h3{font-size:16px;line-height:24px;margin:0}
+.seg{display:inline-flex;gap:2px;background:var(--surface-subtle);padding:3px;border-radius:var(--radius-pill);max-width:100%;overflow-x:auto;scrollbar-width:none}
+.seg button{height:32px;padding:0 12px;border:0;border-radius:var(--radius-pill);background:none;font:500 13px/20px var(--font-body);color:var(--ink-sub);cursor:pointer;white-space:nowrap;transition:background var(--motion-ui) var(--ease-ui),color var(--motion-ui) var(--ease-ui)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px #0000001f}
+.note{margin:0;font-size:13px;line-height:20px;color:var(--ink-sub)}
+.note b{color:var(--ink);font-weight:600}
+
+/* 横棒 */
+.bars{display:flex;flex-direction:column;margin-top:6px}
+.br{display:grid;grid-template-columns:76px 1fr 50px;align-items:center;gap:10px;min-height:32px}
+.br .lb{font-size:13px;line-height:16px;display:flex;flex-direction:column}
+.br .lb small{font-size:12px;color:var(--ink-disabled)}
+.br .vl{text-align:right;font-size:13px}
+.br.hl .vl{font-weight:700}
+.bt{height:10px;background:var(--chart-track);border-radius:var(--radius-pill);overflow:hidden}
+.bf{display:block;height:100%;width:var(--w);background:var(--data-4);border-radius:var(--radius-pill);transform-origin:left;transition:transform var(--motion-bar) var(--ease-out);transition-delay:calc(var(--i,0) * 40ms)}
+.hl .bf{background:var(--data-5)}
+.pending .bf{transform:scaleX(0)}
+
+/* 枠順の縦棒 */
+.cols{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;align-items:end;height:150px;margin-top:10px}
+.col{display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.col .vl{font-size:12px;line-height:16px}
+.col.hl .vl{font-weight:700}
+.col .ct{width:100%;max-width:30px;flex:1;display:flex;align-items:flex-end;background:var(--surface-subtle);border-radius:8px;overflow:hidden}
+.col .cf{display:block;width:100%;height:var(--h);background:var(--data-4);border-radius:8px;transform-origin:bottom;transition:transform var(--motion-bar) var(--ease-out);transition-delay:calc(var(--i,0) * 40ms)}
+.col.hl .cf{background:var(--data-5)}
+.pending .cf{transform:scaleY(0)}
+.gl-row{display:flex;align-items:center;gap:8px}
+.gate{width:22px;height:22px;border-radius:6px;font-size:12px !important;display:grid;place-items:center;font-size:13px;font-weight:600;flex:none}
+
+/* 折りたたみ・表 */
+details.more{border-top:1px solid var(--line);margin-top:8px}
+details.more summary{list-style:none;cursor:pointer;min-height:44px;display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:600}
+details.more summary::-webkit-details-marker{display:none}
+details.more summary::after{content:"";width:8px;height:8px;border-right:2px solid var(--ink-sub);border-bottom:2px solid var(--ink-sub);transform:rotate(45deg) translateY(-3px);transition:transform 220ms var(--ease-ui)}
+details.more[open] summary::after{transform:rotate(-135deg) translateY(-1px)}
+details.more summary small{font-weight:400;color:var(--ink-sub);font-size:12px;margin-left:8px}
+.tbl{overflow-x:auto;border-radius:0;border:1px solid var(--line);margin-bottom:8px}
+table{border-collapse:separate;border-spacing:0;font-size:13px;line-height:19px;width:max-content;min-width:100%}
+th,td{padding:0 10px;height:44px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+tbody tr:last-child td{border-bottom:0}
+thead th{background:var(--table-head);font-size:12px;font-weight:600;color:var(--ink-sub);height:36px}
+th:first-child,td:first-child{position:sticky;left:0;background:var(--surface);text-align:left;z-index:1;box-shadow:inset -1px 0 0 var(--line);min-width:96px}
+thead th:first-child{background:var(--table-head)}
+td .hl{display:inline-flex;align-items:center;height:24px;padding:0 6px;margin-inline:-6px;border-radius:4px;background:var(--hl-bg);color:var(--hl-fg);font-weight:700}
+.def{font-size:13px;line-height:22px;margin:0 0 12px;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px}
+.def b{display:inline-block;width:3em}
+
+/* ランキング */
+.tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs .chip{height:34px}
+.rk{display:flex;flex-direction:column;margin-top:4px}
+.rr{display:grid;grid-template-columns:22px 1fr auto;gap:2px 12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
+.rr:last-child{border-bottom:0}
+.rr .no{font-size:13px;font-weight:700;color:var(--ink-sub);text-align:center}
+.rr .who{font-size:15px;font-weight:600;text-decoration:none;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rr .main{font-size:17px;font-weight:700;text-align:right}
+.rr .main small{font-size:12px;font-weight:500;margin-left:1px}
+.rr .bt{grid-column:2/4;height:8px;margin-top:6px}
+.rr .aux{grid-column:2/4;display:flex;flex-wrap:wrap;gap:0 12px;font-size:12px;line-height:18px;color:var(--ink-sub)}
+.rr .aux b{color:var(--ink);font-weight:500}
+.btn{height:44px;padding:0 18px;border-radius:var(--radius-inner);font:600 14px/20px var(--font-body);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink);width:100%;margin-top:8px}
+
+/* 他コース */
+.cs{flex:0 0 132px;scroll-snap-align:start;display:flex;flex-direction:column;gap:10px;text-decoration:none;padding:14px}
+.cs .d{font-size:22px;line-height:28px;font-weight:700}
+.cs .d small{font-size:13px;margin-left:1px}
+.cs .r{font-size:12px;line-height:18px;color:var(--ink-sub)}
+.cs.cur{box-shadow:inset 0 0 0 2px var(--cta-bg)}
+
+/* 他コース */
+.courses{display:flex;flex-direction:column;gap:12px}
+.crow{display:grid;grid-template-columns:56px 1fr;gap:10px;align-items:start}
+.crow .badge{justify-content:center;margin-top:6px}
+.cchips{display:flex;flex-wrap:wrap;gap:6px}
+.cchips .chip{height:36px;padding:0 12px}
+
+/* Q&A */
+.qa details{border-bottom:1px solid var(--line)}
+.qa details:last-child{border-bottom:0}
+.qa summary{list-style:none;cursor:pointer;min-height:56px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:15px;font-weight:600;line-height:22px;padding:8px 0}
+.qa summary::-webkit-details-marker{display:none}
+.qa summary::after{content:"+";font-weight:400;font-size:22px;color:var(--ink-sub);transition:transform 220ms var(--ease-ui)}
+.qa details[open] summary::after{transform:rotate(45deg)}
+.qa p{margin:0 0 16px;font-size:14px;line-height:24px;color:var(--ink)}
+.about{font-size:12px;line-height:20px;color:var(--ink-sub);margin:0}
+footer{margin-top:40px;padding:28px 0 calc(28px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);font-size:12px;line-height:20px;color:var(--ink-sub);display:flex;flex-direction:column;gap:8px}
+
+
+/* ランキング：1行リスト */
+.rl-head,.rl-row{display:grid;grid-template-columns:18px 1fr 28px 22px 46px 50px;gap:5px;align-items:center}
+[data-rank].card{padding-inline:12px}
+.rl-head{font-size:11.5px;line-height:16px;color:var(--ink-sub);font-weight:600;padding:0 0 6px;border-bottom:1px solid var(--line)}
+.rl-head span:nth-child(n+3),.rl-row span:nth-child(n+3){text-align:right}
+.rl-row{height:36px;border-bottom:1px solid var(--line);font-size:13px}
+.rl-row .rk-n{font-size:12px;font-weight:700;color:var(--ink-sub);text-align:center}
+.rl-row .rk-nm{font-weight:500;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.rl-row .rk-nm.long{font-size:11.5px;letter-spacing:-.03em}
+.rl-row .rk-w{font-weight:700}
+.rl-row.few{color:var(--ink-sub)}
+.rl-row.few .rk-nm::after{content:"※";font-size:10px;margin-left:1px;color:var(--ink-disabled)}
+.more-row{display:none}
+.open .more-row{display:grid}
+.open tr.more-row,.rtbl.all tr.more-row{display:table-row}
+.r-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px}
+.r-foot .btn{width:auto;margin:0;height:36px;border-radius:var(--radius-pill);font-size:13px;white-space:nowrap;flex:none}
+.r-foot .hint{min-width:0}
+.hint{font-size:11.5px;color:var(--ink-sub)}
+.rtbl th.rn,.rtbl td.rn{position:sticky;left:0;z-index:2;background:var(--surface);text-align:center;min-width:32px;width:32px;padding:0 4px;color:var(--ink-sub);font-weight:600;box-shadow:none}
+.rtbl thead th.rn{background:var(--table-head)}
+.rtbl th.rnm,.rtbl td.rnm{position:sticky;left:32px;z-index:2;background:var(--surface);text-align:left;box-shadow:inset -1px 0 0 var(--line);min-width:0}
+.rtbl thead th.rnm{background:var(--table-head)}
+.rtbl td.rnm a{font-weight:500;display:inline-block;max-width:12em;overflow:hidden;white-space:nowrap;vertical-align:bottom;transition:max-width 200ms var(--ease-ui)}
+.rtbl.narrow td.rnm a{max-width:3em}
+.rtbl th.rnm{transition:padding 200ms var(--ease-ui)}
+.rtbl th:first-child,.rtbl td:first-child{min-width:32px}
+.rtbl td,.rtbl th{height:36px}
+.rk-b{display:inline-flex;align-items:center;justify-content:center;height:20px;padding:0 6px;border-radius:4px;font-weight:600;color:#333}
+.rk-1{background:#FCEA7F}.rk-2{background:#CBDEFF}.rk-3{background:#EFC79F}
+.rtbl thead th{height:32px}
+
+@media (min-width:768px){
+  .title{max-width:none}
+  .card{padding:24px}
+  .pick{flex-basis:300px}
+  h1{font-size:30px;line-height:40px}
+}
+</style>
+
+<header class="hdr bleed" id="hdr"><div class="hdr-in">
+  <a class="logo" href="#top"><svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><rect width="26" height="26" rx="8" fill="#1DB854"/><path d="M7 17.5c2.2-5.3 6.4-8.4 12-9" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round"/><circle cx="18.6" cy="8.6" r="2" fill="#fff"/></svg>競馬データ.com</a>
+  <a class="hdr-link" href="#others">コース一覧</a>
+</div></header>
+
+<div class="wrap" id="top">
+  <div class="heroband">
+  <nav class="crumb" aria-label="パンくず"><a href="#top">HOME</a><span aria-hidden="true">/</span><a href="#others">コース一覧</a><span aria-hidden="true">/</span><span>札幌競馬場 ダート1700m</span></nav>
+
+  <div class="title">
+    <div class="badges"><span class="badge dirt">ダート</span><span class="badge">札幌競馬場</span><span class="badge">右回り・1700m</span></div>
+    <h1>札幌ダート1700mの傾向と特徴</h1>
+    <p class="lead">直近3年・150レースの結果から、枠順・脚質・騎手・血統の傾向をまとめています。</p>
+    <div class="meta"><span>集計 <b>2023年10月〜2026年10月17日</b></span><span>更新 <b>2026年10月18日</b></span></div>
+  </div>
+  </div>
+
+  <div class="card verdict">
+    <div class="v-head"><h2>札幌ダート1700mの傾向</h2><span class="note num">150レース</span></div>
+    <div class="v-rows">
+      <a class="v-row" href="#feature"><span class="k">荒れやすさ</span><span class="dots" aria-hidden="true"><i></i><i></i><i class="on"></i><i></i><i></i></span><span class="v">標準</span></a>
+      <a class="v-row" href="#feature"><span class="k">枠順</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i><i class="on"></i><i></i></span><span class="v">やや外枠有利</span></a>
+      <a class="v-row" href="#feature"><span class="k">脚質</span><span class="dots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i><i></i></span><span class="v">逃げ・先行有利</span></a>
+    </div>
+  </div>
+
+
+  <nav class="snav bleed" aria-label="ページ内" id="snav">
+    <a class="chip on" href="#summary">概要</a>
+    <a class="chip" href="#feature">特徴</a>
+    <a class="chip" href="#picks">注目</a>
+    <a class="chip" href="#pop">人気別</a>
+    <a class="chip" href="#gate">枠順別</a>
+    <a class="chip" href="#style">脚質別</a>
+    <a class="chip" href="#sex">性別</a>
+    <a class="chip" href="#weight">馬体重別</a>
+    <a class="chip" href="#jockey">騎手</a>
+    <a class="chip" href="#sire">種牡馬</a>
+    <a class="chip" href="#dam">母父</a>
+    <a class="chip" href="#trainer">調教師</a>
+    <a class="chip" href="#qa">Q&amp;A</a>
+  </nav>
+
+  <section id="summary">
+    <div class="sh"><h2 class="s">データ概要</h2><p>集計期間の150レースから読み取れること</p></div>
+    <div class="card article">
+      <div class="blk">
+        <h3>人気</h3>
+        <p>1番人気は150走で59勝、<b>複勝率71.3%</b>と信頼度が高いコースです。一方で10番人気以下は575走で複勝率3.8%にとどまり、人気薄が馬券に絡むケースは多くありません。三連単配当の中央値は<b>21,820円</b>で、全133コースの中央値23,970円をやや下回ります。</p>
+      </div>
+      <div class="blk">
+        <h3>枠順</h3>
+        <p>外枠（5〜8枠）の複勝率が<b>25.5%</b>で、内枠（1〜4枠）の20.8%を上回ります。枠番別では<b>5枠の27.3%</b>が最も高く、2枠の18.1%が最も低くなっています。</p>
+      </div>
+      <div class="blk">
+        <h3>脚質</h3>
+        <p>先行の複勝率が<b>47.8%</b>で最も高く、逃げも38.4%と好成績です。差しは27.4%、追込は6.0%で、後方からの競馬は苦戦しています。単勝回収率が100%を超えているのは逃げ（111.9%）と<b>先行（160.8%）</b>です。</p>
+      </div>
+      <div class="blk">
+        <h3>騎手・血統・厩舎</h3>
+        <p>騎手は<b><a href="#">横山武史</a>騎手が16勝</b>で最多。20走以上で単勝回収率が100%を超えたのは<a href="#">石川倭</a>騎手（234.6%）、<a href="#">武豊</a>騎手（119.4%）、<a href="#">小林美駒</a>騎手（115.1%）です。種牡馬は<a href="#">ドレフォン</a>産駒が8勝で最多、複勝率は<a href="#">ヘニーヒューズ</a>産駒の50.0%がトップ。厩舎は<a href="#">伊藤圭三</a>厩舎が6勝で最多です。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="feature">
+    <div class="sh"><h2 class="s">コースの特徴</h2><p>判定と、その根拠になった数字</p></div>
+    <div class="card">
+      <div class="meter" data-steps="5" style="--p:.5">
+        <div class="m-head"><span>荒れやすさ</span><b>標準</b></div>
+        <div class="track"><i></i><i></i><i class="on"></i><i></i><i></i><span class="marker"></span></div>
+        <div class="scale"><span>堅い</span><span>標準</span><span>荒れやすい</span></div>
+        <div class="pair"><div><span>三連単中央値</span><b class="num">21,820円</b></div><div><span>全コースの中央値</span><b class="num">23,970円</b></div></div>
+      </div>
+      <div class="meter" data-steps="5" style="--p:.7">
+        <div class="m-head"><span>枠順傾向</span><b>やや外枠有利</b></div>
+        <div class="track"><i></i><i></i><i></i><i class="on"></i><i></i><span class="marker"></span></div>
+        <div class="scale"><span>内枠有利</span><span>互角</span><span>外枠有利</span></div>
+        <div class="pair"><div><span>内枠（1〜4枠）複勝率</span><b class="num">20.8%</b></div><div><span>外枠（5〜8枠）複勝率</span><b class="num">25.5%</b></div></div>
+      </div>
+      <div class="meter" data-steps="5" style="--p:.1">
+        <div class="m-head"><span>脚質傾向</span><b>逃げ・先行有利</b></div>
+        <div class="track"><i class="on"></i><i></i><i></i><i></i><i></i><span class="marker"></span></div>
+        <div class="scale"><span>逃げ・先行有利</span><span>互角</span><span>差し・追込有利</span></div>
+        <div class="pair"><div><span>逃げ・先行 複勝率</span><b class="num">45.6%</b></div><div><span>差し・追込 複勝率</span><b class="num">20.8%</b></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="picks">
+    <div class="sh"><h2 class="s">注目ポイント</h2><p>このコースで成績が目立つ騎手・血統・厩舎。名前をタップすると詳細へ</p></div>
+    <div class="legend"><span><i style="border-color:var(--good-line)"></i>得意</span><span><i style="border-color:var(--ink-sub);border-style:dashed"></i>よく穴をあける</span><span><i style="border-color:var(--bad-line)"></i>苦手</span></div>
+    <div class="rail bleed" id="picksRail"></div>
+  </section>
+
+  <section id="pop">
+    <div class="sh"><h2 class="s">人気別</h2></div>
+    <div class="card" data-block="pop"></div>
+  </section>
+
+  <section id="gate">
+    <div class="sh"><h2 class="s">枠順別</h2></div>
+    <div class="card" data-block="gate"></div>
+  </section>
+
+  <section id="style">
+    <div class="sh"><h2 class="s">脚質別</h2></div>
+    <div class="card" data-block="style"></div>
+  </section>
+
+
+  <section id="sex">
+    <div class="sh"><h2 class="s">性別</h2></div>
+    <div class="card" data-block="sex"></div>
+  </section>
+
+  <section id="weight">
+    <div class="sh"><h2 class="s">馬体重別</h2></div>
+    <div class="card" data-block="weight"></div>
+  </section>
+
+  <section id="jockey"><div class="sh"><h2 class="s">騎手ランキング</h2><p>勝利数順</p></div><div class="card" data-rank="jockey"></div></section>
+  <section id="sire"><div class="sh"><h2 class="s">種牡馬ランキング</h2><p>勝利数順</p></div><div class="card" data-rank="sire"></div></section>
+  <section id="dam"><div class="sh"><h2 class="s">母父ランキング</h2><p>勝利数順</p></div><div class="card" data-rank="dam"></div></section>
+  <section id="trainer"><div class="sh"><h2 class="s">調教師ランキング</h2><p>勝利数順</p></div><div class="card" data-rank="trainer"></div></section>
+
+  <section>
+    <a class="ai" href="#top">
+      <span class="ic" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 22 22"><path d="M3 16l5-6 4 3 7-8" stroke="#0C532A" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="t"><b>AI勝率予測</b><span>今週のレースの勝率を無料で公開中</span></span>
+      <span class="go">見る</span>
+    </a>
+  </section>
+
+  <section id="others">
+    <div class="sh"><h2 class="s">札幌競馬場の他のコース</h2></div>
+    <div class="card courses" id="courseRail"></div>
+  </section>
+
+  <section id="qa">
+    <div class="sh"><h2 class="s">データQ&amp;A</h2></div>
+    <div class="card qa">
+      <details><summary>札幌ダート1700mは荒れやすい？</summary><p>荒れやすさは「標準」です。三連単配当の中央値は21,820円で、全133コースの中央値23,970円をやや下回り、配当の高い順で78位です。1番人気の複勝率は71.3%と高めです。</p></details>
+      <details><summary>有利な枠順は？</summary><p>外枠（5〜8枠）の複勝率25.5%が内枠（1〜4枠）の20.8%を上回り、「やや外枠有利」と判定しています。枠番別では5枠の27.3%が最も高い数値です。</p></details>
+      <details><summary>有利な脚質は？</summary><p>先行の複勝率47.8%、逃げの38.4%が高く、「逃げ・先行有利」です。追込は6.0%にとどまります。</p></details>
+      <details><summary>得意な騎手は？</summary><p>得意な騎手は横山和生騎手、武豊騎手、小林美駒騎手です。勝利数では横山武史騎手の16勝が最多です。</p><div class="links"><a href="#">横山和生</a><a href="#">武豊</a><a href="#">小林美駒</a><a href="#">横山武史</a></div></details>
+      <details><summary>得意な調教師は？</summary><p>伊藤圭三調教師（6勝・複勝率44.4%）と田中克典調教師が得意としています。</p><div class="links"><a href="#">伊藤圭三</a><a href="#">田中克典</a></div></details>
+      <details><summary>得意な種牡馬・血統は？</summary><p>種牡馬はシニスターミニスター、サンダースノー、ルヴァンスレーヴ、ホッコータルマエ、ヘニーヒューズ、ルーラーシップ。母父はクロフネ、ダイワメジャー、ゴールドアリュールです。</p><div class="links"><a href="#">シニスターミニスター</a><a href="#">サンダースノー</a><a href="#">ルヴァンスレーヴ</a><a href="#">ホッコータルマエ</a><a href="#">ヘニーヒューズ</a><a href="#">ルーラーシップ</a><a href="#">クロフネ</a><a href="#">ダイワメジャー</a><a href="#">ゴールドアリュール</a></div></details>
+    </div>
+    <p class="about">中央競馬（JRA）の過去レース結果をもとに当サイトが独自に構築したデータベースから集計しています。勝率・連対率・複勝率は出走数に対する1着・2着以内・3着以内の割合、回収率は100円ずつ購入した場合の払戻率です。対象30レース未満の条件では傾向判定を行わず、個別の騎手などへの言及は20走以上を目安にしています。過去の統計は将来の結果を保証するものではありません。</p>
+  </section>
+
+  <footer>
+    <b style="color:var(--ink);font-size:14px">競馬データ.com</b>
+    <span>サイト情報・運営者情報 / 免責事項 / プライバシーポリシー / お問い合わせ</span>
+    <span>馬券の購入は20歳になってから</span>
+    <span>© 2026 競馬データ.com</span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var COLS = ['出走','1着','2着','3着','勝率','連対率','複勝率','単勝回収率','複勝回収率','平均人気','平均着順','人気中央値','着順中央値'];
+  // [ラベル, 出走,1着,2着,3着, 勝率,連対率,複勝率, 単回収,複回収, 平均人気,平均着順,人気中央値,着順中央値]
+  var D = {
+    pop:[['1番人気',150,59,27,21,39.3,57.3,71.3,96.9,93.4,1.0,3.2,1,2],['2番人気',150,20,27,29,13.3,31.3,50.7,59.1,80.1,2.0,4.3,2,3],['3番人気',149,23,19,16,15.4,28.2,38.9,88.5,78.5,3.0,5.0,3,4],['4番人気',150,12,24,16,8.0,24.0,34.7,64.7,73.9,4.0,5.8,4,5],['5番人気',149,11,9,17,7.4,13.4,24.8,70.6,64.2,5.0,6.0,5,6],['6〜9番人気',587,21,37,40,3.6,9.9,16.7,79.6,87.2,7.5,7.2,7,7],['10番人気〜',575,4,7,11,0.7,1.9,3.8,45.1,51.0,11.8,9.6,12,10]],
+    gate:[['1枠',149,17,16,7,11.4,22.1,26.8,124.2,105.2,7.0,6.7,7,7],['2枠',149,6,5,16,4.0,7.4,18.1,43.5,59.2,7.1,7.4,7,8],['3枠',240,17,21,7,7.1,15.8,18.8,54.6,47.9,7.1,7.3,7,7],['4枠',254,17,17,19,6.7,13.4,20.9,62.3,72.0,7.1,7.1,7,7],['5枠',264,24,20,28,9.1,16.7,27.3,101.5,108.2,7.4,6.8,7,7],['6枠',277,24,23,19,8.7,17.0,23.8,56.4,62.5,7.2,6.8,7,6],['7枠',287,20,22,30,7.0,14.6,25.1,27.4,67.2,6.9,7.1,7,7],['8枠',290,25,26,24,8.6,17.6,25.9,87.1,67.2,6.5,6.8,6,7]],
+    style:[['逃げ',190,32,23,18,16.8,28.9,38.4,111.9,100.3,4.9,6.0,4,5],['先行',624,107,103,88,17.1,33.7,47.8,160.8,148.2,5.0,4.5,5,4],['差し',263,11,21,40,4.2,12.2,27.4,29.8,92.5,6.5,4.7,6,5],['追込',116,0,3,4,0.0,2.6,6.0,0.0,26.5,8.3,6.9,8,7]],
+    sex:[['牡馬',1045,95,90,90,9.1,17.7,26.3,72.5,69.8,6.5,6.6,6,6],['牝馬',770,50,54,53,6.5,13.5,20.4,64.3,75.9,7.6,7.4,8,7],['セン馬',95,5,6,7,5.3,11.6,18.9,44.0,79.8,7.9,7.5,8,8]],
+    weight:[['〜400',7,0,0,0,0.0,0.0,0.0,0.0,0.0,11.0,10.1,11,11],['401-420',63,2,0,1,3.2,3.2,4.8,85.7,34.8,9.2,8.5,10,8],['421-440',200,10,8,15,5.0,9.0,16.5,50.3,62.1,8.2,7.9,9,8],['441-460',408,31,46,38,7.6,18.9,28.2,67.6,83.1,6.7,6.4,6,6],['461-480',485,38,33,28,7.8,14.6,20.4,70.2,70.4,7.2,7.2,7,7],['481-500',427,32,34,37,7.5,15.5,24.1,64.6,76.5,6.8,6.9,7,7],['501-520',233,27,18,24,11.6,19.3,29.6,87.2,74.9,6.4,6.5,6,6],['521-540',60,6,6,6,10.0,20.0,30.0,51.5,67.3,5.6,6.8,4,7],['541〜',27,4,5,1,14.8,33.3,37.0,51.5,78.1,5.5,6.4,6,7]]
+  };
+  var R = {"jockey":[["横山武史",84,16,10,6,19.0,31.0,38.1,89.8,68.0,3.3,5.6,3,5],["横山和生",80,14,7,17,17.5,26.3,47.5,79.8,101.8,3.9,5.0,3,4],["丹内祐次",109,11,16,15,10.1,24.8,38.5,71.7,83.4,5.0,5.3,5,5],["佐々木大輔",90,10,7,8,11.1,18.9,27.8,65.4,73.0,5.9,6.4,6,6],["武豊",53,8,11,4,15.1,35.8,43.4,119.4,91.5,3.0,4.7,2,4],["小林美駒",61,8,8,5,13.1,26.2,34.4,115.1,119.2,5.3,6.6,5,7],["北村友一",47,6,5,2,12.8,23.4,27.7,32.8,45.7,5.8,6.6,5,5],["浜中俊",40,5,6,0,12.5,27.5,27.5,102.5,65.3,6.1,6.8,6,6],["斎藤新",59,5,4,6,8.5,15.3,25.4,75.9,76.6,7.1,7.2,7,7],["C.ルメール",15,5,1,3,33.3,40.0,60.0,98.7,92.0,2.3,3.9,2,3],["鮫島克駿",71,4,9,8,5.6,18.3,29.6,25.8,72.3,5.9,6.4,6,6],["古川吉洋",76,4,5,5,5.3,11.8,18.4,44.6,58.2,8.9,7.7,10,9],["河原田菜々",29,4,3,1,13.8,24.1,27.6,67.6,124.1,7.1,6.0,7,6],["R.キング",12,4,0,1,33.3,33.3,41.7,202.5,84.2,3.3,5.4,4,6],["長浜鴻緒",57,3,2,3,5.3,8.8,14.0,67.0,46.3,8.9,7.5,10,7],["石川倭",26,3,0,1,11.5,11.5,15.4,234.6,63.5,8.4,7.5,9,6],["横山典弘",18,2,2,3,11.1,22.2,38.9,28.9,96.7,5.2,6.8,5,5],["小沢大仁",30,2,2,2,6.7,13.3,20.0,100.0,76.0,7.2,7.3,7,7],["岩田望来",8,2,1,2,25.0,37.5,62.5,1143.8,426.3,6.0,4.4,4,3],["松本大輝",40,2,1,2,5.0,7.5,12.5,49.8,30.3,9.2,8.5,10,8],["荻野琢真",37,2,1,0,5.4,8.1,8.1,110.5,40.8,10.1,8.2,11,8],["池添謙一",29,2,0,2,6.9,6.9,13.8,23.1,70.3,7.4,6.9,7,7],["森田誠也",20,1,3,4,5.0,20.0,40.0,26.5,216.5,7.8,6.3,9,5],["菱田裕二",33,1,3,4,3.0,12.1,24.2,17.0,63.9,7.4,7.2,8,7],["高杉吏麒",25,1,3,2,4.0,16.0,24.0,40.4,58.4,5.8,6.2,6,6],["原田和真",24,1,2,1,4.2,12.5,16.7,22.5,62.9,9.8,8.2,10,9],["和田陽希",46,1,2,1,2.2,6.5,8.7,21.1,44.8,9.6,8.0,10,8],["坂井瑠星",8,1,1,2,12.5,25.0,50.0,33.8,66.3,3.9,4.3,3,3],["J.モレイラ",5,1,1,1,20.0,40.0,60.0,38.0,140.0,2.4,4.4,3,3],["川又賢治",23,1,1,1,4.3,8.7,13.0,84.3,41.3,9.0,7.1,9,8],["C.ホー",4,1,1,0,25.0,50.0,50.0,422.5,102.5,6.3,5.0,5,2],["F.ゴンサルベス",4,1,1,0,25.0,50.0,50.0,200.0,90.0,4.8,4.8,4,2],["古川奈穂",41,1,1,0,2.4,4.9,4.9,8.3,9.5,9.7,8.8,11,9],["本田正重",4,1,1,0,25.0,50.0,50.0,327.5,175.0,7.8,4.0,7,2],["西村淳也",14,1,1,0,7.1,14.3,14.3,11.4,15.7,4.6,5.9,4,5],["松山弘平",13,1,0,2,7.7,7.7,23.1,16.2,44.6,4.8,6.2,5,5],["R.ヘルナンデス",3,1,0,1,33.3,33.3,66.7,133.3,116.7,5.7,4.7,5,3],["T.ハマーハンセン",1,1,0,0,100.0,100.0,100.0,370.0,160.0,1.0,1.0,1,1],["笹川翼",2,1,0,0,50.0,50.0,50.0,440.0,110.0,6.0,6.5,4,1],["舟山瑠泉",46,0,5,4,0.0,10.9,19.6,0.0,58.0,6.7,7.0,6,7],["吉田隼人",31,0,5,3,0.0,16.1,25.8,0.0,119.0,7.3,6.3,7,6],["黛弘人",49,0,2,2,0.0,4.1,8.2,0.0,34.5,10.3,9.2,11,9],["小林脩斗",3,0,2,0,0.0,66.7,66.7,0.0,143.3,5.0,3.0,5,2],["川端海翼",19,0,2,0,0.0,10.5,10.5,0.0,42.1,10.9,8.8,12,10],["岩田康誠",17,0,1,1,0.0,5.9,11.8,0.0,35.9,5.8,7.1,6,7],["川田将雅",4,0,1,1,0.0,25.0,50.0,0.0,62.5,4.0,4.8,2,3],["松岡正海",12,0,1,1,0.0,8.3,16.7,0.0,99.2,9.6,8.8,9,9],["柴田裕一郎",19,0,1,1,0.0,5.3,10.5,0.0,71.6,10.6,8.6,12,9],["藤懸貴志",4,0,1,1,0.0,25.0,50.0,0.0,82.5,5.8,5.8,3,3],["杉原誠人",3,0,1,0,0.0,33.3,33.3,0.0,176.7,12.0,9.0,13,12]],"sire":[["ドレフォン",82,8,5,9,9.8,15.9,26.8,58.9,68.4,6.9,6.1,7,6],["シニスターミニスター",44,7,4,1,15.9,25.0,27.3,152.0,71.6,5.5,6.6,5,6],["サンダースノー",42,6,8,5,14.3,33.3,45.2,71.0,161.4,6.4,5.5,6,4],["ルヴァンスレーヴ",66,6,5,7,9.1,16.7,27.3,64.5,120.9,5.7,6.1,5,5],["ホッコータルマエ",45,5,8,2,11.1,28.9,33.3,263.6,124.9,6.4,5.9,6,5],["ヘニーヒューズ",24,5,6,1,20.8,45.8,50.0,104.6,87.9,4.7,5.1,4,3],["リアルスティール",45,5,3,2,11.1,17.8,22.2,54.0,52.9,6.8,7.0,6,7],["パイロ",31,5,2,2,16.1,22.6,29.0,76.8,75.2,7.6,6.9,8,6],["ルーラーシップ",36,5,1,5,13.9,16.7,30.6,172.2,75.8,8.0,6.7,9,6],["キズナ",27,4,5,1,14.8,33.3,37.0,33.3,62.6,4.6,5.3,4,4],["キタサンブラック",23,4,4,3,17.4,34.8,47.8,107.8,97.4,5.7,5.7,6,4],["リオンディーズ",32,4,1,3,12.5,15.6,25.0,283.1,123.8,7.3,8.0,7,8],["クリソベリル",31,4,1,1,12.9,16.1,19.4,112.9,59.4,7.3,6.5,7,7],["ドゥラメンテ",30,3,6,3,10.0,30.0,40.0,55.0,106.0,5.4,5.7,6,5],["マインドユアビスケッツ",46,3,3,7,6.5,13.0,28.3,62.4,70.9,6.0,6.6,5,6],["American Pharoah",19,3,3,0,15.8,31.6,31.6,52.6,54.7,4.4,5.1,3,5],["マジェスティックウォリアー",37,3,2,1,8.1,13.5,16.2,102.7,46.2,6.7,7.1,7,7],["カリフォルニアクローム",28,3,2,0,10.7,17.9,17.9,62.5,56.4,6.7,6.6,7,6],["ナダル",26,3,1,1,11.5,15.4,19.2,81.9,34.6,6.4,7.2,6,7],["ジャスタウェイ",20,3,0,2,15.0,15.0,25.0,149.5,172.0,8.4,6.7,9,6],["モズアスコット",14,2,5,0,14.3,50.0,50.0,61.4,98.6,5.4,5.6,4,2],["サトノダイヤモンド",28,2,3,3,7.1,17.9,28.6,37.9,131.4,7.5,7.0,7,6],["ニューイヤーズデイ",32,2,2,1,6.3,12.5,15.6,15.3,28.7,5.7,7.1,5,7],["スワーヴリチャード",16,2,1,1,12.5,18.8,25.0,28.7,56.3,6.2,7.6,5,8],["アドマイヤマーズ",12,2,1,0,16.7,25.0,25.0,198.3,100.8,7.6,6.5,7,6],["ダイワメジャー",12,2,1,0,16.7,25.0,25.0,122.5,60.0,6.5,7.1,6,7],["フィレンツェファイア",5,2,1,0,40.0,60.0,60.0,246.0,118.0,4.2,4.4,3,2],["ミスターメロディ",8,2,1,0,25.0,37.5,37.5,146.3,66.3,6.0,6.0,6,6],["アニマルキングダム",11,2,0,1,18.2,18.2,27.3,195.5,67.3,8.0,5.8,6,5],["サトノクラウン",10,2,0,1,20.0,20.0,30.0,80.0,43.0,7.9,8.3,9,9],["ミスチヴィアスアレックス",7,2,0,1,28.6,28.6,42.9,210.0,71.4,4.6,4.1,4,4],["サトノアラジン",8,2,0,0,25.0,25.0,25.0,488.8,80.0,9.1,8.8,9,9],["マクフィ",17,2,0,0,11.8,11.8,11.8,19.4,13.5,7.9,7.6,8,8],["モーニン",26,1,4,2,3.8,19.2,26.9,20.0,113.8,6.6,7.0,7,6],["レイデオロ",45,1,3,5,2.2,8.9,20.0,13.3,51.8,7.2,6.7,7,7],["ミッキーアイル",22,1,3,0,4.5,18.2,18.2,74.5,144.1,7.3,7.1,7,6],["オルフェーヴル",26,1,2,3,3.8,11.5,23.1,74.6,80.4,6.6,7.0,6,7],["ゴールドアクター",8,1,2,2,12.5,37.5,62.5,42.5,180.0,5.9,4.5,6,3],["ゴールドドリーム",25,1,2,1,4.0,12.0,16.0,20.4,66.0,6.1,6.6,6,7],["ロードカナロア",40,1,1,5,2.5,5.0,17.5,15.8,46.0,6.8,7.8,7,8],["タワーオブロンドン",8,1,1,3,12.5,25.0,62.5,90.0,273.8,5.1,5.0,4,3],["ロジャーバローズ",14,1,1,3,7.1,14.3,35.7,23.6,85.0,6.1,5.8,6,5],["シルバーステート",18,1,1,2,5.6,11.1,22.2,12.2,60.6,8.7,7.7,10,7],["ビーチパトロール",15,1,1,2,6.7,13.3,26.7,17.3,72.7,8.9,7.1,10,8],["Curlin",4,1,1,1,25.0,50.0,75.0,85.0,102.5,2.5,4.5,2,2],["エスポワールシチー",11,1,1,1,9.1,18.2,27.3,89.1,117.3,7.3,6.6,6,6],["タリスマニック",8,1,1,1,12.5,25.0,37.5,85.0,123.8,8.1,6.3,8,6],["アメリカンペイトリオット",16,1,1,0,6.3,12.5,12.5,13.1,63.7,7.2,7.1,7,6],["ディーマジェスティ",14,1,1,0,7.1,14.3,14.3,59.3,112.1,6.7,6.8,7,6],["ラニ",15,1,0,3,6.7,6.7,26.7,24.7,81.3,6.9,6.7,7,8]],"dam":[["キングカメハメハ",88,7,11,6,8.0,20.5,27.3,58.8,74.4,6.4,6.5,6,6],["クロフネ",66,7,5,6,10.6,18.2,27.3,144.1,100.8,7.3,6.7,7,7],["ディープインパクト",93,6,3,6,6.5,9.7,16.1,65.1,44.6,7.0,7.9,7,8],["ダイワメジャー",55,6,1,11,10.9,12.7,32.7,108.7,92.0,6.6,6.5,6,6],["アグネスタキオン",45,5,6,2,11.1,24.4,28.9,30.0,64.7,6.9,6.5,6,6],["ゴールドアリュール",42,5,1,5,11.9,14.3,26.2,107.1,74.5,6.3,6.1,6,5],["フジキセキ",41,4,6,2,9.8,24.4,29.3,112.7,130.0,7.7,6.1,8,7],["ハーツクライ",78,4,5,10,5.1,11.5,24.4,41.8,57.9,7.4,7.2,8,8],["フレンチデピュティ",26,3,5,2,11.5,30.8,38.5,47.3,80.0,6.3,5.6,6,5],["ネオユニヴァース",31,3,2,3,9.7,16.1,25.8,393.2,89.0,8.2,7.9,8,9],["ワイルドラッシュ",26,3,1,3,11.5,15.4,26.9,121.5,80.0,7.3,7.0,7,6],["ノヴェリスト",10,3,1,2,30.0,40.0,60.0,233.0,121.0,5.3,3.7,5,3],["ロードカナロア",20,3,1,1,15.0,20.0,25.0,170.5,78.0,7.0,7.0,7,7],["Distorted Humor",7,3,1,0,42.9,57.1,57.1,627.1,278.6,4.7,3.3,4,2],["キングヘイロー",17,2,6,1,11.8,47.1,52.9,30.0,118.2,4.6,4.2,4,3],["サウスヴィグラス",34,2,3,2,5.9,14.7,20.6,78.8,52.4,7.5,7.3,7,7],["ブラックタイド",19,2,3,2,10.5,26.3,36.8,45.3,87.4,7.3,6.6,7,6],["シンボリクリスエス",38,2,3,1,5.3,13.2,15.8,16.3,58.9,8.2,7.6,8,7],["ヴィクトワールピサ",25,2,2,4,8.0,16.0,32.0,36.0,102.0,8.3,6.7,8,7],["ブライアンズタイム",27,2,2,3,7.4,14.8,25.9,21.5,61.9,6.2,6.3,6,6],["ケイムホーム",6,2,2,0,33.3,66.7,66.7,71.7,86.7,3.7,3.5,1,2],["アイルハヴアナザー",20,2,1,2,10.0,15.0,25.0,37.0,49.5,6.2,6.5,8,6],["スペシャルウィーク",24,2,1,2,8.3,12.5,20.8,118.8,46.7,5.9,7.3,5,6],["Acclamation",6,2,1,0,33.3,50.0,50.0,80.0,81.7,6.0,6.7,4,2],["アフリート",8,2,1,0,25.0,37.5,37.5,41.3,60.0,8.0,5.9,6,5],["Tapit",9,2,0,2,22.2,22.2,44.4,377.8,142.2,5.9,4.9,4,4],["Union Rags",6,2,0,2,33.3,33.3,66.7,93.3,90.0,2.0,3.3,2,3],["リアルインパクト",6,2,0,1,33.3,33.3,50.0,53.3,116.7,5.0,2.8,6,3],["ヴァーミリアン",5,2,0,1,40.0,40.0,60.0,186.0,114.0,3.2,4.4,2,3],["Captain Rio",3,2,0,0,66.7,66.7,66.7,1420.0,346.7,9.0,4.7,10,1],["Seattle Fitz",3,2,0,0,66.7,66.7,66.7,160.0,80.0,2.0,3.3,1,1],["シニスターミニスター",10,2,0,0,20.0,20.0,20.0,304.0,85.0,8.2,7.5,8,6],["デヒア",4,2,0,0,50.0,50.0,50.0,665.0,195.0,6.0,2.8,5,1],["ヨハネスブルグ",9,2,0,0,22.2,22.2,22.2,238.9,65.6,6.4,6.4,6,6],["マンハッタンカフェ",34,1,3,3,2.9,11.8,20.6,10.0,64.4,7.6,6.7,7,6],["エンパイアメーカー",23,1,3,2,4.3,17.4,26.1,33.9,247.0,6.7,6.3,7,6],["ゼンノロブロイ",22,1,3,0,4.5,18.2,18.2,15.5,46.8,7.6,7.8,6,8],["Shirocco",6,1,2,2,16.7,50.0,83.3,56.7,240.0,4.8,3.5,3,2],["ヘニーヒューズ",11,1,2,1,9.1,27.3,36.4,44.5,182.7,6.1,5.7,5,5],["Fusaichi Pegasus",11,1,2,0,9.1,27.3,27.3,149.1,116.4,8.5,5.4,9,5],["ルーラーシップ",16,1,2,0,6.3,18.8,18.8,20.6,37.5,4.6,7.1,5,6],["スクリーンヒーロー",10,1,1,2,10.0,20.0,40.0,46.0,59.0,6.4,6.7,4,6],["Medaglia d'Oro",9,1,1,1,11.1,22.2,33.3,50.0,92.2,5.8,7.0,4,7],["アドマイヤムーン",17,1,1,1,5.9,11.8,17.6,14.7,24.7,6.6,8.1,5,8],["More Than Ready",5,1,1,0,20.0,40.0,40.0,100.0,64.0,6.2,5.0,3,4],["New Approach",5,1,1,0,20.0,40.0,40.0,158.0,100.0,7.4,7.0,6,6],["Redattore",2,1,1,0,50.0,100.0,100.0,95.0,200.0,2.5,1.5,1,1],["Smiling Tiger",2,1,1,0,50.0,100.0,100.0,80.0,125.0,1.5,1.5,1,1],["Storm Cat",3,1,1,0,33.3,66.7,66.7,120.0,96.7,4.0,4.0,2,2],["キングズベスト",3,1,1,0,33.3,66.7,66.7,173.3,110.0,5.0,4.3,3,2]],"trainer":[["伊藤圭三",36,6,4,6,16.7,27.8,44.4,151.7,107.2,5.0,4.9,5,4],["堀宣行",18,6,4,1,33.3,55.6,61.1,102.8,104.4,2.6,3.7,1,2],["田中克典",33,5,3,2,15.2,24.2,30.3,199.4,97.0,5.6,5.0,5,4],["四位洋文",13,5,2,0,38.5,53.8,53.8,124.6,85.4,3.8,4.0,3,2],["加藤征弘",14,4,2,0,28.6,42.9,42.9,150.7,80.7,4.5,6.1,3,6],["小栗実",8,4,2,0,50.0,75.0,75.0,752.5,218.8,5.3,3.5,3,1],["村田一誠",11,4,1,1,36.4,45.5,54.5,71.8,67.3,4.7,5.1,1,3],["伊坂重信",15,4,0,0,26.7,26.7,26.7,144.7,54.7,6.7,6.0,7,5],["尾形和幸",18,4,0,0,22.2,22.2,22.2,277.8,75.6,6.4,7.9,5,8],["中村直也",20,3,3,5,15.0,30.0,55.0,143.5,151.5,5.3,4.4,5,3],["清水久詞",9,3,3,0,33.3,66.7,66.7,132.2,106.7,3.6,3.4,3,2],["飯田祐史",12,3,2,2,25.0,41.7,58.3,215.8,233.3,5.4,4.4,5,3],["上原博之",12,3,2,0,25.0,41.7,41.7,224.2,161.7,7.0,4.8,7,4],["菊川正達",12,3,2,0,25.0,41.7,41.7,227.5,148.3,5.7,4.2,6,4],["栗田徹",21,3,1,2,14.3,19.0,28.6,65.7,54.3,5.5,6.0,4,5],["久保田貴士",11,3,0,2,27.3,27.3,45.5,57.3,63.6,4.3,5.8,4,4],["吉岡辰弥",10,3,0,1,30.0,30.0,40.0,108.0,56.0,3.1,5.4,2,5],["牧田和弥",11,3,0,0,27.3,27.3,27.3,453.6,183.6,6.0,6.5,5,8],["黒岩陽一",17,2,3,4,11.8,29.4,52.9,78.2,120.6,4.2,4.5,4,3],["武幸四郎",16,2,3,2,12.5,31.3,43.8,70.6,106.9,4.1,4.9,3,4],["奥村豊",14,2,2,2,14.3,28.6,42.9,127.1,100.7,6.0,6.1,7,6],["橋口慎介",6,2,2,1,33.3,66.7,83.3,115.0,113.3,2.2,3.0,2,2],["矢作芳人",28,2,2,1,7.1,14.3,17.9,37.9,33.2,6.7,7.3,6,7],["松永幹夫",15,2,2,0,13.3,26.7,26.7,218.0,56.7,4.3,6.5,4,6],["高柳瑞樹",10,2,2,0,20.0,40.0,40.0,79.0,93.0,4.8,5.6,3,4],["宮本博",13,2,1,4,15.4,23.1,53.8,314.6,148.5,4.8,4.4,4,3],["浜田多実雄",25,2,1,3,8.0,12.0,24.0,64.8,74.0,5.8,6.2,6,6],["高橋一哉",10,2,1,2,20.0,30.0,50.0,218.0,145.0,5.9,7.3,4,3],["鈴木慎太郎",13,2,1,1,15.4,23.1,30.8,54.6,210.8,6.8,6.7,7,6],["高木登",25,2,1,1,8.0,12.0,16.0,31.2,31.6,6.8,7.2,6,7],["渡辺薫彦",16,2,1,0,12.5,18.8,18.8,145.6,51.2,6.6,6.8,6,6],["寺島良",7,2,0,2,28.6,28.6,57.1,111.4,101.4,4.9,5.3,5,3],["杉浦宏昭",11,2,0,1,18.2,18.2,27.3,136.4,67.3,8.4,5.9,8,7],["野中賢二",18,2,0,1,11.1,11.1,16.7,52.8,25.0,5.7,7.6,5,7],["田中博康",10,1,6,0,10.0,70.0,70.0,19.0,164.0,2.1,3.1,1,2],["武英智",18,1,3,3,5.6,22.2,38.9,9.4,65.0,4.6,5.3,3,4],["牧浦充徳",16,1,3,3,6.3,25.0,43.8,23.1,96.3,4.9,6.1,3,4],["西園翔太",14,1,3,2,7.1,28.6,42.9,18.6,138.6,6.6,6.0,6,4],["前川恭子",15,1,3,1,6.7,26.7,33.3,16.0,162.0,7.3,5.8,8,6],["高橋義忠",20,1,3,0,5.0,20.0,20.0,12.5,28.0,5.4,6.8,5,6],["大橋勇樹",16,1,2,2,6.3,18.8,31.3,63.1,66.9,5.9,5.1,6,4],["畠山吉宏",10,1,2,2,10.0,30.0,50.0,34.0,144.0,7.7,5.8,8,3],["奥平雅士",16,1,2,0,6.3,18.8,18.8,258.1,90.0,9.0,7.5,9,8],["菊沢隆徳",12,1,2,0,8.3,25.0,25.0,16.7,42.5,6.9,5.3,6,5],["辻野泰之",9,1,2,0,11.1,33.3,33.3,62.2,77.8,5.2,6.3,3,7],["昆貢",8,1,1,2,12.5,25.0,50.0,80.0,142.5,5.9,6.6,4,3],["池上昌和",11,1,1,2,9.1,18.2,36.4,41.8,53.6,6.5,7.7,6,9],["荒川義之",17,1,1,2,5.9,11.8,23.5,16.5,166.5,8.1,7.1,8,7],["和田勇介",19,1,1,1,5.3,10.5,15.8,35.8,69.5,7.2,7.2,8,6],["小林真也",7,1,1,1,14.3,28.6,42.9,54.3,84.3,5.4,5.7,5,7]]};
+  var GATE = [['#FFFFFF','#222'],['#222222','#fff'],['#D32F2F','#fff'],['#2459B5','#fff'],['#F7D85D','#222'],['#28854A','#fff'],['#E58A35','#222'],['#F0A5C5','#222']];
+  function gateBadge(n){ return '<span class="gate" style="background:'+GATE[n][0]+';color:'+GATE[n][1]+(n===0?';box-shadow:inset 0 0 0 1px var(--line)':'')+'">'+(n+1)+'</span>'; }
+  var METRIC = {place:{i:7,name:'複勝率'},win:{i:5,name:'勝率'},roi:{i:8,name:'単勝回収率'}};
+  var NOTES = {
+    pop:'1番人気の<b>複勝率71.3%</b>。人気順にきれいに下がる',
+    gate:'<b>5枠が27.3%</b>で最も高く、外枠が全体にやや優勢',
+    style:'<b>先行が47.8%</b>。追込は6.0%と苦戦',
+    sex:'<b>牡馬が26.3%</b>で牝馬・セン馬を上回る',
+    weight:'馬体重（kg）別。重い馬ほど複勝率が上がる傾向で、541kg以上は<b>出走27</b>と少なめ'
+  };
+  var DEF = '<ul class="def"><li><b>逃げ</b>コーナーのいずれかを1位で通過</li><li><b>先行</b>最終コーナーで第1集団</li><li><b>差し</b>最終コーナーで第2集団、上がり3位以内</li><li><b>追込</b>最終コーナーで第3集団、上がり3位以内</li></ul><p class="note" style="margin-bottom:12px">出走頭数を3で割って第1〜第3集団とし、該当しない場合は集計から除外しています。</p>';
+
+  function pct(v){ return v.toFixed(1)+'%'; }
+  function esc(s){ return String(s); }
+
+  function table(rows){
+    var mx = COLS.map(function(_,c){ return c<=8 ? Math.max.apply(null, rows.map(function(r){return r[c+1];})) : null; });
+    return '<div class="tbl"><table><thead><tr><th>'+'区分'+'</th>'+COLS.map(function(c){return '<th>'+c+'</th>';}).join('')+'</tr></thead><tbody>'+
+      rows.map(function(r){ return '<tr><td>'+esc(r[0])+'</td>'+r.slice(1).map(function(v,c){ var s = c>=4&&c<=8 ? pct(v) : (c>=9&&c<=10 ? v.toFixed(1) : v.toLocaleString('ja-JP')); return '<td>'+(mx[c]!==null&&v===mx[c]&&v>0?'<span class="hl">'+s+'</span>':s)+'</td>'; }).join('')+'</tr>'; }).join('')+
+      '</tbody></table></div>';
+  }
+
+  function block(key){
+    var el = document.querySelector('[data-block="'+key+'"]');
+    var rows = D[key];
+    el.innerHTML = '<div class="c-head"><p class="note">'+NOTES[key]+'</p><span class="note">複勝率</span></div><div class="viz"></div>'+
+      (key==='style' ? '<details class="more"><summary>脚質の定義</summary>'+DEF+'</details>' : '')+
+      '<details class="more"><summary>全項目を見る<small>13項目・横にスクロール</small></summary>'+table(rows)+'</details>';
+    var viz = el.querySelector('.viz');
+    function draw(k, animate){
+      var i = METRIC[k].i, vals = rows.map(function(r){return r[i];});
+      var ok = rows.filter(function(r){return r[1]>=30;}).map(function(r){return r[i];});
+      var top = Math.max.apply(null, ok), scaleMax = Math.max.apply(null, vals) || 1;
+      viz.innerHTML = '<div class="bars">'+rows.map(function(r,n){
+          return '<div class="br'+(r[i]===top?' hl':'')+'" style="--i:'+n+'"><span class="lb">'+(key==='gate'?gateBadge(n):r[0])+(r[1]<30?'<small class="num">出走'+r[1]+'</small>':'')+'</span>'+
+            '<span class="bt"><span class="bf" style="--w:'+(r[i]/scaleMax*100)+'%"></span></span><span class="vl num">'+pct(r[i])+'</span></div>';
+        }).join('')+'</div>';
+      if (animate) replay(viz);
+    }
+    draw('place', false);
+    watch(viz);
+  }
+
+  // 注目ポイント
+  var PICKS = [
+    {t:'騎手', g:['横山和生','武豊','小林美駒'], h:['河原田菜々','森田誠也','吉田隼人'], b:['古川奈穂']},
+    {t:'種牡馬', g:['シニスターミニスター','サンダースノー','ルヴァンスレーヴ','ホッコータルマエ','ヘニーヒューズ','ルーラーシップ'], b:['ニューイヤーズデイ']},
+    {t:'母父', g:['クロフネ','ダイワメジャー','ゴールドアリュール'], b:[]},
+    {t:'調教師', g:['伊藤圭三','田中克典'], b:['高橋義忠']}
+  ];
+  function chips(list, cls){ return list.length ? '<div class="chips">'+list.map(function(n){return '<a class="nm '+cls+'" href="#">'+n+'</a>';}).join('')+'</div>' : '<span class="none">該当なし</span>'; }
+  document.getElementById('picksRail').innerHTML = PICKS.map(function(p){
+    return '<div class="card pick"><h3>'+p.t+'</h3>'+
+      '<div class="grp"><span class="gl">得意な'+p.t+'</span>'+chips(p.g,'good')+'</div>'+
+      (p.h ? '<div class="grp"><span class="gl">よく穴をあける'+p.t+'</span>'+chips(p.h,'hole')+'</div>' : '')+
+      '<div class="grp"><span class="gl">苦手な'+p.t+'</span>'+chips(p.b,'bad')+'</div></div>';
+  }).join('');
+
+  // 他コース
+  var COURSES = [['芝',1200,'turf'],['芝',1500,'turf'],['芝',1800,'turf'],['芝',2000,'turf'],['芝',2600,'turf'],['ダート',1000,'dirt'],['ダート',1700,'dirt',1],['ダート',2400,'dirt']];
+  document.getElementById('courseRail').innerHTML = [['芝','turf'],['ダート','dirt']].map(function(sf){
+    return '<div class="crow"><span class="badge '+sf[1]+'">'+sf[0]+'</span><div class="cchips">'+COURSES.filter(function(c){return c[0]===sf[0];}).map(function(c){
+      return '<a class="chip'+(c[3]?' on':'')+'" href="#top"'+(c[3]?' aria-current="page"':'')+'>'+c[1]+'m</a>';
+    }).join('')+'</div></div>';
+  }).join('');
+
+  // ランキング：既存仕様と同じく10件表示＋「さらに表示」で最大50件
+  var RANK_MODE = 'table';
+  var RHEAD = ['出走','1着','2着','3着','勝率','連対率','複勝率','単勝回収率','複勝回収率','平均人気','平均着順','人気中央値','着順中央値'];
+  function rcell(v,c){ return c>=4&&c<=8 ? pct(v) : (c===9||c===10 ? v.toFixed(1) : v.toLocaleString('ja-JP')); }
+  function rankTable(rows, cls){
+    var mx = RHEAD.map(function(_,c){ return c<=8 ? Math.max.apply(null, rows.map(function(r){return r[c+1];})) : null; });
+    return '<div class="tbl rtbl '+(cls||'')+'"><table><thead><tr><th class="rn">#</th><th class="rnm">名前</th>'+RHEAD.map(function(h){return '<th>'+h+'</th>';}).join('')+'</tr></thead><tbody>'+
+      rows.map(function(r,n){ return '<tr'+(n>=10?' class="more-row"':'')+'><td class="rn">'+(n<3?'<span class="rk-b rk-'+(n+1)+'">'+(n+1)+'</span>':(n+1))+'</td><td class="rnm"><a href="#">'+r[0]+'</a></td>'+
+        r.slice(1).map(function(v,c){ return '<td>'+(mx[c]!==null&&v===mx[c]&&v>0?'<span class="hl">'+rcell(v,c)+'</span>':rcell(v,c))+'</td>'; }).join('')+'</tr>'; }).join('')+'</tbody></table></div>';
+  }
+  function narrowOnScroll(box){ box.addEventListener('scroll', function(){ box.classList.toggle('narrow', box.scrollLeft > 8); }, {passive:true}); }
+  function initRanks(){ document.querySelectorAll('[data-rank]').forEach(function(card){
+    var rows = R[card.dataset.rank], rest = rows.length - 10;
+    var foot = '<div class="r-foot"><span class="hint">最大50件まで表示</span>'+(rest>0?'<button class="btn r-more" type="button">さらに表示（残り'+rest+'件）</button>':'')+'</div>';
+    if (RANK_MODE === 'list') {
+      card.innerHTML = '<div class="rl-head"><span>#</span><span>名前</span><span>出走</span><span>勝</span><span>複勝率</span><span>単回収</span></div>'+
+        '<div class="rl">'+rows.map(function(r,n){
+          return '<div class="rl-row'+(n>=10?' more-row':'')+(r[1]<20?' few':'')+'"><span class="num rk-n">'+(n+1)+'</span><a href="#top" class="rk-nm'+(r[0].length>=9?' long':'')+'">'+r[0]+'</a><span class="num">'+r[1]+'</span><span class="num rk-w">'+r[2]+'</span><span class="num">'+pct(r[7])+'</span><span class="num">'+pct(r[8])+'</span></div>';
+        }).join('')+'</div>'+foot+
+        '<details class="more"><summary>全項目を見る<small>13項目・横にスクロール</small></summary>'+rankTable(rows,'all')+'</details>';
+    } else {
+      card.innerHTML = rankTable(rows) + foot.replace('最大50件まで表示','最大50件まで表示');
+    }
+    card.querySelectorAll('.rtbl').forEach(narrowOnScroll);
+    var btn = card.querySelector('.r-more');
+    if (btn) btn.addEventListener('click', function(){
+      var open = card.classList.toggle('open');
+      btn.textContent = open ? '10件までにする' : 'さらに表示（残り'+rest+'件）';
+    });
+  }); }
+
+
+  // モーション：画面外の要素だけ待機させ、20%見えたら1回だけ再生
+  function replay(el){ if(reduce) return; el.classList.add('pending'); void el.offsetWidth; requestAnimationFrame(function(){ requestAnimationFrame(function(){ el.classList.remove('pending'); }); }); }
+  var io = (!reduce && 'IntersectionObserver' in window) ? new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.remove('pending'); if(e.target.dataset.count) countUp(e.target); io.unobserve(e.target); } });
+  }, {threshold:0.2}) : null;
+  function inView(el){ var r=el.getBoundingClientRect(); return r.top < innerHeight && r.bottom > 0; }
+  function watch(el){ if(!io) return; if(inView(el)){ replay(el); return; } el.classList.add('pending'); io.observe(el); }
+  function countUp(el){
+    var to=parseFloat(el.dataset.count), dec=+el.dataset.dec, unit=el.querySelector('small').outerHTML, t0=performance.now(), d=650;
+    function f(v){ return dec ? v.toFixed(dec) : Math.round(v).toLocaleString('ja-JP'); }
+    function step(t){ var p=Math.min(1,(t-t0)/d), e=1-Math.pow(1-p,4); el.innerHTML=f(to*e)+unit; if(p<1) requestAnimationFrame(step); }
+    requestAnimationFrame(step);
+  }
+
+  ['pop','gate','style','sex','weight'].forEach(block);
+  initRanks();
+  function sizeMeters(){ document.querySelectorAll('.meter').forEach(function(m){ var t=m.querySelector('.track'); t.style.gridTemplateColumns='repeat('+m.dataset.steps+',1fr)'; m.style.setProperty('--tw', t.offsetWidth+'px'); }); }
+  sizeMeters(); addEventListener('resize', sizeMeters);
+  document.querySelectorAll('.meter').forEach(watch);
+
+  // ヘッダーの影とセクションナビの現在地
+  var hdr=document.getElementById('hdr');
+  addEventListener('scroll', function(){ hdr.classList.toggle('scrolled', scrollY>4); }, {passive:true});
+  var links=[].slice.call(document.querySelectorAll('#snav a')), snav=document.getElementById('snav');
+  if ('IntersectionObserver' in window) {
+    var so=new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(!e.isIntersecting) return; links.forEach(function(a){ var on=a.getAttribute('href')==='#'+e.target.id; a.classList.toggle('on',on); if(on) snav.scrollTo({left:a.offsetLeft-16, behavior:reduce?'auto':'smooth'}); }); });
+    }, {rootMargin:'-120px 0px -65% 0px'});
+    document.querySelectorAll('section[id]').forEach(function(s){ so.observe(s); });
+  }
+})();
+</script>

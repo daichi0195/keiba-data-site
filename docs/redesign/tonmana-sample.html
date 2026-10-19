@@ -1,0 +1,496 @@
+<title>競馬データ.com トンマナ v2.1</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap">
+<style>
+/* レイアウト：#F7F7F7 のキャンバスに白カードを縦積み。サイト本体と同じライト固定の見本 */
+:root{
+  color-scheme: light;
+  --brand:#1DB854; --brand-strong:#096B32; --focus-ring:#096B32;
+  --cta-bg:#222222; --cta-hover:#3A3A3A; --cta-pressed:#111111; --cta-fg:#FFFFFF;
+  --ink:#222222; --ink-sub:#6A6A6A; --ink-disabled:#A3A3A3;
+  --canvas:#F7F7F7; --surface:#FFFFFF; --surface-subtle:#F3F3F3; --surface-selected:#EEEEEE;
+  --line:#E9E9E9; --table-head:#F7F7F7; --table-highlight:#F1F1F1;
+  --turf-bg:#E2F7EB; --turf-fg:#0C532A; --turf-solid:#217D76;
+  --dirt-bg:#FDE9D7; --dirt-fg:#633D1E; --dirt-solid:#B35D24;
+  --good-fg:#11653D; --bad-fg:#91344B; --bad-bg:#FAF0F2;
+  --good-line:#5FC28A; --good-tint:#F3FBF6; --bad-line:#D98A9E; --bad-tint:#FDF6F8;
+  --data-1:#B7E8CA; --data-2:#80DCA4; --data-3:#4ACB80; --data-4:#1DB854; --data-5:#0F7F3E;
+  --chart-track:#E9E9E9;
+  --frame-1:#FFFFFF; --frame-2:#222222; --frame-3:#D32F2F; --frame-4:#2459B5;
+  --frame-5:#F7D85D; --frame-6:#28854A; --frame-7:#E58A35; --frame-8:#F0A5C5;
+  --font-body:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",system-ui,sans-serif;
+  --radius-card:16px; --radius-inner:12px; --radius-pill:9999px;
+  --shadow-floating:0 4px 16px #00000012,0 0 0 1px #00000008;
+  --motion-bar:650ms; --motion-gauge:700ms; --motion-counter:650ms; --motion-ui:160ms;
+  --ease-out:cubic-bezier(.22,1,.36,1); --ease-ui:cubic-bezier(.2,0,0,1);
+}
+@media (prefers-reduced-motion: reduce){ :root{ --motion-bar:0ms; --motion-gauge:0ms; --motion-counter:0ms; --motion-ui:0ms; } }
+*{box-sizing:border-box}
+body{background:var(--canvas);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:26px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:32px}
+.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+a{color:var(--brand-strong)}
+:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+
+/* ヘッダー */
+.hdr{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));
+  padding:0 max(16px,env(safe-area-inset-left,0px));background:var(--surface);height:56px;display:flex;align-items:center;justify-content:space-between;transition:box-shadow var(--motion-ui) var(--ease-ui)}
+.hdr.scrolled{box-shadow:var(--shadow-floating)}
+.logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:16px}
+.logo i{width:24px;height:24px;border-radius:8px;background:var(--brand);display:block}
+.ver{font-size:12px;line-height:18px;font-weight:500;color:var(--ink-sub)}
+.snav{position:sticky;top:calc(env(safe-area-inset-top,0px) + 56px);z-index:4;margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));
+  padding:6px max(16px,env(safe-area-inset-left,0px));background:var(--canvas);display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.snav::-webkit-scrollbar{display:none}
+
+/* 見出し */
+.intro{padding-top:24px;display:flex;flex-direction:column;gap:8px}
+h1{font-size:24px;line-height:34px;font-weight:700;margin:0;text-wrap:balance}
+h2{font-size:20px;line-height:28px;font-weight:700;margin:0;text-wrap:balance}
+h3{font-size:16px;line-height:24px;font-weight:600;margin:0}
+.lead{color:var(--ink-sub);font-size:14px;line-height:22px;margin:0}
+section{scroll-margin-top:120px;display:flex;flex-direction:column;gap:12px}
+.card{background:var(--surface);border-radius:var(--radius-card);padding:16px;display:flex;flex-direction:column;gap:16px;min-width:0}
+.sub{font-size:13px;line-height:20px;color:var(--ink-sub)}
+.rule{font-size:13px;line-height:20px;color:var(--ink-sub);margin:0;padding-left:1.2em}
+.rule li+li{margin-top:2px}
+
+/* チップ・バッジ・ボタン */
+.chip{flex:none;height:36px;margin-block:4px;padding:0 16px;border-radius:var(--radius-pill);border:1px solid var(--line);background:var(--surface);
+  color:var(--ink);font:500 14px/20px var(--font-body);display:inline-flex;align-items:center;gap:6px;cursor:pointer;text-decoration:none;
+  transition:background var(--motion-ui) var(--ease-ui),color var(--motion-ui) var(--ease-ui)}
+.chip[aria-pressed="true"],.chip.on{background:var(--cta-bg);border-color:var(--cta-bg);color:var(--cta-fg)}
+.chip.good{border:1.5px solid var(--good-line)}
+.chip.bad{border:1.5px solid var(--bad-line)}
+.chips{display:flex;flex-wrap:wrap;gap:0 8px}
+.badge{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:var(--radius-pill);font-size:12px;line-height:18px;font-weight:500;white-space:nowrap}
+.b-turf{background:var(--turf-bg);color:var(--turf-fg)}
+.b-dirt{background:var(--dirt-bg);color:var(--dirt-fg)}
+.b-warn{background:var(--surface-subtle);color:var(--ink-sub)}
+.gate{width:24px;height:24px;border-radius:6px;display:inline-grid;place-items:center;font-size:12px;font-weight:600;flex:none}
+.btn{height:48px;padding:0 20px;border-radius:var(--radius-inner);font:600 15px/20px var(--font-body);display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;border:1px solid transparent}
+.btn-primary{background:var(--cta-bg);color:var(--cta-fg)}
+.btn-primary:hover{background:var(--cta-hover)} .btn-primary:active{background:var(--cta-pressed)}
+.btn-sub{background:var(--surface);color:var(--ink);border-color:var(--line)}
+.btn-text{background:none;color:var(--brand-strong);padding:0 4px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+
+/* カラー見本 */
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.sw{display:flex;gap:10px;align-items:center;min-width:0}
+.sw b{width:40px;height:40px;border-radius:12px;flex:none;box-shadow:inset 0 0 0 1px #0000000f}
+.sw span{display:flex;flex-direction:column;min-width:0;font-size:12px;line-height:17px;color:var(--ink-sub)}
+.sw span strong{font-size:13px;color:var(--ink);font-weight:600}
+.ramp{display:grid;grid-template-columns:repeat(5,1fr);border-radius:12px;overflow:hidden;height:40px}
+
+/* タイポ */
+.type{display:flex;flex-direction:column}
+.type div{display:flex;justify-content:space-between;gap:12px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--line)}
+.type div:last-child{border-bottom:0}
+.type small{font-size:12px;color:var(--ink-sub);white-space:nowrap}
+
+/* KPI */
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:20px 16px}
+.kpi{display:flex;flex-direction:column;gap:2px;min-width:0}
+.kpi .l{font-size:13px;line-height:20px;color:var(--ink-sub)}
+.kpi .v{font-size:28px;line-height:34px;font-weight:700}
+.kpi .v small{font-size:15px;font-weight:600;margin-left:2px}
+.meta{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:13px;line-height:20px;color:var(--ink-sub)}
+
+/* メーター */
+.meter{display:flex;flex-direction:column;gap:8px}
+.meter-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.meter-head strong{font-size:16px}
+.track{position:relative;display:grid;grid-template-columns:repeat(5,1fr);gap:3px;height:10px}
+.track i{background:var(--chart-track);border-radius:var(--radius-pill)}
+.track i.on{background:var(--brand)}
+.marker{position:absolute;top:50%;left:0;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:var(--cta-bg);border:3px solid var(--surface);box-shadow:0 1px 4px #0003;
+  transform:translateX(calc(var(--tw,0px) * var(--p)));transition:transform var(--motion-gauge) var(--ease-out)}
+.meter.pending .marker{transform:translateX(0)}
+.scale{display:flex;justify-content:space-between;font-size:12px;line-height:18px;color:var(--ink-sub)}
+.evid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.evid div{background:var(--surface-subtle);border-radius:12px;padding:10px 12px;display:flex;justify-content:space-between;font-size:13px}
+.evid b{font-size:15px}
+
+/* 横棒 */
+.bars{display:flex;flex-direction:column}
+.bar-row{display:grid;grid-template-columns:72px 1fr 52px;align-items:center;gap:10px;min-height:44px}
+.bar-row .name{font-size:14px;display:flex;align-items:center;gap:8px;min-width:0}
+.bar-row .val{text-align:right;font-size:14px}
+.bar-row.hl .val{font-weight:700}
+.bt{height:12px;background:var(--chart-track);border-radius:var(--radius-pill);overflow:hidden}
+.bf{height:100%;width:var(--w);background:var(--data-4);border-radius:var(--radius-pill);transform-origin:left;transition:transform var(--motion-bar) var(--ease-out);transition-delay:calc(var(--i,0) * 40ms)}
+.bar-row.hl .bf{background:var(--data-5)}
+.pending .bf{transform:scaleX(0)}
+.seg{display:flex;gap:4px;background:var(--surface-subtle);padding:4px;border-radius:var(--radius-pill);width:max-content;max-width:100%;overflow-x:auto}
+.seg button{height:36px;padding:0 14px;border:0;border-radius:var(--radius-pill);background:none;font:500 14px/20px var(--font-body);color:var(--ink-sub);cursor:pointer;white-space:nowrap;transition:background var(--motion-ui) var(--ease-ui)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px #0000001f}
+
+/* ランキング */
+.rank{display:flex;flex-direction:column}
+.rk{display:grid;grid-template-columns:28px 1fr auto;gap:4px 12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.rk:last-child{border-bottom:0}
+.rk .no{font-size:14px;font-weight:700;color:var(--ink-sub);text-align:center}
+.rk .nm{font-size:15px;font-weight:600;color:var(--ink);text-decoration:none;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rk .main{font-size:17px;font-weight:700;text-align:right}
+.rk .bt{grid-column:2/4}
+.rk .aux{grid-column:2/4;display:flex;gap:16px;font-size:12px;line-height:18px;color:var(--ink-sub)}
+.rk .aux b{color:var(--ink);font-weight:500}
+.more{align-self:center}
+
+/* 表 */
+.tbl-wrap{overflow-x:auto;border-radius:12px;-webkit-overflow-scrolling:touch}
+table{border-collapse:separate;border-spacing:0;font-size:14px;line-height:21px;min-width:640px}
+th,td{padding:0 12px;height:48px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+thead th{background:var(--table-head);font-size:13px;font-weight:600;color:var(--ink-sub);height:40px}
+th:first-child,td:first-child{position:sticky;left:0;background:var(--surface);text-align:left;z-index:1;box-shadow:inset -1px 0 0 var(--line)}
+thead th:first-child{background:var(--table-head)}
+td.max{font-weight:700;background:var(--table-highlight)}
+.scroll-hint{font-size:12px;color:var(--ink-sub);display:flex;align-items:center;gap:4px}
+
+/* 芝ダート比較 */
+.legend{display:flex;gap:16px;font-size:13px;color:var(--ink-sub)}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:3px;display:block}
+.td-row{display:grid;grid-template-columns:64px 1fr;gap:10px;align-items:center;padding:6px 0}
+.td-row .pair{display:flex;flex-direction:column;gap:6px}
+.td-row .pair div{display:grid;grid-template-columns:1fr 48px;gap:8px;align-items:center;font-size:13px}
+.td-row .pair div span{text-align:right}
+
+/* やらないこと */
+.dont{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px;margin:0;padding:0;list-style:none}
+.dont li{background:var(--bad-bg);color:var(--bad-fg);border-radius:12px;padding:10px 12px;font-size:13px;line-height:20px}
+
+@media (min-width:768px){
+  .card{padding:24px}
+  .wrap{gap:48px}
+  .kpis{grid-template-columns:repeat(4,1fr)}
+}
+@media (max-width:400px){ .bar-row{grid-template-columns:60px 1fr 48px} }
+</style>
+
+<header class="hdr" id="hdr">
+  <div class="logo"><i aria-hidden="true"></i>競馬データ.com</div>
+  <span class="ver">トンマナ v2.1・確認用</span>
+</header>
+<nav class="snav" aria-label="ページ内">
+  <a class="chip on" href="#color">カラー</a>
+  <a class="chip" href="#type">文字</a>
+  <a class="chip" href="#parts">基本部品</a>
+  <a class="chip" href="#kpi">KPI・メーター</a>
+  <a class="chip" href="#bars">横棒</a>
+  <a class="chip" href="#rank">ランキング</a>
+  <a class="chip" href="#table">表</a>
+  <a class="chip" href="#surface">芝ダート</a>
+  <a class="chip" href="#dont">やらないこと</a>
+</nav>
+
+<main class="wrap">
+  <div class="intro">
+    <h1>トンマナ見本</h1>
+    <p class="lead">ルールv2.1を部品として並べた確認用ページです。数値は札幌ダート1700m（2023年10月〜2026年10月17日・150レース）の実データです。スマホで見ると実際の見え方に近くなります。</p>
+  </div>
+
+  <section id="color">
+    <h2>カラー</h2>
+    <div class="card">
+      <h3>ブランドと操作</h3>
+      <div class="swatches">
+        <div class="sw"><b style="background:var(--brand)"></b><span><strong>ブランド</strong>#1DB854 ロゴ・グラフ</span></div>
+        <div class="sw"><b style="background:var(--brand-strong)"></b><span><strong>リンク</strong>#096B32 リンク・フォーカス</span></div>
+        <div class="sw"><b style="background:var(--cta-bg)"></b><span><strong>操作の主役</strong>#222222 ボタン・選択中</span></div>
+      </div>
+      <h3>文字と面</h3>
+      <div class="swatches">
+        <div class="sw"><b style="background:var(--ink)"></b><span><strong>本文</strong>#222222</span></div>
+        <div class="sw"><b style="background:var(--ink-sub)"></b><span><strong>補足</strong>#6A6A6A</span></div>
+        <div class="sw"><b style="background:var(--line)"></b><span><strong>罫線</strong>#E9E9E9</span></div>
+        <div class="sw"><b style="background:var(--canvas)"></b><span><strong>背景</strong>#F7F7F7</span></div>
+        <div class="sw"><b style="background:var(--surface)"></b><span><strong>カード</strong>#FFFFFF</span></div>
+      </div>
+      <h3>馬場</h3>
+      <div class="swatches">
+        <div class="sw"><b style="background:var(--turf-bg)"></b><span><strong>芝バッジ</strong>#E2F7EB / #0C532A</span></div>
+        <div class="sw"><b style="background:var(--turf-solid)"></b><span><strong>芝グラフ</strong>#217D76</span></div>
+        <div class="sw"><b style="background:var(--dirt-bg)"></b><span><strong>ダートバッジ</strong>#FDE9D7 / #633D1E</span></div>
+        <div class="sw"><b style="background:var(--dirt-solid)"></b><span><strong>ダートグラフ</strong>#B35D24</span></div>
+      </div>
+      <h3>データ用の緑（--data-1〜5）</h3>
+      <div class="ramp" aria-label="データ用の緑5段階">
+        <i style="background:var(--data-1)"></i><i style="background:var(--data-2)"></i><i style="background:var(--data-3)"></i><i style="background:var(--data-4)"></i><i style="background:var(--data-5)"></i>
+      </div>
+      <ul class="rule">
+        <li>棒・線は4（基本）と5（注目）だけ。1・2はヒートマップの背景専用</li>
+        <li>緑は「良い」という意味を持たない。グラフの系列の色</li>
+        <li>#1DB854に白文字は載せない（コントラスト2.61:1）</li>
+      </ul>
+      <h3>枠番</h3>
+      <div class="row">
+        <span class="gate" style="background:var(--frame-1);color:#222;box-shadow:inset 0 0 0 1px var(--line)">1</span>
+        <span class="gate" style="background:var(--frame-2);color:#fff">2</span>
+        <span class="gate" style="background:var(--frame-3);color:#fff">3</span>
+        <span class="gate" style="background:var(--frame-4);color:#fff">4</span>
+        <span class="gate" style="background:var(--frame-5);color:#222">5</span>
+        <span class="gate" style="background:var(--frame-6);color:#fff">6</span>
+        <span class="gate" style="background:var(--frame-7);color:#222">7</span>
+        <span class="gate" style="background:var(--frame-8);color:#222">8</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="type">
+    <h2>文字</h2>
+    <div class="card type">
+      <div><span style="font-size:24px;line-height:34px;font-weight:700">札幌ダート1700m</span><small>ページ 24/700</small></div>
+      <div><span style="font-size:20px;line-height:28px;font-weight:700">枠順別データ</span><small>見出し 20/700</small></div>
+      <div><span style="font-size:16px;font-weight:600">内枠・外枠の複勝率</span><small>カード 16/600</small></div>
+      <div><span style="font-size:16px">5枠の複勝率27.3%が最も高い</span><small>本文 16/400</small></div>
+      <div><span class="num" style="font-size:14px">複勝率 27.3%　出走 1,234</span><small>表 14</small></div>
+      <div><span style="font-size:13px;color:var(--ink-sub)">集計期間 2023年10月〜</span><small>補足 13</small></div>
+      <div><span class="num" style="font-size:28px;line-height:34px;font-weight:700">71.3%</span><small>KPI 28/700</small></div>
+    </div>
+  </section>
+
+  <section id="parts">
+    <h2>基本部品</h2>
+    <div class="card">
+      <h3>ボタン</h3>
+      <div class="row">
+        <button class="btn btn-primary" type="button">詳しいデータを見る</button>
+        <button class="btn btn-sub" type="button">全項目を見る</button>
+        <button class="btn btn-text" type="button">定義を見る</button>
+      </div>
+      <h3>バッジ（操作できない）</h3>
+      <div class="row">
+        <span class="badge b-turf">芝</span><span class="badge b-dirt">ダート</span><span class="badge b-warn">出走20未満</span>
+      </div>
+      <h3>得意・苦手チップ（タップで詳細ページへ）</h3>
+      <div class="sub">このコースが得意な騎手</div>
+      <div class="chips">
+        <a class="chip good" href="#rank">横山和生</a>
+        <a class="chip good" href="#rank">武豊</a>
+        <a class="chip good" href="#rank">森田誠也</a>
+      </div>
+      <div class="sub">このコースが苦手な騎手</div>
+      <div class="chips"><a class="chip bad" href="#rank">古川奈穂</a></div>
+      <ul class="rule"><li>得意は緑の枠、苦手はローズの枠で囲む。芝バッジ（枠なし・小さい）とは形で見分ける</li><li>色だけに頼らず、「得意な騎手」「苦手な騎手」の見出しを必ず付ける</li></ul>
+    </div>
+  </section>
+
+  <section id="kpi">
+    <h2>KPI・メーター</h2>
+    <div class="card">
+      <div class="meta"><span>集計期間 2023年10月〜2026年10月17日</span><span>150レース</span><span>更新 2026年10月18日</span></div>
+      <div class="kpis">
+        <div class="kpi"><span class="l">1番人気の複勝率</span><span class="v num" data-count="71.3" data-dec="1">71.3<small>%</small></span><span class="sub">150走59勝</span></div>
+        <div class="kpi"><span class="l">三連単の中央値</span><span class="v num" data-count="21820" data-dec="0">21,820<small>円</small></span><span class="sub">全133コース中78位</span></div>
+        <div class="kpi"><span class="l">先行の複勝率</span><span class="v num" data-count="47.8" data-dec="1">47.8<small>%</small></span><span class="sub">624走</span></div>
+        <div class="kpi"><span class="l">10番人気以下の複勝率</span><span class="v num" data-count="3.8" data-dec="1">3.8<small>%</small></span><span class="sub">575走</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="meter" style="--p:.7">
+        <div class="meter-head"><span class="sub">枠順傾向</span><strong>やや外枠有利</strong></div>
+        <div class="track" aria-hidden="true"><i></i><i></i><i></i><i class="on"></i><i></i><span class="marker"></span></div>
+        <div class="scale"><span>内枠有利</span><span>互角</span><span>外枠有利</span></div>
+        <div class="evid"><div><span>内枠（1〜4）</span><b class="num">20.8%</b></div><div><span>外枠（5〜8）</span><b class="num">25.5%</b></div></div>
+      </div>
+      <div class="meter" style="--p:.1">
+        <div class="meter-head"><span class="sub">脚質傾向</span><strong>逃げ・先行有利</strong></div>
+        <div class="track" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i><i></i><span class="marker"></span></div>
+        <div class="scale"><span>逃げ・先行有利</span><span>互角</span><span>差し・追込有利</span></div>
+      </div>
+      <ul class="rule"><li>結論の文字が主役。マーカーは左端から判定位置へ700msでスライド</li></ul>
+    </div>
+  </section>
+
+  <section id="bars">
+    <h2>横棒（短い集計表のスマホ要約）</h2>
+    <div class="card">
+      <div class="meter-head"><h3>枠順別</h3><div class="seg" role="group" aria-label="指標">
+        <button type="button" aria-pressed="true" data-k="place">複勝率</button>
+        <button type="button" aria-pressed="false" data-k="win">勝率</button>
+        <button type="button" aria-pressed="false" data-k="roi">単勝回収率</button>
+      </div></div>
+      <div class="bars" id="gateBars"></div>
+      <ul class="rule"><li>最も高い枠を濃い緑＋太字。棒には必ず数値を添える。指標を切り替えると棒が伸び直す</li></ul>
+      <button class="btn btn-sub" type="button">全14項目の表を見る</button>
+    </div>
+  </section>
+
+  <section id="rank">
+    <h2>ランキング</h2>
+    <div class="card">
+      <div class="meter-head"><h3>騎手別</h3><span class="sub">出走20以上</span></div>
+      <div class="seg" role="group" aria-label="並び順">
+        <button type="button" aria-pressed="true" data-r="wins">勝利数</button>
+        <button type="button" aria-pressed="false" data-r="place">複勝率</button>
+        <button type="button" aria-pressed="false" data-r="roi">単勝回収率</button>
+      </div>
+      <div class="rank" id="rankList"></div>
+      <button class="btn btn-sub more" type="button" id="rankMore">さらに表示</button>
+    </div>
+  </section>
+
+  <section id="table">
+    <h2>表（全項目）</h2>
+    <div class="card">
+      <div class="meter-head"><h3>人気別</h3><span class="scroll-hint">横にスクロール →</span></div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>人気</th><th>出走</th><th>1着</th><th>2着</th><th>3着</th><th>勝率</th><th>連対率</th><th>複勝率</th><th>単回収</th><th>複回収</th></tr></thead>
+          <tbody>
+            <tr><td>1番人気</td><td>150</td><td>59</td><td>27</td><td>21</td><td class="max">39.3%</td><td class="max">57.3%</td><td class="max">71.3%</td><td class="max">96.9%</td><td class="max">93.4%</td></tr>
+            <tr><td>2番人気</td><td>150</td><td>20</td><td>27</td><td>29</td><td>13.3%</td><td>31.3%</td><td>50.7%</td><td>59.1%</td><td>80.1%</td></tr>
+            <tr><td>3番人気</td><td>149</td><td>23</td><td>19</td><td>16</td><td>15.4%</td><td>28.2%</td><td>38.9%</td><td>88.5%</td><td>78.5%</td></tr>
+            <tr><td>4番人気</td><td>150</td><td>12</td><td>24</td><td>16</td><td>8.0%</td><td>24.0%</td><td>34.7%</td><td>64.7%</td><td>73.9%</td></tr>
+            <tr><td>5番人気</td><td>149</td><td>11</td><td>9</td><td>17</td><td>7.4%</td><td>13.4%</td><td>24.8%</td><td>70.6%</td><td>64.2%</td></tr>
+            <tr><td>6〜9番人気</td><td>587</td><td>21</td><td>37</td><td>40</td><td>3.6%</td><td>9.9%</td><td>16.7%</td><td>79.6%</td><td>87.2%</td></tr>
+            <tr><td>10番人気〜</td><td>575</td><td>4</td><td>7</td><td>11</td><td>0.7%</td><td>1.9%</td><td>3.8%</td><td>45.1%</td><td>51.0%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul class="rule"><li>横罫線のみ・1列目固定・各列の最大値は太字＋淡いグレー。緑は使わない</li></ul>
+    </div>
+  </section>
+
+  <section id="surface">
+    <h2>芝ダート比較（種牡馬・騎手ページ用）</h2>
+    <div class="card">
+      <div class="meter-head"><h3>馬場別の複勝率（サンプル値）</h3></div>
+      <div class="legend"><span><i style="background:var(--turf-solid)"></i>芝</span><span><i style="background:var(--dirt-solid)"></i>ダート</span></div>
+      <div class="bars" id="tdBars"></div>
+      <ul class="rule"><li>この2色は芝ダート比較のグラフだけで使う。凡例は必須。ここの数値は配色確認用の仮の値です</li></ul>
+    </div>
+  </section>
+
+  <section id="dont">
+    <h2>やらないこと</h2>
+    <ul class="dont">
+      <li>グラデーション・背景模様・装飾の絵文字</li>
+      <li>緑を「良い結果」の意味で使う</li>
+      <li>色だけで意味を伝える</li>
+      <li>カードの入れ子・常時の強い影</li>
+      <li>全セルを囲う格子罫線</li>
+      <li>ループするアニメーション・表内のカウントアップ</li>
+      <li>12px未満の文字</li>
+      <li>母数の少ない結果を根拠なく強調</li>
+    </ul>
+  </section>
+</main>
+
+<script>
+(function(){
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hdr = document.getElementById('hdr');
+  addEventListener('scroll', function(){ hdr.classList.toggle('scrolled', scrollY > 4); }, {passive:true});
+
+  // セクションナビ：現在地の追従
+  var links = [].slice.call(document.querySelectorAll('.snav a'));
+  if ('IntersectionObserver' in window) {
+    var so = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ links.forEach(function(a){ var on = a.getAttribute('href') === '#'+e.target.id; a.classList.toggle('on', on); if(on && a.scrollIntoView) a.parentNode.scrollTo({left:a.offsetLeft-16, behavior: reduce?'auto':'smooth'}); }); } });
+    }, {rootMargin:'-130px 0px -60% 0px'});
+    document.querySelectorAll('main section').forEach(function(s){ so.observe(s); });
+  }
+
+  function fmt(v, dec){ return dec ? v.toFixed(dec) : Math.round(v).toLocaleString('ja-JP'); }
+
+  // 枠順の横棒
+  var gates = [
+    {g:1,bg:'var(--frame-1)',fg:'#222',place:26.8,win:11.4,roi:124.2},
+    {g:2,bg:'var(--frame-2)',fg:'#fff',place:18.1,win:4.0,roi:43.5},
+    {g:3,bg:'var(--frame-3)',fg:'#fff',place:18.8,win:7.1,roi:54.6},
+    {g:4,bg:'var(--frame-4)',fg:'#fff',place:20.9,win:6.7,roi:62.3},
+    {g:5,bg:'var(--frame-5)',fg:'#222',place:27.3,win:9.1,roi:101.5},
+    {g:6,bg:'var(--frame-6)',fg:'#fff',place:23.8,win:8.7,roi:56.4},
+    {g:7,bg:'var(--frame-7)',fg:'#222',place:25.1,win:7.0,roi:27.4},
+    {g:8,bg:'var(--frame-8)',fg:'#222',place:25.9,win:8.6,roi:87.1}
+  ];
+  var gateBox = document.getElementById('gateBars');
+  function drawGates(k, animate){
+    var max = Math.max.apply(null, gates.map(function(r){return r[k];}));
+    gateBox.innerHTML = gates.map(function(r,i){
+      return '<div class="bar-row'+(r[k]===max?' hl':'')+'" style="--i:'+i+'"><span class="name"><span class="gate" style="background:'+r.bg+';color:'+r.fg+(r.g===1?';box-shadow:inset 0 0 0 1px var(--line)':'')+'">'+r.g+'</span>'+r.g+'枠</span>'+
+        '<span class="bt"><span class="bf" style="--w:'+(r[k]/max*100)+'%;display:block"></span></span><span class="val num">'+r[k].toFixed(1)+'%</span></div>';
+    }).join('');
+    if (animate) grow(gateBox);
+  }
+
+  // 騎手ランキング
+  var jockeys = [
+    ['横山武史',84,16,19.0,38.1,89.8],['横山和生',80,14,17.5,47.5,79.8],['丹内祐次',109,11,10.1,38.5,71.7],
+    ['佐々木大輔',90,10,11.1,27.8,65.4],['武豊',53,8,15.1,43.4,119.4],['小林美駒',61,8,13.1,34.4,115.1],
+    ['北村友一',47,6,12.8,27.7,32.8],['浜中俊',40,5,12.5,27.5,102.5],['斎藤新',59,5,8.5,25.4,75.9]
+  ];
+  var rankBox = document.getElementById('rankList'), rankKey = 'wins', rankAll = false;
+  var colOf = {wins:2, place:4, roi:5};
+  function drawRank(animate){
+    var c = colOf[rankKey];
+    var rows = jockeys.slice().sort(function(a,b){return b[c]-a[c];});
+    var max = rows[0][c];
+    rows = rows.slice(0, rankAll ? rows.length : 5);
+    rankBox.innerHTML = rows.map(function(r,i){
+      var main = rankKey==='wins' ? r[2]+'<small style="font-size:13px;font-weight:500">勝</small>' : r[c].toFixed(1)+'<small style="font-size:13px;font-weight:500">%</small>';
+      return '<div class="rk" style="--i:'+i+'"><span class="no">'+(i+1)+'</span><a class="nm" href="#rank">'+r[0]+'</a><span class="main num">'+main+'</span>'+
+        '<span class="bt"><span class="bf" style="--w:'+(r[c]/max*100)+'%;display:block'+(i===0?';background:var(--data-5)':'')+'"></span></span>'+
+        '<span class="aux num"><span>出走 <b>'+r[1]+'</b></span><span>勝率 <b>'+r[3].toFixed(1)+'%</b></span><span>'+(rankKey==='place'?'単回収 <b>'+r[5].toFixed(1)+'%':'複勝率 <b>'+r[4].toFixed(1)+'%')+'</b></span></span></div>';
+    }).join('');
+    document.getElementById('rankMore').textContent = rankAll ? '閉じる' : 'さらに表示（残り'+(jockeys.length-5)+'件）';
+    if (animate) grow(rankBox);
+  }
+
+  // 芝ダート（配色確認用の仮の値）
+  var td = [['勝率',8.2,10.6],['連対率',16.9,19.4],['複勝率',25.1,28.7]];
+  document.getElementById('tdBars').innerHTML = td.map(function(r,i){
+    return '<div class="td-row" style="--i:'+i+'"><span class="sub">'+r[0]+'</span><div class="pair">'+
+      '<div><span class="bt"><span class="bf" style="--w:'+(r[1]/30*100)+'%;display:block;background:var(--turf-solid)"></span></span><span class="num">'+r[1].toFixed(1)+'%</span></div>'+
+      '<div><span class="bt"><span class="bf" style="--w:'+(r[2]/30*100)+'%;display:block;background:var(--dirt-solid)"></span></span><span class="num">'+r[2].toFixed(1)+'%</span></div></div></div>';
+  }).join('');
+
+  // 伸びるアニメーション：画面外の要素だけ待機状態にし、20%見えたら1回だけ再生
+  function grow(el){
+    if (reduce) return;
+    el.classList.add('pending'); void el.offsetWidth;
+    requestAnimationFrame(function(){ el.classList.remove('pending'); });
+  }
+  function inView(el){ var r = el.getBoundingClientRect(); return r.top < innerHeight && r.bottom > 0; }
+  var targets = [].slice.call(document.querySelectorAll('.bars, .rank, .meter'));
+  var counters = [].slice.call(document.querySelectorAll('[data-count]'));
+  function countUp(el){
+    var to = parseFloat(el.dataset.count), dec = +el.dataset.dec, unit = el.querySelector('small').outerHTML, t0 = performance.now(), d = 650;
+    function step(t){ var p = Math.min(1,(t-t0)/d), e = 1-Math.pow(1-p,4); el.innerHTML = fmt(to*e, dec)+unit; if(p<1) requestAnimationFrame(step); }
+    requestAnimationFrame(step);
+  }
+  drawGates('place', false); drawRank(false);
+  targets = [].slice.call(document.querySelectorAll('.bars, .rank, .meter'));
+  document.querySelectorAll('.meter').forEach(function(m){ m.style.setProperty('--tw', m.querySelector('.track').offsetWidth + 'px'); });
+  if (!reduce && 'IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.remove('pending'); if(e.target.dataset.count) countUp(e.target); io.unobserve(e.target); } });
+    }, {threshold:0.2});
+    targets.concat(counters).forEach(function(el){
+      if (el.dataset.count) { io.observe(el); return; }
+      el.classList.add('pending');
+      if (inView(el)) { requestAnimationFrame(function(){ requestAnimationFrame(function(){ el.classList.remove('pending'); }); }); io.unobserve(el); }
+      else io.observe(el);
+    });
+  }
+  addEventListener('resize', function(){ document.querySelectorAll('.meter').forEach(function(m){ m.style.setProperty('--tw', m.querySelector('.track').offsetWidth + 'px'); }); });
+
+  function segBind(sel, attr, fn){
+    document.querySelectorAll(sel+' button').forEach(function(b){
+      b.addEventListener('click', function(){
+        b.parentNode.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed', x===b ? 'true':'false'); });
+        fn(b.dataset[attr]);
+      });
+    });
+  }
+  segBind('#bars .seg', 'k', function(k){ drawGates(k, true); });
+  segBind('#rank .seg', 'r', function(k){ rankKey = k; drawRank(true); });
+  document.getElementById('rankMore').addEventListener('click', function(){ rankAll = !rankAll; drawRank(false); });
+})();
+</script>
