@@ -1,17 +1,18 @@
 import { Metadata } from 'next';
+import Link from 'next/link';
 import ArticleCarousel from '@/components/ArticleCarousel';
-import HomeAIPredictions from '@/components/HomeAIPredictions';
 import AIBanner from '@/components/AIBanner';
-import ThisWeekVenues from '@/components/ThisWeekVenues';
-import AllVenues from '@/components/AllVenues';
-import JockeyLeading from '@/components/JockeyLeading';
-import SireLeading from '@/components/SireLeading';
-import TrainerLeading from '@/components/TrainerLeading';
-import ColumnSection from '@/components/ColumnSection';
+import HomeAIPredictions from '@/components/datapage/list/HomeAIPredictions';
+import HomeThisWeekVenues from '@/components/datapage/list/HomeThisWeekVenues';
+import HomeAllVenues from '@/components/datapage/list/HomeAllVenues';
+import HomeLeadingSection from '@/components/datapage/list/HomeLeadingSection';
+import HomeColumnList from '@/components/datapage/list/HomeColumnList';
+import { JOCKEY_GROUPS, SIRE_GROUPS, TRAINER_GROUPS } from '@/components/datapage/list/kana';
 import { getJockeyLeading, getTrainerLeading, getSireLeading } from '@/lib/getLeadingData';
 import { getAllArticles } from '@/lib/articles';
 import { getThisWeekVenues } from '@/lib/thisWeekVenues';
-import styles from './page.module.css';
+import s from '@/components/course/course.module.css';
+import h from '@/components/datapage/list/home.module.css';
 
 // ISR: 1日1回（86400秒）再生成
 export const revalidate = 86400;
@@ -74,40 +75,78 @@ export default async function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
-      <main className="home-main">
-        <h1 className="visually-hidden">競馬データ.com｜コース・騎手・血統の競馬データ分析</h1>
-        {/* 記事カルーセル - 全幅 */}
-        <section className="section section-full-width section-article-carousel">
-          <ArticleCarousel articles={articles} />
-        </section>
+      <div className={s.canvas}>
+        <main className={h.main}>
+          <h1 className="visually-hidden">競馬データ.com｜コース・騎手・血統の競馬データ分析</h1>
+          {/* 記事カルーセル - 全幅 */}
+          <section className={h.carousel} aria-label="おすすめ記事">
+            <ArticleCarousel articles={articles} />
+          </section>
 
-        {/* AI予測セクション */}
-        <HomeAIPredictions races={predictions} />
+          <div className={h.wrap}>
+            {/* AI予測セクション */}
+            <HomeAIPredictions races={predictions} />
 
-        {/* 2カラムレイアウト部分 */}
-        <div className="home-columns">
-          <article style={{ backgroundColor: 'transparent' }}>
-            <ThisWeekVenues venues={thisWeekVenues} />
+            {/* 2カラムレイアウト部分（PC：右にAIバナー） */}
+            <div className={h.columns}>
+              <div>
+                <HomeThisWeekVenues venues={thisWeekVenues} />
 
-            <div className="home-content-wrapper">
-              <AllVenues />
+                <HomeAllVenues />
 
-              <JockeyLeading data={jockeyLeading} />
+                <HomeLeadingSection
+                  title="騎手別データ"
+                  leadingTitle="騎手リーディング（勝ち数順）"
+                  leading={jockeyLeading}
+                  allTitle="全騎手データ"
+                  allDescription="過去3年間に30レース以上出走している現役中央騎手のデータを集計しています。"
+                  groups={JOCKEY_GROUPS}
+                  hrefPrefix="/jockeys/"
+                  unit="名"
+                />
 
-              <SireLeading data={sireLeading} />
+                <HomeLeadingSection
+                  title="血統（種牡馬）別データ"
+                  leadingTitle="種牡馬リーディング（勝ち数順）"
+                  leading={sireLeading}
+                  allTitle="全血統（種牡馬）データ"
+                  allDescription="過去3年間に産駒が50レース以上出走し、かつ産駒が10頭以上いる種牡馬のデータを集計しています。"
+                  groups={SIRE_GROUPS}
+                  hrefPrefix="/sires/"
+                  unit="頭"
+                />
 
-              <TrainerLeading data={trainerLeading} />
+                <HomeLeadingSection
+                  title="調教師別データ"
+                  leadingTitle="調教師リーディング（勝ち数順）"
+                  leading={trainerLeading}
+                  allTitle="全調教師データ"
+                  allDescription="過去3年間に30レース以上出走している現役中央調教師のデータを集計しています。"
+                  groups={TRAINER_GROUPS}
+                  hrefPrefix="/trainers/"
+                  unit="名"
+                />
 
-              <ColumnSection articles={articles} />
+                {/* コラム */}
+                <section className={s.section} aria-label="コラム">
+                  <div className={s.sh}>
+                    <h2 className={s.h2}>コラム</h2>
+                  </div>
+                  <HomeColumnList articles={articles} />
+                  <Link href="/articles" className={h.moreBtn}>
+                    もっとみる
+                  </Link>
+                </section>
+              </div>
+
+              {/* バナーエリア */}
+              <aside className={h.aside}>
+                <AIBanner />
+              </aside>
             </div>
-          </article>
-
-          {/* バナーエリア */}
-          <aside className={styles.homeSidebar}>
-            <AIBanner />
-          </aside>
-        </div>
-      </main>
+          </div>
+        </main>
+      </div>
     </>
   );
 }

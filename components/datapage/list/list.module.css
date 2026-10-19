@@ -1,0 +1,214 @@
+/* 一覧ページ・トップページ（docs/redesign/tonmana.md に準拠）
+   色などの変数は components/course/course.module.css の .canvas で定義されたものを使う */
+
+/* ---------- 名前のチップ一覧 ---------- */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 6px;
+}
+.nameChip:hover {
+  border-color: var(--ink-sub);
+}
+.count {
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--ink-sub);
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+/* セクション見出しの横に件数を並べる */
+.shRow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+/* ---------- リーディング（横棒） ---------- */
+.lHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+.lHead h3 {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--ink);
+}
+.lRows {
+  display: flex;
+  flex-direction: column;
+}
+.lr {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 7.5em) 1fr 48px;
+  align-items: center;
+  gap: 10px;
+  min-height: 36px;
+}
+.rank {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-sub);
+  font-variant-numeric: tabular-nums;
+}
+.rank b {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 20px;
+  border-radius: 4px;
+  font-weight: 600;
+  color: #333;
+}
+.rank1 { background: #FCEA7F; }
+.rank2 { background: #CBDEFF; }
+.rank3 { background: #EFC79F; }
+.lName {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--link);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.lName:hover {
+  color: var(--link-hover);
+}
+.lVal {
+  text-align: right;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.lr:first-child .lVal {
+  font-weight: 700;
+}
+
+/* ---------- コース一覧（馬場ごとの行） ---------- */
+.venueBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+.venueBlock:first-child {
+  padding-top: 0;
+}
+.venueBlock:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+.venueBlock h3 {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* ---------- 開閉リスト（トップの競馬場・五十音） ---------- */
+.acc {
+  display: grid;
+  grid-template-columns: 1fr;
+  column-gap: 24px;
+  align-items: start;
+}
+.acc details {
+  border-bottom: 1px solid var(--line);
+  min-width: 0;
+}
+.acc details:last-child {
+  border-bottom: 0;
+}
+.acc summary {
+  list-style: none;
+  cursor: pointer;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 0;
+}
+.acc summary::-webkit-details-marker {
+  display: none;
+}
+.acc summary::after {
+  content: "";
+  flex: none;
+  width: 8px;
+  height: 8px;
+  margin-left: 4px;
+  border-right: 2px solid var(--ink-sub);
+  border-bottom: 2px solid var(--ink-sub);
+  transform: rotate(45deg) translateY(-3px);
+  transition: transform 220ms var(--ease-ui);
+}
+.acc details[open] summary::after {
+  transform: rotate(-135deg) translateY(-1px);
+}
+.accName {
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--ink);
+}
+.accMeta {
+  margin-left: auto;
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.accBody {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 4px 0 16px;
+}
+
+/* ---------- 補足 ---------- */
+.desc {
+  margin: 0 0 4px;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--ink-sub);
+}
+.cardStack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+@media (min-width: 769px) {
+  .lr {
+    grid-template-columns: 32px minmax(0, 10em) 1fr 56px;
+  }
+}
+@media (min-width: 1100px) {
+  .accTwo {
+    grid-template-columns: 1fr 1fr;
+  }
+  /* 2列のときは最下段の2つとも下線を消す */
+  .accTwo details:nth-last-child(2):nth-child(odd) {
+    border-bottom: 0;
+  }
+}
+
+/* 障害など、色の付かないバッジ（キャンバス上ではなく白カード上に置くため薄いグレー地） */
+.badgePlain {
+  background: var(--surface-subtle);
+  color: var(--ink-sub);
+}

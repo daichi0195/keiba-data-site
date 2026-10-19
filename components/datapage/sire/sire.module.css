@@ -1,0 +1,231 @@
+/* 種牡馬詳細ページの追加スタイル（components/course/course.module.css の変数・クラスと組み合わせて使う） */
+
+/* ---------- 特徴のメーター見出し（h3 で残す） ---------- */
+.mHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+.mHead h3 {
+  margin: 0;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: var(--ink-sub);
+}
+.mHead b {
+  font-size: 17px;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+/* 判定の基準・距離の定義（メーター内の折りたたみ） */
+.rule {
+  margin-top: 0;
+}
+.rule summary {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-sub);
+}
+.ruleBody {
+  margin: 0 0 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  line-height: 21px;
+  color: var(--ink);
+}
+.ruleBody p {
+  margin: 0;
+}
+.ruleBody ul {
+  margin: 0;
+  padding-left: 1.2em;
+}
+.ruleBody small {
+  font-size: 12px;
+  color: var(--ink-sub);
+}
+
+/* ---------- 年度別成績のグラフ ---------- */
+.chartLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--ink-sub);
+}
+.chartLegend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.legendBar {
+  display: inline-block;
+  width: 14px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--data-4);
+}
+.legendLine {
+  display: inline-block;
+  position: relative;
+  width: 20px;
+  height: 3px;
+  border-radius: 9999px;
+  background: var(--ink);
+}
+.legendLine::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2px solid var(--ink);
+  box-sizing: border-box;
+}
+.chartBox {
+  position: relative;
+  width: 100%;
+  height: 260px;
+  margin: 8px 0 4px;
+}
+.chartBox canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.chartSummary {
+  margin: 0 0 4px;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--ink-sub);
+}
+
+/* ---------- 注目ポイント（得意・苦手なコース） ---------- */
+.pickCard {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.pickCard h3 {
+  font-size: 16px;
+  line-height: 24px;
+  margin: 0;
+}
+.subTitle {
+  margin: 12px 0 6px;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+}
+.subTitle:first-of-type {
+  margin-top: 4px;
+}
+
+/* ---------- データ概要の関連リンク ---------- */
+.relList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+}
+.relList li {
+  font-size: 15px;
+  line-height: 26px;
+}
+.relList small {
+  margin-left: 4px;
+  font-size: 12px;
+  color: var(--ink-sub);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- 表（名前リンク・集計行） ---------- */
+.keyLink {
+  color: var(--link);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  font-weight: 500;
+}
+.keyLink:hover {
+  color: var(--link-hover);
+}
+/* 右回り・左回り・中央・ローカルの集計行（上に区切り線、ラベルを補足色） */
+.sumFirst td {
+  border-top: 1px solid var(--ink-disabled);
+}
+.sumLabel {
+  color: var(--ink-sub);
+  font-weight: 600;
+}
+
+/* ---------- コース別（競馬場ごとの開閉） ---------- */
+.rcList {
+  display: flex;
+  flex-direction: column;
+}
+.rcItem {
+  border-bottom: 1px solid var(--line);
+}
+.rcItem:last-child {
+  border-bottom: 0;
+}
+.rcItem summary {
+  list-style: none;
+  cursor: pointer;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 22px;
+}
+.rcItem summary::-webkit-details-marker {
+  display: none;
+}
+.rcItem summary::after {
+  content: "";
+  margin-left: auto;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--ink-sub);
+  border-bottom: 2px solid var(--ink-sub);
+  transform: rotate(45deg) translateY(-3px);
+  transition: transform 220ms var(--ease-ui);
+}
+.rcItem[open] summary::after {
+  transform: rotate(-135deg) translateY(-1px);
+}
+.rcItem summary small {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--ink-sub);
+}
+.rcBody {
+  padding-bottom: 12px;
+}
+
+/* ---------- 結論カード（判定の文言が長いので、ラベルと判定の列を広げる） ---------- */
+a.vRowWide {
+  grid-template-columns: 5.5em 88px 1fr;
+  gap: 10px;
+}
+a.vRowWide > span:first-child {
+  white-space: nowrap;
+}
+a.vRowWide > span:last-child {
+  font-size: 15px;
+}

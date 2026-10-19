@@ -1,0 +1,181 @@
+/* 調教師詳細ページの追加スタイル（components/course/course.module.css と組み合わせて使う。色は .canvas の変数を参照） */
+
+/* ---------- 表：中央・ローカルの集計行 ---------- */
+.sumFirst td {
+  border-top: 1px solid var(--ink-disabled);
+}
+.sumLabel {
+  font-weight: 600;
+}
+
+/* ---------- 年度別のグラフ ---------- */
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--ink-sub);
+}
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.legendBar {
+  width: 14px;
+  height: 12px;
+  border-radius: 3px;
+  background: var(--data-4);
+}
+.legendLine {
+  position: relative;
+  width: 22px;
+  height: 3px;
+  border-radius: 9999px;
+  background: var(--ink);
+}
+.legendLine::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2px solid var(--ink);
+  box-sizing: border-box;
+}
+.chartWrap {
+  width: 100%;
+  height: 300px;
+  margin: 8px 0 12px;
+}
+.chart {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.yearCard {
+  display: flex;
+  flex-direction: column;
+}
+.yearCard > div:last-child {
+  margin-bottom: 0;
+}
+
+/* ---------- 関連データ ---------- */
+.relList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.relList li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  min-height: 40px;
+  border-bottom: 1px solid var(--line);
+  font-size: 15px;
+  line-height: 22px;
+}
+.relList li:last-child {
+  border-bottom: 0;
+}
+.relRate {
+  flex: none;
+  font-size: 13px;
+  color: var(--ink-sub);
+}
+
+/* ---------- 注目ポイント ---------- */
+.pickWide {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.pickWide .grp,
+.pickWide > div {
+  min-width: 0;
+}
+.subH {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  margin: 4px 0 8px;
+}
+
+/* ---------- コース別成績（競馬場ごとの開閉） ---------- */
+.groups {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+.group {
+  border-bottom: 1px solid var(--line);
+}
+.group:last-child {
+  border-bottom: 0;
+}
+.group summary {
+  list-style: none;
+  cursor: pointer;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 600;
+}
+.group summary::-webkit-details-marker {
+  display: none;
+}
+.group summary small {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--ink-sub);
+  margin-right: auto;
+}
+.group summary::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--ink-sub);
+  border-bottom: 2px solid var(--ink-sub);
+  transform: rotate(45deg) translateY(-3px);
+  transition: transform 220ms var(--ease-ui);
+}
+.group[open] summary::after {
+  transform: rotate(-135deg) translateY(-1px);
+}
+.group[open] {
+  padding-bottom: 8px;
+}
+
+/* ---------- 判定の基準 ---------- */
+.rule {
+  margin: 0 0 10px;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  line-height: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.ruleTitle {
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 600;
+  margin: 8px 0 4px;
+}
+
+/* globals.css の旧デザイン用 ID 指定（#characteristics・#owner-stats の余白）を打ち消す */
+.resetSection {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
