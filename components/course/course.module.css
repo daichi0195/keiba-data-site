@@ -423,11 +423,12 @@
   gap: 12px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  scroll-padding-inline: 16px;
+  /* ページの左右余白（static-page の SP 余白 0.75rem）と同じ幅だけ外へ広げる。広げすぎると画面幅を超えて固定メニューがずれる */
+  scroll-padding-inline: 0.75rem;
   scrollbar-width: none;
   padding-bottom: 4px;
-  margin-inline: -16px;
-  padding-inline: 16px;
+  margin-inline: -0.75rem;
+  padding-inline: 0.75rem;
 }
 .rail::-webkit-scrollbar {
   display: none;
