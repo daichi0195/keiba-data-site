@@ -21,6 +21,7 @@ import CourseSectionNav from '@/components/course/CourseSectionNav';
 import RankingTable from '@/components/course/RankingTable';
 import { ConditionCard, Dots, Meter, PickCard, RichText, type ConditionRow, type NameLink } from '@/components/course/CourseParts';
 import { MIN_RACES_FOR_MENTION } from '@/lib/dataPageRules';
+import { courseDescription } from '@/lib/metaDescriptions';
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
@@ -411,11 +412,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   let thin = false;
   let totalRaces = 0;
   let periodYears = 3;
+  let courseData: any = null;
   try {
     const distanceParam = resolvedParams.distance.includes('-inner') || resolvedParams.distance.includes('-outer')
       ? resolvedParams.distance
       : parseInt(resolvedParams.distance);
     const gcsData = await getCourseDataFromGCS(resolvedParams.racecourse, resolvedParams.surface, distanceParam);
+    courseData = gcsData;
     totalRaces = gcsData?.total_races ?? gcsData?.course_info?.total_races ?? 0;
     periodYears = gcsData?.period_years ?? 3;
     thin = !hasEnoughRaces(totalRaces);
@@ -423,7 +426,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     thin = true;
   }
 
-  const description = `${courseLabel}の傾向を直近${periodYears}年${totalRaces ? `・${totalRaces.toLocaleString()}レース` : ''}のデータで分析。有利な枠順・脚質、得意な騎手・種牡馬・調教師、荒れやすさまで。毎週更新。`;
+  // 検索結果で他コースと見分けられるよう、このコース固有の数値を入れる
+  const description = courseDescription(courseLabel, periodYears, courseData);
 
   return {
     title,
@@ -1207,19 +1211,19 @@ export default async function CoursePage({ params }: Props) {
 
             {/* 騎手・血統・調教師（現行仕様：10件＋さらに表示で最大50件） */}
             <section id="jockey-section" className={s.section} aria-label="騎手別データ">
-              <div className={s.sh}><h2 className={s.h2}>{seoPrefix} 騎手別データ</h2><p>勝利数順</p></div>
+              <div className={s.sh}><h2 className={s.h2}>{seoPrefix}が得意な騎手</h2><p>騎手別データ・勝利数順</p></div>
               <RankingTable rows={jockeyStatsWithLinks} nameLabel="騎手" note="最大50件まで表示/引退騎手を除く" />
             </section>
             <section id="bloodline-section" className={s.section} aria-label="血統別（種牡馬）データ">
-              <div className={s.sh}><h2 className={s.h2}>{seoPrefix} 血統別(種牡馬)データ</h2><p>勝利数順</p></div>
+              <div className={s.sh}><h2 className={s.h2}>{seoPrefix}が得意な血統（種牡馬）</h2><p>種牡馬別データ・勝利数順</p></div>
               <RankingTable rows={pedigreeStatsWithLinks} nameLabel="種牡馬" note="最大50件まで表示" />
             </section>
             <section id="dam-sire-section" className={s.section} aria-label="血統別（母父）データ">
-              <div className={s.sh}><h2 className={s.h2}>{seoPrefix} 血統別(母父)データ</h2><p>勝利数順</p></div>
+              <div className={s.sh}><h2 className={s.h2}>{seoPrefix}が得意な血統（母父）</h2><p>母父別データ・勝利数順</p></div>
               <RankingTable rows={damSireStatsWithLinks} nameLabel="母父" note="最大50件まで表示" />
             </section>
             <section id="trainer-section" className={s.section} aria-label="調教師別データ">
-              <div className={s.sh}><h2 className={s.h2}>{seoPrefix} 調教師別データ</h2><p>勝利数順</p></div>
+              <div className={s.sh}><h2 className={s.h2}>{seoPrefix}が得意な調教師</h2><p>調教師別データ・勝利数順</p></div>
               <RankingTable rows={trainerStatsWithLinks} nameLabel="調教師" note="最大50件まで表示/引退調教師を除く" />
             </section>
 

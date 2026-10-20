@@ -27,6 +27,7 @@ import { CourseGroupsCard, type CourseGroup } from '@/components/datapage/traine
 import HighlightCoursesCard, { MIN_RACES_FOR_HIGHLIGHT, type HighlightCourseRow } from '@/components/datapage/shared/HighlightCoursesCard';
 import VerdictRow, { VerdictRows } from '@/components/datapage/shared/VerdictRow';
 import CriteriaDetails, { SURFACE_CRITERIA, DISTANCE_CRITERIA, DISTANCE_DEFINITION } from '@/components/datapage/shared/CriteriaDetails';
+import { trainerDescription } from '@/lib/metaDescriptions';
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
@@ -583,7 +584,8 @@ export async function generateMetadata({
 
   // 「〇〇厩舎」「〇〇厩舎 評判」でも検索されるため、厩舎の語を入れる
   const title = `${trainer.name}厩舎（調教師）の成績・特徴｜得意条件と騎手相性【毎週更新】`;
-  const description = `${trainer.name}調教師${trainer.stable ? `（${trainer.stable}）` : ''}の成績を直近3年のデータで分析。勝率・回収率、得意な距離・コース、主戦騎手、レース間隔別の成績まで。毎週更新。`;
+  // 検索結果で他の調教師と見分けられるよう、固有の数値を入れる
+  const description = trainerDescription(trainer);
   const url = `https://www.keibadata.com/trainers/${id}`;
 
   return {

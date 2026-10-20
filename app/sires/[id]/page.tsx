@@ -29,6 +29,7 @@ import VerdictRow, { VerdictRows } from '@/components/datapage/shared/VerdictRow
 import CriteriaDetails, {
   SURFACE_CRITERIA, DISTANCE_CRITERIA, CONDITION_CRITERIA, DISTANCE_DEFINITION,
 } from '@/components/datapage/shared/CriteriaDetails';
+import { sireDescription } from '@/lib/metaDescriptions';
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
@@ -55,17 +56,19 @@ export async function generateMetadata({
 
   // 検索語の上位は「〇〇産駒 特徴」「〇〇産駒 重馬場」のため、両方をタイトルの前半に入れる
   const title = `${sireName}産駒の特徴・傾向｜得意距離・コース・重馬場成績【毎週更新】`;
-  const description = `${sireName}産駒の特徴を直近3年のデータで分析。芝・ダート、得意距離、競馬場別、重馬場・道悪の成績、母父別の相性まで。毎週更新。`;
   const url = `https://www.keibadata.com/sires/${id}`;
 
   // 対象レース数が少ないページは傾向判定を出さず、インデックスもさせない（コースページと同じ方針）
   let thin = false;
+  let sireData: any = null;
   try {
-    const sireData = await getSireDataFromGCS(id);
+    sireData = await getSireDataFromGCS(id);
     thin = !hasEnoughRaces(sireData?.total_races);
   } catch {
     thin = false;
   }
+  // 検索結果で他の種牡馬と見分けられるよう、得意条件・重馬場の数値を入れる
+  const description = sireDescription(sireName, sireData);
 
   return {
     title,
@@ -975,7 +978,7 @@ export default async function SirePage({
     { id: 'horse-weight-stats', label: '馬体重別' },
     { id: 'surface-stats', label: '芝・ダート別' },
     { id: 'surface-change-stats', label: '芝・ダート変わり' },
-    { id: 'track-condition-stats', label: '馬場状態別' },
+    { id: 'track-condition-stats', label: '重馬場・馬場状態別' },
     { id: 'racecourse-stats', label: '競馬場別' },
     { id: 'course-stats', label: 'コース別' },
     { id: 'dam-sire-stats', label: '母父別' },
@@ -1346,7 +1349,7 @@ export default async function SirePage({
               </section>
             )}
             <section id="track-condition-stats" className={cs.section} aria-label="馬場状態別データ">
-              <div className={cs.sh}><h2 className={cs.h2}>{sire.name}産駒 馬場状態別データ</h2><p>芝・ダート・障害 × 良・稍重・重・不良</p></div>
+              <div className={cs.sh}><h2 className={cs.h2}>{sire.name}産駒の重馬場・道悪成績</h2><p>馬場状態別：芝・ダート・障害 × 良・稍重・重・不良</p></div>
               <ConditionCard rows={trackRows} keyLabel="馬場状態" />
             </section>
             <section id="racecourse-stats" className={cs.section} aria-label="競馬場別データ">

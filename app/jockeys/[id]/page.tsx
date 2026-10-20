@@ -31,6 +31,7 @@ import VerdictRow, { VerdictRows } from '@/components/datapage/shared/VerdictRow
 import CriteriaDetails, {
   SURFACE_CRITERIA, DISTANCE_CRITERIA, RUNNING_STYLE_CRITERIA, DISTANCE_DEFINITION, RUNNING_STYLE_DEFINITION,
 } from '@/components/datapage/shared/CriteriaDetails';
+import { jockeyDescription } from '@/lib/metaDescriptions';
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
@@ -283,7 +284,8 @@ export async function generateMetadata({
   }
 
   const title = `${jockey.name}騎手の特徴・成績｜得意コース・距離と回収率【毎週更新】`;
-  const description = `${jockey.name}騎手の特徴を直近3年のデータで分析。勝率・複勝率・回収率、得意な競馬場・コース・距離、人気別成績、相性の良い調教師まで。毎週更新。`;
+  // 検索結果で他の騎手と見分けられるよう、所属・デビュー年と固有の数値を入れる
+  const description = jockeyDescription(jockey);
   const url = `https://www.keibadata.com/jockeys/${id}`;
 
   return {

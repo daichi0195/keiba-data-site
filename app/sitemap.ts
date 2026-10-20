@@ -5,6 +5,9 @@ import { ALL_TRAINERS } from '@/lib/trainers';
 import { ALL_SIRES } from '@/lib/sires';
 import { getAllArticles } from '@/lib/articles';
 import { getCourseDataFromGCS } from '@/lib/getCourseDataFromGCS';
+import { getJockeyDataFromGCS } from '@/lib/getJockeyDataFromGCS';
+import { getTrainerDataFromGCS } from '@/lib/getTrainerDataFromGCS';
+import { getSireDataFromGCS } from '@/lib/getSireDataFromGCS';
 import { hasEnoughRaces } from '@/lib/dataPageRules';
 import { getDataUpdatedAt } from '@/lib/dataDate';
 
@@ -27,6 +30,18 @@ async function getIndexableCourses() {
   );
 
   return results.flatMap((r) => (r.status === 'fulfilled' && r.value.indexable ? [r.value.course] : []));
+}
+
+/**
+ * 対象レース数が十分な騎手・調教師・種牡馬だけを返す（少ないページは noindex のため、サイトマップにも載せない）
+ * データが取れなかったときは、ページ側と同じく載せる側に倒す
+ */
+async function filterIndexable<T extends { id: number }>(items: T[], load: (id: number) => Promise<any>): Promise<T[]> {
+  const results = await Promise.allSettled(items.map(async (item) => hasEnoughRaces((await load(item.id))?.total_races)));
+  return items.filter((_, i) => {
+    const r = results[i];
+    return r.status === 'rejected' || r.value;
+  });
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -55,7 +70,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // 騎手ページ（リストは直近3年で30レース以上の現役騎手に限定済み）
-  const jockeyEntries: MetadataRoute.Sitemap = ALL_JOCKEYS.map((jockey) => ({
+  const jockeyEntries: MetadataRoute.Sitemap = (await filterIndexable(ALL_JOCKEYS, getJockeyDataFromGCS)).map((jockey) => ({
     url: `${baseUrl}/jockeys/${jockey.id}`,
     lastModified: dataUpdatedAt,
     changeFrequency: 'weekly' as const,
@@ -63,7 +78,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // 調教師ページ
-  const trainerEntries: MetadataRoute.Sitemap = ALL_TRAINERS.map((trainer) => ({
+  const trainerEntries: MetadataRoute.Sitemap = (await filterIndexable(ALL_TRAINERS, getTrainerDataFromGCS)).map((trainer) => ({
     url: `${baseUrl}/trainers/${trainer.id}`,
     lastModified: dataUpdatedAt,
     changeFrequency: 'weekly' as const,
@@ -71,7 +86,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // 種牡馬ページ
-  const sireEntries: MetadataRoute.Sitemap = ALL_SIRES.map((sire) => ({
+  const sireEntries: MetadataRoute.Sitemap = (await filterIndexable(ALL_SIRES, getSireDataFromGCS)).map((sire) => ({
     url: `${baseUrl}/sires/${sire.id}`,
     lastModified: dataUpdatedAt,
     changeFrequency: 'weekly' as const,

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
+import remarkEntityLinks from '@/lib/remarkEntityLinks';
 import {
   getArticleBySlug,
   getAllArticleSlugs,
@@ -74,6 +75,9 @@ export async function generateMetadata({
   return {
     title: `${title} | 競馬データ.com`,
     description,
+    alternates: {
+      canonical: `https://www.keibadata.com/articles/${slug}`,
+    },
     openGraph: {
       title,
       description,
@@ -83,7 +87,7 @@ export async function generateMetadata({
       images: thumbnail
         ? [
             {
-              url: `https://keibadata.com${thumbnail}`,
+              url: `https://www.keibadata.com${thumbnail}`,
               width: 1200,
               height: 630,
               alt: title,
@@ -95,7 +99,7 @@ export async function generateMetadata({
       card: 'summary_large_image',
       title,
       description,
-      images: thumbnail ? [`https://keibadata.com${thumbnail}`] : undefined,
+      images: thumbnail ? [`https://www.keibadata.com${thumbnail}`] : undefined,
     },
   };
 }
@@ -224,7 +228,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                     components={components}
                     options={{
                       mdxOptions: {
-                        remarkPlugins: [remarkGfm],
+                        // 本文中の種牡馬・騎手・調教師名を各データページへリンクする
+                        remarkPlugins: [remarkGfm, remarkEntityLinks],
                       },
                       blockJS: false,
                       blockDangerousJS: false,
