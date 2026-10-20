@@ -24,7 +24,6 @@ import TrainerLeadingChart from '@/components/datapage/trainer/TrainerLeadingCha
 import BarTableCard from '@/components/datapage/trainer/BarTableCard';
 import { type LinkStatRow } from '@/components/datapage/trainer/LinkStatsTable';
 import { CourseGroupsCard, type CourseGroup } from '@/components/datapage/trainer/TrainerParts';
-import RelatedLinksCard, { type RelatedGroup } from '@/components/datapage/shared/RelatedLinksCard';
 import HighlightCoursesCard, { MIN_RACES_FOR_HIGHLIGHT, type HighlightCourseRow } from '@/components/datapage/shared/HighlightCoursesCard';
 import VerdictRow, { VerdictRows } from '@/components/datapage/shared/VerdictRow';
 import CriteriaDetails, { SURFACE_CRITERIA, DISTANCE_CRITERIA, DISTANCE_DEFINITION } from '@/components/datapage/shared/CriteriaDetails';
@@ -1115,26 +1114,6 @@ export default async function TrainerPage({
     (item) => (item.id !== 'highlights-section' || hasHighlights) && (enoughRaces || !thinHiddenIds.has(item.id))
   );
 
-  // 関連データ（現行 RelatedLinks と同じ選び方：リンク先があり20走以上の行を複勝率順に5件）
-  const pickTop = <T extends { link?: string; name?: string; races?: number; place_rate?: number }>(rows: T[]) =>
-    rows
-      .filter((r) => r.link && r.name && (r.races ?? 0) >= MIN_RACES_FOR_MENTION)
-      .sort((a, b) => (b.place_rate ?? 0) - (a.place_rate ?? 0))
-      .slice(0, 5);
-  const relatedGroups: RelatedGroup[] = [
-    {
-      heading: `得意なコース（${MIN_RACES_FOR_MENTION}走以上・複勝率上位）`,
-      items: pickTop(courseRowsWithUrl.map((c) => ({ ...c, link: c.url }))).map((c) => ({
-        label: courseLabel(c, { withRacecourse: true }),
-        href: c.link as string,
-        place_rate: c.place_rate,
-      })),
-    },
-    {
-      heading: `相性の良い騎手（${MIN_RACES_FOR_MENTION}走以上・複勝率上位）`,
-      items: pickTop(jockeyRows).map((j) => ({ label: j.name, href: j.link as string, place_rate: j.place_rate })),
-    },
-  ].filter((g) => g.items.length > 0);
   const chipItems = tocItems.map((item) => ({ id: item.id, label: chipLabels[item.id] ?? item.label }));
 
   return (
@@ -1230,13 +1209,6 @@ export default async function TrainerPage({
               </section>
             )}
 
-            {/* 関連データ（得意なコース・相性の良い騎手へのリンク） */}
-            {relatedGroups.length > 0 && (
-              <nav className={s.section} aria-label={`${trainer.name}調教師の関連データ`}>
-                <div className={s.sh}><h2 className={s.h2}>{trainer.name}調教師の関連データ</h2></div>
-                <RelatedLinksCard groups={relatedGroups} />
-              </nav>
-            )}
 
             {/* 年度別成績 */}
             <section id="leading" className={s.section} aria-label="年度別成績">

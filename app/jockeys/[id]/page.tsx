@@ -26,7 +26,6 @@ import {
   type CourseGroup,
   type LinkStatRow,
 } from '@/components/datapage/jockey/JockeyParts';
-import RelatedLinksCard, { type RelatedGroup } from '@/components/datapage/shared/RelatedLinksCard';
 import HighlightCoursesCard, { MIN_RACES_FOR_HIGHLIGHT, type HighlightCourseRow } from '@/components/datapage/shared/HighlightCoursesCard';
 import VerdictRow, { VerdictRows } from '@/components/datapage/shared/VerdictRow';
 import CriteriaDetails, {
@@ -1102,26 +1101,6 @@ export default async function JockeyPage({
     trainer: trainerNameLinks,
   };
 
-  // 関連データ（現行の RelatedLinks と同じ選び方：リンク先があり MIN_RACES_FOR_MENTION 走以上、複勝率の高い順に5件）
-  const pickTop = <T extends { link?: string; name?: string; races?: number; place_rate?: number }>(rows: T[]) =>
-    rows
-      .filter((r) => r.link && r.name && (r.races ?? 0) >= MIN_RACES_FOR_MENTION)
-      .sort((a, b) => (b.place_rate ?? 0) - (a.place_rate ?? 0))
-      .slice(0, 5);
-  const relatedGroups: RelatedGroup[] = [
-    {
-      heading: `得意なコース（${MIN_RACES_FOR_MENTION}走以上・複勝率上位）`,
-      items: pickTop(courseTableData).map((r) => ({
-        label: courseLabel(r, { withRacecourse: true }),
-        href: r.link as string,
-        place_rate: r.place_rate,
-      })),
-    },
-    {
-      heading: `相性の良い調教師（${MIN_RACES_FOR_MENTION}走以上・複勝率上位）`,
-      items: pickTop(trainerRows).map((r) => ({ label: r.name, href: r.link as string, place_rate: r.place_rate })),
-    },
-  ].filter((g) => g.items.length > 0);
 
   // 特徴の根拠の数値
   const surfacePair: [string, string][] = [...jockey.surface_stats]
@@ -1269,13 +1248,6 @@ export default async function JockeyPage({
               </div>
             </section>
 
-            {/* 関連データ（詳細ページへのリンク） */}
-            {relatedGroups.length > 0 && (
-              <nav id="related-section" className={s.section} aria-label={`${jockey.name}騎手の関連データ`}>
-                <div className={s.sh}><h2 className={s.h2}>{jockey.name}騎手の関連データ</h2></div>
-                <RelatedLinksCard groups={relatedGroups} />
-              </nav>
-            )}
 
             {/* 年度別成績 */}
             <section id="leading" className={s.section} aria-label="年度別成績">

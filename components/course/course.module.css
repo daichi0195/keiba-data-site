@@ -104,7 +104,6 @@
   font-weight: 700;
   margin: 0;
   letter-spacing: -.01em;
-  text-wrap: balance;
   color: var(--ink);
 }
 .lead {
@@ -699,7 +698,8 @@ thead .key {
 
 /* ランキングの表 */
 .rankCard {
-  padding: 0;
+  /* 表の上にも、下部（.rFoot の上下 12px）と同じだけの余白を取る */
+  padding: 12px 0 0;
   overflow: hidden;
 }
 .rankCard .tbl {
@@ -919,7 +919,7 @@ thead .rnm {
     padding: 22px 24px;
   }
   .rankCard {
-    padding: 0;
+    padding: 12px 0 0;
   }
   .title {
     font-size: 30px;

@@ -136,6 +136,12 @@
 .content h4 {
   font-weight: 700;
   color: var(--ink);
+}
+
+/* 見出し（h1 以外）は行の長さを揃えて折り返す。h1 は通常の折り返し（オーナー指定） */
+.content h2,
+.content h3,
+.content h4 {
   text-wrap: balance;
 }
 

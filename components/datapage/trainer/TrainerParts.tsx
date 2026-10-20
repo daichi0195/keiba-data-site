@@ -2,7 +2,7 @@ import s from '@/components/course/course.module.css';
 import t from './trainer.module.css';
 import LinkStatsTable, { type LinkStatRow } from '@/components/datapage/shared/LinkStatsTable';
 
-// 関連データ・注目ポイントは3ページ共通の部品（components/datapage/shared/RelatedLinksCard・HighlightCoursesCard）を使う
+// 注目ポイントは3ページ共通の部品（components/datapage/shared/HighlightCoursesCard）を使う
 
 // ------------------------------------------------------------
 // コース別成績（競馬場ごとに開閉。最大値は競馬場ごとに判定＝現行仕様）

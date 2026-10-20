@@ -20,7 +20,6 @@ import s from '@/components/course/course.module.css';
 import CourseSectionNav from '@/components/course/CourseSectionNav';
 import RankingTable from '@/components/course/RankingTable';
 import { ConditionCard, Dots, Meter, PickCard, RichText, type ConditionRow, type NameLink } from '@/components/course/CourseParts';
-import RelatedLinksCard from '@/components/datapage/shared/RelatedLinksCard';
 import { MIN_RACES_FOR_MENTION } from '@/lib/dataPageRules';
 
 // ISR: 週1回（604800秒）再生成
@@ -840,7 +839,6 @@ export default async function CoursePage({ params }: Props) {
   // ナビゲーション用のセクションアイテム
   const navigationItems = [
     { id: 'summary-section', label: 'データ概要' },
-    { id: 'related-section', label: '関連データ' },
     ...(enoughRaces ? [
       { id: 'characteristics-section', label: 'コースの特徴' },
       { id: 'highlights-section', label: '注目ポイント' },
@@ -961,17 +959,6 @@ export default async function CoursePage({ params }: Props) {
     pedigree: [...toNameLinks(pedigreeStatsWithLinks), ...toNameLinks(damSireStatsWithLinks)],
   };
 
-  // 関連データ（旧 RelatedLinks と同じ選び方：出走20以上・詳細ページあり・複勝率の高い順に5件）
-  const pickRelated = (rows: any[]) => rows
-    .filter((r) => r.link && (r.races ?? 0) >= MIN_RACES_FOR_MENTION)
-    .sort((a, b) => (b.place_rate ?? 0) - (a.place_rate ?? 0))
-    .slice(0, 5)
-    .map((r) => ({ label: r.name, href: r.link, place_rate: r.place_rate }));
-  const relatedGroups = [
-    { heading: `騎手（${MIN_RACES_FOR_MENTION}走以上・複勝率上位）`, items: pickRelated(jockeyStatsWithLinks) },
-    { heading: `種牡馬（${MIN_RACES_FOR_MENTION}走以上・複勝率上位）`, items: pickRelated(pedigreeStatsWithLinks) },
-    { heading: `調教師（${MIN_RACES_FOR_MENTION}走以上・複勝率上位）`, items: pickRelated(trainerStatsWithLinks) },
-  ];
 
   // 注目ポイント
   const toPick = (rows: any[]) => rows.map((r) => ({ name: r.name, link: r.link }));
@@ -998,7 +985,7 @@ export default async function CoursePage({ params }: Props) {
 
   // ページ内ナビ（チップの表示名は短く、id は目次と共通）
   const chipLabels: Record<string, string> = {
-    'summary-section': '概要', 'related-section': '関連', 'characteristics-section': '特徴', 'highlights-section': '注目',
+    'summary-section': '概要', 'characteristics-section': '特徴', 'highlights-section': '注目',
     'popularity-section': '人気別', 'gate-section': '枠順別', 'running-style-section': '脚質別',
     'gender-section': '性別', 'horse-weight-section': '馬体重別', 'jockey-section': '騎手',
     'bloodline-section': '種牡馬', 'dam-sire-section': '母父', 'trainer-section': '調教師', 'faq-section': 'Q&A',
@@ -1106,13 +1093,6 @@ export default async function CoursePage({ params }: Props) {
               </div>
             </section>
 
-            {/* 関連データ */}
-            {relatedGroups.some((g) => g.items.length > 0) && (
-              <section id="related-section" className={s.section} aria-label="関連データ">
-                <div className={s.sh}><h2 className={s.h2}>{seoPrefix}が得意な騎手・血統・厩舎</h2></div>
-                <RelatedLinksCard groups={relatedGroups} />
-              </section>
-            )}
 
             {/* コースの特徴 */}
             {enoughRaces && (

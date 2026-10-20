@@ -169,5 +169,5 @@ export function CourseGroupsCard({ groups }: { groups: CourseGroup[] }) {
   );
 }
 
-// 注目ポイント（得意・苦手なコース）と関連データは3ページ共通の部品へ移動
-// （components/datapage/shared/HighlightCoursesCard・RelatedLinksCard）
+// 注目ポイント（得意・苦手なコース）は3ページ共通の部品へ移動
+// （components/datapage/shared/HighlightCoursesCard）

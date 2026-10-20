@@ -24,7 +24,6 @@ import {
   SireMeter, SireStatsTable, SireConditionCard, CourseGroups,
   type SireStatRow, type RacecourseCourseGroup,
 } from '@/components/datapage/sire/SireParts';
-import RelatedLinksCard, { type RelatedGroup } from '@/components/datapage/shared/RelatedLinksCard';
 import HighlightCoursesCard, { MIN_RACES_FOR_HIGHLIGHT, type HighlightCourseRow } from '@/components/datapage/shared/HighlightCoursesCard';
 import VerdictRow, { VerdictRows } from '@/components/datapage/shared/VerdictRow';
 import CriteriaDetails, {
@@ -1092,22 +1091,6 @@ export default async function SirePage({
     damSire: damSireStatsWithLinks.filter((d: any) => d.link).map((d: any) => ({ name: d.name, href: d.link })),
   };
 
-  // 関連データ（現行の RelatedLinks と同じ選び方：リンク先あり・20走以上・複勝率上位5件）
-  const pickTop = (rows: any[]) =>
-    rows
-      .filter((r) => r.link && r.name && (r.races ?? 0) >= MIN_RACES_FOR_MENTION)
-      .sort((a, b) => (b.place_rate ?? 0) - (a.place_rate ?? 0))
-      .slice(0, 5);
-  const relatedGroups: RelatedGroup[] = [
-    {
-      heading: `得意なコース（${MIN_RACES_FOR_MENTION}走以上・複勝率上位）`,
-      items: pickTop(linkedCourses).map((r) => ({ href: r.link, label: courseLabel(r, { withRacecourse: true }), place_rate: r.place_rate })),
-    },
-    {
-      heading: `相性の良い母父（${MIN_RACES_FOR_MENTION}走以上・複勝率上位）`,
-      items: pickTop(damSireStatsWithLinks).map((r) => ({ href: r.link, label: r.name, place_rate: r.place_rate })),
-    },
-  ].filter((g) => g.items.length > 0);
 
   // 年度別グラフ（古い順。データがない年も含める）
   const leadingData = [currentYear - 2, currentYear - 1, currentYear].map(
@@ -1218,13 +1201,6 @@ export default async function SirePage({
               </div>
             </section>
 
-            {/* 関連データ（詳細ページへのリンク） */}
-            {relatedGroups.length > 0 && (
-              <nav className={cs.section} aria-label={`${sire.name}産駒の関連データ`}>
-                <div className={cs.sh}><h2 className={cs.h2}>{sire.name}産駒の関連データ</h2></div>
-                <RelatedLinksCard groups={relatedGroups} />
-              </nav>
-            )}
 
             {/* 年度別成績 */}
             <section id="leading" className={cs.section} aria-label="年度別成績">
