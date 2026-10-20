@@ -14,7 +14,7 @@ export interface ArticleFrontmatter {
   category: string;
   tags: string[];
   author: string; // 執筆者IDまたは執筆者名
-  thumbnail?: string; // サムネイル画像のパス（例: /images/articles/1.png）
+  thumbnail?: string; // サムネイル画像のパス（例: /images/articles/1.jpg）
   featured?: boolean; // 人気記事フラグ
   priority?: number; // 人気順の優先度（数字が小さいほど上位、未指定は999）
   link?: string; // カスタムリンク先（カルーセル用、指定時は/articles/slugの代わりに使用）
