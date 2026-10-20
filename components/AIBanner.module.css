@@ -75,3 +75,9 @@
   font-weight: 400;
   color: #6A6A6A;
 }
+
+/* カードの影（docs/redesign/tonmana.md「影」。背景 #F7F7F7 との境界をはっきりさせる） */
+.banner,
+.bookmarkBanner {
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.08);
+}

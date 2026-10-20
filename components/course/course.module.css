@@ -427,7 +427,9 @@
   /* ページの左右余白（static-page の SP 余白 0.75rem）と同じ幅だけ外へ広げる。広げすぎると画面幅を超えて固定メニューがずれる */
   scroll-padding-inline: 0.75rem;
   scrollbar-width: none;
-  padding-bottom: 4px;
+  /* カードの影が切れないよう上下に余白を取り、その分を負のマージンで相殺 */
+  padding-block: 6px 12px;
+  margin-block: -6px -8px;
   margin-inline: -0.75rem;
   padding-inline: 0.75rem;
 }
@@ -988,4 +990,9 @@ thead .rnm {
   .spOnly {
     display: none;
   }
+}
+
+/* カードの影（docs/redesign/tonmana.md「影」。背景 #F7F7F7 との境界をはっきりさせる） */
+.card {
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.08);
 }

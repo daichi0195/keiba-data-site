@@ -135,3 +135,8 @@
   color: #FFFFFF;
   font-weight: 700;
 }
+
+/* カードの影（docs/redesign/tonmana.md「影」。背景 #F7F7F7 との境界をはっきりさせる） */
+.coursesSection {
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.08);
+}

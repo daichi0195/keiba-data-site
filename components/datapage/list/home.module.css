@@ -92,6 +92,9 @@
   margin-inline: -16px;
   padding-inline: 16px;
   scroll-padding-inline: 16px;
+  /* カードの影が切れないよう上下に余白を取り、その分を負のマージンで相殺 */
+  padding-block: 6px 12px;
+  margin-block: -6px -12px;
 }
 .raceRail::-webkit-scrollbar {
   display: none;
@@ -253,4 +256,9 @@
     grid-template-columns: 176px 1fr;
     gap: 16px;
   }
+}
+
+/* カードの影（docs/redesign/tonmana.md「影」。背景 #F7F7F7 との境界をはっきりさせる） */
+.raceCard {
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.08);
 }
