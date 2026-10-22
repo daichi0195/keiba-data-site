@@ -7,7 +7,7 @@
 }
 
 @media (max-width: 768px) {
-  /* ヘッダー右：白の半透明の丸に三本線 */
+  /* ヘッダー右：背景なしの黒い三本線 */
   .trigger {
     display: grid;
     place-items: center;
@@ -15,7 +15,7 @@
     height: 40px;
     border: 0;
     border-radius: 9999px;
-    background: rgba(255, 255, 255, 0.22);
+    background: none;
     cursor: pointer;
     padding: 0;
     position: relative;
@@ -27,22 +27,41 @@
     inset: -2px;
   }
   .trigger:active {
-    background: rgba(255, 255, 255, 0.35);
+    background: #F3F3F3;
   }
   .trigger:focus-visible {
-    outline: 2px solid #fff;
+    outline: 2px solid #222;
     outline-offset: 2px;
   }
   .bars {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    width: 18px;
+    gap: 5px;
+    width: 20px;
   }
   .bars span {
     display: block;
     height: 2px;
     border-radius: 9999px;
+    background: #222;
+  }
+
+  /* トップ：緑のヘッダー上は白の半透明の丸に白の三本線 */
+  .trigger.onBrand {
+    width: 40px;
+    background: rgba(255, 255, 255, 0.22);
+  }
+  .trigger.onBrand:active {
+    background: rgba(255, 255, 255, 0.35);
+  }
+  .trigger.onBrand:focus-visible {
+    outline-color: #fff;
+  }
+  .onBrand .bars {
+    gap: 4px;
+    width: 18px;
+  }
+  .onBrand .bars span {
     background: #fff;
   }
 

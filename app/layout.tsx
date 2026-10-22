@@ -4,7 +4,6 @@ import Link from "next/link";
 import Footer from "@/components/Footer";
 import HeaderMenu from "@/components/HeaderMenu";
 import SpDrawerMenu from "@/components/SpDrawerMenu";
-import SpGlobalNav from "@/components/SpGlobalNav";
 import HeaderScrollEffect from "@/components/HeaderScrollEffect";
 import GaugeAnimationObserver from "@/components/GaugeAnimationObserver";
 import "./globals.css";
@@ -98,7 +97,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           </div>
           <HeaderScrollEffect />
         </header>
-        <SpGlobalNav />
         {children}
         <Footer />
         <GaugeAnimationObserver />

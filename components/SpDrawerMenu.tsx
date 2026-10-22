@@ -20,7 +20,7 @@ const subItems = [
   { label: 'お問い合わせ', href: '/contact' },
 ];
 
-/** SP（トップのみ）：ヘッダー右のハンバーガーボタンと、右から出るナビゲーション */
+/** SP：ヘッダー右のハンバーガーボタンと、右から出るナビゲーション */
 export default function SpDrawerMenu() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname() ?? '';
@@ -47,15 +47,13 @@ export default function SpDrawerMenu() {
     };
   }, [open]);
 
-  // トップ以外は従来どおりヘッダー下の横並びナビ（SpGlobalNav）
-  if (pathname !== '/') return null;
-
   return (
     <>
       <button
         type="button"
-        data-home-header=""
-        className={styles.trigger}
+        // トップは緑のヘッダー（globals.css の header:has([data-home-header])）に合わせて白のボタン
+        data-home-header={pathname === '/' ? '' : undefined}
+        className={`${styles.trigger} ${pathname === '/' ? styles.onBrand : ''}`}
         onClick={() => setOpen(true)}
         aria-label="メニューを開く"
         aria-expanded={open}
