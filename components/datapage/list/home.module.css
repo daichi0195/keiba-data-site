@@ -81,6 +81,30 @@
   border-color: var(--ink-sub);
 }
 
+/* ---------- SP：ヒーロー帯 ---------- */
+@media (max-width: 768px) {
+  /* ヘッダーと同じブランド緑の帯をカルーセルの上半分の裏に敷く（カード幅は ArticleCarousel の MB_PEEK / MB_GAP と一致させる） */
+  .carousel {
+    position: relative;
+    isolation: isolate;
+    padding-top: 4px;
+  }
+  .carousel::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: 0 0 auto;
+    /* カードの下端より少し下まで伸ばし、下辺を楕円のカーブにする（中央が一番深く、左右に向かって上がる） */
+    height: calc(4px + (100vw - 32px) * 0.5625 + 20px);
+    background: var(--brand);
+    border-radius: 0 0 50% 50% / 0 0 36px 36px;
+  }
+  /* カルーセル直後のセクション（AI勝率予測）を詰める */
+  .wrap > section:first-child {
+    padding-top: 16px;
+  }
+}
+
 /* ---------- AI勝率予測（横スワイプ） ---------- */
 .raceRail {
   display: flex;
@@ -214,6 +238,10 @@
 }
 
 @media (max-width: 768px) {
+  /* 2枚＋3枚目が約30pxのぞく幅（左余白16px＋カード間10px×2＋のぞき30px） */
+  .raceCard {
+    flex-basis: calc((100vw - 66px) / 2);
+  }
   .moreTextPc {
     display: none;
   }
@@ -258,7 +286,7 @@
   }
 }
 
-/* カードの影（docs/redesign/tonmana.md「影」。背景 #F7F7F7 との境界をはっきりさせる） */
+/* カードの影（docs/redesign/tonmana.md「影」。背景 #FAFAFA との境界をはっきりさせる） */
 .raceCard {
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.08);
 }

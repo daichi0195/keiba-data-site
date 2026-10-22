@@ -22,6 +22,9 @@ export default function SpGlobalNav() {
     return pathname.startsWith(href);
   };
 
+  // トップはヘッダー右のハンバーガーメニュー（SpDrawerMenu）を使う
+  if (pathname === '/') return null;
+
   return (
     <nav className={styles.nav}>
       {navItems.map((item) => (

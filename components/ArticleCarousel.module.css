@@ -173,10 +173,21 @@
 /* モバイル対応 */
 @media (max-width: 768px) {
   .carouselContainer {
-    padding: 0 0 12px 0;
+    padding: 0;
   }
 
+  /* ホームの緑の帯（カーブ）より下に出す */
   .indicators {
-    margin-top: 8px;
+    margin-top: 26px;
+  }
+
+  /* 緑の帯の上に白いカードとして浮かせる */
+  .carouselItem {
+    border-radius: 16px;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 4px 14px rgba(0, 0, 0, 0.12);
+  }
+  .carouselViewport {
+    padding-bottom: 12px;
+    margin-bottom: -12px;
   }
 }

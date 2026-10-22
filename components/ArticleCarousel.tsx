@@ -16,35 +16,19 @@ interface ArticleCarouselProps {
 // CSS の値と一致させる定数
 const PC_CARD = 600;
 const PC_GAP  = 16;
-const MB_PEEK = 8; // SP時: centering=(viewport-cardWidth)/2=12px → コンテンツ(padding:12px)と左端を揃える
-const MB_GAP  = 8;
-
-const AI_BANNER: Article = {
-  slug: 'ai',
-  frontmatter: {
-    title: 'AI勝率予測',
-    description: '',
-    date: '',
-    category: '',
-    tags: [],
-    author: '',
-    thumbnail: '/images/carousel/ai.png',
-    link: '/ai',
-  },
-  content: '',
-};
+const MB_SIDE = 16; // SP時: 中央のカードをページ左右の余白16pxに揃える（home.module.css の帯の高さ計算と一致させる）
+const MB_GAP  = 6;
+const MB_SIDE_SCALE = 0.88; // SP時: 左右のカードは中央側の辺を基準に縮める
 
 export default function ArticleCarousel({ articles }: ArticleCarouselProps) {
-  // AIバナーを先頭に固定し、残りは新着順でソート
+  // 新着順でソート
   const sortedArticles = useMemo(
-    () => [
-      AI_BANNER,
-      ...[...articles].sort(
+    () =>
+      [...articles].sort(
         (a, b) =>
           new Date(b.frontmatter.date).getTime() -
           new Date(a.frontmatter.date).getTime()
       ),
-    ],
     [articles]
   );
 
@@ -102,7 +86,7 @@ export default function ArticleCarousel({ articles }: ArticleCarouselProps) {
   // containerWidth が 0 の SSR / 初期レンダリング時は PC 想定値をフォールバックに使う
   const isMobile  = containerWidth > 0 && containerWidth <= 768;
   const cardWidth = containerWidth === 0 ? PC_CARD
-    : isMobile ? containerWidth - MB_PEEK * 2 - MB_GAP
+    : isMobile ? containerWidth - MB_SIDE * 2
     : PC_CARD;
   const gap       = isMobile ? MB_GAP : PC_GAP;
   // 中央揃えオフセット (containerWidth == 0 のときは 0 → useLayoutEffect 後に補正)
@@ -218,7 +202,15 @@ export default function ArticleCarousel({ articles }: ArticleCarouselProps) {
                 key={`${article.slug}-${index}`}
                 href={article.frontmatter.link || `/articles/${article.slug}`}
                 className={styles.carouselItem}
-                style={{ flex: `0 0 ${cardWidth}px` }}
+                style={{
+                  flex: `0 0 ${cardWidth}px`,
+                  ...(isMobile && {
+                    transform: index === currentIndex ? 'none' : `scale(${MB_SIDE_SCALE})`,
+                    transformOrigin: index < currentIndex ? 'right center' : 'left center',
+                    // クローン→本物へのジャンプ時に縮小が再生されないよう、スライド中だけアニメーションさせる
+                    transition: isAnimating ? 'transform 0.4s ease' : 'none',
+                  }),
+                }}
               >
                 {article.frontmatter.thumbnail && (
                   <div className={styles.thumbnailWrapper}>

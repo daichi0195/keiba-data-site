@@ -6,7 +6,7 @@
   --ink: #222222;
   --ink-sub: #6A6A6A;
   --ink-disabled: #A3A3A3;
-  --canvas: #F7F7F7;
+  --canvas: #FAFAFA;
   --surface: #FFFFFF;
   --surface-subtle: #F3F3F3;
   --line: #E9E9E9;
@@ -30,7 +30,7 @@
   --motion-gauge: 700ms;
 
   position: relative;
-  /* 背景は body の #F7F7F7 と蹄鉄パターン（globals.css）を透過させる */
+  /* 背景は body の #FAFAFA と蹄鉄パターン（globals.css）を透過させる */
   background: transparent;
   color: var(--ink);
   font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", system-ui, sans-serif;
@@ -992,7 +992,7 @@ thead .rnm {
   }
 }
 
-/* カードの影（docs/redesign/tonmana.md「影」。背景 #F7F7F7 との境界をはっきりさせる） */
+/* カードの影（docs/redesign/tonmana.md「影」。背景 #FAFAFA との境界をはっきりさせる） */
 .card {
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.08);
 }

@@ -34,7 +34,7 @@ html {
 
 body {
   font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
-  background: #f7f7f7;
+  background: #fafafa;
   color: var(--text-dark);
   min-height: 100vh;
   height: auto;
@@ -86,6 +86,41 @@ header {
 @media (max-width: 768px) {
   header.scrolled {
     border-bottom: 1px solid #e2e8f0;
+  }
+}
+
+/* SP・トップのみ：ヘッダーをブランド緑で塗り、ロゴは白抜きで中央、右にハンバーガー（components/SpDrawerMenu が描画されたときだけ） */
+@media (max-width: 768px) {
+  header:has([data-home-header]) {
+    background: #1DB854;
+    min-height: 56px;
+    padding: 0 12px;
+  }
+  header.scrolled:has([data-home-header]) {
+    border-bottom: 0;
+    box-shadow: 0 4px 16px #00000012, 0 0 0 1px #00000008;
+  }
+  header:has([data-home-header]) .header-inner {
+    display: grid;
+    grid-template-columns: 40px 1fr 40px;
+    align-items: center;
+    width: 100%;
+  }
+  header:has([data-home-header]) .header-inner > a {
+    grid-column: 2;
+    justify-self: center;
+  }
+  header:has([data-home-header]) .header-inner > button {
+    grid-column: 3;
+  }
+  header:has([data-home-header]) .site-logo {
+    filter: brightness(0) invert(1);
+  }
+  header:has([data-home-header]) .site-name,
+  header:has([data-home-header]) .site-name span {
+    background: none;
+    -webkit-text-fill-color: #fff;
+    color: #fff;
   }
 }
 
