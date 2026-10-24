@@ -853,7 +853,7 @@ export default async function CoursePage({ params }: Props) {
   const overview = buildCourseOverview({ venue: resolvedParams.racecourse, surface: resolvedParams.surface, distance: distanceNum, profile: courseProfile, finish: finishStats });
   const hasOverview = Boolean(overview && overview.items.length > 0);
   const badGateRaces = (gateStatsByCondition?.bad ?? []).reduce((a: number, r: any) => a + (r.races ?? 0), 0);
-  const showBadGate = resolvedParams.surface !== 'steeplechase' && badGateRaces > 0;
+  const showBadGate = enoughRaces && resolvedParams.surface !== 'steeplechase' && badGateRaces > 0;
   const shapeAnswer = buildCourseShapeAnswer(seoPrefix, overview);
   const badGateAnswer = buildBadGateAnswer(seoPrefix, gateStatsByCondition?.bad);
 
@@ -1120,7 +1120,7 @@ export default async function CoursePage({ params }: Props) {
                   items={overview.items}
                   note={
                     <>
-                      {overview.gradedText && <>このコースで行われる重賞：{overview.gradedText}<br /></>}
+                      {overview.gradedText && <>直近{periodYears}年間に行われた重賞：{overview.gradedText}<br /></>}
                       ※形状は JRA 公式サイト「コース紹介」の記載値（芝はAコース使用時）。上がり3F・勝ちタイムは直近{periodYears}年間のレースから集計
                     </>
                   }

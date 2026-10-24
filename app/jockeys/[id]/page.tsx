@@ -954,7 +954,7 @@ export default async function JockeyPage({
     { label: 'デビュー', value: jockey.debut_year ? `${jockey.debut_year}年` : '', sub: jockey.debut_year ? `${asOfDate.getFullYear() - Number(jockey.debut_year) + 1}年目` : undefined },
     ...(jockeyThisYear ? [{ label: `${jockeyThisYear.year}年の勝利数`, value: `${jockeyThisYear.wins}勝`, sub: jockeyThisYear.ranking > 0 ? `リーディング${jockeyThisYear.ranking}位` : undefined }] : []),
     { label: '勝率・複勝率', value: `${Number(jockey.total_stats?.win_rate ?? 0).toFixed(1)}%・${Number(jockey.total_stats?.place_rate ?? 0).toFixed(1)}%`, sub: '直近3年間' },
-    { label: '重賞勝ち', value: `${jockeyGraded.wins}勝`, sub: `直近3年間・G1 ${jockeyGraded.g1}勝` },
+    { label: '重賞勝ち（平地）', value: `${jockeyGraded.wins}勝`, sub: `直近3年間・G1 ${jockeyGraded.g1}勝` },
   ];
 
   // FAQ構造化データ
@@ -1326,7 +1326,7 @@ export default async function JockeyPage({
             {/* 重賞勝ち（直近3年間・新しい順） */}
             {gradedWins.length > 0 && (
               <section id="graded-wins-section" className={s.section} aria-label="重賞勝ち">
-                <div className={s.sh}><h2 className={s.h2}>{jockey.name}騎手の重賞勝ち</h2><p>直近3年間・新しい順（G1 {jockeyGraded.g1}勝・G2 {jockeyGraded.g2}勝・G3 {jockeyGraded.g3}勝）</p></div>
+                <div className={s.sh}><h2 className={s.h2}>{jockey.name}騎手の重賞勝ち</h2><p>直近3年間・平地・新しい順（G1 {jockeyGraded.g1}勝・G2 {jockeyGraded.g2}勝・G3 {jockeyGraded.g3}勝）</p></div>
                 <ListTable
                   note={gradedWins.length >= 30 ? '最大30件まで表示' : undefined}
                   columns={[{ label: 'レース' }, { label: '日付' }, { label: '馬名' }, { label: 'コース' }, { label: '人気', numeric: true }]}

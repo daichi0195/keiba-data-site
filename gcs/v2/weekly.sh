@@ -48,7 +48,7 @@ for f in courses jockeys trainers sires; do
 done
 $PY generate_leading_data.py >> $LOG 2>&1 || fail "leading"
 # 検索意図に合わせた追加項目（プロフィール・重賞勝ち・代表産駒・コース概要など）を JSON に追記
-$PY generate_extras.py >> $LOG 2>&1 || fail "extras"
+$PY generate_extras.py >> $LOG 2>&1 || log "WARN: extras に失敗（追加項目なしで続行）"
 n=$(find out -name '*.json' | wc -l | tr -d ' ')
 [[ $n -lt 600 ]] && fail "生成ファイルが少なすぎる ($n)"
 log "generated $n json files"

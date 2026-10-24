@@ -965,7 +965,7 @@ export default async function TrainerPage({
     { label: '開業', value: trainer.debut_year ? `${trainer.debut_year}年` : '', sub: trainer.debut_year ? `${trainerAsOf.getFullYear() - Number(trainer.debut_year) + 1}年目` : undefined },
     ...(trainerThisYear ? [{ label: `${trainerThisYear.year}年の勝利数`, value: `${trainerThisYear.wins}勝`, sub: trainerThisYear.ranking > 0 ? `リーディング${trainerThisYear.ranking}位` : undefined }] : []),
     { label: '勝率・複勝率', value: `${Number(trainer.total_stats?.win_rate ?? 0).toFixed(1)}%・${Number(trainer.total_stats?.place_rate ?? 0).toFixed(1)}%`, sub: '直近3年間' },
-    { label: '重賞勝ち', value: `${trainerGraded.wins}勝`, sub: `直近3年間・G1 ${trainerGraded.g1}勝` },
+    { label: '重賞勝ち（平地）', value: `${trainerGraded.wins}勝`, sub: `直近3年間・G1 ${trainerGraded.g1}勝` },
   ];
 
   // FAQ構造化データ
@@ -1294,7 +1294,7 @@ export default async function TrainerPage({
               <section id="active-horses-section" className={s.section} aria-label="主な管理馬">
                 <div className={s.sh}><h2 className={s.h2}>{trainer.name}厩舎の主な管理馬</h2><p>直近半年に出走した馬。集計期間の重賞勝ち→勝利数の順</p></div>
                 <ListTable
-                  note="成績は直近3年間"
+                  note="成績は直近3年間・当厩舎での出走分"
                   columns={[{ label: '馬名' }, { label: '性齢' }, { label: '成績', numeric: true }, { label: '主な勝ち鞍' }, { label: '父' }, { label: '最終出走' }]}
                   rows={activeHorses.map((h) => ({
                     key: String(h.horse_id),
@@ -1314,7 +1314,7 @@ export default async function TrainerPage({
             {/* 重賞勝ち（直近3年間・新しい順） */}
             {trainerGradedWins.length > 0 && (
               <section id="graded-wins-section" className={s.section} aria-label="重賞勝ち">
-                <div className={s.sh}><h2 className={s.h2}>{trainer.name}厩舎の重賞勝ち</h2><p>直近3年間・新しい順（G1 {trainerGraded.g1}勝・G2 {trainerGraded.g2}勝・G3 {trainerGraded.g3}勝）</p></div>
+                <div className={s.sh}><h2 className={s.h2}>{trainer.name}厩舎の重賞勝ち</h2><p>直近3年間・平地・新しい順（G1 {trainerGraded.g1}勝・G2 {trainerGraded.g2}勝・G3 {trainerGraded.g3}勝）</p></div>
                 <ListTable
                   note={trainerGradedWins.length >= 30 ? '最大30件まで表示' : undefined}
                   columns={[{ label: 'レース' }, { label: '日付' }, { label: '馬名' }, { label: '騎手' }, { label: '人気', numeric: true }]}

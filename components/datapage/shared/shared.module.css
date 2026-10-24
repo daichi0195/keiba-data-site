@@ -129,7 +129,7 @@ a.vRowFit > span:last-child > span {
   border-radius: 9999px;
   background: var(--surface-subtle);
   font-size: 12px;
-  line-height: 20px;
+  line-height: 24px;
   font-weight: 600;
   text-align: center;
 }

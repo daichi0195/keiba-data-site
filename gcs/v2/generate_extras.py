@@ -75,6 +75,14 @@ def fetch_sire_pedigree():
     print(f'  sire_pedigree {table.num_rows} rows ({(job.total_bytes_billed or 0) / 1e6:.0f} MB billed)')
 
 
+def years_ago(d, n):
+    """n 年前の同じ日（2月29日は2月28日に寄せる）"""
+    try:
+        return d.replace(year=d.year - n)
+    except ValueError:
+        return d.replace(year=d.year - n, day=28)
+
+
 def connect():
     con = duckdb.connect()
     for t in ['race_master', 'race_result', 'horse', 'jockey', 'trainer']:
@@ -273,7 +281,7 @@ def trainer_extras(con, data, since, as_of):
       r AS (
         SELECT rr.horse_id, rr.horse_name, rr.finish_position, rm.grade, rm.race_name, rm.race_date
         FROM race_master rm JOIN race_result rr USING (race_id)
-        WHERE rm.race_date >= ?
+        WHERE rm.race_date >= ? AND rr.trainer_id = ?
       )
       SELECT r.horse_id, any_value(r.horse_name) AS horse_name, any_value(h.sex) AS sex, any_value(h.birth_date) AS birth_date,
              any_value(h.father) AS father, any_value(last.last_date) AS last_date,
@@ -289,7 +297,7 @@ def trainer_extras(con, data, since, as_of):
       GROUP BY r.horse_id
       ORDER BY g1_wins DESC, graded_wins DESC, wins DESC, (places_2 + places_3) DESC
       LIMIT 10
-    """, [since, tid, recent])
+    """, [since, tid, tid, recent])
     for h in horses:
         h['titles'] = [t for t in (h['titles'] or []) if t][:3]
         h['sex'] = SEX_LABEL.get(h['sex'], '')
@@ -313,7 +321,7 @@ def course_extras(con, data, venue_en, surface_en, dist_key, as_of):
     distance = int(dist_key.split('-')[0])
     variant = dist_key.split('-')[1] if '-' in dist_key else None
     years = data.get('period_years') or YEARS
-    since = as_of.replace(year=as_of.year - years)
+    since = years_ago(as_of, years)
     cond = "rm.venue_name = ? AND rm.surface = ? AND rm.distance = ? AND rm.race_date >= ?"
     params = [venue, surface, distance, since]
     if (venue, surface, distance) in COURSES_WITH_VARIANT:
@@ -326,10 +334,10 @@ def course_extras(con, data, venue_en, surface_en, dist_key, as_of):
       FROM race_master rm WHERE {cond}
     """, params)[0]
     graded = rows(con, f"""
-      SELECT rm.race_name, any_value(rm.grade) AS grade, max(rm.race_date) AS last_date
+      SELECT rm.race_name, arg_max(rm.grade, rm.race_date) AS grade, max(rm.race_date) AS last_date
       FROM race_master rm WHERE {cond} AND rm.grade IN ('G1','G2','G3')
       GROUP BY rm.race_name
-      ORDER BY any_value(rm.grade), last_date DESC
+      ORDER BY arg_max(rm.grade, rm.race_date), last_date DESC
     """, params)
     data['course_profile'] = {
         'direction': meta['direction'],
@@ -375,7 +383,7 @@ def main():
         fetch_sire_pedigree()
         return
     as_of = as_of_date()
-    since = as_of.replace(year=as_of.year - YEARS)
+    since = years_ago(as_of, YEARS)
     con = connect()
     n = 0
     for kind, fn in [('sires', sire_extras), ('jockey', jockey_extras), ('trainer', trainer_extras)]:

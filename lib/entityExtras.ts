@@ -134,10 +134,10 @@ export function buildSireLead(args: {
   const distance = distanceTrendText === '差分なし' ? '距離による差も小さめです。' : `距離は**${distanceTrendText}**です。`;
   lines.push(`${pedigree ? '産駒' : `${name}産駒`}は${surface}、${distance}`);
   const bands = [
-    bestTurf ? `芝は**${bestTurf.category}**（複勝率${bestTurf.place_rate.toFixed(1)}%）` : null,
-    bestDirt ? `ダートは**${bestDirt.category}**（複勝率${bestDirt.place_rate.toFixed(1)}%）` : null,
+    bestTurf ? `芝が**${bestTurf.category}**（複勝率${bestTurf.place_rate.toFixed(1)}%）` : null,
+    bestDirt ? `ダートが**${bestDirt.category}**（複勝率${bestDirt.place_rate.toFixed(1)}%）` : null,
   ].filter(Boolean);
-  if (bands.length > 0) lines.push(`最も成績が良い距離帯は${bands.join('、')}です。`);
+  if (bands.length > 0) lines.push(`最も成績が良い距離帯は、${bands.join('、')}です。`);
   const stars = (progeny ?? []).filter((h) => h.graded_wins > 0).slice(0, 2);
   if (stars.length > 0) lines.push(`集計期間の代表産駒は${stars.map((h) => `${h.horse_name}${titleList(h)}`).join('、')}など。`);
   return lines.join('');
@@ -148,11 +148,11 @@ export function buildSireBandAnswer(name: string, turf: StatLike[] | undefined, 
   const t = bestBand(turf);
   const d = bestBand(dirt);
   if (!t && !d) return null;
-  const lines = [
-    t ? `芝は${t.category}の複勝率が**${t.place_rate.toFixed(1)}%**で最も高く、` : '',
-    d ? `ダートは${d.category}の**${d.place_rate.toFixed(1)}%**が最も高くなっています。` : '',
-  ].join('');
-  return `${name}産駒の${lines.replace(/、$/, 'です。')}\n※距離帯ごとに出走50回以上を対象にしています。`;
+  const parts = [
+    t ? `芝は${t.category}の**${t.place_rate.toFixed(1)}%**` : null,
+    d ? `ダートは${d.category}の**${d.place_rate.toFixed(1)}%**` : null,
+  ].filter(Boolean);
+  return `${name}産駒の複勝率が最も高い距離帯は、${parts.join('、')}です。\n※距離帯ごとに出走50回以上を対象にしています。`;
 }
 
 /** Q&A「早熟？晩成？」：判定はせず、馬齢別の複勝率を全出走馬と並べる */
@@ -165,7 +165,11 @@ export function buildSireGrowthAnswer(name: string, rates: GrowthRate[] | undefi
   const young = ok.find((r) => r.age === '2歳');
   const old = ok.find((r) => r.age === '4歳以上');
   const drop = young && old && typeof young.all_place_rate === 'number' && typeof old.all_place_rate === 'number'
-    ? `2歳から4歳以上にかけての複勝率の下がり幅は${(young.place_rate - old.place_rate).toFixed(1)}ポイント（全出走馬は${(young.all_place_rate - old.all_place_rate).toFixed(1)}ポイント）です。`
+    ? (() => {
+        const diff = young.place_rate - old.place_rate;
+        const base = (young.all_place_rate as number) - (old.all_place_rate as number);
+        return `2歳から4歳以上にかけて複勝率は${Math.abs(diff).toFixed(1)}ポイント${diff >= 0 ? '下がっています' : '上がっています'}（全出走馬は${base.toFixed(1)}ポイント下がる）。`;
+      })()
     : '';
   return [`${name}産駒の馬齢別の複勝率は${detail}です。`, drop, '※平地の芝・ダート。2歳戦は新馬・未勝利戦が中心のため、上位の種牡馬ほど2歳の数値が高く出やすい点に注意してください。'].filter(Boolean).join('\n');
 }
@@ -203,11 +207,11 @@ export function buildPersonLead(args: {
   const lines: string[] = [];
   lines.push(
     traits.length > 0
-      ? `${who}${head ? `（${head}）` : ''}は、データ上${traits.map((t) => `**${t}**`).join('、')}な${kind}です。`
+      ? `${who}${head ? `（${head}）` : ''}のデータ上の特徴は、${traits.map((t) => `**${t}**`).join('、')}です。`
       : `${who}${head ? `（${head}）` : ''}は、芝・ダートや距離による成績の偏りが小さい${kind}です。`
   );
   if (graded && graded.wins > 0) {
-    lines.push(`直近3年間の重賞は${graded.wins}勝${graded.g1 > 0 ? `（うちG1 ${graded.g1}勝）` : ''}${recentWin ? `で、最近では${recentWin.race_name}（${recentWin.horse_name}）を勝っています。` : 'です。'}`);
+    lines.push(`直近3年間の平地重賞は${graded.wins}勝${graded.g1 > 0 ? `（うちG1 ${graded.g1}勝）` : ''}${recentWin ? `で、最近では${recentWin.race_name}（${recentWin.horse_name}）を勝っています。` : 'です。'}`);
   }
   if (extra) lines.push(extra);
   return lines.join('');
@@ -215,10 +219,10 @@ export function buildPersonLead(args: {
 
 /** Q&A「重賞成績は？」 */
 export function buildGradedAnswer(who: string, graded: ReturnType<typeof gradedTotals>, wins: GradedWin[] | undefined): string {
-  if (graded.races === 0) return `${who}は集計期間に重賞への出走がありません。`;
+  if (graded.races === 0) return `${who}は集計期間に平地重賞への出走がありません。`;
   const recent = (wins ?? []).slice(0, 3).map((w) => `${w.race_name}（${w.grade}・${w.horse_name}）`).join('、');
   return [
-    `${who}の集計期間の重賞成績は${graded.races}戦**${graded.wins}勝**（G1 ${graded.g1}勝・G2 ${graded.g2}勝・G3 ${graded.g3}勝）です。`,
+    `${who}の集計期間の平地重賞成績は${graded.races}戦**${graded.wins}勝**（G1 ${graded.g1}勝・G2 ${graded.g2}勝・G3 ${graded.g3}勝）です。`,
     recent ? `直近の重賞勝ちは${recent}。` : '',
   ].filter(Boolean).join('\n');
 }

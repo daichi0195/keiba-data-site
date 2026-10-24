@@ -79,7 +79,7 @@ export function buildCourseOverview(args: {
   }
 
   const graded = profile?.graded_races ?? [];
-  const gradedText = graded.length > 0 ? graded.map((g) => `${g.race_name}（${g.grade}）`).join('、') : null;
+  const gradedText = graded.length > 0 ? graded.map((g) => `${g.race_name}（${g.grade}）`).join('、') : null; // 集計期間に行われた重賞（直近の格付け）
 
   return { items, direction, variant, straight: facts?.straight, straightText: straightLabel(facts?.straight), slope: facts?.slope, elevation: facts?.elevation, turfStart, gradedText, finish: enoughFinish ? finish : null };
 }
@@ -102,12 +102,22 @@ export function buildCourseLeadText(args: {
     : null;
   const straightAdj: Record<string, string> = { '直線が長い': '直線が長い', '直線は標準的': '直線の長さが標準的な', '直線が短い': '直線が短い' };
   const adj = overview?.straightText && overview.direction !== '直線コース' ? straightAdj[overview.straightText] : null;
-  const first = shape ? `${courseName}は**${shape}**の${adj ? `、${adj}` : ''}コースです。` : null;
+  const first = overview?.direction === '直線コース' && overview.straight
+    ? `${courseName}は**直線${overview.straight.toLocaleString()}m**のみのコースです。`
+    : shape ? `${courseName}は**${shape}**の${adj ? `、${adj}` : ''}コースです。` : null;
   const trends: string[] = [];
   if (labels.runningStyle) trends.push(labels.runningStyle === '互角' ? '脚質の有利不利は小さめ' : `**${labels.runningStyle}**`);
   if (labels.gate) trends.push(labels.gate === '互角' ? '枠順の有利不利は小さめ' : `**${labels.gate}**`);
   const trendText = trends.length > 0 ? `${trends.join('、')}で、` : '';
-  const second = labels.volatility ? `直近${periodYears}年のデータでは${trendText}荒れやすさは**${labels.volatility}**です。` : null;
+  const volatilityPhrase: Record<string, string> = {
+    '堅い': '配当は**堅く決まりやすい**傾向です。',
+    'やや堅い': '配当は**やや堅く決まりやすい**傾向です。',
+    '標準': '配当の荒れやすさは**標準的**です。',
+    'やや荒れやすい': '配当は**やや荒れやすい**傾向です。',
+    '荒れやすい': '配当は**荒れやすい**傾向です。',
+  };
+  const vol = labels.volatility ? volatilityPhrase[labels.volatility] : null;
+  const second = vol ? `直近${periodYears}年のデータでは${trendText}${vol}` : trendText ? `直近${periodYears}年のデータでは${trendText.replace(/で、$/, 'です。')}` : null;
   const text = [first, second].filter(Boolean).join('');
   return text || null;
 }
@@ -120,12 +130,12 @@ export function buildCourseShapeAnswer(courseName: string, overview: CourseOverv
   if (overview.straight) parts.push(`直線は**${overview.straight.toLocaleString()}m**${overview.straightText && overview.direction !== '直線コース' ? `（${overview.straightText}）` : ''}`);
   if (overview.elevation) parts.push(`高低差${overview.elevation}m`);
   if (overview.slope) parts.push(overview.slope);
-  if (overview.turfStart) parts.push('スタート直後は芝を走る');
+  if (overview.turfStart) parts.push('芝スタート');
   const lines = [`${courseName}は${parts.join('、')}のコースです。`];
   if (overview.finish && typeof overview.finish.fastest_place_rate === 'number') {
     lines.push(`上がり3Fが最速だった馬の複勝率は**${overview.finish.fastest_place_rate.toFixed(1)}%**、勝ち馬の上がり3Fは平均${overview.finish.winner_avg_last3f?.toFixed(1)}秒です。`);
   }
-  if (overview.gradedText) lines.push(`主な重賞：${overview.gradedText}`);
+  if (overview.gradedText) lines.push(`集計期間に行われた重賞：${overview.gradedText}`);
   lines.push('※コースの形状は JRA 公式サイト「コース紹介」の記載値です。');
   return lines.join('\n');
 }
