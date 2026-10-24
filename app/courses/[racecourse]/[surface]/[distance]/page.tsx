@@ -22,6 +22,8 @@ import RankingTable from '@/components/course/RankingTable';
 import { ConditionCard, Dots, Meter, PickCard, RichText, type ConditionRow, type NameLink } from '@/components/course/CourseParts';
 import { MIN_RACES_FOR_MENTION } from '@/lib/dataPageRules';
 import { courseDescription } from '@/lib/metaDescriptions';
+import { buildCourseOverview, buildCourseLeadText, buildCourseShapeAnswer, buildBadGateAnswer, type CourseProfile, type FinishStats } from '@/lib/courseOverview';
+import InfoTiles from '@/components/datapage/shared/InfoTiles';
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
@@ -506,6 +508,10 @@ export default async function CoursePage({ params }: Props) {
   };
 
   // ===== GCSから全データを取得 =====
+  // 検索意図に合わせた追加項目（gcs/v2/generate_extras.py）
+  let courseProfile: CourseProfile | null = null;
+  let finishStats: FinishStats | null = null;
+  let gateStatsByCondition: { good?: any[]; bad?: any[] } | null = null;
 
   try {
     // distanceが "-inner" または "-outer" を含む場合は文字列のまま、そうでない場合は数値化
@@ -530,6 +536,9 @@ export default async function CoursePage({ params }: Props) {
     data.running_style_trends = gcsData.running_style_trends || [];
     data.gender_stats = gcsData.gender_stats || [];
     data.horse_weight_stats = gcsData.horse_weight_stats || [];
+    courseProfile = gcsData.course_profile ?? null;
+    finishStats = gcsData.finish_stats ?? null;
+    gateStatsByCondition = gcsData.gate_stats_by_condition ?? null;
     if (gcsData.characteristics) {
       if (!data.course_info) {
         data.course_info = {};
@@ -840,8 +849,17 @@ export default async function CoursePage({ params }: Props) {
   const { answer: sireAnswer, links: sireLinks } = buildPersonAnswer(pedigree_stats, pedigreeStatsWithLinks, '種牡馬');
 
 
+  // コース概要（形状・決め手）／道悪の枠順
+  const overview = buildCourseOverview({ venue: resolvedParams.racecourse, surface: resolvedParams.surface, distance: distanceNum, profile: courseProfile, finish: finishStats });
+  const hasOverview = Boolean(overview && overview.items.length > 0);
+  const badGateRaces = (gateStatsByCondition?.bad ?? []).reduce((a: number, r: any) => a + (r.races ?? 0), 0);
+  const showBadGate = resolvedParams.surface !== 'steeplechase' && badGateRaces > 0;
+  const shapeAnswer = buildCourseShapeAnswer(seoPrefix, overview);
+  const badGateAnswer = buildBadGateAnswer(seoPrefix, gateStatsByCondition?.bad);
+
   // ナビゲーション用のセクションアイテム
   const navigationItems = [
+    ...(hasOverview ? [{ id: 'course-overview-section', label: 'コース概要' }] : []),
     { id: 'summary-section', label: 'データ概要' },
     ...(enoughRaces ? [
       { id: 'characteristics-section', label: 'コースの特徴' },
@@ -849,6 +867,7 @@ export default async function CoursePage({ params }: Props) {
     ] : []),
     { id: 'popularity-section', label: '人気別' },
     { id: 'gate-section', label: '枠順別' },
+    ...(showBadGate ? [{ id: 'gate-bad-section', label: '枠順別(道悪)' }] : []),
     { id: 'running-style-section', label: '脚質別' },
     { id: 'gender-section', label: '性別' },
     { id: 'horse-weight-section', label: '馬体重別' },
@@ -865,8 +884,10 @@ export default async function CoursePage({ params }: Props) {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
     mainEntity: [
+      ...(shapeAnswer ? [{ question: `${seoPrefix}はどんなコース？`, answer: shapeAnswer }] : []),
       { question: `${seoPrefix}は荒れやすい？`, answer: volatilityAnswer },
       { question: `${seoPrefix}で有利な枠順は？`, answer: gateAnswer },
+      ...(badGateAnswer ? [{ question: `${seoPrefix}の道悪（重馬場）で有利な枠は？`, answer: badGateAnswer }] : []),
       { question: `${seoPrefix}で有利な脚質は？`, answer: runningStyleAnswer },
       { question: `${seoPrefix}が得意な騎手は？`, answer: jockeyAnswer },
       { question: `${seoPrefix}が得意な調教師は？`, answer: trainerAnswer },
@@ -953,7 +974,14 @@ export default async function CoursePage({ params }: Props) {
     characteristics: course_info.characteristics,
     labels: { volatility: volatilityText, gate: gatePositionText, runningStyle: runningStyleText },
   });
+  // コース概要（形状・決め手）と、データ概要の先頭に置く結論文
+  const leadText = enoughRaces
+    ? buildCourseLeadText({ courseName: seoPrefix, periodYears, overview, labels: { volatility: volatilityText, gate: gatePositionText, runningStyle: running_style_trends?.length && course_info.characteristics.running_style_trend_position ? runningStyleText : undefined } })
+    : null;
+  if (leadText) summaryBlocks.unshift({ key: 'lead', text: leadText });
   const summaryBlocksShown = enoughRaces ? summaryBlocks : summaryBlocks.map((b) => ({ ...b, text: b.text.replace(/\*\*([^*]+)\*\*/g, '$1') }));
+  const badGateRows: ConditionRow[] = (gateStatsByCondition?.bad ?? []).map((g: any) => ({ ...g, label: `${g.gate}枠`, gate: toGate({ ...g, color: gate_stats.find((x: any) => x.gate === g.gate)?.color }) }));
+
   const summaryTitles: Record<string, string | undefined> = {
     popularity: '人気', gate: '枠順', runningStyle: '脚質', people: '騎手・調教師', pedigree: '血統',
   };
@@ -989,7 +1017,7 @@ export default async function CoursePage({ params }: Props) {
 
   // ページ内ナビ（チップの表示名は短く、id は目次と共通）
   const chipLabels: Record<string, string> = {
-    'summary-section': '概要', 'characteristics-section': '特徴', 'highlights-section': '注目',
+    'summary-section': '概要', 'course-overview-section': 'コース', 'gate-bad-section': '道悪の枠', 'characteristics-section': '特徴', 'highlights-section': '注目',
     'popularity-section': '人気別', 'gate-section': '枠順別', 'running-style-section': '脚質別',
     'gender-section': '性別', 'horse-weight-section': '馬体重別', 'jockey-section': '騎手',
     'bloodline-section': '種牡馬', 'dam-sire-section': '母父', 'trainer-section': '調教師', 'faq-section': 'Q&A',
@@ -1084,6 +1112,22 @@ export default async function CoursePage({ params }: Props) {
 
             <CourseSectionNav items={chipItems} />
 
+            {/* コース概要（形状は JRA 公式の記載値、決め手はレースデータ） */}
+            {hasOverview && overview && (
+              <section id="course-overview-section" className={s.section} aria-label="コース概要">
+                <div className={s.sh}><h2 className={s.h2}>{seoPrefix}のコース概要</h2><p>コースの形状と、勝ち馬の決め手</p></div>
+                <InfoTiles
+                  items={overview.items}
+                  note={
+                    <>
+                      {overview.gradedText && <>このコースで行われる重賞：{overview.gradedText}<br /></>}
+                      ※形状は JRA 公式サイト「コース紹介」の記載値（芝はAコース使用時）。上がり3F・勝ちタイムは直近{periodYears}年間のレースから集計
+                    </>
+                  }
+                />
+              </section>
+            )}
+
             {/* データ概要（固有解説文） */}
             <section id="summary-section" className={s.section} aria-label="データ概要">
               <div className={s.sh}><h2 className={s.h2}>{seoPrefix}のデータ概要</h2></div>
@@ -1096,6 +1140,7 @@ export default async function CoursePage({ params }: Props) {
                 ))}
               </div>
             </section>
+
 
 
             {/* コースの特徴 */}
@@ -1181,6 +1226,12 @@ export default async function CoursePage({ params }: Props) {
               <div className={s.sh}><h2 className={s.h2}>{seoPrefix} 枠順別データ</h2></div>
               <ConditionCard rows={gateRows} keyLabel="枠番" />
             </section>
+            {showBadGate && (
+              <section id="gate-bad-section" className={s.section} aria-label="道悪の枠順別データ">
+                <div className={s.sh}><h2 className={s.h2}>{seoPrefix} 道悪（重馬場）の枠順別データ</h2><p>稍重・重・不良の{badGateRaces.toLocaleString()}走</p></div>
+                <ConditionCard rows={badGateRows} keyLabel="枠番" />
+              </section>
+            )}
             <section id="running-style-section" className={s.section} aria-label="脚質別データ">
               <div className={s.sh}><h2 className={s.h2}>{seoPrefix} 脚質別データ</h2></div>
               <ConditionCard
@@ -1261,8 +1312,10 @@ export default async function CoursePage({ params }: Props) {
                 <div className={s.sh}><h2 className={s.h2}>データQ&amp;A</h2></div>
                 <div className={s.card}>
                   <CourseFaq items={[
+                    ...(shapeAnswer ? [{ question: `${seoPrefix}はどんなコース？`, answer: shapeAnswer }] : []),
                     { question: `${seoPrefix}は荒れやすい？`, answer: volatilityAnswer, boldFirstLine: true },
                     { question: `${seoPrefix}で有利な枠順は？`, answer: gateAnswer, boldFirstLine: true },
+                    ...(badGateAnswer ? [{ question: `${seoPrefix}の道悪（重馬場）で有利な枠は？`, answer: badGateAnswer, boldFirstLine: true }] : []),
                     { question: `${seoPrefix}で有利な脚質は？`, answer: runningStyleAnswer, boldFirstLine: true },
                     { question: `${seoPrefix}が得意な騎手は？`, answer: jockeyAnswer, links: jockeyLinks },
                     { question: `${seoPrefix}が得意な調教師は？`, answer: trainerAnswer, links: trainerLinks },

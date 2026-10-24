@@ -32,6 +32,11 @@ import CriteriaDetails, {
   SURFACE_CRITERIA, DISTANCE_CRITERIA, RUNNING_STYLE_CRITERIA, DISTANCE_DEFINITION, RUNNING_STYLE_DEFINITION,
 } from '@/components/datapage/shared/CriteriaDetails';
 import { jockeyDescription } from '@/lib/metaDescriptions';
+import { ALL_SIRES } from '@/lib/sires';
+import InfoTiles from '@/components/datapage/shared/InfoTiles';
+import ListTable from '@/components/datapage/shared/ListTable';
+import sh from '@/components/datapage/shared/shared.module.css';
+import { ageAt, buildGradedAnswer, buildPersonLead, gradedTotals, jaDate, shortDate, thisYearOf, type GradedWin, type PersonProfile } from '@/lib/entityExtras';
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
@@ -283,7 +288,8 @@ export async function generateMetadata({
     };
   }
 
-  const title = `${jockey.name}騎手の特徴・成績｜得意コース・距離と回収率【毎週更新】`;
+  // 検索語「〇〇騎手 傾向」「〇〇 騎手 データ」「〇〇 特徴」に合わせて前半に置く
+  const title = `${jockey.name}騎手の傾向・データ｜特徴・得意コース・距離と回収率【毎週更新】`;
   // 検索結果で他の騎手と見分けられるよう、所属・デビュー年と固有の数値を入れる
   const description = jockeyDescription(jockey);
   const url = `https://www.keibadata.com/jockeys/${id}`;
@@ -925,6 +931,32 @@ export default async function JockeyPage({
     ].filter(Boolean).join('\n');
   })();
 
+  // 検索意図に合わせた追加項目（gcs/v2/generate_extras.py）：基本情報・重賞勝ち・種牡馬別
+  const jockeyProfile: PersonProfile = (jockey as any).profile ?? {};
+  const gradedWins: GradedWin[] = (jockey as any).graded_wins ?? [];
+  const jockeyGraded = gradedTotals(jockey.class_stats as any);
+  const jockeyThisYear = thisYearOf(jockey.yearly_leading as any);
+  const asOfDate = new Date(jaDateToIso(jockey.last_updated) ?? Date.now());
+  const jockeyAge = ageAt(jockeyProfile.birth_date, asOfDate);
+  const sireIdByName = new Map(ALL_SIRES.map((x) => [x.name, x.id]));
+  const sireRows: RankingRow[] = ((jockey as any).sire_stats ?? []).map((st: any) => ({
+    ...st,
+    link: sireIdByName.has(st.name) ? `/sires/${sireIdByName.get(st.name)}` : undefined,
+  }));
+  const gradedAnswer = buildGradedAnswer(`${jockey.name}騎手`, jockeyGraded, gradedWins);
+  const topSires = sireRows.filter((r: any) => (r.races ?? 0) >= 20).sort((a: any, b: any) => b.place_rate - a.place_rate).slice(0, 3);
+  const sireAnswer = topSires.length > 0
+    ? `${jockey.name}騎手が20回以上騎乗した種牡馬の産駒で複勝率が高いのは、${topSires.map((r: any) => `${r.name}（**${r.place_rate.toFixed(1)}%**・${r.races}戦）`).join('、')}です。\n勝利数では${sireRows[0]?.name}産駒の${sireRows[0]?.wins}勝が最多です。`
+    : null;
+  const profileTiles = [
+    { label: '所属', value: (jockey as any).affiliation ?? jockeyProfile.region ?? '' },
+    { label: '生年月日', value: jaDate(jockeyProfile.birth_date) ?? '', sub: jockeyAge !== null ? `${jockeyAge}歳` : undefined },
+    { label: 'デビュー', value: jockey.debut_year ? `${jockey.debut_year}年` : '', sub: jockey.debut_year ? `${asOfDate.getFullYear() - Number(jockey.debut_year) + 1}年目` : undefined },
+    ...(jockeyThisYear ? [{ label: `${jockeyThisYear.year}年の勝利数`, value: `${jockeyThisYear.wins}勝`, sub: jockeyThisYear.ranking > 0 ? `リーディング${jockeyThisYear.ranking}位` : undefined }] : []),
+    { label: '勝率・複勝率', value: `${Number(jockey.total_stats?.win_rate ?? 0).toFixed(1)}%・${Number(jockey.total_stats?.place_rate ?? 0).toFixed(1)}%`, sub: '直近3年間' },
+    { label: '重賞勝ち', value: `${jockeyGraded.wins}勝`, sub: `直近3年間・G1 ${jockeyGraded.g1}勝` },
+  ];
+
   // FAQ構造化データ
   const faqJockeyJsonLd = {
     '@context': 'https://schema.org',
@@ -936,6 +968,8 @@ export default async function JockeyPage({
       { question: `${jockey.name}騎手の得意な距離は？`, answer: distanceFaqAnswer },
       { question: `${jockey.name}騎手の得意な脚質は？`, answer: runningStyleFaqAnswer },
       { question: `${jockey.name}騎手の人気時の信頼度は？`, answer: popularityFaqAnswer },
+      { question: `${jockey.name}騎手の重賞成績は？`, answer: gradedAnswer },
+      ...(sireAnswer ? [{ question: `${jockey.name}騎手と相性の良い種牡馬は？`, answer: sireAnswer }] : []),
       { question: `${jockey.name}騎手の苦手な競馬場は？`, answer: badRacecourseAnswer },
       { question: `${jockey.name}騎手の苦手なコースは？`, answer: badCourseAnswer },
     ].map(({ question, answer }) => ({
@@ -946,8 +980,10 @@ export default async function JockeyPage({
   };
 
   const navigationItems = [
+    { id: 'profile-section', label: '基本情報' },
     { id: 'summary-section', label: 'データ概要' },
     { id: 'leading', label: '年度別' },
+    ...(gradedWins.length > 0 ? [{ id: 'graded-wins-section', label: '重賞勝ち' }] : []),
     { id: 'characteristics', label: '特徴' },
     { id: 'highlights-section', label: '注目ポイント' },
     { id: 'class-stats', label: 'クラス別' },
@@ -961,6 +997,7 @@ export default async function JockeyPage({
     { id: 'racecourse-stats', label: '競馬場別' },
     { id: 'course-stats', label: 'コース別' },
     { id: 'trainer-stats', label: '調教師別' },
+    ...(sireRows.length > 0 ? [{ id: 'sire-stats', label: '種牡馬別' }] : []),
     { id: 'owner-stats', label: '馬主別' },
     { id: 'faq-section', label: 'データQ&A' },
   ];
@@ -1096,6 +1133,25 @@ export default async function JockeyPage({
 
   // データ概要（見出し付きブロック。コース名・調教師名は詳細ページへリンク）
   const summaryBlocks = buildJockeySummaryBlocks(jockey as any);
+  if (enoughRaces) {
+    summaryBlocks.unshift({
+      key: 'lead',
+      text: buildPersonLead({
+        kind: '騎手',
+        name: jockey.name,
+        region: (jockey as any).affiliation,
+        debutYear: jockey.debut_year,
+        traits: [
+          reliabilityValue !== 3 ? `人気時の信頼度が${labelOf(reliabilityLabels, reliabilityValue)}` : '',
+          labelOf(surfaceLabels, surfacePos),
+          labelOf(styleLabels, runningStyleTrendPosition),
+          labelOf(distanceLabels, distanceTrendPosition),
+        ].filter((t) => t && !/差分なし|互角|標準/.test(t)),
+        graded: jockeyGraded,
+        recentWin: gradedWins[0] ?? null,
+      }),
+    });
+  }
   const courseNameLinks: NameLink[] = courseTableData.filter((c) => c.link).map((c) => ({ name: c.name, href: c.link as string }));
   const trainerNameLinks: NameLink[] = trainerRows.filter((t) => t.link).map((t) => ({ name: `${t.name}調教師`, href: t.link as string }));
   const summaryLinks: Partial<Record<string, NameLink[]>> = {
@@ -1125,6 +1181,7 @@ export default async function JockeyPage({
 
   // ページ内ナビ（チップの表示名は短く、id は目次と共通）
   const chipLabels: Record<string, string> = {
+    'profile-section': '基本情報', 'graded-wins-section': '重賞勝ち', 'sire-stats': '種牡馬',
     'summary-section': '概要', leading: '年度別', characteristics: '特徴', 'highlights-section': '注目',
     'class-stats': 'クラス別', 'popularity-stats': '人気別', 'running-style-stats': '脚質別', 'gate-stats': '枠順別',
     'distance-stats': '距離別', 'gender-stats': '性別', 'surface-stats': '芝・ダート', 'track-condition-stats': '馬場状態',
@@ -1203,7 +1260,7 @@ export default async function JockeyPage({
                   {jockey.debut_year && <span className={s.badge}>{jockey.debut_year}年デビュー</span>}
                 </div>
               )}
-              <h1 className={s.title}>{jockey.name}騎手の成績・データ</h1>
+              <h1 className={s.title}>{jockey.name}騎手の傾向・成績データ</h1>
               <p className={s.lead}>
                 {jockey.name}騎手の成績・データをまとめたページです。独自のデータベースで直近3年間・{jockey.total_races.toLocaleString()}レースのデータを集計し、毎週更新しています。
               </p>
@@ -1237,6 +1294,12 @@ export default async function JockeyPage({
 
             <CourseSectionNav items={chipItems} />
 
+            {/* 基本情報 */}
+            <section id="profile-section" className={s.section} aria-label="基本情報">
+              <div className={s.sh}><h2 className={s.h2}>{jockey.name}騎手の基本情報</h2></div>
+              <InfoTiles items={profileTiles} />
+            </section>
+
             {/* データ概要（固有解説文） */}
             <section id="summary-section" className={s.section} aria-label="データの概要">
               <div className={s.sh}><h2 className={s.h2}>{jockey.name}騎手のデータ概要</h2></div>
@@ -1259,6 +1322,27 @@ export default async function JockeyPage({
                 <StatsTable rows={yearlyRows} keyLabel="年度" />
               </div>
             </section>
+
+            {/* 重賞勝ち（直近3年間・新しい順） */}
+            {gradedWins.length > 0 && (
+              <section id="graded-wins-section" className={s.section} aria-label="重賞勝ち">
+                <div className={s.sh}><h2 className={s.h2}>{jockey.name}騎手の重賞勝ち</h2><p>直近3年間・新しい順（G1 {jockeyGraded.g1}勝・G2 {jockeyGraded.g2}勝・G3 {jockeyGraded.g3}勝）</p></div>
+                <ListTable
+                  note={gradedWins.length >= 30 ? '最大30件まで表示' : undefined}
+                  columns={[{ label: 'レース' }, { label: '日付' }, { label: '馬名' }, { label: 'コース' }, { label: '人気', numeric: true }]}
+                  rows={gradedWins.map((w) => ({
+                    key: `${w.date}-${w.race_name}`,
+                    cells: [
+                      <><span className={sh.grade}>{w.grade}</span>{w.race_name}</>,
+                      shortDate(w.date),
+                      w.horse_name,
+                      `${w.venue}${w.surface === 'ダート' ? 'ダ' : w.surface}${w.distance}m`,
+                      w.popularity ? `${w.popularity}` : '—',
+                    ],
+                  }))}
+                />
+              </section>
+            )}
 
             {/* 騎手の特徴 */}
             {enoughRaces && (
@@ -1380,6 +1464,12 @@ export default async function JockeyPage({
               <div className={s.sh}><h2 className={s.h2}>{jockey.name}騎手 調教師別データ</h2></div>
               <RankingTable rows={trainerRows} nameLabel="調教師" note="※現役調教師のみ" />
             </section>
+            {sireRows.length > 0 && (
+              <section id="sire-stats" className={s.section} aria-label="種牡馬別データ">
+                <div className={s.sh}><h2 className={s.h2}>{jockey.name}騎手 種牡馬別データ</h2><p>騎乗馬の父（種牡馬）別・勝利数順</p></div>
+                <RankingTable rows={sireRows} nameLabel="種牡馬" note="最大50件まで表示" />
+              </section>
+            )}
             <section id="owner-stats" className={s.section} aria-label="馬主別データ">
               <div className={s.sh}><h2 className={s.h2}>{jockey.name}騎手 馬主別データ</h2></div>
               <RankingTable rows={ownerRows} nameLabel="馬主" note="最大50件まで表示" />
@@ -1397,6 +1487,8 @@ export default async function JockeyPage({
                   { question: `${jockey.name}騎手の得意な距離は？`, answer: distanceFaqAnswer, boldFirstLine: true },
                   { question: `${jockey.name}騎手の得意な脚質は？`, answer: runningStyleFaqAnswer, boldFirstLine: true },
                   { question: `${jockey.name}騎手の人気時の信頼度は？`, answer: popularityFaqAnswer },
+                  { question: `${jockey.name}騎手の重賞成績は？`, answer: gradedAnswer },
+                  ...(sireAnswer ? [{ question: `${jockey.name}騎手と相性の良い種牡馬は？`, answer: sireAnswer, links: topSires.filter((r: any) => r.link).map((r: any) => ({ text: r.name, href: r.link })) }] : []),
                   { question: `${jockey.name}騎手の苦手な競馬場は？`, answer: badRacecourseAnswer },
                   { question: `${jockey.name}騎手の苦手なコースは？`, answer: badCourseAnswer },
                 ]} />

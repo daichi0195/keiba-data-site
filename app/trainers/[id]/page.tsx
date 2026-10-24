@@ -28,6 +28,10 @@ import HighlightCoursesCard, { MIN_RACES_FOR_HIGHLIGHT, type HighlightCourseRow 
 import VerdictRow, { VerdictRows } from '@/components/datapage/shared/VerdictRow';
 import CriteriaDetails, { SURFACE_CRITERIA, DISTANCE_CRITERIA, DISTANCE_DEFINITION } from '@/components/datapage/shared/CriteriaDetails';
 import { trainerDescription } from '@/lib/metaDescriptions';
+import InfoTiles from '@/components/datapage/shared/InfoTiles';
+import ListTable from '@/components/datapage/shared/ListTable';
+import sh from '@/components/datapage/shared/shared.module.css';
+import { ageAt, buildGradedAnswer, buildPersonLead, gradedTotals, jaDate, shortDate, thisYearOf, type GradedWin, type NotableHorse, type PersonProfile } from '@/lib/entityExtras';
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
@@ -583,7 +587,8 @@ export async function generateMetadata({
   }
 
   // 「〇〇厩舎」「〇〇厩舎 評判」でも検索されるため、厩舎の語を入れる
-  const title = `${trainer.name}厩舎（調教師）の成績・特徴｜得意条件と騎手相性【毎週更新】`;
+  // 検索語「〇〇厩舎 傾向」「〇〇厩舎 データ」に合わせて前半に置く
+  const title = `${trainer.name}厩舎（調教師）の傾向・データ｜成績・得意条件と騎手相性【毎週更新】`;
   // 検索結果で他の調教師と見分けられるよう、固有の数値を入れる
   const description = trainerDescription(trainer);
   const url = `https://www.keibadata.com/trainers/${id}`;
@@ -934,6 +939,35 @@ export default async function TrainerPage({
     return [conclusion, `${detail}です。`].join('\n');
   })();
 
+  // 検索意図に合わせた追加項目（gcs/v2/generate_extras.py）：基本情報・重賞勝ち・現役の主な管理馬・馬齢別
+  const trainerProfile: PersonProfile = (trainer as any).profile ?? {};
+  const trainerGradedWins: GradedWin[] = (trainer as any).graded_wins ?? [];
+  const activeHorses: NotableHorse[] = (trainer as any).active_horses ?? [];
+  const trainerAgeRows: ConditionRow[] = ((trainer as any).age_stats ?? []).map((r: any) => ({ ...r, label: r.age }));
+  const trainerGraded = gradedTotals(trainer.class_stats as any);
+  const trainerThisYear = thisYearOf(trainer.yearly_leading as any);
+  const trainerAsOf = new Date(jaDateToIso(trainer.last_updated) ?? Date.now());
+  const trainerAge = ageAt(trainerProfile.birth_date, trainerAsOf);
+  const trainerGradedAnswer = buildGradedAnswer(`${trainer.name}調教師`, trainerGraded, trainerGradedWins);
+  const activeHorsesAnswer = activeHorses.length > 0
+    ? `直近半年に出走した${trainer.name}厩舎の管理馬では、${activeHorses.slice(0, 5).map((h) => `**${h.horse_name}**${h.titles.length > 0 ? `（${h.titles.slice(0, 2).join('、')}）` : `（${h.wins}勝）`}`).join('、')}が主な馬です。\n※集計期間の重賞勝ち→勝利数の順。`
+    : null;
+  const twoYo = trainerAgeRows.find((r) => r.label === '2歳');
+  const otherAges = trainerAgeRows.filter((r) => r.label !== '2歳');
+  const otherRaces = otherAges.reduce((a, r) => a + (r.races ?? 0), 0);
+  const otherPlaceRate = otherRaces > 0 ? otherAges.reduce((a, r) => a + (r.place_rate ?? 0) * (r.races ?? 0), 0) / otherRaces : null;
+  const twoYoAnswer = twoYo && (twoYo.races ?? 0) >= 20 && otherPlaceRate !== null
+    ? `${trainer.name}調教師の2歳戦の成績は${twoYo.races}戦${twoYo.wins}勝、複勝率**${(twoYo.place_rate ?? 0).toFixed(1)}%**です（3歳以上は${otherPlaceRate.toFixed(1)}%）。\n2歳戦の単勝回収率は${(twoYo.win_payback ?? 0).toFixed(1)}%です。`
+    : null;
+  const profileTiles = [
+    { label: '所属', value: (trainer as any).stable ?? trainerProfile.region ?? '' },
+    { label: '生年月日', value: jaDate(trainerProfile.birth_date) ?? '', sub: trainerAge !== null ? `${trainerAge}歳` : undefined },
+    { label: '開業', value: trainer.debut_year ? `${trainer.debut_year}年` : '', sub: trainer.debut_year ? `${trainerAsOf.getFullYear() - Number(trainer.debut_year) + 1}年目` : undefined },
+    ...(trainerThisYear ? [{ label: `${trainerThisYear.year}年の勝利数`, value: `${trainerThisYear.wins}勝`, sub: trainerThisYear.ranking > 0 ? `リーディング${trainerThisYear.ranking}位` : undefined }] : []),
+    { label: '勝率・複勝率', value: `${Number(trainer.total_stats?.win_rate ?? 0).toFixed(1)}%・${Number(trainer.total_stats?.place_rate ?? 0).toFixed(1)}%`, sub: '直近3年間' },
+    { label: '重賞勝ち', value: `${trainerGraded.wins}勝`, sub: `直近3年間・G1 ${trainerGraded.g1}勝` },
+  ];
+
   // FAQ構造化データ
   const faqTrainerJsonLd = {
     '@context': 'https://schema.org',
@@ -943,6 +977,9 @@ export default async function TrainerPage({
       { question: `${trainer.name}調教師の得意なコースは？`, answer: trainerGoodCourseAnswer },
       { question: `${trainer.name}調教師は芝とダートどちらが得意？`, answer: trainerSurfaceFaqAnswer },
       { question: `${trainer.name}調教師の得意な距離は？`, answer: trainerDistanceFaqAnswer },
+      { question: `${trainer.name}調教師の重賞成績は？`, answer: trainerGradedAnswer },
+      ...(activeHorsesAnswer ? [{ question: `${trainer.name}厩舎の主な管理馬は？`, answer: activeHorsesAnswer }] : []),
+      ...(twoYoAnswer ? [{ question: `${trainer.name}厩舎の2歳戦の成績は？`, answer: twoYoAnswer }] : []),
       { question: `${trainer.name}調教師の苦手な競馬場は？`, answer: trainerBadRacecourseAnswer },
       { question: `${trainer.name}調教師の苦手なコースは？`, answer: trainerBadCourseAnswer },
     ].map(({ question, answer }) => ({
@@ -954,14 +991,18 @@ export default async function TrainerPage({
 
   // ナビゲーションアイテム
   const navigationItems = [
+    { id: 'profile-section', label: '基本情報' },
     { id: 'summary-section', label: 'データ概要' },
     { id: 'leading', label: '年度別' },
+    ...(activeHorses.length > 0 ? [{ id: 'active-horses-section', label: '主な管理馬' }] : []),
+    ...(trainerGradedWins.length > 0 ? [{ id: 'graded-wins-section', label: '重賞勝ち' }] : []),
     { id: 'characteristics', label: '特徴' },
     { id: 'highlights-section', label: '注目ポイント' },
     { id: 'class-stats', label: 'クラス別' },
     { id: 'popularity-stats', label: '人気別' },
     { id: 'distance-stats', label: '距離別' },
     { id: 'gender-stats', label: '性別' },
+    ...(trainerAgeRows.length > 0 ? [{ id: 'age-stats', label: '馬齢別' }] : []),
     { id: 'interval-stats', label: 'レース間隔' },
     { id: 'surface-stats', label: 'コース区分別' },
     { id: 'racecourse-stats', label: '競馬場別' },
@@ -1043,6 +1084,23 @@ export default async function TrainerPage({
 
   // データ概要（見出し付きのブロック、名前は詳細ページへリンク）
   const summaryBlocks = toTrainerSummaryBlocks(buildTrainerSummary(trainer as any));
+  if (enoughRaces && summaryBlocks.length > 0) {
+    summaryBlocks.unshift({
+      key: 'lead',
+      text: buildPersonLead({
+        kind: '調教師',
+        name: trainer.name,
+        region: (trainer as any).stable,
+        debutYear: trainer.debut_year,
+        traits: [
+          hasSurfaceTrend ? surfaceTrendTexts[surfaceTrend] : '',
+          hasDistanceTrend ? distanceTrendTexts[distanceTrend] : '',
+        ].filter((t) => t && t !== '差分なし'),
+        graded: trainerGraded,
+        recentWin: trainerGradedWins[0] ?? null,
+      }),
+    });
+  }
   const summaryLinks: Record<string, NameLink[]> = {
     jockey: jockeyRows.filter((j) => j.link).map((j) => ({ name: j.name, href: j.link as string })),
     racecourse: courseRowsWithUrl.filter((c) => c.url).map((c) => ({ name: c.name, href: c.url as string })),
@@ -1105,6 +1163,7 @@ export default async function TrainerPage({
 
   // ページ内ナビ（チップの表示名は短く、id は目次と共通）
   const chipLabels: Record<string, string> = {
+    'profile-section': '基本情報', 'active-horses-section': '管理馬', 'graded-wins-section': '重賞勝ち', 'age-stats': '馬齢別',
     'summary-section': '概要', leading: '年度別', characteristics: '特徴', 'highlights-section': '注目',
     'class-stats': 'クラス別', 'popularity-stats': '人気別', 'distance-stats': '距離別', 'gender-stats': '性別',
     'interval-stats': '間隔別', 'surface-stats': '芝ダート別', 'racecourse-stats': '競馬場別', 'course-stats': 'コース別',
@@ -1160,7 +1219,7 @@ export default async function TrainerPage({
                 {trainer.stable && <span className={s.badge}>{trainer.stable}</span>}
                 {trainer.debut_year ? <span className={s.badge}>{trainer.debut_year}年開業</span> : null}
               </div>
-              <h1 className={s.title}>{trainer.name}調教師の成績・データ</h1>
+              <h1 className={s.title}>{trainer.name}厩舎（調教師）の傾向・成績データ</h1>
               <p className={s.lead}>
                 {trainer.name}調教師の成績・データをまとめたページです。独自のデータベースで直近3年間・{trainer.total_races.toLocaleString()}レースのデータを集計し、毎週更新しています。
               </p>
@@ -1196,6 +1255,12 @@ export default async function TrainerPage({
 
             <CourseSectionNav items={chipItems} />
 
+            {/* 基本情報 */}
+            <section id="profile-section" className={s.section} aria-label="基本情報">
+              <div className={s.sh}><h2 className={s.h2}>{trainer.name}厩舎の基本情報</h2></div>
+              <InfoTiles items={profileTiles} />
+            </section>
+
             {/* データ概要（固有解説文） */}
             {summaryBlocks.length > 0 && (
               <section id="summary-section" className={s.section} aria-label="データの概要">
@@ -1223,6 +1288,49 @@ export default async function TrainerPage({
                 <StatsTable rows={yearlyRows} keyLabel="年度" />
               </div>
             </section>
+
+            {/* 現役の主な管理馬（直近半年に出走・集計期間の重賞勝ち→勝利数の順） */}
+            {activeHorses.length > 0 && (
+              <section id="active-horses-section" className={s.section} aria-label="主な管理馬">
+                <div className={s.sh}><h2 className={s.h2}>{trainer.name}厩舎の主な管理馬</h2><p>直近半年に出走した馬。集計期間の重賞勝ち→勝利数の順</p></div>
+                <ListTable
+                  note="成績は直近3年間"
+                  columns={[{ label: '馬名' }, { label: '性齢' }, { label: '成績', numeric: true }, { label: '主な勝ち鞍' }, { label: '父' }, { label: '最終出走' }]}
+                  rows={activeHorses.map((h) => ({
+                    key: String(h.horse_id),
+                    cells: [
+                      h.horse_name,
+                      `${h.sex}${h.age ?? ''}`,
+                      `${h.wins}-${h.places_2 ?? 0}-${h.places_3 ?? 0}-${h.races - h.wins - (h.places_2 ?? 0) - (h.places_3 ?? 0)}`,
+                      h.titles.length > 0 ? h.titles.join('、') : '—',
+                      h.father ?? '—',
+                      h.last_date ? shortDate(h.last_date) : '—',
+                    ],
+                  }))}
+                />
+              </section>
+            )}
+
+            {/* 重賞勝ち（直近3年間・新しい順） */}
+            {trainerGradedWins.length > 0 && (
+              <section id="graded-wins-section" className={s.section} aria-label="重賞勝ち">
+                <div className={s.sh}><h2 className={s.h2}>{trainer.name}厩舎の重賞勝ち</h2><p>直近3年間・新しい順（G1 {trainerGraded.g1}勝・G2 {trainerGraded.g2}勝・G3 {trainerGraded.g3}勝）</p></div>
+                <ListTable
+                  note={trainerGradedWins.length >= 30 ? '最大30件まで表示' : undefined}
+                  columns={[{ label: 'レース' }, { label: '日付' }, { label: '馬名' }, { label: '騎手' }, { label: '人気', numeric: true }]}
+                  rows={trainerGradedWins.map((w) => ({
+                    key: `${w.date}-${w.race_name}`,
+                    cells: [
+                      <><span className={sh.grade}>{w.grade}</span>{w.race_name}</>,
+                      shortDate(w.date),
+                      w.horse_name,
+                      w.jockey_name ?? '—',
+                      w.popularity ? `${w.popularity}` : '—',
+                    ],
+                  }))}
+                />
+              </section>
+            )}
 
             {/* 調教師の特徴 */}
             {enoughRaces && trainer.characteristics && (
@@ -1312,6 +1420,12 @@ export default async function TrainerPage({
               <div className={s.sh}><h2 className={s.h2}>{trainer.name}調教師 性別データ</h2></div>
               <ConditionCard rows={genderRows} keyLabel="性別" />
             </section>
+            {trainerAgeRows.length > 0 && (
+              <section id="age-stats" className={s.section} aria-label="馬齢別データ">
+                <div className={s.sh}><h2 className={s.h2}>{trainer.name}厩舎 馬齢別データ</h2><p>2歳戦（新馬・未勝利が中心）の成績も確認できます</p></div>
+                <ConditionCard rows={trainerAgeRows} keyLabel="馬齢" />
+              </section>
+            )}
             <section id="interval-stats" className={s.section} aria-label="レース間隔別データ">
               <div className={s.sh}><h2 className={s.h2}>{trainer.name}調教師 レース間隔別データ</h2></div>
               <ConditionCard rows={intervalRows} keyLabel="間隔" />
@@ -1349,6 +1463,9 @@ export default async function TrainerPage({
                   { question: `${trainer.name}調教師の得意なコースは？`, answer: trainerGoodCourseAnswer },
                   { question: `${trainer.name}調教師は芝とダートどちらが得意？`, answer: trainerSurfaceFaqAnswer, boldFirstLine: true },
                   { question: `${trainer.name}調教師の得意な距離は？`, answer: trainerDistanceFaqAnswer, boldFirstLine: true },
+                  { question: `${trainer.name}調教師の重賞成績は？`, answer: trainerGradedAnswer },
+                              ...(activeHorsesAnswer ? [{ question: `${trainer.name}厩舎の主な管理馬は？`, answer: activeHorsesAnswer }] : []),
+                              ...(twoYoAnswer ? [{ question: `${trainer.name}厩舎の2歳戦の成績は？`, answer: twoYoAnswer }] : []),
                   { question: `${trainer.name}調教師の苦手な競馬場は？`, answer: trainerBadRacecourseAnswer },
                   { question: `${trainer.name}調教師の苦手なコースは？`, answer: trainerBadCourseAnswer },
                 ]} />

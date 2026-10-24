@@ -73,3 +73,71 @@ a.vRowFit > span:last-child > span {
 .criteria p {
   margin: 0;
 }
+
+/* ---------- 基本情報・コース概要のタイル（特徴カードの .pair と同じ見た目） ---------- */
+.info {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.info > div {
+  background: var(--surface-subtle);
+  border-radius: 12px;
+  padding: 10px 12px;
+  min-width: 0;
+}
+.info dt {
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--ink-sub);
+}
+.info dd {
+  margin: 0;
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: 600;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.info dd small {
+  display: block;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400;
+  color: var(--ink-sub);
+}
+@media (min-width: 769px) {
+  .info {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.infoNote {
+  margin: 12px 0 0;
+}
+
+/* ---------- 一覧表（重賞勝ち・代表産駒・管理馬）：文字の列は左揃え ---------- */
+.listTable .txt {
+  text-align: left;
+}
+.grade {
+  display: inline-block;
+  min-width: 26px;
+  margin-right: 6px;
+  padding: 0 6px;
+  border-radius: 9999px;
+  background: var(--surface-subtle);
+  font-size: 12px;
+  line-height: 20px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* ---------- 1つのセクションに複数カードを並べるときの小見出し（芝・ダートのバッジ） ---------- */
+.subHead {
+  margin: 0 0 8px;
+}
+.subHead + div {
+  margin-bottom: 16px;
+}

@@ -8,7 +8,7 @@
 import { emphasizeBestPlaceRate } from './summaryEmphasis';
 
 export type SireSummaryKey =
-  | 'overall' | 'surface' | 'racecourse' | 'style' | 'age' | 'condition' | 'damSire' | 'payback' | 'other';
+  | 'lead' | 'overall' | 'surface' | 'racecourse' | 'style' | 'age' | 'condition' | 'damSire' | 'payback' | 'other';
 
 export interface SireSummaryBlock {
   key: SireSummaryKey;
@@ -18,6 +18,7 @@ export interface SireSummaryBlock {
 }
 
 const TITLES: Record<SireSummaryKey, string | undefined> = {
+  lead: undefined,
   overall: undefined,
   surface: '芝・ダート・距離',
   racecourse: '競馬場・コース',

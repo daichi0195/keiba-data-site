@@ -30,6 +30,10 @@ import CriteriaDetails, {
   SURFACE_CRITERIA, DISTANCE_CRITERIA, CONDITION_CRITERIA, DISTANCE_DEFINITION,
 } from '@/components/datapage/shared/CriteriaDetails';
 import { sireDescription } from '@/lib/metaDescriptions';
+import InfoTiles from '@/components/datapage/shared/InfoTiles';
+import ListTable from '@/components/datapage/shared/ListTable';
+import sh from '@/components/datapage/shared/shared.module.css';
+import { bestBand, buildSireLead, buildSireBandAnswer, buildSireGrowthAnswer, buildProgenyAnswer, gradedTotals, thisYearOf, type NotableHorse, type SireProfile, type GrowthRate } from '@/lib/entityExtras';
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
@@ -944,6 +948,20 @@ export default async function SirePage({
     return [turfText, dirtText].filter(Boolean).join('\n\n');
   })();
 
+  // 検索意図に合わせた追加項目（gcs/v2/generate_extras.py）：基本情報・代表産駒・芝ダート別の距離帯・馬齢別
+  const sireProfile: SireProfile | null = (sire as any).profile ?? null;
+  const notableProgeny: NotableHorse[] = (sire as any).notable_progeny ?? [];
+  const distanceSurface: { turf?: any[]; dirt?: any[] } = (sire as any).distance_surface_stats ?? {};
+  const growthRates: GrowthRate[] = (sire as any).growth_rates ?? [];
+  const sireGraded = gradedTotals(sire.class_stats as any);
+  const sireThisYear = thisYearOf(sire.yearly_leading as any);
+  const sireBandAnswer = buildSireBandAnswer(sire.name, distanceSurface.turf, distanceSurface.dirt);
+  const sireGrowthAnswer = buildSireGrowthAnswer(sire.name, growthRates);
+  const sireProgenyAnswer = buildProgenyAnswer(sire.name, notableProgeny);
+  const turfBandRows: ConditionRow[] = (distanceSurface.turf ?? []).map((r: any) => ({ ...r, label: r.category }));
+  const dirtBandRows: ConditionRow[] = (distanceSurface.dirt ?? []).map((r: any) => ({ ...r, label: r.category }));
+  const hasBandRows = turfBandRows.length > 0 || dirtBandRows.length > 0;
+
   // FAQ構造化データ
   const faqSireJsonLd = {
     '@context': 'https://schema.org',
@@ -953,7 +971,10 @@ export default async function SirePage({
       { question: `${sire.name}産駒の得意なコースは？`, answer: sireGoodCourseAnswer },
       { question: `${sire.name}産駒は芝とダートどちらが得意？`, answer: sireSurfaceFaqAnswer },
       { question: `${sire.name}産駒の得意な距離は？`, answer: sireDistanceFaqAnswer },
+      ...(sireBandAnswer ? [{ question: `${sire.name}産駒の芝・ダートそれぞれの得意距離は？`, answer: sireBandAnswer }] : []),
       { question: `${sire.name}産駒の馬場適性は？`, answer: sireTrackConditionFaqAnswer },
+      ...(sireGrowthAnswer ? [{ question: `${sire.name}産駒は早熟？晩成？`, answer: sireGrowthAnswer }] : []),
+      ...(sireProgenyAnswer ? [{ question: `${sire.name}の代表産駒は？`, answer: sireProgenyAnswer }] : []),
       { question: `${sire.name}産駒の苦手な競馬場は？`, answer: sireBadRacecourseAnswer },
       { question: `${sire.name}産駒の苦手なコースは？`, answer: sireBadCourseAnswer },
     ].map(({ question, answer }) => ({
@@ -965,14 +986,17 @@ export default async function SirePage({
 
   // ナビゲーションアイテム
   const navigationItems = [
+    { id: 'profile-section', label: '基本情報' },
     { id: 'summary-section', label: 'データ概要' },
     { id: 'leading', label: '年度別' },
+    { id: 'progeny-section', label: '代表産駒' },
     { id: 'characteristics', label: '特徴' },
     { id: 'highlights-section', label: '注目ポイント' },
     { id: 'class-stats', label: 'クラス別' },
     { id: 'running-style-stats', label: '脚質別' },
     { id: 'gate-stats', label: '枠順別' },
     { id: 'distance-stats', label: '距離別' },
+    { id: 'distance-surface-stats', label: '芝・ダート別の距離' },
     { id: 'gender-stats', label: '性別' },
     { id: 'age-stats', label: '馬齢別' },
     { id: 'horse-weight-stats', label: '馬体重別' },
@@ -1088,6 +1112,29 @@ export default async function SirePage({
 
   // データ概要：見出し付きのブロック。名前は詳細ページへリンク
   const summaryBlocks = buildSireSummaryBlocks(sire.name, buildSireSummary(sire as any));
+  if (enoughRaces) {
+    summaryBlocks.unshift({
+      key: 'lead',
+      text: buildSireLead({
+        name: sire.name,
+        profile: sireProfile,
+        surfaceTrendText,
+        distanceTrendText,
+        bestTurf: bestBand(distanceSurface.turf),
+        bestDirt: bestBand(distanceSurface.dirt),
+        progeny: notableProgeny,
+      }),
+    });
+  }
+  const profileTiles = [
+    { label: '父', value: sireProfile?.father ?? '' },
+    { label: '母父', value: sireProfile?.damsire ?? '' },
+    { label: '生年', value: sireProfile?.birth_year ? `${sireProfile.birth_year}年` : '' },
+    { label: '生産', value: sireProfile?.birthplace ? `${sireProfile.birthplace}${sireProfile.imported ? '（輸入）' : ''}` : '' },
+    ...(sireThisYear ? [{ label: `${sireThisYear.year}年の勝利数`, value: `${sireThisYear.wins}勝`, sub: sireThisYear.ranking > 0 ? `リーディング${sireThisYear.ranking}位` : undefined }] : []),
+    { label: '産駒の重賞勝ち', value: `${sireGraded.wins}勝`, sub: `集計期間・G1 ${sireGraded.g1}勝` },
+  ];
+  const hasProfileTiles = Boolean(sireProfile?.father || sireProfile?.damsire);
   const linkedCourses = courseTableData.filter((c: { link?: string }) => Boolean(c.link));
   const summaryLinks: Partial<Record<string, NameLink[]>> = {
     racecourse: linkedCourses.map((c: any) => ({ name: c.name, href: c.link })),
@@ -1102,6 +1149,7 @@ export default async function SirePage({
 
   // ページ内ナビ（チップの表示名は短く、id は目次と共通）
   const chipLabels: Record<string, string> = {
+    'profile-section': '基本情報', 'progeny-section': '代表産駒', 'distance-surface-stats': '芝ダ距離',
     'summary-section': '概要', leading: '年度別', characteristics: '特徴', 'highlights-section': '注目',
     'class-stats': 'クラス別', 'running-style-stats': '脚質別', 'gate-stats': '枠順別', 'distance-stats': '距離別',
     'gender-stats': '性別', 'age-stats': '馬齢別', 'horse-weight-stats': '馬体重別', 'surface-stats': '芝・ダ別',
@@ -1114,6 +1162,9 @@ export default async function SirePage({
     (item) =>
       (item.id !== 'highlights-section' || hasHighlights) &&
       (item.id !== 'surface-change-stats' || surfaceChangeStatsData.length > 0) &&
+      (item.id !== 'profile-section' || hasProfileTiles) &&
+      (item.id !== 'progeny-section' || notableProgeny.length > 0) &&
+      (item.id !== 'distance-surface-stats' || hasBandRows) &&
       (enoughRaces || !thinHiddenIds.has(item.id))
   );
   const chipItems = presentNavItems.map((item) => ({ id: item.id, label: chipLabels[item.id] ?? item.label }));
@@ -1191,6 +1242,14 @@ export default async function SirePage({
 
             <CourseSectionNav items={chipItems} />
 
+            {/* 基本情報（父・母父は JRA-VAN の繁殖馬データ） */}
+            {hasProfileTiles && (
+              <section id="profile-section" className={cs.section} aria-label="基本情報">
+                <div className={cs.sh}><h2 className={cs.h2}>{sire.name}の基本情報</h2></div>
+                <InfoTiles items={profileTiles} />
+              </section>
+            )}
+
             {/* データ概要（固有解説文） */}
             <section id="summary-section" className={cs.section} aria-label="データの概要">
               <div className={cs.sh}><h2 className={cs.h2}>{sire.name}産駒のデータ概要</h2></div>
@@ -1219,6 +1278,21 @@ export default async function SirePage({
               </div>
             </section>
 
+
+            {/* 代表産駒（集計期間の重賞勝ち→勝利数の順） */}
+            {notableProgeny.length > 0 && (
+              <section id="progeny-section" className={cs.section} aria-label="代表産駒">
+                <div className={cs.sh}><h2 className={cs.h2}>{sire.name}の代表産駒</h2><p>集計期間に勝ち星を挙げた産駒。重賞の勝利数→勝利数の順</p></div>
+                <ListTable
+                  note="集計期間外の実績は含みません"
+                  columns={[{ label: '馬名' }, { label: '性齢' }, { label: '成績', numeric: true }, { label: '主な勝ち鞍' }, { label: '母父' }]}
+                  rows={notableProgeny.map((h) => ({
+                    key: String(h.horse_id),
+                    cells: [h.horse_name, `${h.sex}${h.age ?? ''}`, `${h.races}戦${h.wins}勝`, h.titles.length > 0 ? h.titles.join('、') : '—', h.damsire ?? '—'],
+                  }))}
+                />
+              </section>
+            )}
 
             {/* 特徴 */}
             {enoughRaces && (
@@ -1317,6 +1391,23 @@ export default async function SirePage({
                 }
               />
             </section>
+            {hasBandRows && (
+              <section id="distance-surface-stats" className={cs.section} aria-label="芝・ダート別の距離データ">
+                <div className={cs.sh}><h2 className={cs.h2}>{sire.name}産駒の得意距離（芝・ダート別）</h2><p>芝とダートそれぞれの距離帯別</p></div>
+                {turfBandRows.length > 0 && (
+                  <>
+                    <p className={sh.subHead}><span className={`${cs.badge} ${cs.badgeTurf}`}>芝</span></p>
+                    <ConditionCard rows={turfBandRows} keyLabel="距離" />
+                  </>
+                )}
+                {dirtBandRows.length > 0 && (
+                  <>
+                    <p className={sh.subHead}><span className={`${cs.badge} ${cs.badgeDirt}`}>ダート</span></p>
+                    <ConditionCard rows={dirtBandRows} keyLabel="距離" />
+                  </>
+                )}
+              </section>
+            )}
             <section id="gender-stats" className={cs.section} aria-label="性別データ">
               <div className={cs.sh}><h2 className={cs.h2}>{sire.name}産駒 性別データ</h2></div>
               <ConditionCard rows={genderRows} keyLabel="性別" />
@@ -1379,7 +1470,10 @@ export default async function SirePage({
                   { question: `${sire.name}産駒の得意なコースは？`, answer: sireGoodCourseAnswer },
                   { question: `${sire.name}産駒は芝とダートどちらが得意？`, answer: sireSurfaceFaqAnswer, boldFirstLine: true },
                   { question: `${sire.name}産駒の得意な距離は？`, answer: sireDistanceFaqAnswer, boldFirstLine: true },
+                  ...(sireBandAnswer ? [{ question: `${sire.name}産駒の芝・ダートそれぞれの得意距離は？`, answer: sireBandAnswer }] : []),
                   { question: `${sire.name}産駒の馬場適性は？`, answer: sireTrackConditionFaqAnswer, boldFirstLine: true },
+                  ...(sireGrowthAnswer ? [{ question: `${sire.name}産駒は早熟？晩成？`, answer: sireGrowthAnswer }] : []),
+                  ...(sireProgenyAnswer ? [{ question: `${sire.name}の代表産駒は？`, answer: sireProgenyAnswer }] : []),
                   { question: `${sire.name}産駒の苦手な競馬場は？`, answer: sireBadRacecourseAnswer },
                   { question: `${sire.name}産駒の苦手なコースは？`, answer: sireBadCourseAnswer },
                 ]} />

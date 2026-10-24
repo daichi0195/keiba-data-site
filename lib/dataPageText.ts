@@ -96,7 +96,7 @@ export interface CourseSummaryInput {
 }
 
 // データ概要の段落。key で段落の種類を表し、text の **…** は強調する箇所
-export type CourseSummaryBlockKey = 'intro' | 'popularity' | 'gate' | 'runningStyle' | 'people' | 'pedigree';
+export type CourseSummaryBlockKey = 'lead' | 'intro' | 'popularity' | 'gate' | 'runningStyle' | 'people' | 'pedigree';
 export interface CourseSummaryBlock {
   key: CourseSummaryBlockKey;
   text: string;

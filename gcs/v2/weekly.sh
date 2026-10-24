@@ -36,6 +36,8 @@ log "mart built"
 cd $HERE
 rm -rf out
 $PY localdb.py fetch >> $LOG 2>&1 || fail "fetch"
+# 種牡馬の父・母父（core.breeding_horse、約20MB）。失敗しても前回の parquet で続行
+( export SSL_CERT_FILE=$($PY2 -m certifi) && $PY generate_extras.py --fetch ) >> $LOG 2>&1 || log "WARN: sire pedigree fetch に失敗（前回分を使用）"
 $PY generate_lists.py >> $LOG 2>&1 || fail "lists"
 ( $PY generate_courses.py > logs/courses.log 2>&1 & $PY generate_jockeys.py > logs/jockeys.log 2>&1 &
   $PY generate_trainers.py > logs/trainers.log 2>&1 & $PY generate_sires.py > logs/sires.log 2>&1 & wait )
@@ -45,6 +47,8 @@ for f in courses jockeys trainers sires; do
   [[ $ng -gt 0 ]] && grep '❌' logs/$f.log | head -5 | tee -a $LOG
 done
 $PY generate_leading_data.py >> $LOG 2>&1 || fail "leading"
+# 検索意図に合わせた追加項目（プロフィール・重賞勝ち・代表産駒・コース概要など）を JSON に追記
+$PY generate_extras.py >> $LOG 2>&1 || fail "extras"
 n=$(find out -name '*.json' | wc -l | tr -d ' ')
 [[ $n -lt 600 ]] && fail "生成ファイルが少なすぎる ($n)"
 log "generated $n json files"

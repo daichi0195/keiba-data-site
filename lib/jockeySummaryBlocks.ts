@@ -10,6 +10,7 @@ import { buildJockeySummary } from './dataPageText';
 import { emphasizeBestPlaceRate } from './summaryEmphasis';
 
 export type JockeySummaryBlockKey =
+  | 'lead'
   | 'overall'
   | 'reliability'
   | 'surface'
@@ -26,6 +27,7 @@ export interface JockeySummaryBlock {
 }
 
 const TITLES: Record<JockeySummaryBlockKey, string | undefined> = {
+  lead: undefined,
   overall: '全体の成績',
   reliability: '人気時の信頼度',
   surface: '芝・ダート・距離',
