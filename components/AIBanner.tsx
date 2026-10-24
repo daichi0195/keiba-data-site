@@ -13,7 +13,6 @@ export default function AIBanner({ bookmarkOnly = false, bannerOnly = false }: {
             width={400}
             height={400}
             className={styles.bannerImage}
-            priority
           />
         </Link>
       )}

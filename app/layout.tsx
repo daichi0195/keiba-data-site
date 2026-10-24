@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import Link from "next/link";
+import Image from "next/image";
 import Footer from "@/components/Footer";
 import HeaderMenu from "@/components/HeaderMenu";
 import SpDrawerMenu from "@/components/SpDrawerMenu";
@@ -33,15 +34,6 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <head>
-        <link
-          rel="preconnect"
-          href="https://cdnjs.cloudflare.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-        />
         <Script
           id="gtm"
           strategy="afterInteractive"
@@ -88,7 +80,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           <div className="header-inner">
             <Link href="/" style={{ textDecoration: 'none', color: 'inherit' }}>
               <div className="site-name" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                <img src="/logo.png" alt="競馬データ.com" className="site-logo" style={{ height: '40px', width: '40px', display: 'block' }} />
+                <Image src="/logo.png" alt="競馬データ.com" width={40} height={40} loading="eager" className="site-logo" style={{ height: '40px', width: '40px', display: 'block' }} />
                 <span style={{ display: 'flex', alignItems: 'center', fontSize: '20px', fontWeight: '600' }}>競馬データ.com</span>
               </div>
             </Link>

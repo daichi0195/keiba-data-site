@@ -17,14 +17,14 @@ export async function getTrainerDataFromGCS(trainerId: string | number) {
   const paddedId = String(trainerId).padStart(5, '0');
 
   // キャッシュバスターを付けてCDNキャッシュを回避
-  const timestamp = Math.floor(Date.now() / 1000); // 秒単位（開発用）
+  const timestamp = Math.floor(Date.now() / 3600000); // 1時間単位
   const url = `${BASE_URL}/trainer/${paddedId}.json?v=${timestamp}`;
 
   console.log('🔍 Fetching trainer data from GCS:', url);
 
   try {
     const response = await fetch(url, {
-      cache: 'no-store', // 開発用：キャッシュを使用しない
+      next: { revalidate: false }, // ビルド時のみ取得（no-store だと毎リクエスト SSR になり表示が遅くなる）
     });
 
     if (!response.ok) {

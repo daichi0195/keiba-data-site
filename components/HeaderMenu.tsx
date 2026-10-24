@@ -4,6 +4,9 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import styles from './HeaderMenu.module.css';
+import FaIcon from './FaIcon';
+import { faRobot, faFlag, faHelmetSafety, faHorse, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faPenToSquare } from '@fortawesome/free-regular-svg-icons';
 import { getCoursesByRacecourse, getCourseUrl, getCourseDisplayName } from '@/lib/courses';
 import { ALL_JOCKEYS, type JockeyInfo } from '@/lib/jockeys';
 import { ALL_TRAINERS, type TrainerInfo } from '@/lib/trainers';
@@ -326,27 +329,27 @@ export default function HeaderMenu() {
       {/* ===== PC：ヘッダー用リンクメニュー ===== */}
       <nav className={styles.pcMenu}>
           <Link href="/ai" className={`${styles.pcMenuLink} ${isPcLinkActive('/ai') ? styles.pcMenuLinkActive : ''}`}>
-            <i className="fa-solid fa-robot"></i>
+            <FaIcon icon={faRobot} />
             <span>AI予測</span>
           </Link>
           <Link href="/courses" className={`${styles.pcMenuLink} ${isPcLinkActive('/courses') ? styles.pcMenuLinkActive : ''}`}>
-            <i className="fa-solid fa-flag"></i>
+            <FaIcon icon={faFlag} />
             <span>コースデータ</span>
           </Link>
           <Link href="/jockeys" className={`${styles.pcMenuLink} ${isPcLinkActive('/jockeys') ? styles.pcMenuLinkActive : ''}`}>
-            <i className="fa-solid fa-helmet-safety"></i>
+            <FaIcon icon={faHelmetSafety} />
             <span>騎手データ</span>
           </Link>
           <Link href="/sires" className={`${styles.pcMenuLink} ${isPcLinkActive('/sires') ? styles.pcMenuLinkActive : ''}`}>
-            <i className="fa-solid fa-horse"></i>
+            <FaIcon icon={faHorse} />
             <span>血統データ</span>
           </Link>
           <Link href="/trainers" className={`${styles.pcMenuLink} ${isPcLinkActive('/trainers') ? styles.pcMenuLinkActive : ''}`}>
-            <i className="fa-solid fa-user"></i>
+            <FaIcon icon={faUser} />
             <span>調教師データ</span>
           </Link>
           <Link href="/articles" className={`${styles.pcMenuLink} ${isPcLinkActive('/articles') ? styles.pcMenuLinkActive : ''}`}>
-            <i className="fa-regular fa-pen-to-square"></i>
+            <FaIcon icon={faPenToSquare} />
             <span>コラム</span>
           </Link>
         </nav>
@@ -359,7 +362,7 @@ export default function HeaderMenu() {
           type="button"
           aria-label="コース別データを開く"
         >
-          <span className={styles.menuIcon}><i className="fa-solid fa-flag"></i></span>
+          <span className={styles.menuIcon}><FaIcon icon={faFlag} /></span>
           <span className={styles.menuText}>コースデータ</span>
         </button>
         <button
@@ -368,7 +371,7 @@ export default function HeaderMenu() {
           type="button"
           aria-label="騎手別データを開く"
         >
-          <span className={styles.menuIcon}><i className="fa-solid fa-helmet-safety"></i></span>
+          <span className={styles.menuIcon}><FaIcon icon={faHelmetSafety} /></span>
           <span className={styles.menuText}>騎手データ</span>
         </button>
         <button
@@ -377,7 +380,7 @@ export default function HeaderMenu() {
           type="button"
           aria-label="血統別データを開く"
         >
-          <span className={styles.menuIcon}><i className="fa-solid fa-horse"></i></span>
+          <span className={styles.menuIcon}><FaIcon icon={faHorse} /></span>
           <span className={styles.menuText}>血統データ</span>
         </button>
         <button
@@ -386,11 +389,11 @@ export default function HeaderMenu() {
           type="button"
           aria-label="調教師別データを開く"
         >
-          <span className={styles.menuIcon}><i className="fa-solid fa-user"></i></span>
+          <span className={styles.menuIcon}><FaIcon icon={faUser} /></span>
           <span className={styles.menuText}>調教師データ</span>
         </button>
         <Link href="/ai" className={styles.menuButton}>
-          <span className={styles.menuIcon}><i className="fa-solid fa-robot"></i></span>
+          <span className={styles.menuIcon}><FaIcon icon={faRobot} /></span>
           <span className={styles.menuText}>AI予測</span>
         </Link>
       </div>

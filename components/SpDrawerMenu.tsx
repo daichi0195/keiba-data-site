@@ -4,15 +4,18 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import styles from './SpDrawerMenu.module.css';
+import FaIcon from './FaIcon';
+import { faHouse, faRobot, faFlag, faHelmetSafety, faHorse, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faPenToSquare } from '@fortawesome/free-regular-svg-icons';
 
 const navItems = [
-  { label: 'HOME', href: '/', icon: 'fa-solid fa-house' },
-  { label: 'AI勝率予測', href: '/ai', icon: 'fa-solid fa-robot' },
-  { label: 'コースデータ', href: '/courses', icon: 'fa-solid fa-flag' },
-  { label: '騎手データ', href: '/jockeys', icon: 'fa-solid fa-helmet-safety' },
-  { label: '血統データ', href: '/sires', icon: 'fa-solid fa-horse' },
-  { label: '調教師データ', href: '/trainers', icon: 'fa-solid fa-user' },
-  { label: 'コラム', href: '/articles', icon: 'fa-regular fa-pen-to-square' },
+  { label: 'HOME', href: '/', icon: faHouse },
+  { label: 'AI勝率予測', href: '/ai', icon: faRobot },
+  { label: 'コースデータ', href: '/courses', icon: faFlag },
+  { label: '騎手データ', href: '/jockeys', icon: faHelmetSafety },
+  { label: '血統データ', href: '/sires', icon: faHorse },
+  { label: '調教師データ', href: '/trainers', icon: faUser },
+  { label: 'コラム', href: '/articles', icon: faPenToSquare },
 ];
 
 const subItems = [
@@ -89,7 +92,7 @@ export default function SpDrawerMenu() {
                 aria-current={isActive(item.href) ? 'page' : undefined}
                 onClick={() => setOpen(false)}
               >
-                <i className={`${item.icon} ${styles.icon}`} aria-hidden="true" />
+                <span className={styles.icon} aria-hidden="true"><FaIcon icon={item.icon} /></span>
                 {item.label}
               </Link>
             </li>

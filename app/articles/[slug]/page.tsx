@@ -215,6 +215,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                       width={1200}
                       height={630}
                       className={styles.thumbnail}
+                      sizes="(max-width: 768px) 100vw, 800px"
                       priority={true}
                     />
                   </div>

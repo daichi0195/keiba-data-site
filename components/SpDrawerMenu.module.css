@@ -168,6 +168,7 @@
     background: #F3F3F3;
   }
   .icon {
+    display: inline-block;
     width: 20px;
     text-align: center;
     font-size: 17px;

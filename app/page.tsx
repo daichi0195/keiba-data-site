@@ -14,8 +14,8 @@ import { getThisWeekVenues } from '@/lib/thisWeekVenues';
 import s from '@/components/course/course.module.css';
 import h from '@/components/datapage/list/home.module.css';
 
-// ISR: 1日1回（86400秒）再生成
-export const revalidate = 86400;
+// AI予測（index.json）を反映するため60秒ごとに再生成。no-store だと毎リクエスト SSR になり表示が遅くなる
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   alternates: {
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
 async function fetchPredictions() {
   try {
     const url = `https://storage.googleapis.com/umadata/predictions/index.json?t=${Date.now()}`;
-    const res = await fetch(url, { cache: 'no-store' });
+    const res = await fetch(url, { next: { revalidate: 60 } });
     if (!res.ok) return [];
     const data = await res.json();
     return data.slice(0, 10);

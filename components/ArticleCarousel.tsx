@@ -220,7 +220,8 @@ export default function ArticleCarousel({ articles }: ArticleCarouselProps) {
                       fill
                       className={styles.thumbnail}
                       sizes="(max-width: 768px) 90vw, 600px"
-                      priority={true}
+                      // 最初に表示するスライドだけ先読み（全スライドだと初期表示の帯域を取り合う）
+                      priority={index === cloneCount}
                     />
                   </div>
                 )}

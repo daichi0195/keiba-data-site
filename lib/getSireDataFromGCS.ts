@@ -13,14 +13,14 @@ export async function getSireDataFromGCS(sireId: string | number) {
   const paddedId = String(sireId).padStart(5, '0');
 
   // キャッシュバスターを付けてCDNキャッシュを回避
-  const timestamp = Math.floor(Date.now() / 1000);
+  const timestamp = Math.floor(Date.now() / 3600000); // 1時間単位
   const url = `${BASE_URL}/sires/${paddedId}.json?v=${timestamp}`;
 
   console.log('🔍 Fetching sire data from GCS:', url);
 
   try {
     const response = await fetch(url, {
-      cache: 'no-store',
+      next: { revalidate: false }, // ビルド時のみ取得（no-store だと毎リクエスト SSR になり表示が遅くなる）
     });
 
     if (!response.ok) {
