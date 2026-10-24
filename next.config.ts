@@ -34,6 +34,15 @@ const nextConfig: NextConfig = {
       // 直近3年に騎乗がなくなりデータが空になった騎手ページ（URL は残し一覧へ）
       { source: '/jockeys/5621', destination: '/jockeys', permanent: true },
       { source: '/jockeys/5620', destination: '/jockeys', permanent: true },
+      // 旧URL（Search Console で 404・ソフト404・クロール済み未登録として残っているもの）
+      // 障害コースは旧パス jump → steeplechase
+      { source: '/courses/:venue/jump/:distance', destination: '/courses/:venue/steeplechase/:distance', permanent: true },
+      // 内回り・外回りを分ける前の URL → レース数の多い方へ
+      { source: '/courses/kyoto/turf/1400', destination: '/courses/kyoto/turf/1400-outer', permanent: true },
+      { source: '/courses/kyoto/turf/1600', destination: '/courses/kyoto/turf/1600-inner', permanent: true },
+      { source: '/courses/niigata/turf/2000', destination: '/courses/niigata/turf/2000-outer', permanent: true },
+      // 「1600-外」形式の旧URL（新潟芝1600mは外回りのみ）
+      { source: '/courses/niigata/turf/1600-%E5%A4%96', destination: '/courses/niigata/turf/1600', permanent: true },
     ];
   },
 };
