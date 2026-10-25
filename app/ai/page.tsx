@@ -51,7 +51,6 @@ const SECTIONS = [
   { id: 'about', label: 'このAIについて' },
   { id: 'model', label: '予測モデルについて' },
   { id: 'marks', label: '印について' },
-  { id: 'backtest', label: 'バックテストの成績' },
 ];
 
 const sectionTitle = (id: string) => SECTIONS.find((x) => x.id === id)!.label;
@@ -150,7 +149,7 @@ export default async function AIPage() {
             <div><Mark mark="honmei" /></div>
             <p>
               予測勝率が高く、オッズとの乖離から期待値が高いと判定された馬です。単勝候補として推奨します。<br />
-              過去データでの検証結果は下の「バックテストの成績」をご覧ください（将来の成績を保証するものではありません）。
+              予測は参考情報であり、的中や回収率を保証するものではありません。
             </p>
           </div>
           <div className={a.markItem}>
@@ -170,44 +169,6 @@ export default async function AIPage() {
         </div>
       </section>
 
-      {/* バックテストの成績 */}
-      <section className={s.section}>
-        <div className={s.sh}>
-          <h2 id="backtest" className={`${s.h2} ${a.h2Anchor}`}>{sectionTitle('backtest')}</h2>
-        </div>
-        <div className={`${s.card} ${a.tblCard}`}>
-          <p className={s.note}>
-            バックテスト（学習に使用していない期間のテスト）の結果は下記です。
-            過去データに対する検証結果であり、将来の的中率や回収率を保証するものではありません。馬券の購入はご自身の判断と責任で行ってください。
-          </p>
-          <div className={`${s.tbl} ${a.tblWrap}`}>
-            <table>
-              <thead>
-                <tr>
-                  <th className={s.key}>印</th>
-                  <th>的中率</th>
-                  <th>回収率</th>
-                  <th className={a.left}><span className={s.srOnly}>過去の結果</span></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className={s.key}><Mark mark="honmei" /></td>
-                  <td>16.7%</td>
-                  <td className={a.strong}>136.4%</td>
-                  <td className={a.left}><a href="https://docs.google.com/spreadsheets/d/1dZJW2Der108fv6kxTl84GsMD2xU8CKr_joNlvdWU4A0/edit?hl=ja&gid=0#gid=0" target="_blank" rel="noopener noreferrer" className={a.tblLink}>過去の結果をみる</a></td>
-                </tr>
-                <tr>
-                  <td className={s.key}><Mark mark="kiken" /></td>
-                  <td>18.2%</td>
-                  <td>57.3%</td>
-                  <td className={a.left}><a href="https://docs.google.com/spreadsheets/d/1dZJW2Der108fv6kxTl84GsMD2xU8CKr_joNlvdWU4A0/edit?hl=ja&gid=1187675975#gid=1187675975" target="_blank" rel="noopener noreferrer" className={a.tblLink}>過去の結果をみる</a></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
     </StaticPageLayout>
   );
 }

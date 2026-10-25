@@ -61,9 +61,9 @@ export default async function PredictionListPage({
       title="予測一覧"
       lead={
         <>
-          直近{RECENT_DAYS}日間に公開した予測を掲載しています。予測は対象レースの約10分前に公開され、結果の検証は
-          <Link href="/ai#backtest" className={a.link}>バックテストの成績</Link>
-          にまとめています。
+          直近{RECENT_DAYS}日間に公開した予測を掲載しています。予測は対象レースの約10分前に公開しています。予測の仕組みと印の意味は
+          <Link href="/ai#marks" className={a.link}>AI勝率予測のページ</Link>
+          をご覧ください。
         </>
       }
       noLeftSidebar
