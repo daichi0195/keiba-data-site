@@ -23,6 +23,51 @@
   height: auto;
 }
 
+/* テキストのバナー（白カード） */
+.textBanner {
+  padding: 20px;
+  line-height: normal;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-decoration: none;
+  color: #222222;
+  font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", system-ui, sans-serif;
+}
+
+.bannerLabel {
+  align-self: flex-start;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 9999px;
+  background: #F3F3F3;
+  font-size: 12px;
+  line-height: 24px;
+  font-weight: 600;
+  color: #222222;
+}
+
+.bannerTitle {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 700;
+}
+
+.bannerText {
+  font-size: 13px;
+  line-height: 20px;
+  color: #6A6A6A;
+}
+
+.bannerMore {
+  margin-top: 4px;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  color: #2563EB;
+  text-decoration: underline;
+}
+
 /* ブックマーク訴求カード */
 .bookmarkBanner {
   width: 100%;
