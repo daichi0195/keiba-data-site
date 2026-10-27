@@ -8,7 +8,7 @@ import pageStyles from '@/app/static-page.module.css';
 import AIBanner from '@/components/AIBanner';
 import DataSourceNote from '@/components/DataSourceNote';
 import { resolveCourseUrl, courseLabel } from '@/lib/courseLinks';
-import { buildSireSummary } from '@/lib/dataPageText';
+import { buildSireSummaryKeyed } from '@/lib/dataPageText';
 import { MIN_RACES_FOR_MENTION, hasEnoughRaces, THIN_PAGE_ROBOTS } from '@/lib/dataPageRules';
 import ThinDataNotice from '@/components/ThinDataNotice';
 import { jaDateToIso, periodFromDataPeriod, buildWebPageJsonLd } from '@/lib/dataDate';
@@ -26,9 +26,7 @@ import {
 } from '@/components/datapage/sire/SireParts';
 import HighlightCoursesCard, { MIN_RACES_FOR_HIGHLIGHT, type HighlightCourseRow } from '@/components/datapage/shared/HighlightCoursesCard';
 import VerdictRow, { VerdictRows } from '@/components/datapage/shared/VerdictRow';
-import CriteriaDetails, {
-  SURFACE_CRITERIA, DISTANCE_CRITERIA, CONDITION_CRITERIA, DISTANCE_DEFINITION,
-} from '@/components/datapage/shared/CriteriaDetails';
+import DefinitionLink from '@/components/datapage/shared/DefinitionLink';
 import { sireDescription } from '@/lib/metaDescriptions';
 import InfoTiles from '@/components/datapage/shared/InfoTiles';
 import ListTable from '@/components/datapage/shared/ListTable';
@@ -1111,7 +1109,7 @@ export default async function SirePage({
   const hasHighlights = goodCourses.length > 0 || badCourses.length > 0;
 
   // データ概要：見出し付きのブロック。名前は詳細ページへリンク
-  const summaryBlocks = buildSireSummaryBlocks(sire.name, buildSireSummary(sire as any));
+  const summaryBlocks = buildSireSummaryBlocks(buildSireSummaryKeyed(sire as any));
   if (enoughRaces) {
     summaryBlocks.unshift({
       key: 'lead',
@@ -1190,7 +1188,7 @@ export default async function SirePage({
         <div className={pageStyles.staticPageColumns3}>
           {/* 左サイドバー */}
           <aside className={pageStyles.staticPageLeftSidebar}>
-            <AIBanner />
+            <AIBanner bookmarkOnly />
           </aside>
 
           <article>
@@ -1327,7 +1325,7 @@ export default async function SirePage({
                     scale={['良馬場が得意', '差分なし', '重馬場が得意']}
                     pair={[['良 複勝率', rateOf(dirtGoodRow)], ['稍重〜不良 複勝率', rateOf(dirtBadRow)]]}
                   />
-                  <CriteriaDetails items={[SURFACE_CRITERIA, DISTANCE_CRITERIA, CONDITION_CRITERIA, DISTANCE_DEFINITION]} />
+                  <DefinitionLink anchor="criteria" />
                 </div>
               </section>
             )}
@@ -1359,16 +1357,7 @@ export default async function SirePage({
                 rows={styleRows}
                 keyLabel="脚質"
                 extra={
-                  <details className={cs.more}>
-                    <summary>脚質の定義</summary>
-                    <ul className={cs.def}>
-                      <li><b>逃げ</b>コーナーのいずれかが1位通過</li>
-                      <li><b>先行</b>最終コーナーで第1集団</li>
-                      <li><b>差し</b>最終コーナーで第2集団かつ上がりが3位以内</li>
-                      <li><b>追込</b>最終コーナーで第3集団かつ上がりが3位以内</li>
-                    </ul>
-                    <p className={cs.note} style={{ marginBottom: 12 }}>出走頭数を3で割ったものを第1集団〜第3集団とし、上記に該当しない場合は集計から除外しています。</p>
-                  </details>
+                  <DefinitionLink anchor="running-style" />
                 }
               />
             </section>
@@ -1382,12 +1371,7 @@ export default async function SirePage({
                 rows={distanceRows}
                 keyLabel="距離"
                 extra={
-                  <details className={cs.more}>
-                    <summary>距離の定義</summary>
-                    <div className={xs.ruleBody}>
-                      <DistanceDefinitionList />
-                    </div>
-                  </details>
+                  <DefinitionLink anchor="distance" />
                 }
               />
             </section>
@@ -1496,17 +1480,3 @@ export default async function SirePage({
   );
 }
 
-// 距離の定義（データ生成時の区分：gcs/v2/generate_sires.py の get_distance_stats）
-function DistanceDefinitionList() {
-  return (
-    <>
-      <p><b>距離の定義</b></p>
-      <ul>
-        <li>短距離：1000m〜1400m</li>
-        <li>マイル：1401m〜1800m</li>
-        <li>中距離：1801m〜2100m</li>
-        <li>長距離：2101m〜</li>
-      </ul>
-    </>
-  );
-}

@@ -44,9 +44,6 @@ export default function CourseSidebar({ racecourse, racecourseJa }: CourseSideba
 
   return (
     <div className={styles.sidebar}>
-      {/* AIバナー（画像のみ） */}
-      <AIBanner bannerOnly />
-
       {/* 他のコース一覧 */}
       <div className={styles.coursesSection}>
         <h2 className={styles.sectionTitle}>{racecourseJa}競馬場のコース一覧</h2>

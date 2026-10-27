@@ -28,9 +28,7 @@ import {
 } from '@/components/datapage/jockey/JockeyParts';
 import HighlightCoursesCard, { MIN_RACES_FOR_HIGHLIGHT, type HighlightCourseRow } from '@/components/datapage/shared/HighlightCoursesCard';
 import VerdictRow, { VerdictRows } from '@/components/datapage/shared/VerdictRow';
-import CriteriaDetails, {
-  SURFACE_CRITERIA, DISTANCE_CRITERIA, RUNNING_STYLE_CRITERIA, DISTANCE_DEFINITION, RUNNING_STYLE_DEFINITION,
-} from '@/components/datapage/shared/CriteriaDetails';
+import DefinitionLink from '@/components/datapage/shared/DefinitionLink';
 import { jockeyDescription } from '@/lib/metaDescriptions';
 import { ALL_SIRES } from '@/lib/sires';
 import InfoTiles from '@/components/datapage/shared/InfoTiles';
@@ -1193,28 +1191,10 @@ export default async function JockeyPage({
   const chipItems = tocItems.map((item) => ({ id: item.id, label: chipLabels[item.id] ?? item.label }));
 
   const runningStyleDefinition = (
-    <details className={s.more}>
-      <summary>脚質の定義</summary>
-      <ul className={s.def}>
-        <li><b>逃げ</b>コーナーのいずれかが1位通過</li>
-        <li><b>先行</b>最終コーナーで第1集団</li>
-        <li><b>差し</b>最終コーナーで第2集団かつ上がりが3位以内</li>
-        <li><b>追込</b>最終コーナーで第3集団かつ上がりが3位以内</li>
-      </ul>
-      <p className={s.note} style={{ marginBottom: 12 }}>出走頭数を3で割ったものを第1集団〜第3集団とし、上記に該当しない場合は集計から除外しています。</p>
-    </details>
+    <DefinitionLink anchor="running-style" />
   );
   const distanceDefinition = (
-    <details className={s.more}>
-      <summary>距離の定義</summary>
-      <ul className={s.def}>
-        <li><b>短距離</b>〜1400m</li>
-        <li><b>マイル</b>1401m〜1800m</li>
-        <li><b>中距離</b>1801m〜2100m</li>
-        <li><b>長距離</b>2101m〜</li>
-      </ul>
-      <p className={s.note} style={{ marginBottom: 12 }}>集計に使っている区分です。</p>
-    </details>
+    <DefinitionLink anchor="distance" />
   );
 
   return (
@@ -1239,7 +1219,7 @@ export default async function JockeyPage({
         <div className={pageStyles.staticPageColumns3}>
           {/* 左サイドバー */}
           <aside className={pageStyles.staticPageLeftSidebar}>
-            <AIBanner />
+            <AIBanner bookmarkOnly />
           </aside>
 
           <article>
@@ -1377,19 +1357,7 @@ export default async function JockeyPage({
                     scale={['短距離が得意', '差分なし', '長距離が得意']}
                     pair={distancePair}
                   />
-                  <CriteriaDetails
-                    items={[
-                      {
-                        title: '人気時の信頼度',
-                        lead: '1番人気に支持されたときの複勝率が高いほど、信頼度が高いことを示します。直近3年間のレースデータを使用し、1番人気での騎乗が10回以上の騎手のみを対象にしています。',
-                      },
-                      SURFACE_CRITERIA,
-                      RUNNING_STYLE_CRITERIA,
-                      DISTANCE_CRITERIA,
-                      DISTANCE_DEFINITION,
-                      RUNNING_STYLE_DEFINITION,
-                    ]}
-                  />
+                  <DefinitionLink anchor="criteria" />
                 </div>
                 <p className={s.note}>※複勝率ランキングは1番人気が10走以上の騎手を対象</p>
               </section>

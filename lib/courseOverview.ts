@@ -136,7 +136,6 @@ export function buildCourseShapeAnswer(courseName: string, overview: CourseOverv
     lines.push(`上がり3Fが最速だった馬の複勝率は**${overview.finish.fastest_place_rate.toFixed(1)}%**、勝ち馬の上がり3Fは平均${overview.finish.winner_avg_last3f?.toFixed(1)}秒です。`);
   }
   if (overview.gradedText) lines.push(`集計期間に行われた重賞：${overview.gradedText}`);
-  lines.push('※コースの形状は JRA 公式サイト「コース紹介」の記載値です。');
   return lines.join('\n');
 }
 

@@ -63,9 +63,9 @@ export default function StaticPageLayout({ pageName, children, noToc, noLeftSide
 }
 
 /** 固定ページの1セクション：キャンバス上の見出し（h2）＋白カードの本文 */
-export function StaticSection({ title, children }: { title?: string; children: React.ReactNode }) {
+export function StaticSection({ id, title, children }: { id?: string; title?: string; children: React.ReactNode }) {
   return (
-    <section className={s.section}>
+    <section id={id} className={s.section}>
       {title && (
         <div className={s.sh}>
           <h2 className={s.h2}>{title}</h2>

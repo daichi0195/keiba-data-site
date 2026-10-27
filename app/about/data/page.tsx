@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import StaticPageLayout, { StaticSection, staticLink } from '@/components/StaticPageLayout';
 import { MIN_RACES_FOR_MENTION, MIN_RACES_FOR_TRENDS } from '@/lib/dataPageRules';
+import { MIN_RACES_FOR_HIGHLIGHT } from '@/components/datapage/shared/HighlightCoursesCard';
 
 export const metadata: Metadata = {
   title: 'データの出典と集計方法 | 競馬データ.com',
@@ -58,7 +59,7 @@ export default function DataPolicyPage() {
         </ul>
       </StaticSection>
 
-      <StaticSection title="指標の定義">
+      <StaticSection id="metrics" title="指標の定義">
         <ul>
           <li><strong>勝率</strong>：出走数に対する1着の割合</li>
           <li><strong>連対率</strong>：出走数に対する2着以内の割合</li>
@@ -69,7 +70,7 @@ export default function DataPolicyPage() {
         </ul>
       </StaticSection>
 
-      <StaticSection title="脚質の定義">
+      <StaticSection id="running-style" title="脚質の定義">
         <p>
           脚質は公式の分類が存在しないため、当サイトでは各レースの通過順位から次のルールで機械的に判定しています。
           出走頭数を3で割って第1集団〜第3集団に分け、いずれにも該当しない場合は集計から除外します。
@@ -82,19 +83,22 @@ export default function DataPolicyPage() {
         </ul>
       </StaticSection>
 
-      <StaticSection title="距離区分の定義">
+      <StaticSection id="distance" title="距離区分の定義">
         <p>
-          IFHA（国際競馬統括機関連盟）の基準をもとに、次の4区分を使用しています。長距離レースの数が少ないため、中長距離は長距離に含めています。
+          騎手・調教師・種牡馬ページの距離別データは、次の4区分で集計しています。長距離レースの数が少ないため、中長距離は長距離に含めています。
         </p>
         <ul>
-          <li><strong>短距離</strong>：1000m〜1300m</li>
-          <li><strong>マイル</strong>：1400m〜1600m</li>
-          <li><strong>中距離</strong>：1700m〜2100m</li>
-          <li><strong>長距離</strong>：2200m以上</li>
+          <li><strong>短距離</strong>：1400m以下</li>
+          <li><strong>マイル</strong>：1401m〜1800m</li>
+          <li><strong>中距離</strong>：1801m〜2100m</li>
+          <li><strong>長距離</strong>：2101m以上</li>
         </ul>
+        <p>
+          得意な距離傾向の判定では、短距離とマイルを「短距離側」、中距離と長距離を「長距離側」としてまとめて比較しています。
+        </p>
       </StaticSection>
 
-      <StaticSection title="傾向判定のルール">
+      <StaticSection id="criteria" title="傾向判定のルール">
         <p>
           コースページや騎手ページに表示している5段階のゲージは、次の基準で機械的に判定しています。
         </p>
@@ -110,17 +114,36 @@ export default function DataPolicyPage() {
             <strong>脚質傾向（コース）</strong>：逃げ・先行と差し・追込の複勝率を比較し、枠順傾向と同じ閾値（5ポイント・2ポイント）で判定します。
           </li>
           <li>
-            <strong>人気時の信頼度（騎手・調教師）</strong>：1番人気に支持されたときの複勝率を、1番人気での騎乗・出走が10回以上の全騎手・全調教師の中で相対比較し、5段階で評価します。
+            <strong>人気時の信頼度（騎手）</strong>：1番人気に支持されたときの複勝率を、直近3年間に1番人気での騎乗が10回以上の全騎手の中で相対比較し、5段階で評価します。複勝率が高いほど、人気に応えている騎手です。
           </li>
           <li>
-            <strong>得意なコース・距離・脚質（騎手・調教師・種牡馬）</strong>：芝とダート、短距離側と長距離側、逃げ・先行と差し・追込の複勝率をそれぞれ比較し、差が5ポイント以上・2ポイント以上を基準に判定します。
+            <strong>得意な芝・ダート、距離、脚質（騎手・調教師・種牡馬）</strong>：芝とダート、短距離側と長距離側、逃げ・先行と差し・追込の複勝率をそれぞれ比較します。
+            差が5ポイント以上なら「〇〇が得意」、2ポイント以上なら「やや〇〇が得意」、それ未満なら「差分なし」とします。
+          </li>
+          <li>
+            <strong>得意な馬場状態（種牡馬）</strong>：芝・ダートそれぞれで、良馬場と稍重〜不良馬場の複勝率を比較し、上と同じ閾値（5ポイント・2ポイント）で判定します。
           </li>
         </ul>
+      </StaticSection>
+
+      <StaticSection id="highlights" title="得意・苦手の基準（注目ポイント）">
+        <p>
+          コースページの「注目ポイント」では、そのコースで{MIN_RACES_FOR_MENTION}走以上している騎手・種牡馬・母父・調教師を対象に、次の基準で取り上げています。
+        </p>
+        <ul>
+          <li><strong>得意</strong>：勝利数が上位5位以内で、単勝または複勝の回収率が100%以上</li>
+          <li><strong>よく穴をあける</strong>（騎手のみ）：複勝率は上位5位に入らないが、複勝回収率が100%以上</li>
+          <li><strong>苦手</strong>：複勝率20%以下かつ複勝回収率30%未満</li>
+        </ul>
+        <p>
+          騎手・調教師・種牡馬ページの「注目ポイント」は、出走回数が{MIN_RACES_FOR_HIGHLIGHT}回以上のコースを対象に、複勝率の高い順・低い順で選んでいます。
+        </p>
       </StaticSection>
 
       <StaticSection title="データの限界と注意点">
         <ul>
           <li>統計は過去の結果の集計であり、将来のレース結果を予測・保証するものではありません。</li>
+          <li>種牡馬の馬齢別成績は、2歳戦が新馬・未勝利戦中心のため、上位の種牡馬ほど2歳の数値が高く出やすくなります。</li>
           <li>回収率は少数の高配当に大きく左右されます。特に出走数が少ない条件の回収率は再現性が低いとお考えください。</li>
           <li>コース改修、馬場造園の変更、騎手の移籍や調教師の引退などにより、過去の傾向が当てはまらなくなることがあります。</li>
           <li>入力・集計の誤りに気づかれた場合は、<Link href="/contact" className={staticLink}>お問い合わせ</Link>からご連絡ください。確認のうえ修正します。</li>

@@ -11,6 +11,7 @@ import pageStyles from '@/app/static-page.module.css';
 import CourseSidebar from '@/components/CourseSidebar';
 import CourseFaq from '@/components/course/CourseFaq';
 import DataSourceNote from '@/components/DataSourceNote';
+import DefinitionLink from '@/components/datapage/shared/DefinitionLink';
 import ThinDataNotice from '@/components/ThinDataNotice';
 import { hasEnoughRaces, THIN_PAGE_ROBOTS } from '@/lib/dataPageRules';
 import { buildCourseSummaryBlocks } from '@/lib/dataPageText';
@@ -758,18 +759,10 @@ export default async function CoursePage({ params }: Props) {
     4: `${seoPrefix}はやや荒れやすいコースです。`,
     5: `${seoPrefix}は荒れやすいコースです。`,
   };
-  const volatilityDescriptions: Record<number, string> = {
-    1: `上位人気馬が安定して馬券に絡みやすく、堅い決着になりやすいコースです。`,
-    2: `比較的上位人気が馬券に絡みやすい傾向があり、軸馬を人気馬に置いた予想が組みやすいコースです。`,
-    3: `人気馬と穴馬がバランスよく馬券に絡みます。`,
-    4: `穴馬が台頭しやすく、上位人気だけに頼らない幅広い予想が有効です。`,
-    5: `上位人気が馬券外になりやすく高配当が出やすい傾向があります。穴馬を積極的に絡めた予想も視野に入れましょう。`,
-  };
   const rankText = hasRankingData ? `三連単中央値は全${totalCourses}コース中**${rankPos}位**（このコース：**¥${medianPayback.toLocaleString()}**、全コース中央値：¥${allMedianPayback.toLocaleString()}）。` : '';
   const volatilityAnswer = [
     volatilityConclusions[course_info.characteristics.volatility] ?? '',
     rankText,
-    volatilityDescriptions[course_info.characteristics.volatility] ?? '',
   ].filter(Boolean).join('\n');
 
   // FAQ 枠順回答
@@ -785,17 +778,9 @@ export default async function CoursePage({ params }: Props) {
   const gateDataText = innerGate && outerGate
     ? `内枠（1〜4番）の複勝率**${innerGate.place_rate.toFixed(1)}%** に対し、外枠（5〜8番）は**${outerGate.place_rate.toFixed(1)}%** です。`
     : '';
-  const gateDescriptions: Record<number, string> = {
-    1: `内枠の馬を積極的に馬券に絡めるのがおすすめです。`,
-    2: `内枠の馬をやや優先して馬券に絡めるのがおすすめです。`,
-    3: `枠順にかかわらず馬の実力や展開を重視した予想がおすすめです。`,
-    4: `外枠の馬も積極的に馬券に絡めるのがおすすめです。`,
-    5: `外枠の馬を積極的に馬券に絡めるのがおすすめです。`,
-  };
   const gateAnswer = [
     gateConclusions[course_info.characteristics.gate_position] ?? '',
     gateDataText,
-    gateDescriptions[course_info.characteristics.gate_position] ?? '',
   ].filter(Boolean).join('\n');
 
   // FAQ 脚質回答
@@ -811,17 +796,9 @@ export default async function CoursePage({ params }: Props) {
   const runningStyleDataText = frontRunner && closer
     ? `逃げ・先行の複勝率**${frontRunner.place_rate.toFixed(1)}%** に対し、差し・追込は**${closer.place_rate.toFixed(1)}%** です。`
     : '';
-  const runningStyleDescriptions: Record<number, string> = {
-    1: `逃げ・先行馬を積極的に馬券に絡めるのがおすすめです。`,
-    2: `逃げ・先行馬をやや優先して馬券に絡めるのがおすすめです。`,
-    3: `脚質にかかわらず馬の実力を重視した予想がおすすめです。`,
-    4: `差し・追込馬をやや優先して馬券に絡めるのがおすすめです。`,
-    5: `差し・追込馬を積極的に馬券に絡めるのがおすすめです。`,
-  };
   const runningStyleAnswer = [
     runningStyleConclusions[course_info.characteristics.running_style_trend_position] ?? '',
     runningStyleDataText,
-    runningStyleDescriptions[course_info.characteristics.running_style_trend_position] ?? '',
   ].filter(Boolean).join('\n');
 
   // FAQ 騎手回答
@@ -1180,14 +1157,7 @@ export default async function CoursePage({ params }: Props) {
                       ] : undefined}
                     />
                   )}
-                  <details className={s.more}>
-                    <summary>判定の基準</summary>
-                    <div className={s.criteria}>
-                      <p><b>荒れやすさ</b>：三連単配当の中央値をコースごとに求め、全コースの中で相対比較して5段階で評価しています。中央値が高いほど、人気どおりに決まりにくく荒れやすいコースです。障害コースと、集計期間の実施回数が少ないコースは比較の対象外です。</p>
-                      <p><b>枠順傾向</b>：内枠（1〜4枠）と外枠（5〜8枠）の複勝率を比べています。差が5%以上で「内枠有利／外枠有利」、2%以上で「やや内枠有利／やや外枠有利」、それ未満は「互角」です。</p>
-                      <p><b>脚質傾向</b>：逃げ・先行と差し・追込の複勝率を比べています。差が5%以上で「逃げ・先行有利／差し・追込有利」、2%以上で「やや」を付け、それ未満は「互角」です。</p>
-                    </div>
-                  </details>
+                  <DefinitionLink anchor="criteria" />
                 </div>
                 {hasRankingData && (
                   <p className={s.note}>三連単配当の中央値は全{totalCourses}コース中{rankPos}位（配当の高い順）</p>
@@ -1201,7 +1171,7 @@ export default async function CoursePage({ params }: Props) {
                 <div className={s.sh}>
                   <h2 className={s.h2}>{seoPrefix}の注目ポイント</h2>
                   <p>このコースで成績が目立つ騎手・血統・厩舎。名前をタップすると詳細へ</p>
-                  <p>出走20以上が対象。得意＝勝利数が上位5位以内で単勝または複勝回収率100%以上、よく穴をあける＝複勝率が上位5位未満で複勝回収率100%以上、苦手＝複勝率20%以下かつ複勝回収率30%未満</p>
+                  
                 </div>
                 <div className={s.legend}>
                   <span><i className={s.good} />得意</span>
@@ -1214,6 +1184,7 @@ export default async function CoursePage({ params }: Props) {
                   <PickCard title="血統（母父）" label="母父" strong={toPick(damPicks.strong)} weak={toPick(damPicks.weak)} />
                   <PickCard title="調教師" label="調教師" strong={toPick(trainerPicks.strong)} weak={toPick(trainerPicks.weak)} />
                 </div>
+                <DefinitionLink anchor="highlights" />
               </section>
             )}
 
@@ -1238,16 +1209,7 @@ export default async function CoursePage({ params }: Props) {
                 rows={styleRows}
                 keyLabel="脚質"
                 extra={
-                  <details className={s.more}>
-                    <summary>脚質の定義</summary>
-                    <ul className={s.def}>
-                      <li><b>逃げ</b>コーナーのいずれかが1位通過</li>
-                      <li><b>先行</b>最終コーナーで第1集団</li>
-                      <li><b>差し</b>最終コーナーで第2集団かつ上がりが3位以内</li>
-                      <li><b>追込</b>最終コーナーで第3集団かつ上がりが3位以内</li>
-                    </ul>
-                    <p className={s.note} style={{ marginBottom: 12 }}>出走頭数を3で割ったものを第1集団〜第3集団とし、上記に該当しない場合は集計から除外しています。</p>
-                  </details>
+                  <DefinitionLink anchor="running-style" />
                 }
               />
             </section>

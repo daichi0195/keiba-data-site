@@ -6,7 +6,7 @@ import { getTrainerDataFromGCS } from '@/lib/getTrainerDataFromGCS';
 import { ALL_TRAINERS } from '@/lib/trainers';
 import DataSourceNote from '@/components/DataSourceNote';
 import { ALL_JOCKEYS } from '@/lib/jockeys';
-import { buildTrainerSummary } from '@/lib/dataPageText';
+import { buildTrainerSummaryKeyed } from '@/lib/dataPageText';
 import { jaDateToIso, periodFromDataPeriod, buildWebPageJsonLd } from '@/lib/dataDate';
 import { toTrainerSummaryBlocks } from '@/lib/trainerPageData';
 import { resolveCourseUrl, courseLabel } from '@/lib/courseLinks';
@@ -26,7 +26,7 @@ import { type LinkStatRow } from '@/components/datapage/trainer/LinkStatsTable';
 import { CourseGroupsCard, type CourseGroup } from '@/components/datapage/trainer/TrainerParts';
 import HighlightCoursesCard, { MIN_RACES_FOR_HIGHLIGHT, type HighlightCourseRow } from '@/components/datapage/shared/HighlightCoursesCard';
 import VerdictRow, { VerdictRows } from '@/components/datapage/shared/VerdictRow';
-import CriteriaDetails, { SURFACE_CRITERIA, DISTANCE_CRITERIA, DISTANCE_DEFINITION } from '@/components/datapage/shared/CriteriaDetails';
+import DefinitionLink from '@/components/datapage/shared/DefinitionLink';
 import { trainerDescription } from '@/lib/metaDescriptions';
 import InfoTiles from '@/components/datapage/shared/InfoTiles';
 import ListTable from '@/components/datapage/shared/ListTable';
@@ -1083,7 +1083,7 @@ export default async function TrainerPage({
     .map((c) => ({ ...c, url: resolveCourseUrl(c) }));
 
   // データ概要（見出し付きのブロック、名前は詳細ページへリンク）
-  const summaryBlocks = toTrainerSummaryBlocks(buildTrainerSummary(trainer as any));
+  const summaryBlocks = toTrainerSummaryBlocks(buildTrainerSummaryKeyed(trainer as any));
   if (enoughRaces && summaryBlocks.length > 0) {
     summaryBlocks.unshift({
       key: 'lead',
@@ -1199,7 +1199,7 @@ export default async function TrainerPage({
         <div className={pageStyles.staticPageColumns3}>
           {/* 左サイドバー（現行どおり） */}
           <aside className={pageStyles.staticPageLeftSidebar}>
-            <AIBanner />
+            <AIBanner bookmarkOnly />
           </aside>
 
           <article>
@@ -1361,13 +1361,7 @@ export default async function TrainerPage({
                       ] : undefined}
                     />
                   )}
-                  <CriteriaDetails
-                    items={[
-                      ...(hasSurfaceTrend ? [SURFACE_CRITERIA] : []),
-                      ...(hasDistanceTrend ? [DISTANCE_CRITERIA] : []),
-                      DISTANCE_DEFINITION,
-                    ]}
-                  />
+                  <DefinitionLink anchor="criteria" />
                 </div>
               </section>
             )}
@@ -1403,16 +1397,7 @@ export default async function TrainerPage({
                 rows={distanceRows}
                 keyLabel="距離"
                 extra={
-                  <details className={s.more}>
-                    <summary>距離の定義</summary>
-                    <ul className={t.rule}>
-                      <li><b>短距離</b>：〜1400m</li>
-                      <li><b>マイル</b>：1401m〜1800m</li>
-                      <li><b>中距離</b>：1801m〜2100m</li>
-                      <li><b>長距離</b>：2101m〜</li>
-                    </ul>
-                    <p className={s.note} style={{ marginBottom: 12 }}>集計に使っている区分です。</p>
-                  </details>
+                  <DefinitionLink anchor="distance" />
                 }
               />
             </section>
