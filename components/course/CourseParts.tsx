@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import styles from './course.module.css';
 import AnimateOnView from './AnimateOnView';
+import ScrollTable from './ScrollTable';
+import { keyInClass } from './keyCell';
 import { STAT_COLUMNS, formatStat, maxByColumn, type StatRowLike } from './statColumns';
 
 // ------------------------------------------------------------
@@ -94,7 +96,7 @@ function GateBadge({ gate }: { gate: NonNullable<ConditionRow['gate']> }) {
 export function StatsTable({ rows, keyLabel }: { rows: ConditionRow[]; keyLabel: string }) {
   const max = maxByColumn(rows);
   return (
-    <div className={styles.tbl}>
+    <ScrollTable>
       <table>
         <thead>
           <tr>
@@ -107,7 +109,7 @@ export function StatsTable({ rows, keyLabel }: { rows: ConditionRow[]; keyLabel:
         <tbody>
           {rows.map((row, i) => (
             <tr key={`${row.label}-${i}`}>
-              <td className={styles.key}>{row.gate ? <GateBadge gate={row.gate} /> : row.label}</td>
+              <td className={styles.key}>{row.gate ? <GateBadge gate={row.gate} /> : <span className={keyInClass(row.label)}>{row.label}</span>}</td>
               {STAT_COLUMNS.map((c) => {
                 const v = row[c.key];
                 const text = formatStat(v, c.format);
@@ -118,7 +120,7 @@ export function StatsTable({ rows, keyLabel }: { rows: ConditionRow[]; keyLabel:
           ))}
         </tbody>
       </table>
-    </div>
+    </ScrollTable>
   );
 }
 

@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import s from '@/components/course/course.module.css';
 import AnimateOnView from '@/components/course/AnimateOnView';
+import ScrollTable from '@/components/course/ScrollTable';
+import { keyInClass } from '@/components/course/keyCell';
 import { STAT_COLUMNS, formatStat, maxByColumn, type StatRowLike } from '@/components/course/statColumns';
 import j from './jockey.module.css';
 
@@ -32,11 +34,11 @@ export function LinkStatsTable({
     <tr key={`${row.label}-${i}`} className={cls}>
       <td className={s.key}>
         {row.href ? (
-          <Link href={row.href} className={s.textLink}>
+          <Link href={row.href} className={`${s.textLink} ${keyInClass(row.label)}`}>
             {row.label}
           </Link>
         ) : (
-          row.label
+          <span className={keyInClass(row.label)}>{row.label}</span>
         )}
       </td>
       {STAT_COLUMNS.map((c) => {
@@ -48,7 +50,7 @@ export function LinkStatsTable({
     </tr>
   );
   return (
-    <div className={s.tbl}>
+    <ScrollTable>
       <table>
         <thead>
           <tr>
@@ -65,7 +67,7 @@ export function LinkStatsTable({
           )}
         </tbody>
       </table>
-    </div>
+    </ScrollTable>
   );
 }
 

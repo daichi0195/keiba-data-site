@@ -696,14 +696,30 @@ thead .key {
   font-weight: 700;
 }
 
-/* ランキングの表 */
-.rankCard {
-  /* 表の上にも、下部（.rFoot の上下 12px）と同じだけの余白を取る */
-  padding: 12px 0 0;
+/*
+ * 1列目（見出し列）：横にスクロールすると先頭3文字分に縮める（全表共通。ScrollTable が .narrow を付ける）
+ * 中身は .keyIn で包む。一覧表のようにバッジが付く列は .keyInWide で少し広めに残す
+ */
+.keyIn {
+  display: inline-block;
+  max-width: 12em;
   overflow: hidden;
+  white-space: nowrap;
+  vertical-align: bottom;
+  transition: max-width 200ms var(--ease-ui);
 }
+.keyInWide {
+  max-width: 15em;
+}
+.narrow .keyIn {
+  max-width: 3em;
+}
+.narrow .keyInWide {
+  max-width: 5em;
+}
+
+/* ランキング・一覧の表：ほかの表と同じく、カードの余白の内側に枠線付きで置く */
 .rankCard .tbl {
-  border: 0;
   margin: 0;
 }
 .rn {
@@ -786,8 +802,7 @@ thead .rnm {
   justify-content: space-between;
   align-items: center;
   gap: 8px;
-  padding: 12px 16px;
-  border-top: 1px solid var(--line);
+  padding: 12px 0 0;
 }
 .hint {
   font-size: 12px;
@@ -917,9 +932,6 @@ thead .rnm {
 @media (min-width: 769px) {
   .card {
     padding: 22px 24px;
-  }
-  .rankCard {
-    padding: 12px 0 0;
   }
   .title {
     font-size: 30px;

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import styles from './course.module.css';
+import ScrollTable from './ScrollTable';
 import { STAT_COLUMNS, formatStat, maxByColumn, type StatRowLike } from './statColumns';
 
 export interface RankingRow extends StatRowLike {
@@ -20,16 +21,12 @@ const INITIAL_ROWS = 10;
  */
 export default function RankingTable({ rows, nameLabel, note }: { rows: RankingRow[]; nameLabel: string; note: string }) {
   const [open, setOpen] = useState(false);
-  const [narrow, setNarrow] = useState(false);
   const rest = rows.length - INITIAL_ROWS;
   const max = maxByColumn(rows);
 
   return (
     <div className={`${styles.card} ${styles.rankCard} ${open ? styles.open : ''}`}>
-      <div
-        className={`${styles.tbl} ${narrow ? styles.narrow : ''}`}
-        onScroll={(e) => setNarrow(e.currentTarget.scrollLeft > 8)}
-      >
+      <ScrollTable>
         <table>
           <thead>
             <tr>
@@ -59,7 +56,7 @@ export default function RankingTable({ rows, nameLabel, note }: { rows: RankingR
             ))}
           </tbody>
         </table>
-      </div>
+      </ScrollTable>
       <div className={styles.rFoot}>
         <span className={styles.hint}>{note}</span>
         {rest > 0 && (

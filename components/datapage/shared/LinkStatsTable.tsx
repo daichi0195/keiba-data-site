@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import s from '@/components/course/course.module.css';
+import ScrollTable from '@/components/course/ScrollTable';
+import { keyInClass } from '@/components/course/keyCell';
 import t from './shared.module.css';
 import { STAT_COLUMNS, formatStat, maxByColumn, type StatRowLike } from '@/components/course/statColumns';
 
@@ -25,7 +27,7 @@ export default function LinkStatsTable({
 }) {
   const max = maxByColumn(rows.filter((r) => !r.summary));
   return (
-    <div className={s.tbl}>
+    <ScrollTable>
       <table>
         <thead>
           <tr>
@@ -42,13 +44,13 @@ export default function LinkStatsTable({
               <tr key={`${row.label}-${i}`} className={firstSummary ? t.sumFirst : undefined}>
                 <td className={s.key}>
                   {row.link ? (
-                    <Link href={row.link} className={s.textLink}>
+                    <Link href={row.link} className={`${s.textLink} ${keyInClass(row.label)}`}>
                       {row.label}
                     </Link>
                   ) : row.summary ? (
-                    <b className={t.sumLabel}>{row.label}</b>
+                    <b className={`${t.sumLabel} ${keyInClass(row.label)}`}>{row.label}</b>
                   ) : (
-                    row.label
+                    <span className={keyInClass(row.label)}>{row.label}</span>
                   )}
                 </td>
                 {STAT_COLUMNS.map((c) => {
@@ -62,6 +64,6 @@ export default function LinkStatsTable({
           })}
         </tbody>
       </table>
-    </div>
+    </ScrollTable>
   );
 }

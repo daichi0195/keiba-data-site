@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import s from '@/components/course/course.module.css';
 import AnimateOnView from '@/components/course/AnimateOnView';
+import ScrollTable from '@/components/course/ScrollTable';
+import { keyInClass } from '@/components/course/keyCell';
 import { STAT_COLUMNS, formatStat, maxByColumn, type StatRowLike } from '@/components/course/statColumns';
 import x from './sire.module.css';
 
@@ -92,7 +94,7 @@ function GateBadge({ gate }: { gate: NonNullable<SireStatRow['gate']> }) {
 export function SireStatsTable({ rows, keyLabel, noHighlight = false }: { rows: SireStatRow[]; keyLabel: string; noHighlight?: boolean }) {
   const max = maxByColumn(rows.filter((r) => !r.summary));
   return (
-    <div className={s.tbl}>
+    <ScrollTable>
       <table>
         <thead>
           <tr>
@@ -111,9 +113,9 @@ export function SireStatsTable({ rows, keyLabel, noHighlight = false }: { rows: 
                   {row.gate ? (
                     <GateBadge gate={row.gate} />
                   ) : row.link ? (
-                    <Link href={row.link} className={x.keyLink}>{row.label}</Link>
+                    <Link href={row.link} className={`${x.keyLink} ${keyInClass(row.label)}`}>{row.label}</Link>
                   ) : (
-                    <span className={row.summary ? x.sumLabel : undefined}>{row.label}</span>
+                    <span className={`${row.summary ? x.sumLabel : ''} ${keyInClass(row.label)}`}>{row.label}</span>
                   )}
                 </td>
                 {STAT_COLUMNS.map((c) => {
@@ -127,7 +129,7 @@ export function SireStatsTable({ rows, keyLabel, noHighlight = false }: { rows: 
           })}
         </tbody>
       </table>
-    </div>
+    </ScrollTable>
   );
 }
 

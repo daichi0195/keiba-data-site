@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import s from '@/components/course/course.module.css';
 import r from './shared.module.css';
+import ScrollTable from '@/components/course/ScrollTable';
 
 export interface ListColumn {
   label: string;
@@ -28,7 +29,7 @@ export default function ListTable({ columns, rows, note }: { columns: ListColumn
   const cellClass = (ci: number) => (ci === 0 ? s.key : columns[ci]?.numeric ? undefined : r.txt);
   return (
     <div className={`${s.card} ${s.rankCard} ${open ? s.open : ''}`}>
-      <div className={s.tbl}>
+      <ScrollTable>
         <table className={r.listTable}>
           <thead>
             <tr>
@@ -44,14 +45,14 @@ export default function ListTable({ columns, rows, note }: { columns: ListColumn
               <tr key={row.key} className={i >= INITIAL_ROWS ? s.moreRow : undefined}>
                 {row.cells.map((cell, ci) => (
                   <td key={ci} className={cellClass(ci)}>
-                    {cell}
+                    {ci === 0 ? <span className={`${s.keyIn} ${s.keyInWide}`}>{cell}</span> : cell}
                   </td>
                 ))}
               </tr>
             ))}
           </tbody>
         </table>
-      </div>
+      </ScrollTable>
       {(note || rest > 0) && (
         <div className={s.rFoot}>
           <span className={s.hint}>{note}</span>
