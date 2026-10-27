@@ -31,7 +31,7 @@ import { sireDescription } from '@/lib/metaDescriptions';
 import InfoTiles from '@/components/datapage/shared/InfoTiles';
 import ListTable from '@/components/datapage/shared/ListTable';
 import sh from '@/components/datapage/shared/shared.module.css';
-import { bestBand, buildSireLead, buildSireBandAnswer, buildSireGrowthAnswer, buildProgenyAnswer, gradedTotals, thisYearOf, type NotableHorse, type SireProfile, type GrowthRate } from '@/lib/entityExtras';
+import { bestBand, buildSireLead, formatTitles, buildSireBandAnswer, buildSireGrowthAnswer, buildProgenyAnswer, gradedTotals, thisYearOf, type NotableHorse, type SireProfile, type GrowthRate } from '@/lib/entityExtras';
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
@@ -1286,7 +1286,7 @@ export default async function SirePage({
                   columns={[{ label: '馬名' }, { label: '性齢' }, { label: '成績', numeric: true }, { label: '主な勝ち鞍' }, { label: '母父' }]}
                   rows={notableProgeny.map((h) => ({
                     key: String(h.horse_id),
-                    cells: [h.horse_name, `${h.sex}${h.age ?? ''}`, `${h.races}戦${h.wins}勝`, h.titles.length > 0 ? h.titles.join('、') : '—', h.damsire ?? '—'],
+                    cells: [h.horse_name, `${h.sex}${h.age ?? ''}`, `${h.races}戦${h.wins}勝`, h.titles.length > 0 ? formatTitles(h.titles).join('、') : '—', h.damsire ?? '—'],
                   }))}
                 />
               </section>

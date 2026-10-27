@@ -31,7 +31,7 @@ import { trainerDescription } from '@/lib/metaDescriptions';
 import InfoTiles from '@/components/datapage/shared/InfoTiles';
 import ListTable from '@/components/datapage/shared/ListTable';
 import sh from '@/components/datapage/shared/shared.module.css';
-import { ageAt, buildGradedAnswer, buildPersonLead, gradedTotals, jaDate, shortDate, thisYearOf, type GradedWin, type NotableHorse, type PersonProfile } from '@/lib/entityExtras';
+import { ageAt, buildGradedAnswer, formatTitles, buildPersonLead, gradedTotals, jaDate, shortDate, thisYearOf, type GradedWin, type NotableHorse, type PersonProfile } from '@/lib/entityExtras';
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
@@ -950,7 +950,7 @@ export default async function TrainerPage({
   const trainerAge = ageAt(trainerProfile.birth_date, trainerAsOf);
   const trainerGradedAnswer = buildGradedAnswer(`${trainer.name}調教師`, trainerGraded, trainerGradedWins);
   const activeHorsesAnswer = activeHorses.length > 0
-    ? `直近半年に出走した${trainer.name}厩舎の管理馬では、${activeHorses.slice(0, 5).map((h) => `**${h.horse_name}**${h.titles.length > 0 ? `（${h.titles.slice(0, 2).join('、')}）` : `（${h.wins}勝）`}`).join('、')}が主な馬です。\n※集計期間の重賞勝ち→勝利数の順。`
+    ? `直近半年に出走した${trainer.name}厩舎の管理馬では、${activeHorses.slice(0, 5).map((h) => `**${h.horse_name}**${h.titles.length > 0 ? `（${formatTitles(h.titles, 2).join('、')}）` : `（${h.wins}勝）`}`).join('、')}が主な馬です。\n※集計期間の重賞勝ち→勝利数の順。`
     : null;
   const twoYo = trainerAgeRows.find((r) => r.label === '2歳');
   const otherAges = trainerAgeRows.filter((r) => r.label !== '2歳');
@@ -1302,7 +1302,7 @@ export default async function TrainerPage({
                       h.horse_name,
                       `${h.sex}${h.age ?? ''}`,
                       `${h.wins}-${h.places_2 ?? 0}-${h.places_3 ?? 0}-${h.races - h.wins - (h.places_2 ?? 0) - (h.places_3 ?? 0)}`,
-                      h.titles.length > 0 ? h.titles.join('、') : '—',
+                      h.titles.length > 0 ? formatTitles(h.titles).join('、') : '—',
                       h.father ?? '—',
                       h.last_date ? shortDate(h.last_date) : '—',
                     ],

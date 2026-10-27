@@ -110,7 +110,15 @@ export function bestBand<T extends StatLike>(rows: T[] | undefined, minRaces = 5
   return [...ok].sort((a, b) => b.place_rate - a.place_rate)[0];
 }
 
-const titleList = (h: NotableHorse) => (h.titles.length > 0 ? `（${h.titles.slice(0, 2).join('、')}）` : '');
+/** 同じ重賞を複数回勝っている場合は「G1 高松宮記念×2」のようにまとめる（勝った順を保つ） */
+export function formatTitles(titles: string[], limit?: number): string[] {
+  const counts = new Map<string, number>();
+  titles.forEach((t) => counts.set(t, (counts.get(t) ?? 0) + 1));
+  const list = [...counts].map(([t, n]) => (n > 1 ? `${t}×${n}` : t));
+  return limit ? list.slice(0, limit) : list;
+}
+
+const titleList = (h: NotableHorse) => (h.titles.length > 0 ? `（${formatTitles(h.titles, 2).join('、')}）` : '');
 
 // ------------------------------------------------------------
 // 種牡馬
