@@ -2,7 +2,7 @@
  * 全調教師のIDリスト
  * 
  * 過去3年間に出走記録のある調教師 (既存ページは維持し、現役で30レース以上の調教師を追加)
- * gcs/v2/generate_lists.py が JRA-VAN 由来のデータから自動生成（2026-10-24時点: 193調教師）
+ * gcs/v2/generate_lists.py が JRA-VAN 由来のデータから自動生成（2026-10-29時点: 193調教師）
  */
 
 export interface TrainerInfo {
