@@ -43,6 +43,14 @@ const nextConfig: NextConfig = {
       { source: '/courses/niigata/turf/2000', destination: '/courses/niigata/turf/2000-outer', permanent: true },
       // 「1600-外」形式の旧URL（新潟芝1600mは外回りのみ）
       { source: '/courses/niigata/turf/1600-%E5%A4%96', destination: '/courses/niigata/turf/1600', permanent: true },
+      // データソース移行直後（2026-10-18）に一時的に生成された「1700-2」のような数字の接尾辞付き URL → 接尾辞なしのコースへ
+      { source: '/courses/:venue/:surface/:distance(\\d+)-:n(\\d)', destination: '/courses/:venue/:surface/:distance', permanent: true },
+      // ページを持たない（持ったことのない）人物 ID。Search Console で 404 として残っているもの → 一覧へ
+      ...[5592, 5443, 5299, 5416, 5389, 5524, 5558, 5534].map((id) => ({ source: `/jockeys/${id}`, destination: '/jockeys', permanent: true })),
+      ...[1072, 1107, 412, 1005, 425, 428].map((id) => ({ source: `/trainers/${id}`, destination: '/trainers', permanent: true })),
+      ...[1005, 666].map((id) => ({ source: `/sires/${id}`, destination: '/sires', permanent: true })),
+      // 末尾に「$」が付いた誤リンク → トップ
+      { source: '/\\$', destination: '/', permanent: true },
     ];
   },
 };
