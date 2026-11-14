@@ -36,6 +36,8 @@ const nextConfig: NextConfig = {
   // 廃止したページのリダイレクト（空ページ・テストページの整理）
   async redirects() {
     return [
+      // apex（keibadata.com）→ www に統一（Vercel ではドメイン設定で実施していたもの。Cloudflare Workers 用）
+      { source: '/:path*', has: [{ type: 'host', value: 'keibadata.com' }], destination: 'https://www.keibadata.com/:path*', permanent: true },
       // 有馬記念ページ（データなしの空ページ）→ 中山芝2500mのコースデータへ
       { source: '/races/arima-kinen', destination: '/courses/nakayama/turf/2500', permanent: true },
       { source: '/races', destination: '/courses', permanent: true },
