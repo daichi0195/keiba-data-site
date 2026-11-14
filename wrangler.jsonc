@@ -28,5 +28,14 @@
     // next/image の最適化を Cloudflare Images で行う
     "binding": "IMAGES"
   },
-  "observability": { "enabled": true }
+  "observability": { "enabled": true },
+  // テスト・比較用に workers.dev も残す（noindex ヘッダー付き）
+  "workers_dev": true,
+  "preview_urls": false,
+  // 本番ドメイン。DNS レコード（プロキシ有効）に対する Worker ルートで配信する
+  // apex → www のリダイレクトはアプリ側（next.config.ts）で行う
+  "routes": [
+    { "pattern": "www.keibadata.com/*", "zone_name": "keibadata.com" },
+    { "pattern": "keibadata.com/*", "zone_name": "keibadata.com" }
+  ]
 }
