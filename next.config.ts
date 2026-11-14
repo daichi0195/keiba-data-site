@@ -23,6 +23,16 @@ const nextConfig: NextConfig = {
   },
   // Optimize for modern browsers (ES2020+)
   pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
+  // Cloudflare Workers のテスト用ドメイン（*.workers.dev）は本番と重複するため検索エンジンに登録させない
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: '(?<sub>.*)\\.workers\\.dev' }],
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
+      },
+    ];
+  },
   // 廃止したページのリダイレクト（空ページ・テストページの整理）
   async redirects() {
     return [
