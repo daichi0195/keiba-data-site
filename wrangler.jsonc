@@ -1,0 +1,32 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "main": ".open-next/worker.js",
+  "name": "keiba-data-site",
+  "compatibility_date": "2026-11-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "services": [
+    // ISR の再生成で自分自身を呼ぶためのバインディング（name と一致させる）
+    { "binding": "WORKER_SELF_REFERENCE", "service": "keiba-data-site" }
+  ],
+  "r2_buckets": [
+    // デプロイ前に `npx wrangler r2 bucket create keiba-data-site-opennext-cache` で作成する
+    { "binding": "NEXT_INC_CACHE_R2_BUCKET", "bucket_name": "keiba-data-site-opennext-cache" }
+  ],
+  "durable_objects": {
+    "bindings": [
+      { "name": "NEXT_CACHE_DO_QUEUE", "class_name": "DOQueueHandler" }
+    ]
+  },
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["DOQueueHandler"] }
+  ],
+  "images": {
+    // next/image の最適化を Cloudflare Images で行う
+    "binding": "IMAGES"
+  },
+  "observability": { "enabled": true }
+}
