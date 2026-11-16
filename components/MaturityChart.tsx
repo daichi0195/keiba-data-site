@@ -49,7 +49,7 @@ const TIER_LABEL: Record<Tier, string> = {
 
 const TIER_ORDER: Tier[] = ["top", "mid", "bottom"];
 
-const AVG_SCORES = [100, 106.3, 82.6, 65.3];
+const AVG_SCORES = [100, 105.5, 81.8, 64.3];
 
 const ALPHA_STEPS = [1, 0.85, 0.7, 0.55, 0.45, 0.38, 0.32, 0.28, 0.24, 0.22, 0.2, 0.18, 0.16, 0.15, 0.14];
 

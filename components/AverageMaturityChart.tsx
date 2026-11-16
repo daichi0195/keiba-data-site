@@ -18,7 +18,7 @@ import styles from "./AverageMaturityChart.module.css";
 
 Chart.register(LineElement, PointElement, LineController, CategoryScale, LinearScale, Tooltip, Filler, Title);
 
-const AVG_SCORES = [100, 106.3, 82.6, 65.3];
+const AVG_SCORES = [100, 105.5, 81.8, 64.3];
 const LABELS = ["2〜3歳（基準）", "4歳", "5歳", "6歳以上"];
 const LABELS_SP = ["2〜3歳", "4歳", "5歳", "6歳〜"];
 const ANIM_DURATION = 1600;

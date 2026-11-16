@@ -22,10 +22,14 @@ priority: 1
 
 ### データ期間と対象種牡馬について
 
-2021年1月〜2026年3月の出走データを使用しています。
+2021年1月〜2026年11月（11月8日開催分まで）の、JRAの全レース（障害を含む）の出走データを使用しています。
 
-サンプルが少なくなることを避けるため、**全年齢帯（2〜3歳・4歳・5歳・6歳以上）でそれぞれ30頭以上の産駒が出走しており、かつ総頭数200頭以上の種牡馬**に絞りました。
-分析対象は**43頭**です。
+<div style={{ fontSize: '0.85rem', color: '#666' }}>
+※2026年11月にデータを更新しました（初版は2026年3月までの集計）。
+</div>
+
+サンプルが少なくなることを避けるため、**全年齢帯（2〜3歳・4歳・5歳・6歳以上）でそれぞれ30走以上の出走があり、かつ産駒の総頭数が200頭以上の種牡馬**に絞りました。
+分析対象は**49頭**です。
 
 <div style={{ fontSize: '0.85rem', color: '#666' }}>
 ※JRAのレース結果を集計した独自のデータベースで集計しています。
@@ -37,7 +41,7 @@ priority: 1
 
 なお2歳は出走頭数が少ないケースがありサンプルのブレが大きいため、2〜3歳を合算しています。
 
-例えば、[エピファネイア](/sires/37724)産駒であれば2〜3歳の複勝率は28.4%。これを100として、4歳・5歳・6歳以上の複勝率がそれぞれ何%にあたるかを計算します。
+例えば、[エピファネイア](/sires/37724)産駒であれば2〜3歳の複勝率は29.0%。これを100として、4歳・5歳・6歳以上の複勝率がそれぞれ何%にあたるかを計算します。
 数値が100を大きく下回るほど「古馬で落ちている＝早熟傾向」、平均を維持or上回るほど「古馬でも通用する＝晩成傾向」という見方ですね。
 
 ## 4歳でピークを迎える馬が多い
@@ -46,7 +50,7 @@ priority: 1
 
 <AverageMaturityChart alt="全種牡馬の年齢別複勝率推移グラフ（全体平均）" />
 
-2~3歳を100%とすると、4歳で100%をわずかに上回り、5歳で約80%、6歳以上で約65%に下がっています。
+2~3歳を100%とすると、4歳で105.5%とわずかに上回り、5歳で81.8%、6歳以上で64.3%に下がっています。
 
 今回の定義上では、4歳が能力のピークで、5歳以降は緩やかに成績が下降するということになりますね。
 
@@ -59,7 +63,7 @@ priority: 1
 
 <AverageMaturityChart
   title="エピファネイア産駒の推移"
-  scores={[100, 81.8, 56.2, 28.5]}
+  scores={[100, 80.7, 60.5, 29.6]}
   color="#f97316"
   label="エピファネイア"
   showAverage={true}
@@ -67,10 +71,10 @@ priority: 1
 />
 
 <div style={{ fontSize: '0.78rem', color: '#94a3b8', textAlign: 'center', marginTop: '-0.25rem', marginBottom: '0.5rem' }}>
-2〜3歳：708頭/4,051走　4歳：321頭/1,314走　5歳：165頭/676走　6歳〜：55頭/192走
+2〜3歳：803頭/4,417走　4歳：328頭/1,482走　5歳：174頭/792走　6歳〜：55頭/256走
 </div>
 
-早熟の代表格として名前があがる[エピファネイア](/sires/37724)産駒。4歳時点で81.8%と全体平均（106.3%）を大きく下回り、5歳で56.2%、6歳以上ではわずか28.5%まで急落します。43頭中下から2番目の低さです。
+早熟の代表格として名前があがる[エピファネイア](/sires/37724)産駒。4歳時点で80.7%と全体平均（105.5%）を大きく下回り、5歳で60.5%、6歳以上ではわずか29.6%まで急落します。49頭中下から2番目の低さです。
 
 **「早熟」の定説はデータでも完全に裏付けられた形**ですね。古馬戦で狙う際は、この急落カーブを頭に入れておきたいところです。
 
@@ -78,7 +82,7 @@ priority: 1
 
 <AverageMaturityChart
   title="ヘニーヒューズ産駒の推移"
-  scores={[100, 77.0, 55.2, 41.7]}
+  scores={[100, 77.9, 54.7, 41.6]}
   color="#f97316"
   label="ヘニーヒューズ"
   showAverage={true}
@@ -86,10 +90,10 @@ priority: 1
 />
 
 <div style={{ fontSize: '0.78rem', color: '#94a3b8', textAlign: 'center', marginTop: '-0.25rem', marginBottom: '0.5rem' }}>
-2〜3歳：325頭/1,906走　4歳：193頭/1,002走　5歳：155頭/672走　6歳〜：85頭/334走
+2〜3歳：365頭/2,013走　4歳：194頭/1,055走　5歳：155頭/715走　6歳〜：87頭/462走
 </div>
 
-ダート界の早熟代表格というイメージがある[ヘニーヒューズ](/sires/67587)産駒。4歳で77.0%、5歳で55.2%、6歳以上で41.7%と、全年齢帯を通じて平均を大きく下回りました。
+ダート界の早熟代表格というイメージがある[ヘニーヒューズ](/sires/67587)産駒。4歳で77.9%、5歳で54.7%、6歳以上で41.6%と、全年齢帯を通じて平均を大きく下回りました。
 
 [エピファネイア](/sires/37724)ほどの急落ではないものの、**若い時期に強いという傾向は明確**です。
 
@@ -98,7 +102,7 @@ priority: 1
 
 <AverageMaturityChart
   title="モーリス産駒の推移"
-  scores={[100, 87.7, 71.7, 48.9]}
+  scores={[100, 88.2, 73.9, 47.5]}
   color="#f97316"
   label="モーリス"
   showAverage={true}
@@ -106,10 +110,10 @@ priority: 1
 />
 
 <div style={{ fontSize: '0.78rem', color: '#94a3b8', textAlign: 'center', marginTop: '-0.25rem', marginBottom: '0.5rem' }}>
-2〜3歳：600頭/3,355走　4歳：242頭/1,071走　5歳：153頭/620走　6歳〜：65頭/181走
+2〜3歳：690頭/3,638走　4歳：246頭/1,182走　5歳：157頭/700走　6歳〜：67頭/307走
 </div>
 
-[モーリス](/sires/36694)産駒も4歳で87.7%、5歳で71.7%、6歳以上で48.9%と、4歳から一貫して平均を下回ります。
+[モーリス](/sires/36694)産駒も4歳で88.2%、5歳で73.9%、6歳以上で47.5%と、4歳から一貫して平均を下回ります。
 
 [モーリス](/sires/36694)自身は古馬になってから本格化した馬ですが、**産駒全体で見ると古馬での成績維持は難しい**ようです。
 「父が晩成だから産駒も晩成」とは限らない、という好例かもしれませんね。
@@ -118,7 +122,7 @@ priority: 1
 
 <AverageMaturityChart
   title="ビッグアーサー産駒の推移"
-  scores={[100, 117.7, 106.0, 54.7]}
+  scores={[100, 111.7, 97.7, 51.1]}
   color="#94a3b8"
   label="ビッグアーサー"
   showAverage={true}
@@ -126,37 +130,37 @@ priority: 1
 />
 
 <div style={{ fontSize: '0.78rem', color: '#94a3b8', textAlign: 'center', marginTop: '-0.25rem', marginBottom: '0.5rem' }}>
-2〜3歳：275頭/1,617走　4歳：62頭/305走　5歳：44頭/215走　6歳〜：24頭/76走
+2〜3歳：337頭/1,769走　4歳：68頭/362走　5歳：46頭/253走　6歳〜：25頭/121走
 </div>
 
-[ビッグアーサー](/sires/80004)産駒は早熟のイメージを持たれがちですが、4歳で117.7%、5歳で106.0%と平均を上回っており、**5歳までは「早熟」とは言い難い推移**です。
+[ビッグアーサー](/sires/80004)産駒は早熟のイメージを持たれがちですが、4歳で111.7%、5歳で97.7%と平均を上回っており、**5歳までは「早熟」とは言い難い推移**です。
 
-ただし6歳以上で54.7%まで急落するため、そこから早熟という印象が生まれているのかもしれません。
+ただし6歳以上で51.1%まで急落するため、そこから早熟という印象が生まれているのかもしれません（6歳以上は25頭/121走とサンプルが少ない点には注意）。
 
 ### ロードカナロア産駒
 
 <AverageMaturityChart
   title="ロードカナロア産駒の推移"
-  scores={[100, 92.9, 76.3, 58.3]}
-  color="#f97316"
+  scores={[100, 95.0, 78.8, 58.0]}
+  color="#94a3b8"
   label="ロードカナロア"
   showAverage={true}
   alt="ロードカナロア産駒の年齢別複勝率推移グラフ"
 />
 
 <div style={{ fontSize: '0.78rem', color: '#94a3b8', textAlign: 'center', marginTop: '-0.25rem', marginBottom: '0.5rem' }}>
-2〜3歳：731頭/3,730走　4歳：378頭/1,806走　5歳：335頭/1,553走　6歳〜：225頭/823走
+2〜3歳：802頭/4,008走　4歳：383頭/1,929走　5歳：339頭/1,697走　6歳〜：230頭/1,281走
 </div>
 
-[ロードカナロア](/sires/88034)産駒は4歳で92.9%、5歳で76.3%、6歳以上で58.3%と、いずれも全体平均を下回っています。
+[ロードカナロア](/sires/88034)産駒は4歳で95.0%、5歳で78.8%、6歳以上で58.0%と、いずれも全体平均を下回っています。
 
-**古馬になるにつれて緩やかに成績が落ちていく傾向**が見られます。
+ただし平均との差はいずれも小さく、**急落ではなく緩やかに成績が落ちていく傾向**です。今回の基準では早熟型ではなく、標準型に分類しました。
 
 ### ダイワメジャー産駒
 
 <AverageMaturityChart
   title="ダイワメジャー産駒の推移"
-  scores={[100, 99.0, 75.4, 77.6]}
+  scores={[100, 99.4, 77.1, 74.8]}
   color="#94a3b8"
   label="ダイワメジャー"
   showAverage={true}
@@ -164,10 +168,10 @@ priority: 1
 />
 
 <div style={{ fontSize: '0.78rem', color: '#94a3b8', textAlign: 'center', marginTop: '-0.25rem', marginBottom: '0.5rem' }}>
-2〜3歳：313頭/2,002走　4歳：174頭/906走　5歳：144頭/706走　6歳〜：89頭/343走
+2〜3歳：340頭/2,047走　4歳：174頭/924走　5歳：146頭/743走　6歳〜：109頭/698走
 </div>
 
-[ダイワメジャー](/sires/3945)産駒も早熟と語られることがありますが、4歳で99.0%とほぼ横ばい、5歳で75.4%と下がるものの6歳以上では77.6%と持ち直しています。
+[ダイワメジャー](/sires/3945)産駒も早熟と語られることがありますが、4歳で99.4%とほぼ横ばい、5歳で77.1%と下がるものの6歳以上では74.8%と平均を上回っています。
 
 **明確な早熟傾向は見られず、「平均的に推移する」タイプ**と見るのが妥当でしょう。
 
@@ -175,7 +179,7 @@ priority: 1
 
 <AverageMaturityChart
   title="シルバーステート産駒の推移"
-  scores={[100, 107.4, 73.4, 116.2]}
+  scores={[100, 98.6, 79.5, 103.1]}
   color="#94a3b8"
   label="シルバーステート"
   showAverage={true}
@@ -183,12 +187,12 @@ priority: 1
 />
 
 <div style={{ fontSize: '0.78rem', color: '#94a3b8', textAlign: 'center', marginTop: '-0.25rem', marginBottom: '0.5rem' }}>
-2〜3歳：426頭/2,258走　4歳：116頭/503走　5歳：65頭/248走　6歳〜：24頭/99走
+2〜3歳：474頭/2,651走　4歳：118頭/569走　5歳：67頭/294走　6歳〜：26頭/169走
 </div>
 
-[シルバーステート](/sires/12916)産駒は4歳で107.4%と平均並みを維持し、5歳で73.4%と落ち込むものの、6歳以上では116.2%と大きく回復するU字型の推移です。**データ上は明確な早熟傾向は見られません**。
+[シルバーステート](/sires/12916)産駒は4歳で98.6%、5歳で79.5%と平均をやや下回るものの、6歳以上では103.1%と大きく回復するU字型の推移です。**データ上は明確な早熟傾向は見られません**。
 
-ただし6歳以上は24頭/99走とサンプルが少なく、少数の活躍馬に数値が引っ張られている可能性があります。
+ただし6歳以上は26頭/169走とサンプルが少なく、少数の活躍馬に数値が引っ張られている可能性があります。
 
 ## 晩成型とされている種牡馬
 
@@ -198,7 +202,7 @@ priority: 1
 
 <AverageMaturityChart
   title="ハーツクライ産駒の推移"
-  scores={[100, 95.3, 79.7, 55.6]}
+  scores={[100, 95.3, 80.7, 55.4]}
   color="#94a3b8"
   label="ハーツクライ"
   showAverage={true}
@@ -206,10 +210,10 @@ priority: 1
 />
 
 <div style={{ fontSize: '0.78rem', color: '#94a3b8', textAlign: 'center', marginTop: '-0.25rem', marginBottom: '0.5rem' }}>
-2〜3歳：347頭/1,971走　4歳：219頭/1,213走　5歳：212頭/1,031走　6歳〜：157頭/597走
+2〜3歳：347頭/1,971走　4歳：219頭/1,213走　5歳：212頭/1,076走　6歳〜：183頭/1,059走
 </div>
 
-「晩成の代表格」として名高い[ハーツクライ](/sires/18600)産駒。4歳で95.3%、5歳で79.7%、6歳以上で55.6%と、一貫して右肩下がりの推移です。
+「晩成の代表格」として名高い[ハーツクライ](/sires/18600)産駒。4歳で95.3%、5歳で80.7%、6歳以上で55.4%と、一貫して右肩下がりの推移です。
 
 すべての年齢帯で全体平均を下回っており、**数字だけ見ると「晩成」とは言い難い結果**になりました。
 
@@ -219,7 +223,7 @@ priority: 1
 
 <AverageMaturityChart
   title="オルフェーヴル産駒の推移"
-  scores={[100, 115.9, 115.6, 75.6]}
+  scores={[100, 120.6, 114.9, 75.7]}
   color="#3b82f6"
   label="オルフェーヴル"
   showAverage={true}
@@ -227,37 +231,37 @@ priority: 1
 />
 
 <div style={{ fontSize: '0.78rem', color: '#94a3b8', textAlign: 'center', marginTop: '-0.25rem', marginBottom: '0.5rem' }}>
-2〜3歳：390頭/1,965走　4歳：172頭/792走　5歳：149頭/684走　6歳〜：89頭/388走
+2〜3歳：427頭/2,170走　4歳：179頭/880走　5歳：150頭/729走　6歳〜：92頭/597走
 </div>
 
-[オルフェーヴル](/sires/83703)産駒は4歳で115.9%、5歳で115.6%と、5歳まで全体平均を上回る水準を維持しています。
+[オルフェーヴル](/sires/83703)産駒は4歳で120.6%、5歳で114.9%と、5歳まで全体平均を大きく上回る水準を維持しています。
 
-6歳以上で75.6%と落ちるものの全体平均（65.3%）を上回っており、**データでも晩成傾向が裏付けられた数少ない種牡馬**です。
+6歳以上で75.7%と落ちるものの全体平均（64.3%）を上回っており、**データでも晩成傾向が裏付けられた数少ない種牡馬**です。
 
 ### ゴールドシップ産駒
 
 <AverageMaturityChart
   title="ゴールドシップ産駒の推移"
-  scores={[100, 115.5, 80.8, 61.8]}
-  color="#94a3b8"
+  scores={[100, 115.5, 89.0, 69.6]}
+  color="#3b82f6"
   label="ゴールドシップ"
   showAverage={true}
   alt="ゴールドシップ産駒の年齢別複勝率推移グラフ"
 />
 
 <div style={{ fontSize: '0.78rem', color: '#94a3b8', textAlign: 'center', marginTop: '-0.25rem', marginBottom: '0.5rem' }}>
-2〜3歳：364頭/2,200走　4歳：154頭/874走　5歳：115頭/584走　6歳〜：61頭/228走
+2〜3歳：401頭/2,413走　4歳：158頭/960走　5歳：117頭/666走　6歳〜：65頭/364走
 </div>
 
-[ゴールドシップ](/sires/25899)産駒は4歳で115.5%とピークを迎えた後、5歳で80.8%、6歳以上で61.8%と平均的なペースで下降しています。
+[ゴールドシップ](/sires/25899)産駒は4歳で115.5%、5歳で89.0%、6歳以上で69.6%と、**すべての年齢帯で全体平均を上回りました**。
 
-同じステイゴールド系でも、**5歳まで高水準を維持する[オルフェーヴル](/sires/83703)とは対照的な推移**です。同じ系統でも成長パターンは異なるということですね。
+初版（2026年3月までの集計）では5歳以降は平均並みでしたが、今回の更新で5歳・6歳以上の成績が上向きました。[オルフェーヴル](/sires/83703)ほどの高水準ではないものの、同じステイゴールド系として**古馬になっても成績を保つ晩成寄りの傾向**が見えてきています。
 
 ### ルーラーシップ産駒
 
 <AverageMaturityChart
   title="ルーラーシップ産駒の推移"
-  scores={[100, 98.4, 85.1, 64.6]}
+  scores={[100, 101.8, 82.6, 65.6]}
   color="#94a3b8"
   label="ルーラーシップ"
   showAverage={true}
@@ -265,10 +269,10 @@ priority: 1
 />
 
 <div style={{ fontSize: '0.78rem', color: '#94a3b8', textAlign: 'center', marginTop: '-0.25rem', marginBottom: '0.5rem' }}>
-2〜3歳：535頭/3,040走　4歳：258頭/1,295走　5歳：218頭/1,025走　6歳〜：129頭/511走
+2〜3歳：581頭/3,230走　4歳：260頭/1,367走　5歳：220頭/1,094走　6歳〜：144頭/862走
 </div>
 
-[ルーラーシップ](/sires/76228)産駒も「晩成型」として語られますが、4歳で98.4%、5歳で85.1%、6歳以上で64.6%と、すべての年齢帯で全体平均とほぼ同水準です。[ハーツクライ](/sires/18600)と同様、**数字上は晩成の根拠が見当たりません**。
+[ルーラーシップ](/sires/76228)産駒も「晩成型」として語られますが、4歳で101.8%、5歳で82.6%、6歳以上で65.6%と、すべての年齢帯で全体平均とほぼ同水準です。[ハーツクライ](/sires/18600)と同様、**数字上は晩成の根拠が見当たりません**。
 
 ただし下降のカーブは比較的緩やかで、極端には落ちていません。「晩成」ではないものの、「急落しない安定型」と捉えることはできそうです。
 
@@ -276,7 +280,7 @@ priority: 1
 
 <AverageMaturityChart
   title="ハービンジャー産駒の推移"
-  scores={[100, 112.3, 69.7, 75.4]}
+  scores={[100, 113.2, 71.4, 82.5]}
   color="#94a3b8"
   label="ハービンジャー"
   showAverage={true}
@@ -284,10 +288,10 @@ priority: 1
 />
 
 <div style={{ fontSize: '0.78rem', color: '#94a3b8', textAlign: 'center', marginTop: '-0.25rem', marginBottom: '0.5rem' }}>
-2〜3歳：458頭/2,524走　4歳：146頭/767走　5歳：135頭/652走　6歳〜：65頭/200走
+2〜3歳：472頭/2,654走　4歳：148頭/796走　5歳：136頭/695走　6歳〜：79頭/341走
 </div>
 
-[ハービンジャー](/sires/1781)産駒は4歳で112.3%と平均並みを維持しますが、5歳で69.7%と大きく落ち込みます。6歳以上では75.4%とやや持ち直すものの、**「晩成」というよりは平均的な推移**に近い結果です。
+[ハービンジャー](/sires/1781)産駒は4歳で113.2%と平均を上回りますが、5歳で71.4%と大きく落ち込みます。6歳以上では82.5%と持ち直すものの、**「晩成」というよりは平均的な推移**に近い結果です。
 
 ## リーディング上位の種牡馬
 
@@ -297,26 +301,26 @@ priority: 1
 
 <AverageMaturityChart
   title="キズナ産駒の推移"
-  scores={[100, 91.9, 74.6, 62.1]}
-  color="#94a3b8"
+  scores={[100, 90.2, 73.3, 62.6]}
+  color="#f97316"
   label="キズナ"
   showAverage={true}
   alt="キズナ産駒の年齢別複勝率推移グラフ"
 />
 
 <div style={{ fontSize: '0.78rem', color: '#94a3b8', textAlign: 'center', marginTop: '-0.25rem', marginBottom: '0.5rem' }}>
-2〜3歳：656頭/3,750走　4歳：366頭/1,777走　5歳：232頭/988走　6歳〜：93頭/362走
+2〜3歳：714頭/4,132走　4歳：376頭/1,972走　5歳：240頭/1,127走　6歳〜：98頭/534走
 </div>
 
-2026年リーディング1位の[キズナ](/sires/99556)産駒は、4歳で91.9%、5歳で74.6%、6歳以上で62.1%と、全年齢帯で全体平均をやや下回っています。
+2026年リーディング1位の[キズナ](/sires/99556)産駒は、4歳で90.2%、5歳で73.3%、6歳以上で62.6%と、全年齢帯で全体平均を下回っています。
 
-極端な早熟ではないものの、**古馬になるにつれて緩やかに成績が落ちる傾向**が見られます。
+4歳・5歳の落ち込みがやや大きく、今回の基準では**早熟型に分類**しました。ただし6歳以上は平均とほぼ同じで、早熟型と標準型の境目に近い位置です。
 
 ### キタサンブラック産駒
 
 <AverageMaturityChart
   title="キタサンブラック産駒の推移"
-  scores={[100, 98.4, 75.0, 88.2]}
+  scores={[100, 99.3, 76.0, 85.8]}
   color="#94a3b8"
   label="キタサンブラック"
   showAverage={true}
@@ -324,18 +328,18 @@ priority: 1
 />
 
 <div style={{ fontSize: '0.78rem', color: '#94a3b8', textAlign: 'center', marginTop: '-0.25rem', marginBottom: '0.5rem' }}>
-2〜3歳：363頭/1,819走　4歳：126頭/532走　5歳：71頭/305走　6歳〜：33頭/100走
+2〜3歳：435頭/2,199走　4歳：130頭/599走　5歳：74頭/329走　6歳〜：35頭/166走
 </div>
 
-[キタサンブラック](/sires/62458)産駒は4歳で98.4%とほぼ横ばい、5歳で75.0%と落ち込むものの、6歳以上で88.2%と持ち直しています。
+[キタサンブラック](/sires/62458)産駒は4歳で99.3%とほぼ横ばい、5歳で76.0%と落ち込むものの、6歳以上で85.8%と持ち直しています。
 
-**早熟でも晩成でもなく、比較的安定した推移**を示しています。ただし6歳以上は33頭/100走とサンプルが少ない点には注意が必要です。
+**早熟でも晩成でもなく、比較的安定した推移**を示しています。ただし6歳以上は35頭/166走とサンプルが少ない点には注意が必要です。
 
 ### ドレフォン産駒
 
 <AverageMaturityChart
   title="ドレフォン産駒の推移"
-  scores={[100, 90.6, 68.3, 60.1]}
+  scores={[100, 94.3, 70.3, 61.1]}
   color="#f97316"
   label="ドレフォン"
   showAverage={true}
@@ -343,16 +347,16 @@ priority: 1
 />
 
 <div style={{ fontSize: '0.78rem', color: '#94a3b8', textAlign: 'center', marginTop: '-0.25rem', marginBottom: '0.5rem' }}>
-2〜3歳：490頭/2,959走　4歳：191頭/935走　5歳：112頭/470走　6歳〜：41頭/144走
+2〜3歳：524頭/3,290走　4歳：197頭/1,045走　5歳：117頭/591走　6歳〜：42頭/223走
 </div>
 
-[ドレフォン](/sires/87469)産駒は4歳で90.6%、5歳で68.3%、6歳以上で60.1%と、全年齢帯で全体平均を下回る右肩下がりの推移です。**早熟型に近い傾向**があり、古馬戦での過信は禁物かもしれません。
+[ドレフォン](/sires/87469)産駒は4歳で94.3%、5歳で70.3%、6歳以上で61.1%と、全年齢帯で全体平均を下回る右肩下がりの推移です。**早熟型に近い傾向**があり、古馬戦での過信は禁物かもしれません。
 
 ### ドゥラメンテ産駒
 
 <AverageMaturityChart
   title="ドゥラメンテ産駒の推移"
-  scores={[100, 97.3, 55.9, 62.1]}
+  scores={[100, 99.2, 57.0, 62.9]}
   color="#f97316"
   label="ドゥラメンテ"
   showAverage={true}
@@ -360,10 +364,10 @@ priority: 1
 />
 
 <div style={{ fontSize: '0.78rem', color: '#94a3b8', textAlign: 'center', marginTop: '-0.25rem', marginBottom: '0.5rem' }}>
-2〜3歳：609頭/3,221走　4歳：269頭/1,232走　5歳：167頭/668走　6歳〜：73頭/241走
+2〜3歳：609頭/3,221走　4歳：275頭/1,337走　5歳：174頭/748走　6歳〜：79頭/342走
 </div>
 
-[ドゥラメンテ](/sires/12180)産駒は4歳で97.3%とほぼ維持するものの、5歳で55.9%と急落するのが特徴的です。
+[ドゥラメンテ](/sires/12180)産駒は4歳で99.2%とほぼ維持するものの、5歳で57.0%と急落するのが特徴的です。
 
 タイトルホルダーやスターズオンアースなど古馬でも走る産駒はいますが、**産駒全体では5歳以降の落ち込みが大きく、早熟寄りの傾向**です。
 
@@ -371,26 +375,26 @@ priority: 1
 
 <AverageMaturityChart
   title="イスラボニータ産駒の推移"
-  scores={[100, 98.9, 92.7, 76.0]}
-  color="#3b82f6"
+  scores={[100, 95.8, 84.2, 69.9]}
+  color="#94a3b8"
   label="イスラボニータ"
   showAverage={true}
   alt="イスラボニータ産駒の年齢別複勝率推移グラフ"
 />
 
 <div style={{ fontSize: '0.78rem', color: '#94a3b8', textAlign: 'center', marginTop: '-0.25rem', marginBottom: '0.5rem' }}>
-2〜3歳：357頭/1,975走　4歳：92頭/426走　5歳：53頭/222走　6歳〜：23頭/70走
+2〜3歳：394頭/2,206走　4歳：98頭/481走　5歳：55頭/256走　6歳〜：25頭/121走
 </div>
 
-[イスラボニータ](/sires/88925)産駒は4歳で98.9%、5歳で92.7%と全体平均を上回る安定した推移です。
+[イスラボニータ](/sires/88925)産駒は4歳で95.8%とやや平均を下回るものの、5歳で84.2%、6歳以上で69.9%と、5歳以降は全体平均を上回っています。
 
-6歳以上で76.0%と落ちるものの平均（65.3%）を上回っており、**比較的息の長いタイプ**と言えそうです。
+**比較的息の長いタイプ**と言えそうですが、平均との差は小さく、今回の基準では標準型に分類しました（6歳以上は25頭/121走とサンプルが少ない点にも注意）。
 
 ### リオンディーズ産駒
 
 <AverageMaturityChart
   title="リオンディーズ産駒の推移"
-  scores={[100, 117.9, 74.8, 64.9]}
+  scores={[100, 111.9, 74.4, 63.8]}
   color="#94a3b8"
   label="リオンディーズ"
   showAverage={true}
@@ -398,12 +402,12 @@ priority: 1
 />
 
 <div style={{ fontSize: '0.78rem', color: '#94a3b8', textAlign: 'center', marginTop: '-0.25rem', marginBottom: '0.5rem' }}>
-2〜3歳：500頭/2,668走　4歳：141頭/688走　5歳：90頭/389走　6歳〜：41頭/154走
+2〜3歳：524頭/2,951走　4歳：147頭/763走　5歳：91頭/428走　6歳〜：42頭/233走
 </div>
 
-[リオンディーズ](/sires/34206)産駒は4歳で117.9%と大きく伸びるのが目を引きます。
+[リオンディーズ](/sires/34206)産駒は4歳で111.9%と大きく伸びるのが目を引きます。
 
-ただし5歳で74.8%、6歳以上で64.9%と平均並みに落ち着くため、**4歳がピークでその後は標準的に推移するタイプ**です。
+ただし5歳で74.4%、6歳以上で63.8%と平均並みに落ち着くため、**4歳がピークでその後は標準的に推移するタイプ**です。
 
 ## その他の種牡馬
 
@@ -413,48 +417,55 @@ priority: 1
 
 <MaturityChart
   data={[
-    { sire: "ノヴェリスト",              base: 14.48, scores: [100, 154.8, 171.6, 132.6], tier: "top" },
-    { sire: "ヴィクトワールピサ",         base: 16.0,  scores: [100, 147.8,  77.1, 121.5], tier: "top" },
-    { sire: "メイショウボーラー",         base: 13.52, scores: [100, 155.2, 111.9,  71.4], tier: "top" },
-    { sire: "マツリダゴッホ",            base: 12.85, scores: [100, 110.6, 134.9, 118.4], tier: "top" },
-    { sire: "アドマイヤムーン",          base: 14.2,  scores: [100, 118.6, 120.2, 110.2], tier: "top" },
-    { sire: "エイシンフラッシュ",         base: 13.78, scores: [100, 124.8, 127.5, 103.0], tier: "top" },
-    { sire: "ワールドエース",            base: 15.22, scores: [100, 131.4, 103.6, 104.2], tier: "top" },
-    { sire: "シルバーステート",          base: 22.9,  scores: [100, 107.4,  73.4, 116.2], tier: "mid" },
-    { sire: "キタサンブラック",          base: 32.24, scores: [100,  98.4,  75.0,  88.2], tier: "mid" },
-    { sire: "マジェスティックウォリアー", base: 19.71, scores: [100, 119.1,  97.4,  83.7], tier: "top" },
-    { sire: "マクフィ",                 base: 19.99, scores: [100, 108.6,  77.0,  84.1], tier: "top" },
-    { sire: "ブラックタイド",            base: 20.88, scores: [100, 102.6,  83.7,  89.9], tier: "top" },
-    { sire: "ディスクリートキャット",     base: 23.02, scores: [100,  96.4,  94.6,  78.7], tier: "top" },
-    { sire: "オルフェーヴル",            base: 21.59, scores: [100, 115.9, 115.6,  75.6], tier: "top" },
-    { sire: "イスラボニータ",            base: 24.25, scores: [100,  98.9,  92.7,  76.0], tier: "top" },
-    { sire: "ルーラーシップ",            base: 23.43, scores: [100,  98.4,  85.1,  64.6], tier: "mid" },
-    { sire: "ゴールドシップ",            base: 21.33, scores: [100, 115.5,  80.8,  61.8], tier: "mid" },
-    { sire: "スクリーンヒーロー",        base: 28.19, scores: [100,  94.1,  68.7,  61.5], tier: "mid" },
-    { sire: "ドゥラメンテ",              base: 30.24, scores: [100,  97.3,  55.9,  62.1], tier: "bottom" },
-    { sire: "キズナ",                   base: 32.16, scores: [100,  91.9,  74.6,  62.1], tier: "mid" },
-    { sire: "ストロングリターン",        base: 15.8,  scores: [100, 107.2,  96.0,  67.4], tier: "mid" },
-    { sire: "リオンディーズ",            base: 23.2,  scores: [100, 117.9,  74.8,  64.9], tier: "mid" },
-    { sire: "ダイワメジャー",            base: 23.87, scores: [100,  99.0,  75.4,  77.6], tier: "mid" },
-    { sire: "ハービンジャー",            base: 23.25, scores: [100, 112.3,  69.7,  75.4], tier: "mid" },
-    { sire: "ミッキーアイル",            base: 25.63, scores: [100, 108.5,  76.2,  75.4], tier: "mid" },
-    { sire: "ハーツクライ",              base: 28.46, scores: [100,  95.3,  79.7,  55.6], tier: "mid" },
-    { sire: "ドレフォン",               base: 28.26, scores: [100,  90.6,  68.3,  60.1], tier: "bottom" },
-    { sire: "キングカメハメハ",          base: 33.28, scores: [100, 101.5,  66.5,  55.7], tier: "mid" },
-    { sire: "ロードカナロア",            base: 29.57, scores: [100,  92.9,  76.3,  58.3], tier: "bottom" },
-    { sire: "キンシャサノキセキ",        base: 21.63, scores: [100, 103.3,  90.0,  57.9], tier: "mid" },
-    { sire: "ジャスタウェイ",            base: 21.92, scores: [100, 107.6,  86.9,  46.7], tier: "mid" },
-    { sire: "ディープブリランテ",        base: 19.81, scores: [100, 108.3,  56.3,  62.2], tier: "mid" },
-    { sire: "ダンカーク",               base: 16.15, scores: [100,  91.7, 115.6,  59.2], tier: "mid" },
-    { sire: "ホッコータルマエ",          base: 25.21, scores: [100,  79.6,  64.6,  61.0], tier: "bottom" },
-    { sire: "パイロ",                   base: 28.25, scores: [100,  94.6,  62.1,  51.7], tier: "bottom" },
-    { sire: "モーリス",                 base: 27.02, scores: [100,  87.7,  71.7,  48.9], tier: "bottom" },
-    { sire: "ビッグアーサー",            base: 20.82, scores: [100, 117.7, 106.0,  54.7], tier: "mid" },
-    { sire: "エスポワールシチー",        base: 27.26, scores: [100,  85.3,  60.8,  41.1], tier: "bottom" },
-    { sire: "シニスターミニスター",       base: 32.16, scores: [100,  90.1,  61.9,  38.5], tier: "bottom" },
-    { sire: "ヘニーヒューズ",            base: 32.7,  scores: [100,  77.0,  55.2,  41.7], tier: "bottom" },
-    { sire: "カレンブラックヒル",        base: 18.52, scores: [100, 129.5,  78.3,  16.2], tier: "bottom" },
-    { sire: "エピファネイア",            base: 28.43, scores: [100,  81.8,  56.2,  28.5], tier: "bottom" },
+    { sire: "サトノダイヤモンド",     base: 21.55, scores: [100, 115.4, 130.8, 133.7], tier: "top" },
+    { sire: "アドマイヤムーン",      base: 14.42, scores: [100, 123.6, 121.5, 112.6], tier: "top" },
+    { sire: "エイシンフラッシュ",     base: 13.83, scores: [100, 122.9, 127.5, 102.3], tier: "top" },
+    { sire: "ヴィクトワールピサ",     base: 16.00, scores: [100, 147.8,  75.5, 115.4], tier: "mid" },
+    { sire: "ワールドエース",       base: 15.09, scores: [100, 134.2, 104.0,  94.7], tier: "top" },
+    { sire: "ラブリーデイ",        base: 17.33, scores: [100, 117.7, 105.3, 106.3], tier: "top" },
+    { sire: "アジアエクスプレス",     base: 19.63, scores: [100, 132.2, 107.0,  75.8], tier: "top" },
+    { sire: "オルフェーヴル",       base: 21.01, scores: [100, 120.6, 114.9,  75.7], tier: "top" },
+    { sire: "マジェスティックウォリアー", base: 19.54, scores: [100, 124.1,  94.1,  80.4], tier: "top" },
+    { sire: "デクラレーションオブウォー", base: 22.25, scores: [100,  96.2,  98.5, 101.1], tier: "top" },
+    { sire: "ブラックタイド",       base: 20.44, scores: [100, 107.3,  85.9,  94.5], tier: "top" },
+    { sire: "シルバーステート",      base: 23.54, scores: [100,  98.6,  79.5, 103.1], tier: "mid" },
+    { sire: "ストロングリターン",     base: 15.48, scores: [100, 104.9,  94.3,  76.9], tier: "top" },
+    { sire: "ゴールドシップ",       base: 20.93, scores: [100, 115.5,  89.0,  69.6], tier: "top" },
+    { sire: "マクフィ",          base: 20.01, scores: [100, 110.0,  72.7,  85.9], tier: "mid" },
+    { sire: "ハービンジャー",       base: 22.76, scores: [100, 113.2,  71.4,  82.5], tier: "mid" },
+    { sire: "アメリカンペイトリオット",  base: 18.46, scores: [100, 115.5, 110.8,  40.4], tier: "mid" },
+    { sire: "サトノアラジン",       base: 20.35, scores: [100, 127.9,  80.8,  57.8], tier: "mid" },
+    { sire: "ダンカーク",         base: 16.10, scores: [100,  95.1, 114.4,  54.5], tier: "mid" },
+    { sire: "ダノンレジェンド",      base: 23.96, scores: [100, 107.6,  79.4,  77.0], tier: "mid" },
+    { sire: "キタサンブラック",      base: 31.61, scores: [100,  99.3,  76.0,  85.8], tier: "mid" },
+    { sire: "ビッグアーサー",       base: 21.03, scores: [100, 111.7,  97.7,  51.1], tier: "mid" },
+    { sire: "ディスクリートキャット",   base: 23.07, scores: [100,  97.4,  86.3,  74.1], tier: "mid" },
+    { sire: "ダイワメジャー",       base: 23.74, scores: [100,  99.4,  77.1,  74.8], tier: "mid" },
+    { sire: "ミッキーアイル",       base: 25.58, scores: [100, 109.4,  69.3,  71.8], tier: "mid" },
+    { sire: "リオンディーズ",       base: 23.55, scores: [100, 111.9,  74.4,  63.8], tier: "mid" },
+    { sire: "ルーラーシップ",       base: 23.34, scores: [100, 101.8,  82.6,  65.6], tier: "mid" },
+    { sire: "イスラボニータ",       base: 23.66, scores: [100,  95.8,  84.2,  69.9], tier: "mid" },
+    { sire: "ジャスタウェイ",       base: 21.94, scores: [100, 110.6,  87.6,  49.0], tier: "mid" },
+    { sire: "キンシャサノキセキ",     base: 21.60, scores: [100, 101.8,  87.3,  56.9], tier: "mid" },
+    { sire: "マインドユアビスケッツ",   base: 20.37, scores: [100, 101.5,  78.2,  59.9], tier: "mid" },
+    { sire: "ロードカナロア",       base: 29.47, scores: [100,  95.0,  78.8,  58.0], tier: "mid" },
+    { sire: "ハーツクライ",        base: 28.46, scores: [100,  95.3,  80.7,  55.4], tier: "mid" },
+    { sire: "スクリーンヒーロー",     base: 28.16, scores: [100,  95.1,  69.7,  64.8], tier: "mid" },
+    { sire: "カレンブラックヒル",     base: 18.09, scores: [100, 130.9,  78.6,  18.7], tier: "mid" },
+    { sire: "キズナ",           base: 32.33, scores: [100,  90.2,  73.3,  62.6], tier: "bottom" },
+    { sire: "ドレフォン",         base: 27.90, scores: [100,  94.3,  70.3,  61.1], tier: "bottom" },
+    { sire: "キングカメハメハ",      base: 33.28, scores: [100, 101.5,  66.5,  55.1], tier: "bottom" },
+    { sire: "ドゥラメンテ",        base: 30.24, scores: [100,  99.2,  57.0,  62.9], tier: "bottom" },
+    { sire: "ディープインパクト",     base: 36.69, scores: [100,  88.6,  77.7,  48.7], tier: "bottom" },
+    { sire: "モーリス",          base: 27.43, scores: [100,  88.2,  73.9,  47.5], tier: "bottom" },
+    { sire: "パイロ",           base: 27.97, scores: [100,  94.9,  63.3,  50.7], tier: "bottom" },
+    { sire: "コパノリッキー",       base: 18.81, scores: [100,  92.3,  62.4,  53.2], tier: "bottom" },
+    { sire: "リアルインパクト",      base: 21.61, scores: [100,  97.1,  68.4,  41.7], tier: "bottom" },
+    { sire: "ホッコータルマエ",      base: 24.95, scores: [100,  78.0,  62.7,  58.5], tier: "bottom" },
+    { sire: "シニスターミニスター",    base: 32.13, scores: [100,  93.9,  61.2,  37.7], tier: "bottom" },
+    { sire: "リアルスティール",      base: 28.57, scores: [100,  85.9,  56.3,  35.0], tier: "bottom" },
+    { sire: "ヘニーヒューズ",       base: 32.24, scores: [100,  77.9,  54.7,  41.6], tier: "bottom" },
+    { sire: "エピファネイア",       base: 29.00, scores: [100,  80.7,  60.5,  29.6], tier: "bottom" },
   ]}
   featured={["エピファネイア", "ヘニーヒューズ", "モーリス", "ビッグアーサー", "ロードカナロア", "ダイワメジャー", "シルバーステート", "ハーツクライ", "オルフェーヴル", "ゴールドシップ", "ルーラーシップ", "ハービンジャー", "キズナ", "キタサンブラック", "ドレフォン", "ドゥラメンテ", "イスラボニータ", "リオンディーズ"]}
 />
@@ -463,12 +474,14 @@ priority: 1
 
 主要種牡馬の成長曲線を分析した結果、以下のことが分かりました。
 
-- [エピファネイア](/sires/37724)・[ヘニーヒューズ](/sires/67587)・[ドレフォン](/sires/87469)などの**早熟傾向はデータでも裏付けられた**
+- [エピファネイア](/sires/37724)・[ヘニーヒューズ](/sires/67587)・[ドゥラメンテ](/sires/12180)・[ドレフォン](/sires/87469)などの**早熟傾向はデータでも裏付けられた**
 - [ハーツクライ](/sires/18600)・[ルーラーシップ](/sires/76228)の「晩成」は**数字上は確認できず**、少数の活躍馬の印象に引っ張られている可能性が高い
-- [オルフェーヴル](/sires/83703)は**データでも晩成が確認できた数少ない種牡馬**。同じステイゴールド系でも[ゴールドシップ](/sires/25899)とは傾向が異なる
+- [オルフェーヴル](/sires/83703)は**データでも晩成が確認できた数少ない種牡馬**。同じステイゴールド系の[ゴールドシップ](/sires/25899)も、今回の更新で全年齢帯で平均を上回った
 - [ビッグアーサー](/sires/80004)・[ダイワメジャー](/sires/3945)は「早熟」と語られがちだが、**実際は平均的な推移**
 
 ### 成長タイプ早見表
+
+分類の基準：4歳・5歳・6歳以上の指数と全体平均との差をもとに、**全年齢帯で平均を下回り差の合計が−25以下を「早熟型」、5歳・6歳以上がともに平均以上で差の合計が+10以上を「晩成型」**、それ以外を「標準型」としています。
 
 <div style={{ margin: '1rem 0', border: '1px solid var(--border-subtle)', borderRadius: '4px', overflow: 'hidden' }}>
 
@@ -479,15 +492,18 @@ priority: 1
 <div style={{ padding: '0.6rem 1rem', display: 'flex', flexWrap: 'wrap', gap: '0.35rem', borderBottom: '1px solid var(--border-subtle)' }}>
 <a href="/sires/37724" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #f97316', color: '#f97316', backgroundColor: '#f9731615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>エピファネイア</a>
 <a href="/sires/67587" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #f97316', color: '#f97316', backgroundColor: '#f9731615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ヘニーヒューズ</a>
-<a href="/sires/36694" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #f97316', color: '#f97316', backgroundColor: '#f9731615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>モーリス</a>
-<a href="/sires/88034" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #f97316', color: '#f97316', backgroundColor: '#f9731615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ロードカナロア</a>
-<a href="/sires/87469" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #f97316', color: '#f97316', backgroundColor: '#f9731615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ドレフォン</a>
-<a href="/sires/12180" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #f97316', color: '#f97316', backgroundColor: '#f9731615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ドゥラメンテ</a>
-<a href="/sires/5219" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #f97316', color: '#f97316', backgroundColor: '#f9731615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ホッコータルマエ</a>
-<a href="/sires/70205" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #f97316', color: '#f97316', backgroundColor: '#f9731615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>パイロ</a>
-<a href="/sires/86461" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #f97316', color: '#f97316', backgroundColor: '#f9731615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>エスポワールシチー</a>
+<a href="/sires/53147" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #f97316', color: '#f97316', backgroundColor: '#f9731615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>リアルスティール</a>
 <a href="/sires/52308" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #f97316', color: '#f97316', backgroundColor: '#f9731615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>シニスターミニスター</a>
-<a href="/sires/12734" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #f97316', color: '#f97316', backgroundColor: '#f9731615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>カレンブラックヒル</a>
+<a href="/sires/5219" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #f97316', color: '#f97316', backgroundColor: '#f9731615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ホッコータルマエ</a>
+<a href="/sires/39476" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #f97316', color: '#f97316', backgroundColor: '#f9731615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>リアルインパクト</a>
+<a href="/sires/31634" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #f97316', color: '#f97316', backgroundColor: '#f9731615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>コパノリッキー</a>
+<a href="/sires/70205" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #f97316', color: '#f97316', backgroundColor: '#f9731615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>パイロ</a>
+<a href="/sires/36694" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #f97316', color: '#f97316', backgroundColor: '#f9731615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>モーリス</a>
+<a href="/sires/8449" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #f97316', color: '#f97316', backgroundColor: '#f9731615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ディープインパクト</a>
+<a href="/sires/12180" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #f97316', color: '#f97316', backgroundColor: '#f9731615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ドゥラメンテ</a>
+<a href="/sires/73353" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #f97316', color: '#f97316', backgroundColor: '#f9731615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>キングカメハメハ</a>
+<a href="/sires/87469" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #f97316', color: '#f97316', backgroundColor: '#f9731615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ドレフォン</a>
+<a href="/sires/99556" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #f97316', color: '#f97316', backgroundColor: '#f9731615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>キズナ</a>
 </div>
 
 <div style={{ padding: '0.6rem 1rem', borderBottom: '1px solid var(--border-subtle)', background: 'var(--bg-lighter)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -495,19 +511,18 @@ priority: 1
 <span style={{ fontWeight: 700, fontSize: '0.85rem' }}>晩成型（古馬でも成績を維持・上昇）</span>
 </div>
 <div style={{ padding: '0.6rem 1rem', display: 'flex', flexWrap: 'wrap', gap: '0.35rem', borderBottom: '1px solid var(--border-subtle)' }}>
-<a href="/sires/83703" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #3B82F6', color: '#3B82F6', backgroundColor: '#3B82F615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>オルフェーヴル</a>
-<a href="/sires/88925" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #3B82F6', color: '#3B82F6', backgroundColor: '#3B82F615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>イスラボニータ</a>
-<a href="/sires/23121" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #3B82F6', color: '#3B82F6', backgroundColor: '#3B82F615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ノヴェリスト</a>
-<a href="/sires/98605" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #3B82F6', color: '#3B82F6', backgroundColor: '#3B82F615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ヴィクトワールピサ</a>
-<a href="/sires/35848" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #3B82F6', color: '#3B82F6', backgroundColor: '#3B82F615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>メイショウボーラー</a>
-<a href="/sires/71508" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #3B82F6', color: '#3B82F6', backgroundColor: '#3B82F615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>マツリダゴッホ</a>
+<a href="/sires/81686" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #3B82F6', color: '#3B82F6', backgroundColor: '#3B82F615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>サトノダイヤモンド</a>
 <a href="/sires/5525" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #3B82F6', color: '#3B82F6', backgroundColor: '#3B82F615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>アドマイヤムーン</a>
 <a href="/sires/35586" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #3B82F6', color: '#3B82F6', backgroundColor: '#3B82F615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>エイシンフラッシュ</a>
 <a href="/sires/25233" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #3B82F6', color: '#3B82F6', backgroundColor: '#3B82F615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ワールドエース</a>
+<a href="/sires/50990" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #3B82F6', color: '#3B82F6', backgroundColor: '#3B82F615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ラブリーデイ</a>
+<a href="/sires/90870" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #3B82F6', color: '#3B82F6', backgroundColor: '#3B82F615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>アジアエクスプレス</a>
+<a href="/sires/83703" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #3B82F6', color: '#3B82F6', backgroundColor: '#3B82F615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>オルフェーヴル</a>
 <a href="/sires/5462" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #3B82F6', color: '#3B82F6', backgroundColor: '#3B82F615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>マジェスティックウォリアー</a>
-<a href="/sires/62397" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #3B82F6', color: '#3B82F6', backgroundColor: '#3B82F615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>マクフィ</a>
+<a href="/sires/81284" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #3B82F6', color: '#3B82F6', backgroundColor: '#3B82F615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>デクラレーションオブウォー</a>
 <a href="/sires/50992" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #3B82F6', color: '#3B82F6', backgroundColor: '#3B82F615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ブラックタイド</a>
-<a href="/sires/20274" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #3B82F6', color: '#3B82F6', backgroundColor: '#3B82F615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ディスクリートキャット</a>
+<a href="/sires/22519" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #3B82F6', color: '#3B82F6', backgroundColor: '#3B82F615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ストロングリターン</a>
+<a href="/sires/25899" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #3B82F6', color: '#3B82F6', backgroundColor: '#3B82F615', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ゴールドシップ</a>
 </div>
 
 <div style={{ padding: '0.6rem 1rem', borderBottom: '1px solid var(--border-subtle)', background: 'var(--bg-lighter)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -515,24 +530,29 @@ priority: 1
 <span style={{ fontWeight: 700, fontSize: '0.85rem' }}>標準型（全体平均とほぼ同水準で推移）</span>
 </div>
 <div style={{ padding: '0.6rem 1rem', display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
-<a href="/sires/18600" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ハーツクライ</a>
-<a href="/sires/76228" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ルーラーシップ</a>
-<a href="/sires/25899" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ゴールドシップ</a>
-<a href="/sires/1781" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ハービンジャー</a>
-<a href="/sires/80004" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ビッグアーサー</a>
-<a href="/sires/3945" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ダイワメジャー</a>
-<a href="/sires/12916" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>シルバーステート</a>
-<a href="/sires/62458" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>キタサンブラック</a>
-<a href="/sires/99556" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>キズナ</a>
-<a href="/sires/34206" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>リオンディーズ</a>
+<a href="/sires/12734" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>カレンブラックヒル</a>
 <a href="/sires/30113" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>スクリーンヒーロー</a>
-<a href="/sires/22519" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ストロングリターン</a>
-<a href="/sires/66553" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ミッキーアイル</a>
-<a href="/sires/73353" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>キングカメハメハ</a>
+<a href="/sires/18600" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ハーツクライ</a>
+<a href="/sires/88034" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ロードカナロア</a>
+<a href="/sires/39730" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>マインドユアビスケッツ</a>
 <a href="/sires/88795" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>キンシャサノキセキ</a>
 <a href="/sires/99278" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ジャスタウェイ</a>
-<a href="/sires/35906" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ディープブリランテ</a>
+<a href="/sires/88925" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>イスラボニータ</a>
+<a href="/sires/76228" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ルーラーシップ</a>
+<a href="/sires/34206" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>リオンディーズ</a>
+<a href="/sires/66553" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ミッキーアイル</a>
+<a href="/sires/3945" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ダイワメジャー</a>
+<a href="/sires/20274" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ディスクリートキャット</a>
+<a href="/sires/80004" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ビッグアーサー</a>
+<a href="/sires/62458" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>キタサンブラック</a>
+<a href="/sires/25578" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ダノンレジェンド</a>
 <a href="/sires/51160" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ダンカーク</a>
+<a href="/sires/62850" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>サトノアラジン</a>
+<a href="/sires/17569" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>アメリカンペイトリオット</a>
+<a href="/sires/1781" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ハービンジャー</a>
+<a href="/sires/62397" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>マクフィ</a>
+<a href="/sires/12916" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>シルバーステート</a>
+<a href="/sires/98605" style={{ padding: '0.2rem 0.65rem', borderRadius: '2px', border: '1px solid #94a3b8', color: '#94a3b8', backgroundColor: '#94a3b815', fontSize: '0.72rem', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>ヴィクトワールピサ</a>
 </div>
 
 </div>
