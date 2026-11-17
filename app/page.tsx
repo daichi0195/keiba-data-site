@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import ArticleCarousel from '@/components/ArticleCarousel';
 import AIBanner from '@/components/AIBanner';
+import AdSlot from '@/components/AdSlot';
 import HomeAIPredictions from '@/components/datapage/list/HomeAIPredictions';
 import HomeThisWeekVenues from '@/components/datapage/list/HomeThisWeekVenues';
 import HomeAllVenues from '@/components/datapage/list/HomeAllVenues';
@@ -92,6 +93,8 @@ export default async function HomePage() {
               <div>
                 <HomeThisWeekVenues venues={thisWeekVenues} />
 
+                <AdSlot unit="list" />
+
                 <HomeAllVenues />
 
                 <HomeLeadingSection
@@ -126,6 +129,8 @@ export default async function HomePage() {
                   hrefPrefix="/trainers/"
                   unit="名"
                 />
+
+                <AdSlot unit="list" />
 
                 {/* コラム */}
                 <section className={s.section} aria-label="コラム">

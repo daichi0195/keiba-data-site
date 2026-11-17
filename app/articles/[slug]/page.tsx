@@ -14,6 +14,7 @@ import {
 } from '@/lib/articles';
 import { getAuthorById, getAuthorByName } from '@/lib/authors';
 import FixedShareButton from '@/components/FixedShareButton';
+import AdSlot from '@/components/AdSlot';
 import TableOfContents from '@/components/TableOfContents';
 import MobileTableOfContents from '@/components/MobileTableOfContents';
 import PopularArticles from '@/components/PopularArticles';
@@ -143,6 +144,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
   // 最初のH2かどうかを追跡する変数
   let isFirstH2 = true;
+  // 記事内広告は2つ目と4つ目のH2の直前に入れる（冒頭と中盤）
+  let h2Count = 0;
 
   const components = {
     DataTable,
@@ -165,10 +168,13 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       const id = generateId(text);
       const showToc = isFirstH2;
       isFirstH2 = false;
+      h2Count += 1;
+      const showAd = h2Count === 2 || h2Count === 4;
 
       return (
         <>
           {showToc && <MobileTableOfContents headings={headings} initialShow={5} />}
+          {showAd && <AdSlot unit="articleIn" variant="article" />}
           <h2 id={id} {...props}>{children}</h2>
         </>
       );

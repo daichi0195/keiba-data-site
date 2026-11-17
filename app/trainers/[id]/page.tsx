@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import AdSlot from '@/components/AdSlot';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import TableOfContents from '@/components/TableOfContents';
@@ -1200,6 +1201,7 @@ export default async function TrainerPage({
           {/* 左サイドバー（現行どおり） */}
           <aside className={pageStyles.staticPageLeftSidebar}>
             <AIBanner bookmarkOnly />
+            <AdSlot unit="sidebar" variant="sidebar" />
           </aside>
 
           <article>
@@ -1252,6 +1254,8 @@ export default async function TrainerPage({
                 </VerdictRows>
               </div>
             )}
+
+            <AdSlot unit="dataTop" />
 
             <CourseSectionNav items={chipItems} />
 
@@ -1401,6 +1405,8 @@ export default async function TrainerPage({
                 }
               />
             </section>
+            <AdSlot unit="dataMid" />
+
             <section id="gender-stats" className={s.section} aria-label="性別データ">
               <div className={s.sh}><h2 className={s.h2}>{trainer.name}調教師 性別データ</h2></div>
               <ConditionCard rows={genderRows} keyLabel="性別" />
@@ -1437,6 +1443,8 @@ export default async function TrainerPage({
               <div className={s.sh}><h2 className={s.h2}>{trainer.name}調教師 馬主別データ</h2></div>
               <RankingTable rows={trainer.owner_stats} nameLabel="馬主" note="最大50件まで表示" />
             </section>
+
+            <AdSlot unit="dataBottom" />
 
             {/* データQ&A */}
             {enoughRaces && (

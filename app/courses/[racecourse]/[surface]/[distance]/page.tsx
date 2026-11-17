@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import AdSlot from '@/components/AdSlot';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import TableOfContents from '@/components/TableOfContents';
@@ -1023,6 +1024,7 @@ export default async function CoursePage({ params }: Props) {
         <div className={pageStyles.staticPageColumns3}>
           <aside className={pageStyles.staticPageLeftSidebar}>
             <CourseSidebar racecourse={resolvedParams.racecourse} racecourseJa={courseShort} />
+            <AdSlot unit="sidebar" variant="sidebar" />
           </aside>
 
           <article>
@@ -1086,6 +1088,8 @@ export default async function CoursePage({ params }: Props) {
                 </div>
               </div>
             )}
+
+            <AdSlot unit="dataTop" />
 
             <CourseSectionNav items={chipItems} />
 
@@ -1213,6 +1217,8 @@ export default async function CoursePage({ params }: Props) {
                 }
               />
             </section>
+            <AdSlot unit="dataMid" />
+
             <section id="gender-section" className={s.section} aria-label="性別データ">
               <div className={s.sh}><h2 className={s.h2}>{seoPrefix} 性別データ</h2></div>
               <ConditionCard rows={genderRows} keyLabel="性別" />
@@ -1267,6 +1273,8 @@ export default async function CoursePage({ params }: Props) {
                 ))}
               </div>
             </section>
+
+            <AdSlot unit="dataBottom" />
 
             {/* データQ&A */}
             {enoughRaces && (

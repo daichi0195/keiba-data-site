@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import AdSlot from '@/components/AdSlot';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getSireDataFromGCS } from '@/lib/getSireDataFromGCS';
@@ -1189,6 +1190,7 @@ export default async function SirePage({
           {/* 左サイドバー */}
           <aside className={pageStyles.staticPageLeftSidebar}>
             <AIBanner bookmarkOnly />
+            <AdSlot unit="sidebar" variant="sidebar" />
           </aside>
 
           <article>
@@ -1237,6 +1239,8 @@ export default async function SirePage({
                 </VerdictRows>
               </div>
             )}
+
+            <AdSlot unit="dataTop" />
 
             <CourseSectionNav items={chipItems} />
 
@@ -1392,6 +1396,8 @@ export default async function SirePage({
                 )}
               </section>
             )}
+            <AdSlot unit="dataMid" />
+
             <section id="gender-stats" className={cs.section} aria-label="性別データ">
               <div className={cs.sh}><h2 className={cs.h2}>{sire.name}産駒 性別データ</h2></div>
               <ConditionCard rows={genderRows} keyLabel="性別" />
@@ -1443,6 +1449,8 @@ export default async function SirePage({
               <div className={cs.sh}><h2 className={cs.h2}>{sire.name}産駒 母父別データ</h2><p>勝利数順</p></div>
               <RankingTable rows={damSireStatsWithLinks as RankingRow[]} nameLabel="母父" note="最大50件まで表示" />
             </section>
+
+            <AdSlot unit="dataBottom" />
 
             {/* データQ&A */}
             {enoughRaces && (

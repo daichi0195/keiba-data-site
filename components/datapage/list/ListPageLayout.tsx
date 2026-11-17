@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import AIBanner from '@/components/AIBanner';
+import AdSlot from '@/components/AdSlot';
 import TableOfContents from '@/components/TableOfContents';
 import CourseSectionNav from '@/components/course/CourseSectionNav';
 import pageStyles from '@/app/static-page.module.css';
@@ -37,6 +38,7 @@ export default function ListPageLayout({
         <div className={pageStyles.staticPageColumns3}>
           <aside className={pageStyles.staticPageLeftSidebar}>
             <AIBanner />
+            <AdSlot unit="sidebar" variant="sidebar" />
           </aside>
 
           <article>
@@ -60,9 +62,13 @@ export default function ListPageLayout({
               )}
             </div>
 
+            <AdSlot unit="list" />
+
             <CourseSectionNav items={navItems} />
 
             {children}
+
+            <AdSlot unit="list" />
           </article>
 
           {/* PC用：右サイドバー目次 */}

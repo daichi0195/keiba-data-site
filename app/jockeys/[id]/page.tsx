@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import AdSlot from '@/components/AdSlot';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import TableOfContents from '@/components/TableOfContents';
@@ -1220,6 +1221,7 @@ export default async function JockeyPage({
           {/* 左サイドバー */}
           <aside className={pageStyles.staticPageLeftSidebar}>
             <AIBanner bookmarkOnly />
+            <AdSlot unit="sidebar" variant="sidebar" />
           </aside>
 
           <article>
@@ -1271,6 +1273,8 @@ export default async function JockeyPage({
                 </VerdictRows>
               </div>
             )}
+
+            <AdSlot unit="dataTop" />
 
             <CourseSectionNav items={chipItems} />
 
@@ -1402,6 +1406,8 @@ export default async function JockeyPage({
               <div className={s.sh}><h2 className={s.h2}>{jockey.name}騎手 枠順別データ</h2></div>
               <ConditionCard rows={gateRows} keyLabel="枠番" />
             </section>
+            <AdSlot unit="dataMid" />
+
             <section id="distance-stats" className={s.section} aria-label="距離別データ">
               <div className={s.sh}><h2 className={s.h2}>{jockey.name}騎手 距離別データ</h2></div>
               <ConditionCard rows={distanceRows} keyLabel="距離" extra={distanceDefinition} />
@@ -1442,6 +1448,8 @@ export default async function JockeyPage({
               <div className={s.sh}><h2 className={s.h2}>{jockey.name}騎手 馬主別データ</h2></div>
               <RankingTable rows={ownerRows} nameLabel="馬主" note="最大50件まで表示" />
             </section>
+
+            <AdSlot unit="dataBottom" />
 
             {/* データQ&A */}
             {enoughRaces && (

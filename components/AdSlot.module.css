@@ -1,0 +1,63 @@
+/* 手動配置の AdSense 広告枠 */
+.wrap {
+  text-align: center;
+  overflow: hidden;
+}
+
+/* 在庫がなく広告が入らなかった枠はラベルごと畳む */
+.wrap:has(ins[data-ad-status='unfilled']) {
+  display: none;
+}
+
+.inline,
+.article {
+  margin: 24px 0;
+}
+
+.sidebar {
+  margin-top: 16px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.7rem;
+  color: #999;
+  letter-spacing: 0.05em;
+}
+
+.ins {
+  margin: 0 auto;
+}
+
+/* サイドバーは固定サイズ（中画面の列幅 240px に収める） */
+.sidebarBox {
+  display: inline-block;
+  width: 200px;
+  height: 200px;
+}
+
+@media (min-width: 1200px) {
+  .sidebarBox {
+    width: 250px;
+    height: 250px;
+  }
+}
+
+/* 開発環境のプレースホルダー */
+.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  border: 1px dashed #bbb;
+  border-radius: 4px;
+  background: #fafafa;
+  color: #999;
+  font-size: 0.8rem;
+}
+
+.inlineBox,
+.articleBox {
+  height: 250px;
+}
