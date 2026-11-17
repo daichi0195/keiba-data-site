@@ -2,7 +2,7 @@
  * 全種牡馬のIDリスト
  * 
  * 過去3年間に産駒が出走している種牡馬 (既存ページは維持し、50レース以上・産駒10頭以上の種牡馬を追加)
- * gcs/v2/generate_lists.py が JRA-VAN 由来のデータから自動生成（2026-11-10時点: 215頭）
+ * gcs/v2/generate_lists.py が JRA-VAN 由来のデータから自動生成（2026-11-17時点: 218頭）
  */
 
 export interface SireInfo {
@@ -226,4 +226,7 @@ export const ALL_SIRES: SireInfo[] = [
   { id: 74900, name: 'ジャンダルム' },
   { id: 95190, name: 'ホットロッドチャーリー' },
   { id: 79995, name: 'アレスバローズ' },
+  { id: 63572, name: 'スマートオーディン' },
+  { id: 59996, name: 'リオンリオン' },
+  { id: 78400, name: "St Mark's Basilica" },
 ];
