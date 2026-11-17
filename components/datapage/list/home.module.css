@@ -7,6 +7,15 @@
   padding: 0 0 32px;
 }
 
+/* 中に aside があるため globals.css の main:has(aside)（旧コースページ用の最大 1400px・2 カラム）が当たる。
+   トップはカルーセルを画面いっぱいに出すので打ち消す */
+@media (min-width: 769px) {
+  .main {
+    max-width: none;
+    min-height: 0;
+  }
+}
+
 /* カルーセル：キャンバス上に全幅 */
 .carousel {
   width: 100%;
