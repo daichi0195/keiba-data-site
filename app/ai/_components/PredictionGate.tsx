@@ -3,8 +3,12 @@
 import { useEffect, useRef, useState } from 'react';
 import styles from './PredictionGate.module.css';
 
-/** オファーウォールのスクリプトが動き出してから、この時間内にダイアログが出なければ予測を見せる（リワード広告の在庫切れ対策） */
-const WAIT_AFTER_SCRIPT_MS = 3000;
+/**
+ * オファーウォールのスクリプトが動き出してから、この時間内にダイアログが出なければ予測を見せる（リワード広告の在庫切れ対策）
+ * 2026-11-17 の実測（PC・光回線、4 回）：スクリプト起動からダイアログ表示まで 1.5〜3.5 秒。
+ * リワード広告の読み込みを待ってから出るためばらつきが大きいので、最大値に余裕を持たせる
+ */
+const WAIT_AFTER_SCRIPT_MS = 6000;
 /** スクリプトの合図がいつまでも来ない場合の上限 */
 const MAX_WAIT_MS = 15000;
 
