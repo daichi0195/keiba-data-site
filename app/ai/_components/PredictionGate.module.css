@@ -16,13 +16,33 @@
   align-items: center;
   justify-content: flex-start;
   gap: 12px;
-  padding-top: 64px;
+  padding: 64px 16px 0;
   color: var(--ink-sub, #666);
   font-size: 0.9rem;
 }
 
 .overlay p {
   margin: 0;
+  max-width: 28em;
+  text-align: center;
+  line-height: 1.7;
+}
+
+.blockedTitle {
+  font-weight: 700;
+  color: var(--ink, #2d3748);
+}
+
+.reload {
+  margin-top: 4px;
+  padding: 8px 20px;
+  border: none;
+  border-radius: 999px;
+  background: var(--brand, #52af77);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .spinner {

@@ -26,21 +26,23 @@ declare global {
  * 読み込み直後はオファーウォールのスクリプトより先に本文が描画されるので、最初から隠しておく。
  *
  * ダイアログが出ない場合の扱い:
- * - 広告ブロッカーで adsbygoogle.js も回復タグも動かない → ページの読み込み完了時に表示
- * - 広告ブロッカー利用者に「広告を許可してください」メッセージが出た場合も、オファーウォールと同じく閉じるまで隠す
- * - スクリプトは動いた（googlefc の CONSENT_API_READY）のにダイアログが出ない → その 3 秒後に表示
+ * - 広告ブロッカーで adsbygoogle.js が読み込めない → 予測は出さず、広告ブロッカーをオフにするよう案内する
+ *   （AdSense の広告ブロック回復メッセージはサイトに1つしか出せず、サイト全体用の「閉じられる」ものを使っているため、ここは自前で止める）
+ * - スクリプトは動いた（googlefc の CONSENT_API_READY）のにダイアログが出ない → その数秒後に表示（リワード広告の在庫切れ）
  * - 後からダイアログが出てきた場合は隠し直す
  */
 export default function PredictionGate({ children }: { children: React.ReactNode }) {
   const isProd = process.env.NODE_ENV === 'production';
   const [open, setOpen] = useState(!isProd);
+  const [adBlocked, setAdBlocked] = useState(false);
   const seenWall = useRef(false);
+  const blockedRef = useRef(false);
 
   useEffect(() => {
     if (!isProd) return;
     const timers: ReturnType<typeof setTimeout>[] = [];
     const openIfNoWall = () => {
-      if (!seenWall.current) setOpen(true);
+      if (!seenWall.current && !blockedRef.current) setOpen(true);
     };
 
     const isWallVisible = () => {
@@ -68,21 +70,23 @@ export default function PredictionGate({ children }: { children: React.ReactNode
     // オファーウォールのスクリプトが動き出したら、そこから待つ
     window.googlefc = window.googlefc || {};
     window.googlefc.callbackQueue = window.googlefc.callbackQueue || [];
-    let scriptReady = false;
     window.googlefc.callbackQueue.push({
       CONSENT_API_READY: () => {
-        scriptReady = true;
         // 待ち時間の調整用（performance.getEntriesByType('mark') で確認できる）
         performance.mark('offerwall-script-ready');
         timers.push(setTimeout(openIfNoWall, WAIT_AFTER_SCRIPT_MS));
       },
     });
 
-    // 広告ブロッカーで adsbygoogle.js が読み込めなかった場合は、ページの読み込み完了時に表示
+    // ページの読み込み完了時点で adsbygoogle.js が動いていなければ広告ブロッカーとみなす
+    // （async のスクリプトは load イベントより前に読み込まれる）
     const onLoad = () => {
       const ads = (window as unknown as { adsbygoogle?: { loaded?: boolean } }).adsbygoogle;
-      // 広告ブロック回復タグ（fundingchoicesmessages）が動いていれば、そちらのメッセージを待つ
-      if (!ads?.loaded && !scriptReady) openIfNoWall();
+      if (!ads?.loaded && !seenWall.current) {
+        blockedRef.current = true;
+        setAdBlocked(true);
+        setOpen(false);
+      }
     };
     if (document.readyState === 'complete') {
       timers.push(setTimeout(onLoad, 500));
@@ -103,7 +107,16 @@ export default function PredictionGate({ children }: { children: React.ReactNode
       <div className={open ? undefined : styles.hidden} aria-hidden={!open}>
         {children}
       </div>
-      {!open && (
+      {!open && adBlocked && (
+        <div className={styles.overlay}>
+          <p className={styles.blockedTitle}>広告ブロッカーが有効になっています</p>
+          <p>AI勝率予測は広告収入で無料公開しています。広告ブロッカーをオフにして、ページを再読み込みしてください。</p>
+          <button type="button" className={styles.reload} onClick={() => window.location.reload()}>
+            再読み込みする
+          </button>
+        </div>
+      )}
+      {!open && !adBlocked && (
         <div className={styles.overlay}>
           <span className={styles.spinner} aria-hidden="true" />
           <p>予測を準備しています…</p>
