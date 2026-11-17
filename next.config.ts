@@ -41,6 +41,9 @@ const nextConfig: NextConfig = {
       // 有馬記念ページ（データなしの空ページ）→ 中山芝2500mのコースデータへ
       { source: '/races/arima-kinen', destination: '/courses/nakayama/turf/2500', permanent: true },
       { source: '/races', destination: '/courses', permanent: true },
+      // 前日予測（/ai/tomorrow）は 2026-11 に廃止。予測トップへ寄せる
+      { source: '/ai/tomorrow', destination: '/ai', permanent: true },
+      { source: '/ai/tomorrow/:slug*', destination: '/ai', permanent: true },
       // テスト用ページ
       { source: '/trainers/test', destination: '/trainers', permanent: true },
       // 直近3年に騎乗がなくなりデータが空になった騎手ページ（URL は残し一覧へ）
