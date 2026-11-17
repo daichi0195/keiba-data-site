@@ -95,9 +95,9 @@ export default async function PredictionListPage({
                       <tr key={race.slug}>
                         <td className={`${s.key} ${a.dateCell}`}>{race.dateLabel}</td>
                         <td className={a.left}>
-                          <Link href={`/ai/races/${race.slug}`} className={a.tblLink}>
+                          <a href={`/ai/races/${race.slug}`} className={a.tblLink}>
                             {race.venueLabel}{race.raceNumber}R {race.raceName}
-                          </Link>
+                          </a>
                         </td>
                       </tr>
                     ))}

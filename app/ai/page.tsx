@@ -76,7 +76,7 @@ export default async function AIPage() {
                 const surfaceClass =
                   race.surface === '芝' ? s.badgeTurf : race.surface === 'ダート' || race.surface === 'ダ' ? s.badgeDirt : a.badgeSub;
                 return (
-                  <Link key={race.slug} href={`/ai/races/${race.slug}`} className={a.raceCard}>
+                  <a key={race.slug} href={`/ai/races/${race.slug}`} className={a.raceCard}>
                     <span className={a.raceDate}>{race.dateLabel}</span>
                     <span className={a.raceName}>{race.raceName}</span>
                     <span className={a.raceMeta}>
@@ -89,7 +89,7 @@ export default async function AIPage() {
                         {race.distance}m
                       </span>
                     </span>
-                  </Link>
+                  </a>
                 );
               })}
             </div>

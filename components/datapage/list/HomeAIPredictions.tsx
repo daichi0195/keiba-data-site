@@ -31,7 +31,7 @@ export default function HomeAIPredictions({ races }: { races: RaceSummary[] }) {
         {races.map((race) => {
           const surfaceClass = race.surface === '芝' ? s.badgeTurf : (race.surface === 'ダート' || race.surface === 'ダ') ? s.badgeDirt : h.badgeSub;
           return (
-            <Link key={race.slug} href={`/ai/races/${race.slug}`} className={h.raceCard}>
+            <a key={race.slug} href={`/ai/races/${race.slug}`} className={h.raceCard}>
               <span className={h.raceDate}>{race.dateLabel}</span>
               <span className={h.raceName}>{race.raceName}</span>
               <span className={h.raceMeta}>
@@ -44,7 +44,7 @@ export default function HomeAIPredictions({ races }: { races: RaceSummary[] }) {
                   {race.distance}m
                 </span>
               </span>
-            </Link>
+            </a>
           );
         })}
       </div>
