@@ -47,6 +47,7 @@ export default function PredictionGate({ children }: { children: React.ReactNode
 
     const check = () => {
       if (isWallVisible()) {
+        if (!seenWall.current) performance.mark('offerwall-visible');
         seenWall.current = true;
         setOpen(false);
       } else if (seenWall.current) {
@@ -63,6 +64,8 @@ export default function PredictionGate({ children }: { children: React.ReactNode
     window.googlefc.callbackQueue = window.googlefc.callbackQueue || [];
     window.googlefc.callbackQueue.push({
       CONSENT_API_READY: () => {
+        // 待ち時間の調整用（performance.getEntriesByType('mark') で確認できる）
+        performance.mark('offerwall-script-ready');
         timers.push(setTimeout(openIfNoWall, WAIT_AFTER_SCRIPT_MS));
       },
     });
