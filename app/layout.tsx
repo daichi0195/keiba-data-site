@@ -63,6 +63,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5897385083912635"
           crossOrigin="anonymous"
         />
+        {/* AdSense 広告ブロックによる損失収益の回復タグ（プライバシーとメッセージ → タグ設定） */}
+        <script async src="https://fundingchoicesmessages.google.com/i/pub-5897385083912635?ers=1" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function() {function signalGooglefcPresent() {if (!window.frames['googlefcPresent']) {if (document.body) {const iframe = document.createElement('iframe'); iframe.style = 'width: 0; height: 0; border: none; z-index: -1000; left: -1000px; top: -1000px;'; iframe.style.display = 'none'; iframe.name = 'googlefcPresent'; document.body.appendChild(iframe);} else {setTimeout(signalGooglefcPresent, 0);}}}signalGooglefcPresent();})();`,
+          }}
+        />
       </head>
       <body suppressHydrationWarning>
         {/* Google Tag Manager (noscript) */}

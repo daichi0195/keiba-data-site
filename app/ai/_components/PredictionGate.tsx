@@ -26,7 +26,8 @@ declare global {
  * 読み込み直後はオファーウォールのスクリプトより先に本文が描画されるので、最初から隠しておく。
  *
  * ダイアログが出ない場合の扱い:
- * - 広告ブロッカーなどで adsbygoogle.js が読み込めない → ページの読み込み完了時に表示
+ * - 広告ブロッカーで adsbygoogle.js も回復タグも動かない → ページの読み込み完了時に表示
+ * - 広告ブロッカー利用者に「広告を許可してください」メッセージが出た場合も、オファーウォールと同じく閉じるまで隠す
  * - スクリプトは動いた（googlefc の CONSENT_API_READY）のにダイアログが出ない → その 3 秒後に表示
  * - 後からダイアログが出てきた場合は隠し直す
  */
@@ -43,7 +44,8 @@ export default function PredictionGate({ children }: { children: React.ReactNode
     };
 
     const isWallVisible = () => {
-      const el = document.querySelector<HTMLElement>('.fc-monetization-dialog-container');
+      // オファーウォール、または広告ブロッカー利用者向けの「広告を許可してください」メッセージ
+      const el = document.querySelector<HTMLElement>('.fc-monetization-dialog-container, .fc-ab-root .fc-dialog-container, .fc-ab-root');
       if (!el || !el.isConnected) return false;
       const rect = el.getBoundingClientRect();
       return getComputedStyle(el).display !== 'none' && rect.width > 0 && rect.height > 0;
@@ -66,8 +68,10 @@ export default function PredictionGate({ children }: { children: React.ReactNode
     // オファーウォールのスクリプトが動き出したら、そこから待つ
     window.googlefc = window.googlefc || {};
     window.googlefc.callbackQueue = window.googlefc.callbackQueue || [];
+    let scriptReady = false;
     window.googlefc.callbackQueue.push({
       CONSENT_API_READY: () => {
+        scriptReady = true;
         // 待ち時間の調整用（performance.getEntriesByType('mark') で確認できる）
         performance.mark('offerwall-script-ready');
         timers.push(setTimeout(openIfNoWall, WAIT_AFTER_SCRIPT_MS));
@@ -77,7 +81,8 @@ export default function PredictionGate({ children }: { children: React.ReactNode
     // 広告ブロッカーで adsbygoogle.js が読み込めなかった場合は、ページの読み込み完了時に表示
     const onLoad = () => {
       const ads = (window as unknown as { adsbygoogle?: { loaded?: boolean } }).adsbygoogle;
-      if (!ads?.loaded) openIfNoWall();
+      // 広告ブロック回復タグ（fundingchoicesmessages）が動いていれば、そちらのメッセージを待つ
+      if (!ads?.loaded && !scriptReady) openIfNoWall();
     };
     if (document.readyState === 'complete') {
       timers.push(setTimeout(onLoad, 500));
