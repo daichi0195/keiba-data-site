@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import PredictionGate from '../../_components/PredictionGate';
 import StaticPageLayout from '@/components/StaticPageLayout';
 import AIXBanner from '@/components/AIXBanner';
 import Mark, { normalizeMark } from '../../_components/Mark';
@@ -111,6 +112,7 @@ export default async function RacePredictionPage(
         { label: pageTitle },
       ]}
     >
+      <PredictionGate>
       <section className={s.section} aria-label="AI勝率予測">
         <div className={`${s.card} ${a.tblCard}`}>
           <div className={`${s.tbl} ${a.tblWrap} ${a.rankRows}`}>
@@ -146,6 +148,7 @@ export default async function RacePredictionPage(
           </div>
         </div>
       </section>
+      </PredictionGate>
 
       <div className={a.foot}>
         <AIXBanner />

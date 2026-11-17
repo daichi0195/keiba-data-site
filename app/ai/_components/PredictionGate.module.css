@@ -1,0 +1,41 @@
+/* AI予測の表を、オファーウォールで広告を見終わるまで隠す（PredictionGate） */
+.gate {
+  position: relative;
+}
+
+/* 高さは保ったまま中身を見せない（レイアウトのずれを防ぐ） */
+.hidden {
+  visibility: hidden;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  padding-top: 64px;
+  color: var(--ink-sub, #666);
+  font-size: 0.9rem;
+}
+
+.overlay p {
+  margin: 0;
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid #e2e8f0;
+  border-top-color: var(--brand, #52af77);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
