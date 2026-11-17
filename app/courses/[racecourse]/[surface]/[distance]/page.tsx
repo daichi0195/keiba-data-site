@@ -1021,8 +1021,8 @@ export default async function CoursePage({ params }: Props) {
       )}
       <div className={s.canvas}>
       <div className={pageStyles.staticPageContainer}>
-        <div className={pageStyles.staticPageColumns3}>
-          <aside className={pageStyles.staticPageLeftSidebar}>
+        <div className={`${pageStyles.staticPageColumns3} ${pageStyles.staticPageColumns3Ad}`}>
+          <aside className={`${pageStyles.staticPageLeftSidebar} ${pageStyles.staticPageLeftSidebarAd}`}>
             <CourseSidebar racecourse={resolvedParams.racecourse} racecourseJa={courseShort} />
             <AdSlot unit="sidebar" variant="sidebar" />
           </aside>

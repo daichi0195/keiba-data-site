@@ -1197,9 +1197,9 @@ export default async function TrainerPage({
       )}
       <div className={s.canvas}>
       <div className={pageStyles.staticPageContainer}>
-        <div className={pageStyles.staticPageColumns3}>
+        <div className={`${pageStyles.staticPageColumns3} ${pageStyles.staticPageColumns3Ad}`}>
           {/* 左サイドバー（現行どおり） */}
-          <aside className={pageStyles.staticPageLeftSidebar}>
+          <aside className={`${pageStyles.staticPageLeftSidebar} ${pageStyles.staticPageLeftSidebarAd}`}>
             <AIBanner bookmarkOnly />
             <AdSlot unit="sidebar" variant="sidebar" />
           </aside>

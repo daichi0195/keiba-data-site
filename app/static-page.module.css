@@ -49,6 +49,21 @@
   }
 }
 
+/* 広告付きの左サイドバー：列いっぱいに伸ばし、中の広告だけを追従させる（AdSlot の sidebar） */
+@media (min-width: 769px) {
+  .staticPageLeftSidebarAd {
+    position: static;
+    align-self: stretch;
+  }
+}
+
+/* 広い画面では 300×600 の広告が入るよう、広告付きページの左列を 300px にする */
+@media (min-width: 1200px) {
+  .staticPageColumns3Ad {
+    grid-template-columns: 300px 1fr 280px;
+  }
+}
+
 /* 中画面（769〜1199px）では右の目次を出さないため、空き列を作らない */
 @media (min-width: 769px) and (max-width: 1199px) {
   .staticPageColumns {

@@ -1186,9 +1186,9 @@ export default async function SirePage({
       )}
       <div className={cs.canvas}>
       <div className={pageStyles.staticPageContainer}>
-        <div className={pageStyles.staticPageColumns3}>
+        <div className={`${pageStyles.staticPageColumns3} ${pageStyles.staticPageColumns3Ad}`}>
           {/* 左サイドバー */}
-          <aside className={pageStyles.staticPageLeftSidebar}>
+          <aside className={`${pageStyles.staticPageLeftSidebar} ${pageStyles.staticPageLeftSidebarAd}`}>
             <AIBanner bookmarkOnly />
             <AdSlot unit="sidebar" variant="sidebar" />
           </aside>
