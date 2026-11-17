@@ -147,6 +147,7 @@ export default async function HomePage() {
               {/* バナーエリア */}
               <aside className={h.aside}>
                 <AIBanner />
+                <AdSlot unit="sidebar" variant="sidebar" />
               </aside>
             </div>
           </div>

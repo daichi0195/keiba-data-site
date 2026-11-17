@@ -263,10 +263,10 @@
     gap: 16px;
     align-items: start;
   }
+  /* 右サイドバー：列いっぱいに伸ばし、中の広告（AdSlot の sidebar）だけを追従させる */
   .aside {
     display: block;
-    position: sticky;
-    top: 90px;
+    align-self: stretch;
     padding-top: 28px;
   }
   .raceRail {
@@ -289,4 +289,11 @@
 /* カードの影（docs/redesign/tonmana.md「影」。背景 #FAFAFA との境界をはっきりさせる） */
 .raceCard {
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* 広い画面では 300×600 の広告が入るよう右列を 300px にする */
+@media (min-width: 1200px) {
+  .columns {
+    grid-template-columns: 1fr 300px;
+  }
 }
