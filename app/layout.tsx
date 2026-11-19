@@ -1,12 +1,8 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import Link from "next/link";
-import Image from "next/image";
-import Footer from "@/components/Footer";
-import HeaderMenu from "@/components/HeaderMenu";
-import SpDrawerMenu from "@/components/SpDrawerMenu";
-import HeaderScrollEffect from "@/components/HeaderScrollEffect";
+import SiteFrame from "@/components/layout/SiteFrame";
 import GaugeAnimationObserver from "@/components/GaugeAnimationObserver";
+import { getThisWeekVenues } from "@/lib/thisWeekVenues";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -26,11 +22,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // 左メニューの「今週開催」：トップページと同じ AI予測インデックスから算出（lib/thisWeekVenues）
+  const weekVenues = (await getThisWeekVenues()).map((v) => ({ id: v.id, name: v.shortName }));
+
   return (
     <html lang="ja">
       <head>
@@ -83,21 +82,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         </noscript>
         {/* End Google Tag Manager (noscript) */}
 
-        <header>
-          <div className="header-inner">
-            <Link href="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-              <div className="site-name" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                <Image src="/logo.png" alt="競馬データ.com" width={40} height={40} loading="eager" className="site-logo" style={{ height: '40px', width: '40px', display: 'block' }} />
-                <span style={{ display: 'flex', alignItems: 'center', fontSize: '20px', fontWeight: '600' }}>競馬データ.com</span>
-              </div>
-            </Link>
-            <HeaderMenu />
-            <SpDrawerMenu />
-          </div>
-          <HeaderScrollEffect />
-        </header>
-        {children}
-        <Footer />
+        <SiteFrame weekVenues={weekVenues}>{children}</SiteFrame>
         <GaugeAnimationObserver />
       </body>
     </html>

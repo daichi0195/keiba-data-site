@@ -62,6 +62,16 @@
   }
 }
 
+/* 共通の枠の右列（components/layout/SiteFrame）：300×600 */
+.rail {
+  margin: 0;
+}
+.railBox {
+  display: inline-block;
+  width: 300px;
+  height: 600px;
+}
+
 /* 開発環境のプレースホルダー */
 .placeholder {
   display: flex;

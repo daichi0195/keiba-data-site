@@ -17,6 +17,7 @@ export const AD_UNITS = {
 } as const;
 
 type Unit = keyof typeof AD_UNITS;
+type Variant = 'inline' | 'sidebar' | 'article' | 'rail';
 
 declare global {
   interface Window {
@@ -29,14 +30,15 @@ declare global {
  * - inline: 本文の幅いっぱいのレスポンシブ広告
  * - sidebar: PC 左サイドバー用の固定サイズ広告（幅 240px の中画面でも収まるサイズ）
  * - article: コラム本文中の記事内広告（ネイティブ）
+ * - rail: 共通の枠の右列（幅1800px以上）の 300×600。それより狭い画面では列ごと非表示なので push しない
  * App Router のページ遷移でも新しい広告が入るよう、パスが変わるたびに ins を作り直して push する。
  */
-export default function AdSlot({ unit, variant = 'inline' }: { unit: Unit; variant?: 'inline' | 'sidebar' | 'article' }) {
+export default function AdSlot({ unit, variant = 'inline' }: { unit: Unit; variant?: Variant }) {
   const pathname = usePathname();
   return <AdSlotInner key={pathname} slot={AD_UNITS[unit]} variant={variant} />;
 }
 
-function AdSlotInner({ slot, variant }: { slot: string; variant: 'inline' | 'sidebar' | 'article' }) {
+function AdSlotInner({ slot, variant }: { slot: string; variant: Variant }) {
   const ref = useRef<HTMLModElement>(null);
   const isProd = process.env.NODE_ENV === 'production';
 
@@ -78,10 +80,10 @@ function AdSlotInner({ slot, variant }: { slot: string; variant: 'inline' | 'sid
           data-ad-client={AD_CLIENT}
           data-ad-slot={slot}
         />
-      ) : variant === 'sidebar' ? (
+      ) : variant === 'sidebar' || variant === 'rail' ? (
         <ins
           ref={ref}
-          className={`adsbygoogle ${styles.ins} ${styles.sidebarBox}`}
+          className={`adsbygoogle ${styles.ins} ${styles[`${variant}Box`]}`}
           data-ad-client={AD_CLIENT}
           data-ad-slot={slot}
         />

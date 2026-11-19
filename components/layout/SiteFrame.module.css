@@ -1,0 +1,381 @@
+/* 全ページ共通の枠（リデザイン v6）
+   見本：docs/redesign/src/lib.mjs の page() と top.css → themes.css（:root[data-look="m"] が正）の、枠に関わる部分の最終的な値。
+   色・角丸・余白は app/globals.css 先頭の CSS 変数を使う。
+   区切り：スマホ 700px 未満／タブレット 700〜1099px／PC 1100px 以上／右列 1800px 以上 */
+
+/* ---------- ヘッダー：緑、メニューボタンとロゴだけ ---------- */
+.hdr {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: var(--hdr-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-left: max(8px, env(safe-area-inset-left, 0px));
+  padding-right: var(--pad-r);
+  background: var(--c-theme);
+  color: #FFFFFF;
+  font-family: var(--f-sans);
+  font-size: 15px;
+  line-height: 1.5;
+}
+.hdrL {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+}
+.hbtn {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: inherit;
+  font-size: 18px;
+  cursor: pointer;
+}
+.hbtn:hover {
+  background: rgba(255, 255, 255, .14);
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: .01em;
+  white-space: nowrap;
+  color: inherit;
+  text-decoration: none;
+}
+.logo img {
+  display: block;
+  width: 30px;
+  height: 30px;
+  filter: brightness(0) invert(1);
+}
+.hdr :focus-visible {
+  outline: 2px solid #FFFFFF;
+  outline-offset: 2px;
+}
+
+.ic {
+  width: 1em;
+  height: 1em;
+  fill: currentColor;
+  flex: none;
+}
+
+/* ---------- 左メニュー：1100px 未満は引き出し（body.menu-open）、PC は常に表示 ---------- */
+.side {
+  display: none;
+  font-family: var(--f-sans);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--c-text);
+}
+.nav {
+  display: grid;
+}
+.nav a {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 46px;
+  padding: 0 12px;
+  border-radius: var(--r-cell);
+  font-size: 15px;
+  color: var(--c-text);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color .15s, color .15s;
+}
+.nav a:hover {
+  background: var(--c-cell);
+}
+.nav a.on {
+  background: var(--c-here);
+  color: var(--c-on-here);
+  font-weight: 700;
+}
+.side .ic {
+  font-size: 18px;
+  width: 22px;
+}
+.side h2 {
+  margin: 12px 0 4px;
+  padding: 14px 12px 0;
+  border-top: 1px solid var(--c-rule);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--c-text);
+}
+.navCols {
+  grid-template-columns: 1fr 1fr;
+}
+.vd {
+  width: 10px;
+  height: 10px;
+  margin: 0 6px;
+  border-radius: 50%;
+  background: var(--c-theme);
+  flex: none;
+}
+.side :focus-visible,
+.tabbar :focus-visible,
+.rail :focus-visible {
+  outline: 2px solid var(--c-text);
+  outline-offset: 2px;
+}
+
+@media (max-width: 1099.98px) {
+  :global(body.menu-open) .side {
+    display: block;
+    position: fixed;
+    z-index: 110;
+    top: var(--hdr-h);
+    left: 0;
+    bottom: 0;
+    width: min(300px, 84vw);
+    overflow-y: auto;
+    padding: 12px 12px 80px;
+    background: var(--c-panel);
+    box-shadow: 0 0 0 100vmax rgba(0, 0, 0, .45);
+  }
+}
+
+/* ---------- 本体と右列 ---------- */
+.main {
+  min-width: 0;
+}
+.body {
+  min-width: 0;
+}
+.rail {
+  display: none;
+}
+
+/* ---------- フッター ---------- */
+.ftr {
+  margin-top: 48px;
+  padding: 28px var(--pad-r) 28px var(--pad);
+  background: var(--c-footer);
+  color: #FFFFFF;
+  font-family: var(--f-sans);
+  font-size: 15px;
+  line-height: 1.5;
+}
+.fLogo {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+.ftr nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 20px;
+  margin-top: 6px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.ftr nav a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  color: #FFFFFF;
+  text-decoration: none;
+}
+.ftr nav a:hover {
+  text-decoration: underline;
+}
+.fNote {
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #FFFFFF;
+}
+.ftr :focus-visible {
+  outline: 2px solid #FFFFFF;
+  outline-offset: 2px;
+}
+
+/* ---------- 下部メニュー（1100px 未満） ---------- */
+.tabbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 90;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: var(--c-panel);
+  border-top: 1px solid var(--c-rule);
+  font-family: var(--f-sans);
+}
+.tabbar a {
+  height: var(--tab-h);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--c-text);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.tabbar .ic {
+  font-size: 20px;
+}
+
+/* ---------- PC（1100px 以上）：左にメニュー、ヘッダーの左端を下のかたまりにそろえる ---------- */
+@media (min-width: 1100px) {
+  .hdr {
+    padding-left: max(16px, calc((100vw - 2076px) / 2 + 28px));
+    padding-right: 24px;
+    font-size: 16px;
+  }
+  .logo {
+    font-size: 20px;
+  }
+  .shell {
+    display: grid;
+    grid-template-columns: var(--side-w) minmax(0, 1fr);
+    max-width: 2076px;
+    margin-inline: auto;
+    padding-left: clamp(0px, 100vw - 2052px, 24px);
+  }
+  .side {
+    display: block;
+    position: sticky;
+    top: var(--hdr-h);
+    align-self: start;
+    height: calc(100vh - var(--hdr-h));
+    overflow-y: auto;
+    padding: 12px 12px 24px;
+    background: var(--c-panel);
+    font-size: 16px;
+  }
+  .nav a {
+    gap: 22px;
+    height: 44px;
+    border-radius: 10px;
+  }
+  .side h2 {
+    margin: 14px 0 4px;
+    font-size: 16px;
+  }
+  .cols {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ftr {
+    padding-left: 24px;
+    padding-right: 24px;
+    font-size: 16px;
+    /* フッターの地を画面の右端まで塗る */
+    box-shadow: 100vw 0 0 var(--c-footer);
+    clip-path: inset(0 -100vw 0 0);
+  }
+  .ftr nav {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .tabbar {
+    display: none;
+  }
+}
+
+/* ---------- 右列（1800px 以上）：AI勝率予測の案内と広告 ---------- */
+@media (min-width: 1800px) {
+  .cols {
+    grid-template-columns: minmax(0, 1fr) var(--rail-w);
+    padding-right: 24px;
+  }
+  .rail {
+    display: block;
+    padding-top: 68px;
+    font-family: var(--f-sans);
+    color: var(--c-text);
+  }
+  .railIn {
+    position: sticky;
+    top: calc(var(--hdr-h) + 68px);
+    display: grid;
+    gap: 16px;
+  }
+  .railAi {
+    padding: 20px;
+    background: var(--c-panel);
+    border-radius: var(--r-panel);
+    box-shadow: var(--shadow-panel);
+  }
+  /* ページ側に <RailAiOff /> があれば案内を出さない（見本の railAi: false） */
+  .shell:has([data-rail-ai='off']) .railAi {
+    display: none;
+  }
+  .railK {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.5;
+    color: var(--c-text-sub);
+  }
+  .railAi h2 {
+    margin-top: 4px;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--c-text);
+  }
+  .railP {
+    margin-top: 8px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--c-text-sub);
+  }
+  .cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    margin-top: 14px;
+    padding: 0 18px;
+    border-radius: var(--r-pill);
+    background: var(--c-theme);
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.5;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .cta:hover {
+    background: var(--c-theme-hover);
+  }
+  /* 広告（AdSlot の rail）の「スポンサーリンク」の文字を見本にそろえる */
+  .railIn > div:last-child > span:first-child {
+    margin-bottom: 6px;
+    font-size: 12px;
+    letter-spacing: 0;
+    color: var(--c-text-sub);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav a {
+    transition: none;
+  }
+}

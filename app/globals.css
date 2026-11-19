@@ -27,6 +27,76 @@
   --border-subtle: #e2e8f0;
 }
 
+/* ===== リデザイン v6 のデザイントークン（docs/redesign/src/RULES.md。見本 themes.css の :root[data-look="m"] が正） =====
+   既存の CSS Modules が --ink / --line / --link / --brand を自前の値で使っているため、衝突しない名前にしている。
+   見本の名前との対応：--green→--c-theme、--ground→--c-ground、--panel→--c-panel、--chip→--c-cell、
+   --ink→--c-text、--ink-sub→--c-text-sub、--line→--c-rule、--link→--c-link、--here→--c-here */
+:root {
+  /* 色 */
+  --c-theme: #1AA84E;          /* テーマカラー：ヘッダー・棒グラフ・今週開催の点・目立たせたいボタン */
+  --c-theme-hover: #17964A;
+  --c-ground: #F4F5F7;         /* 地 */
+  --c-panel: #FFFFFF;          /* 板 */
+  --c-cell: #EEF0F2;           /* 板の中の淡いマス */
+  --c-cell-hover: #E0E3E7;
+  --c-text: #222222;           /* 文字 */
+  --c-text-sub: #5E5E5E;       /* 補足の文字 */
+  --c-rule: #E3E6EA;           /* 罫 */
+  --c-link: #0B5ED7;           /* 押せる文字（hover で下線） */
+  --c-here: #26292D;           /* 現在地・選択中の塗り（文字は白） */
+  --c-on-here: #FFFFFF;
+  --c-turf: #3F8425;           /* 芝・ダート・障害の札（白文字） */
+  --c-dirt: #8A5418;
+  --c-jump: #666A72;
+  --c-g1: #1E50B5;             /* 重賞の格付けの札（白文字） */
+  --c-g2: #C6283C;
+  --c-g3: #2E8B3D;
+  --c-rank1: #B8860B;          /* 順位 1・2・3位の丸（白文字） */
+  --c-rank2: #7A828C;
+  --c-rank3: #A8642A;
+  --c-footer: #2B2F33;
+  --c-ad: #E3E6EA;             /* 広告枠の地 */
+
+  /* 形 */
+  --r-panel: 12px;             /* 板：スマホ 12px・700px以上 16px */
+  --r-img: 12px;               /* 絵 */
+  --r-cell: 8px;               /* マス */
+  --r-pill: 9999px;            /* 丸ボタン */
+  --shadow-panel: 0 1px 2px rgba(16, 24, 40, .06), 0 2px 10px rgba(16, 24, 40, .05);
+
+  /* 余白 */
+  --pad: max(16px, env(safe-area-inset-left, 0px));    /* 本体の左右 */
+  --pad-r: max(16px, env(safe-area-inset-right, 0px));
+  --sp-section: 28px;          /* 節の間 */
+  --sp-panel: 12px;            /* 板と板 */
+  --sp-cell: 6px;              /* マスの間 */
+
+  /* 枠 */
+  --hdr-h: 52px;
+  --tab-h: 56px;
+  --side-w: 240px;
+  --rail-w: 300px;
+
+  /* 文字 */
+  --f-sans: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", Roboto, system-ui, sans-serif;
+  --f-num: "Roboto", "Helvetica Neue", Arial, "Hiragino Sans", sans-serif;   /* 数値（.num）：等幅数字で使う */
+}
+@media (min-width: 700px) {
+  :root {
+    --r-panel: 16px;
+    --sp-panel: 16px;
+  }
+}
+@media (min-width: 1100px) {
+  :root {
+    --hdr-h: 56px;
+    --pad: 24px;
+    --pad-r: 24px;
+    --sp-section: 40px;
+    --sp-cell: 8px;
+  }
+}
+
 html {
   width: 100%;
   height: 100%;
@@ -34,7 +104,7 @@ html {
 
 body {
   font-family: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
-  background: #fafafa;
+  background: var(--c-ground);
   color: var(--text-dark);
   min-height: 100vh;
   height: auto;
@@ -43,134 +113,17 @@ body {
   overflow-x: clip;
 }
 
-@keyframes horseshoe-drift {
-  0%   { transform: translate(0, 0); }
-  100% { transform: translate(190px, 190px); }
-}
-
-body::before {
-  content: '';
-  position: fixed;
-  inset: -380px;
-  background-image: url("/horseshoe-pattern.svg");
-  background-size: 190px 190px;
-  animation: horseshoe-drift 15s linear infinite;
-  will-change: transform;
-  z-index: -1;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  body::before {
-    animation: none;
+/* 共通の枠（components/layout/SiteFrame）：
+   1100px 未満は下部メニューのぶん下を空ける。PC は左メニューの白を画面の左端まで塗る */
+@media (max-width: 1099.98px) {
+  body {
+    padding-bottom: calc(var(--tab-h) + env(safe-area-inset-bottom, 0px));
   }
 }
-
-/* ヘッダー */
-header {
-  background: #fff;
-  padding: 0.375rem 12px 0.375rem;
-  box-shadow: none;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: nowrap;
-  gap: 2rem;
-  min-height: 48px;
-}
-
-/* スクロール時のヘッダー下線 */
-@media (max-width: 768px) {
-  header.scrolled {
-    border-bottom: 1px solid #e2e8f0;
+@media (min-width: 1100px) {
+  body {
+    background: linear-gradient(to right, var(--c-panel) calc(max(0px, (100vw - 2076px) / 2) + clamp(0px, 100vw - 2052px, 24px) + var(--side-w)), var(--c-ground) 0);
   }
-}
-
-/* SP：ロゴを中央、右にハンバーガー（components/SpDrawerMenu） */
-@media (max-width: 768px) {
-  header {
-    min-height: 56px;
-    padding: 0 12px;
-  }
-  .header-inner {
-    display: grid;
-    grid-template-columns: 40px 1fr 40px;
-    align-items: center;
-    width: 100%;
-  }
-  .header-inner > a {
-    grid-column: 2;
-    justify-self: center;
-  }
-  .header-inner > button {
-    grid-column: 3;
-  }
-}
-
-/* SP・トップのみ：ヘッダーをブランド緑で塗り、ロゴを白抜きにする（SpDrawerMenu がトップで data-home-header を付ける） */
-@media (max-width: 768px) {
-  header:has([data-home-header]) {
-    background: #1DB854;
-  }
-  header.scrolled:has([data-home-header]) {
-    border-bottom: 0;
-    box-shadow: 0 4px 16px #00000012, 0 0 0 1px #00000008;
-  }
-  header:has([data-home-header]) .site-logo {
-    filter: brightness(0) invert(1);
-  }
-  header:has([data-home-header]) .site-name,
-  header:has([data-home-header]) .site-name span {
-    background: none;
-    -webkit-text-fill-color: #fff;
-    color: #fff;
-  }
-}
-
-/* PC表示時：ヘッダーのレイアウト調整 */
-@media (min-width: 769px) {
-  header {
-    padding: 0;
-    gap: 0;
-    min-height: 64px;
-    border-bottom: 1px solid #e2e8f0;
-    justify-content: center;
-  }
-
-  .header-inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    max-width: 1400px;
-    padding: 0 1rem;
-  }
-
-  .site-name {
-    font-size: 1.1rem;
-    flex-shrink: 0;
-  }
-}
-
-/* SP表示時：HeaderMenuは下部固定メニューとして表示 */
-@media (max-width: 768px) {
-  header {
-    /* SPではHeaderMenuはヘッダー外に表示されるため、flex-wrapは不要 */
-  }
-}
-
-.site-name {
-  font-size: 1.3rem;
-  font-weight: 700;
-  background: var(--gradient-green);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  letter-spacing: 0.02em;
-  flex-shrink: 0;
 }
 
 /* パンくず */
