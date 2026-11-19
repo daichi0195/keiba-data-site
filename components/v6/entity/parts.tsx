@@ -160,6 +160,7 @@ export function Hero({
   iso,
   verdictTitle,
   verdict,
+  kpiTable = false,
 }: {
   crumb: { label: string; href: string };
   name: string;
@@ -174,6 +175,8 @@ export function Hero({
   verdictTitle: string;
   /** 対象レース数が少ないページは null（傾向判定を出さない） */
   verdict: Verdict[] | null;
+  /** 主要数値をカードではなく表で出す（種牡馬ページで試行中） */
+  kpiTable?: boolean;
 }) {
   return (
     <>
@@ -193,17 +196,39 @@ export function Hero({
             </Nb>
           </h1>
           <p className={cx('jk-lead')}>{lead}</p>
-          <ul className={cx('jk-kpi')} data-anim="">
-            {kpi.map(([l, v, dp, u]) => (
-              <li key={l}>
-                <span>{l}</span>
-                <b>
-                  <Cnt v={v} dp={dp} />
-                  {u ? <small>{u}</small> : null}
-                </b>
-              </li>
-            ))}
-          </ul>
+          {kpiTable ? (
+            <table className={cx('jk-kt')}>
+              <thead>
+                <tr>
+                  {kpi.map(([l]) => (
+                    <th key={l} scope="col">{l}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  {kpi.map(([l, v, dp, u]) => (
+                    <td key={l} className={cx('num')}>
+                      {v.toLocaleString('ja-JP', { minimumFractionDigits: dp, maximumFractionDigits: dp })}
+                      {u ? <small>{u}</small> : null}
+                    </td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+          ) : (
+            <ul className={cx('jk-kpi')} data-anim="">
+              {kpi.map(([l, v, dp, u]) => (
+                <li key={l}>
+                  <span>{l}</span>
+                  <b>
+                    <Cnt v={v} dp={dp} />
+                    {u ? <small>{u}</small> : null}
+                  </b>
+                </li>
+              ))}
+            </ul>
+          )}
           <p className={cx('jk-meta')}>
             <span>
               集計 <b>{period}</b>
@@ -255,6 +280,29 @@ export function ThinNote({ totalRaces, minRaces, hiddenItems }: { totalRaces: nu
     </Sec>
   );
 }
+
+/** 基本情報の表（項目名｜値。補足は値の後ろに小さく）。スマホは1列、広い幅は2列 */
+export const InfoTable = ({ items, label }: { items: [string, ReactNode, ReactNode?][]; label: string }) => {
+  // 2列の幅では上から下へ読む順（左列→右列）に並べる。右列の先頭（c2）は上の罫線を消す
+  const rows = Math.ceil(items.length / 2);
+  return (
+  <Pn>
+    <dl className={cx('jk-it')} aria-label={label} style={{ '--rows': rows } as CSSProperties}>
+      {items.map(([l, v, sm], i) => (
+        <div key={l} className={i === rows ? cx('c2') : undefined}>
+          <dt>{l}</dt>
+          <dd>
+            <b>{v}</b>
+            {sm ? <small>{sm}</small> : null}
+          </dd>
+        </div>
+      ))}
+      {/* 2列の幅で行数が奇数のとき、右列の下端を左列にそろえる空行 */}
+      {items.length % 2 === 1 ? <div className={cx('em')} aria-hidden="true" /> : null}
+    </dl>
+  </Pn>
+  );
+};
 
 /** 基本情報のマス */
 export const Tiles = ({ items, className = '' }: { items: [string, ReactNode, ReactNode?][]; className?: string }) => (
@@ -616,10 +664,10 @@ export const Titles = ({ list }: { list: string[] }) =>
     <span className={cx('none')}>—</span>
   );
 /** cols: m＝スマホでの役割（m1 名前／m1b 名前の横／m2 右端／m3 2行目／m4 補足）, ml＝スマホで前に付ける項目名 */
-export function HorseList({ cols, rows, initial = 5, note = '', label }: { cols: { label: string; m: string; ml?: string; num?: boolean }[]; rows: ReactNode[][]; initial?: number; note?: string; label: string }) {
+export function HorseList({ cols, rows, initial = 5, note = '', label, className = '' }: { cols: { label: string; m: string; ml?: string; num?: boolean }[]; rows: ReactNode[][]; initial?: number; note?: string; label: string; className?: string }) {
   const rest = rows.length - initial;
   return (
-    <Box className={cx('jk-pn')} hint={note ? <span key="hint" className={cx('jk-hint')}>{note}</span> : undefined} more={rest > 0 ? { rest, initial } : undefined}>
+    <Box className={cx('jk-pn', className)} hint={note ? <span key="hint" className={cx('jk-hint')}>{note}</span> : undefined} more={rest > 0 ? { rest, initial } : undefined}>
       <div className={cx('es-lt')} role="region" aria-label={label} tabIndex={0}>
         <table>
           <thead>

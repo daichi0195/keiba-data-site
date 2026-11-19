@@ -776,3 +776,35 @@
   .jk-nav a,.jk-nav.es-n11 a{flex:none;padding:0 12px;font-size:14px}
 }
 .jk-nav a.on{background:var(--c-here);color:#FFFFFF;font-weight:700}
+/* 世代別の勝ち上がり率：3歳の年が終わっていない世代の札 */
+.es-cp{display:inline-block;margin-left:6px;padding:0 6px;border-radius:4px;background:var(--chip);font-size:11px;font-weight:700;line-height:18px;color:var(--ink-sub);vertical-align:1px}
+/* 表になる幅で、補足列（m4）でも数値の列は見出しと同じく右に揃える */
+@media (min-width:900px){.es-lt td.m4.r{text-align:right}}
+/* 図と説明だけを重ねる板（牡馬・牝馬別の得意距離）：最後の段の下線と余白は付けない */
+.es-fx:last-child{margin-bottom:0;padding-bottom:0;border-bottom:0}
+/* 世代別の勝ち上がり率（スマホ）：1行目は世代と勝ち上がり率、補足は2行目にそろえる */
+@media (max-width:899.98px){.es-cr .es-lt td.m1,.es-cr .es-lt td.m2{flex:0 0 calc(50% - 4px)}.es-cr .es-lt td.m2{margin-left:0;text-align:right}}
+/* 冒頭の主要数値（表）：見出し行と数値行の2段。カードの地は使わず、罫線だけで区切る */
+.jk-kt{width:100%;margin-top:12px;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;table-layout:fixed}
+.jk-kt th{padding:5px 2px;background:var(--chip);font-size:11px;font-weight:700;color:var(--ink-sub);text-align:center;white-space:nowrap}
+.jk-kt td{padding:7px 2px 8px;font-size:17px;font-weight:700;line-height:1.2;text-align:center;white-space:nowrap}
+.jk-kt th + th,.jk-kt td + td{border-left:1px solid var(--line)}
+.jk-kt td small{margin-left:1px;font-size:11px;font-weight:700}
+@media (min-width:700px){.jk-kt th{font-size:12px;padding:6px 4px}.jk-kt td{font-size:20px;padding:9px 4px 10px}.jk-kt td small{font-size:12px}}
+@media (min-width:1100px){.jk-kt{margin-top:14px}.jk-kt td{font-size:22px}}
+
+/* 基本情報（表）：項目名｜値の行。広い幅は2列（左右の行の上下をそろえる） */
+.jk-it{display:grid;grid-template-columns:minmax(0,1fr);margin:-4px 0}
+.jk-it > div{display:grid;grid-template-columns:7.5em minmax(0,1fr);align-items:baseline;gap:8px;min-height:var(--row);padding:9px 0;border-top:1px solid var(--line)}
+.jk-it > div:first-child{border-top:0}
+.jk-it dt{font-size:13px;color:var(--ink-sub)}
+.jk-it dd{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 8px;min-width:0}
+.jk-it dd b{font-size:15px;font-weight:700}
+.jk-it dd small{font-size:12px;color:var(--ink-sub)}
+@media (min-width:700px){
+  .jk-it{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(var(--rows),auto);grid-auto-flow:column;column-gap:32px}
+  .jk-it > div.c2{border-top:0}
+  .jk-it dd b{font-size:16px}
+}
+.jk-it > .em{display:none}
+@media (min-width:700px){.jk-it > .em{display:block}}

@@ -9,10 +9,10 @@ import { MIN_RACES_FOR_TRENDS, hasEnoughRaces, THIN_PAGE_ROBOTS } from '@/lib/da
 import { jaDateToIso, periodFromDataPeriod, buildWebPageJsonLd } from '@/lib/dataDate';
 import { buildSireSummaryBlocks } from '@/lib/sireSummaryBlocks';
 import { sireDescription } from '@/lib/metaDescriptions';
-import { bestBand, buildSireLead, formatTitles, buildSireBandAnswer, buildSireGrowthAnswer, buildProgenyAnswer, gradedTotals, thisYearOf, type NotableHorse, type SireProfile, type GrowthRate } from '@/lib/entityExtras';
+import { bestBand, buildSireLead, formatTitles, buildSireBandAnswer, buildSireGrowthAnswer, buildProgenyAnswer, buildSireFemaleAnswer, buildDistanceChangeAnswer, buildCropAnswer, cropTotals, sireLineText, gradedTotals, thisYearOf, type NotableHorse, type SireProfile, type GrowthRate, type GrowthTrend, type GenderTrend, type CropStat } from '@/lib/entityExtras';
 import {
-  About, Ad, BestNote, Cnt, CourseAcc, DefLink, EntityRoot, Faq, GTag, H, Head, Highlights, Hero, Hno, HorseList, MaybeLink, Meters,
-  PageNav, Pn, Sec, SfTag, Stats, Subs, Summary, ThinNote, Tiles, Titles, gateRows as toGateRows, sfKey,
+  About, Ad, BestNote, Cnt, CourseAcc, DefLink, EntityRoot, Faq, GTag, H, Head, Highlights, Hero, Hno, HorseList, InfoTable, MaybeLink, Meters,
+  PageNav, Pn, Sec, SfTag, Stats, Subs, Summary, ThinNote, Titles, gateRows as toGateRows, sfKey,
   type CourseRow, type NameLink,
 } from '@/components/v6/entity/parts';
 import { Butterfly, CondBars, FigRow, LineChart, YearCharts } from '@/components/v6/entity/charts';
@@ -46,8 +46,8 @@ export async function generateMetadata({
   const sireInfo = ALL_SIRES.find(s => s.id === parseInt(id));
   const sireName = sireInfo?.name || '種牡馬';
 
-  // 検索語の上位は「〇〇産駒 特徴」「〇〇産駒 重馬場」のため、両方をタイトルの前半に入れる
-  const title = `${sireName}産駒の特徴・傾向｜得意距離・コース・重馬場成績【毎週更新】`;
+  // 狙う検索語は「〇〇産駒 特徴／傾向」。関連して多く検索される「重馬場」「早熟・晩成」もタイトルに入れる（docs/seo/sire_serp_2026-11.md）
+  const title = `${sireName}産駒の特徴・傾向｜得意距離・コース・重馬場・早熟/晩成【毎週更新】`;
   const url = `https://www.keibadata.com/sires/${id}`;
 
   // 対象レース数が少ないページは傾向判定を出さず、インデックスもさせない（コースページと同じ方針）
@@ -941,10 +941,19 @@ export default async function SirePage({
   const notableProgeny: NotableHorse[] = (sire as any).notable_progeny ?? [];
   const distanceSurface: { turf?: any[]; dirt?: any[] } = (sire as any).distance_surface_stats ?? {};
   const growthRates: GrowthRate[] = (sire as any).growth_rates ?? [];
+  const growthTrend: GrowthTrend | null = (sire as any).growth_trend ?? null;
+  const genderTrend: GenderTrend | null = (sire as any).gender_trend ?? null;
+  const sexBands: { male?: { turf?: any[]; dirt?: any[] }; female?: { turf?: any[]; dirt?: any[] } } | undefined = (sire as any).distance_surface_sex_stats;
+  const distanceChange: any[] = (sire as any).distance_change_stats ?? [];
+  const crops: CropStat[] = (sire as any).crop_stats ?? [];
+  const cropTotal = cropTotals(crops);
   const sireGraded = gradedTotals(sire.class_stats as any);
   const sireThisYear = thisYearOf(sire.yearly_leading as any);
   const sireBandAnswer = buildSireBandAnswer(sire.name, distanceSurface.turf, distanceSurface.dirt);
-  const sireGrowthAnswer = buildSireGrowthAnswer(sire.name, growthRates);
+  const sireGrowthAnswer = buildSireGrowthAnswer(sire.name, growthRates, growthTrend);
+  const sireFemaleAnswer = buildSireFemaleAnswer(sire.name, sexBands, genderTrend);
+  const sireChangeAnswer = buildDistanceChangeAnswer(sire.name, distanceChange);
+  const sireCropAnswer = buildCropAnswer(sire.name, crops);
   const sireProgenyAnswer = buildProgenyAnswer(sire.name, notableProgeny);
   const turfBandRows: ConditionRow[] = (distanceSurface.turf ?? []).map((r: any) => ({ ...r, label: r.category }));
   const dirtBandRows: ConditionRow[] = (distanceSurface.dirt ?? []).map((r: any) => ({ ...r, label: r.category }));
@@ -962,6 +971,9 @@ export default async function SirePage({
       ...(sireBandAnswer ? [{ question: `${sire.name}産駒の芝・ダートそれぞれの得意距離は？`, answer: sireBandAnswer }] : []),
       { question: `${sire.name}産駒の馬場適性は？`, answer: sireTrackConditionFaqAnswer },
       ...(sireGrowthAnswer ? [{ question: `${sire.name}産駒は早熟？晩成？`, answer: sireGrowthAnswer }] : []),
+      ...(sireFemaleAnswer ? [{ question: `${sire.name}産駒の牝馬の特徴は？`, answer: sireFemaleAnswer }] : []),
+      ...(sireChangeAnswer ? [{ question: `${sire.name}産駒は距離短縮と延長どちらが得意？`, answer: sireChangeAnswer }] : []),
+      ...(sireCropAnswer ? [{ question: `${sire.name}産駒の勝ち上がり率は？`, answer: sireCropAnswer }] : []),
       ...(sireProgenyAnswer ? [{ question: `${sire.name}の代表産駒は？`, answer: sireProgenyAnswer }] : []),
       { question: `${sire.name}産駒の苦手な競馬場は？`, answer: sireBadRacecourseAnswer },
       { question: `${sire.name}産駒の苦手なコースは？`, answer: sireBadCourseAnswer },
@@ -1060,6 +1072,7 @@ export default async function SirePage({
         bestTurf: bestBand(distanceSurface.turf),
         bestDirt: bestBand(distanceSurface.dirt),
         progeny: notableProgeny,
+        growth: growthTrend,
       }),
     });
   }
@@ -1072,13 +1085,16 @@ export default async function SirePage({
   // 基本情報（父・母父は JRA-VAN の繁殖馬データ）
   const p: SireProfile = sireProfile ?? {};
   const hasProfileTiles = Boolean(p.father || p.damsire);
+  const lineName = p.sire_line?.name ?? '';
   const tiles: [string, ReactNode, ReactNode?][] = [
+    ['系統', lineName, ''],
     ['父', p.father ?? '', ''],
     ['母父', p.damsire ?? '', ''],
     ['生年', p.birth_year ? `${p.birth_year}年` : '', ''],
-    ['生産', p.birthplace ? `${p.birthplace}${p.imported ? '（輸入）' : ''}` : '', ''],
+    ['生産地', p.birthplace ? `${p.birthplace}${p.imported ? '（輸入）' : ''}` : '', ''],
     ...(sireThisYear ? [[`${sireThisYear.year}年の勝利数`, <><Cnt v={sireThisYear.wins} />勝</>, sireThisYear.ranking > 0 ? `リーディング${sireThisYear.ranking}位` : ''] as [string, ReactNode, ReactNode]] : []),
     ['産駒の重賞勝ち', <><Cnt v={sireGraded.wins} />勝</>, `集計期間・G1 ${sireGraded.g1}勝`],
+    ...(cropTotal ? [['勝ち上がり率', <><Cnt v={cropTotal.rate} dp={1} />%</>, cropTotal.allRate !== null ? `全出走馬 ${cropTotal.allRate.toFixed(1)}%` : ''] as [string, ReactNode, ReactNode]] : []),
   ];
 
   // 年度別（図は古い順、表は新しい順）
@@ -1149,6 +1165,35 @@ export default async function SirePage({
     />
   ) : null;
 
+  // 牡馬・牝馬別の距離帯（出走10回未満の距離帯は棒を出さない）
+  const sexOk = (r: any) => (r && r.races >= 10 ? r : undefined);
+  const sexFig = (label: string, g?: { turf?: any[]; dirt?: any[] }) => {
+    const cats = [...new Set([...(g?.turf ?? []), ...(g?.dirt ?? [])].map((r: any) => r.category as string))];
+    if (cats.length === 0) return null;
+    const t = (c: string) => sexOk(bOf(g?.turf, c));
+    const d = (c: string) => sexOk(bOf(g?.dirt, c));
+    return (
+      <Butterfly
+        title={`${label}の距離帯別 複勝率`}
+        label={`${W}（${label}）の距離帯別の複勝率：${cats.map((c) => `${c} 芝${t(c) ? pct(t(c).place_rate) : 'なし'}・ダート${d(c) ? pct(d(c).place_rate) : 'なし'}`).join('、')}`}
+        rows={cats.map((c) => ({ label: c, l: t(c)?.place_rate, ln: t(c)?.races, r: d(c)?.place_rate, rn: d(c)?.races }))}
+        foot="出走10回未満の距離帯は「-」"
+      />
+    );
+  };
+  const sexLine = (label: string, g?: { turf?: any[]; dirt?: any[] }) => {
+    const parts = [bestBand(g?.turf, 30), bestBand(g?.dirt, 30)]
+      .map((b, i) => (b ? `${i === 0 ? '芝' : 'ダート'}は**${b.category}**（複勝率${b.place_rate.toFixed(1)}%）` : null))
+      .filter(Boolean);
+    return parts.length ? [`${label}の成績が最も良い距離帯は、${parts.join('、')}です。`, '※距離帯ごとに出走30回以上が対象'] : [];
+  };
+  const sexFigs = ([['male', '牡馬', sexBands?.male], ['female', '牝馬', sexBands?.female]] as [string, string, any][])
+    .map(([key, label, g]) => [key, sexFig(label, g), sexLine(label, g)] as [string, ReactNode, string[]])
+    .filter(([, fig]) => fig);
+  const hasSexBands = sexFigs.length > 0;
+  // 前走からの距離変更
+  const changeRows2 = fill(['距離短縮', '同距離', '距離延長'], distanceChange, (r: any) => r.category);
+
   // データQ&A
   const faqItems = [
     { q: `${n}産駒の得意な競馬場は？`, a: sireGoodRacecourseAnswer },
@@ -1157,7 +1202,10 @@ export default async function SirePage({
     { q: `${n}産駒の得意な距離は？`, a: sireDistanceFaqAnswer, lead: true },
     ...(sireBandAnswer ? [{ q: `${n}産駒の芝・ダートそれぞれの得意距離は？`, a: sireBandAnswer }] : []),
     { q: `${n}産駒の馬場適性は？`, a: sireTrackConditionFaqAnswer, lead: true },
-    ...(sireGrowthAnswer ? [{ q: `${n}産駒は早熟？晩成？`, a: sireGrowthAnswer }] : []),
+    ...(sireGrowthAnswer ? [{ q: `${n}産駒は早熟？晩成？`, a: sireGrowthAnswer, lead: true }] : []),
+    ...(sireFemaleAnswer ? [{ q: `${n}産駒の牝馬の特徴は？`, a: sireFemaleAnswer }] : []),
+    ...(sireChangeAnswer ? [{ q: `${n}産駒は距離短縮と延長どちらが得意？`, a: sireChangeAnswer }] : []),
+    ...(sireCropAnswer ? [{ q: `${n}産駒の勝ち上がり率は？`, a: sireCropAnswer }] : []),
     ...(sireProgenyAnswer ? [{ q: `${n}の代表産駒は？`, a: sireProgenyAnswer }] : []),
     { q: `${n}産駒の苦手な競馬場は？`, a: sireBadRacecourseAnswer },
     { q: `${n}産駒の苦手なコースは？`, a: sireBadCourseAnswer },
@@ -1184,8 +1232,9 @@ export default async function SirePage({
   const thinHidden = new Set(['characteristics', 'highlights-section', 'faq-section']);
   const navItems = [
     ...(hasProfileTiles ? [['profile-section', '基本情報']] : []), ['summary-section', '概要'], ['leading', '年度別'], ...(notableProgeny.length ? [['progeny-section', '代表産駒']] : []),
-    ['characteristics', '特徴'], ...(hasHighlights ? [['highlights-section', '注目']] : []), ['class-stats', 'クラス別'], ['running-style-stats', '脚質別'], ['gate-stats', '枠順別'],
-    ['distance-stats', '距離別'], ...(hasBands ? [['distance-surface-stats', '芝ダ距離']] : []), ['gender-stats', '性別'], ['age-stats', '馬齢別'], ['horse-weight-stats', '馬体重別'],
+    ...(crops.length ? [['crop-section', '勝ち上がり']] : []), ['characteristics', '特徴'], ...(hasHighlights ? [['highlights-section', '注目']] : []), ['class-stats', 'クラス別'], ['running-style-stats', '脚質別'], ['gate-stats', '枠順別'],
+    ['distance-stats', '距離別'], ...(hasBands ? [['distance-surface-stats', '芝ダ距離']] : []), ...(hasSexBands ? [['distance-sex-stats', '牡牝距離']] : []),
+    ...(distanceChange.length ? [['distance-change-stats', '短縮・延長']] : []), ['gender-stats', '性別'], ['age-stats', '馬齢別'], ['horse-weight-stats', '馬体重別'],
     ['surface-stats', '芝・ダ別'], ...(changeRows.length ? [['surface-change-stats', '芝ダ変わり']] : []), ['track-condition-stats', '馬場状態'], ['racecourse-stats', '競馬場別'],
     ['course-stats', 'コース別'], ['dam-sire-stats', '母父別'], ['faq-section', 'Q&A'],
   ].filter(([id]) => enoughRaces || !thinHidden.has(id)).map(([id, label]) => ({ id, label }));
@@ -1208,12 +1257,17 @@ export default async function SirePage({
           period={periodText}
           updated={sire.last_updated}
           iso={dateIso}
+          kpiTable
           verdictTitle={`${W}の傾向`}
           verdict={enoughRaces ? [
             { label: '芝・ダート', pos: surfacePos, text: surfaceTrendText },
             { label: '距離', pos: distancePos, text: distanceTrendText },
             { label: '芝の馬場', pos: turfPos, text: CT[turfPos - 1] },
             { label: <><span className={cx('es-s')}>ダ</span><span className={cx('es-lg')}>ダート</span>の馬場</>, pos: dirtPos, text: CT[dirtPos - 1] },
+            ...(growthTrend && genderTrend ? [
+              { label: '成長', pos: growthTrend.pos, text: growthTrend.label },
+              { label: '性別', pos: genderTrend.pos, text: genderTrend.label },
+            ] : []),
           ] : null}
         />
         {!enoughRaces && <ThinNote totalRaces={sire.total_races} minRaces={MIN_RACES_FOR_TRENDS} hiddenItems="「産駒の傾向」「産駒の特徴」「注目ポイント」「データQ&A」" />}
@@ -1221,7 +1275,7 @@ export default async function SirePage({
 
         {hasProfileTiles && (
           <Sec id="profile-section" head={<Hno w={n} title="基本情報" />}>
-            <Tiles className="es-tl" items={tiles.filter((x) => x[1])} />
+            <InfoTable label={`${n}の基本情報`} items={tiles.filter((x) => x[1])} />
           </Sec>
         )}
         <Sec id="summary-section" head={<Hno w={W} title="データ概要" />}>
@@ -1231,23 +1285,67 @@ export default async function SirePage({
           <YearCharts lead={leadYears} ystat={ystat} />
         </Sec>
         {notableProgeny.length > 0 && (
-          <Sec id="progeny-section" head={<Hno w={n} title="代表産駒" sub="集計期間に勝ち星を挙げた産駒。重賞の勝利数→勝利数の順" />}>
+          <Sec id="progeny-section" head={<Hno w={n} title="代表産駒" sub="2019年以降に勝ち星を挙げた産駒。G1の勝利数→重賞の勝利数→勝利数の順" />}>
             <HorseList
               label={`${n}の代表産駒`}
-              note="集計期間外の実績は含みません"
-              cols={[{ label: '馬名', m: 'm1' }, { label: '性齢', m: 'm1b' }, { label: '成績', m: 'm2', num: true }, { label: '主な勝ち鞍', m: 'm3' }, { label: '母父', m: 'm4', ml: '母父' }]}
-              rows={notableProgeny.map((h: NotableHorse) => [<b key="n">{h.horse_name}</b>, `${h.sex}${h.age ?? ''}`, `${h.races}戦${h.wins}勝`, <Titles key="t" list={formatTitles(h.titles)} />, h.damsire ?? '—'])}
+              initial={10}
+              note="成績は2019年以降のJRAのレース"
+              cols={[{ label: '馬名', m: 'm1' }, { label: '性・生年', m: 'm1b' }, { label: '成績', m: 'm2', num: true }, { label: '主な勝ち鞍', m: 'm3' }, { label: '母父', m: 'm4', ml: '母父' }]}
+              rows={notableProgeny.map((h: NotableHorse) => [<b key="n">{h.horse_name}</b>, `${h.sex}・${h.birth_year ? `${h.birth_year}年生` : ''}`, `${h.races}戦${h.wins}勝`, <Titles key="t" list={formatTitles(h.titles)} />, h.damsire ?? '—'])}
+            />
+          </Sec>
+        )}
+        {crops.length > 0 && (
+          <Sec id="crop-section" head={<Hno w={W} title="世代別の勝ち上がり率" sub="JRAで出走した産駒のうち、JRAで1勝以上した割合" />}>
+            <HorseList
+              label={`${W}の世代別の勝ち上がり率`}
+              className="es-cr"
+              initial={crops.length}
+              note="途中＝3歳の年が終わっていない世代"
+              cols={[{ label: '世代', m: 'm1' }, { label: '勝ち上がり率', m: 'm2', num: true }, { label: '全出走馬', m: 'm4', ml: '全体', num: true }, { label: '出走', m: 'm4', ml: '出走', num: true }, { label: '勝ち上がり', m: 'm4', ml: '勝ち上がり', num: true }, { label: '重賞勝ち馬', m: 'm4', ml: '重賞馬', num: true }]}
+              rows={crops.map((c) => [
+                <b key="c">{c.crop}年生{c.complete ? '' : <small className={cx('es-cp')}>途中</small>}</b>,
+                pct(c.rate),
+                c.all_rate === null ? '—' : pct(c.all_rate),
+                `${int(c.starters)}頭`,
+                `${int(c.winners)}頭`,
+                `${int(c.graded_winners)}頭`,
+              ])}
             />
           </Sec>
         )}
         {enoughRaces && (
           <Sec id="characteristics" head={<Hno w={W} title="特徴" sub="判定と、その根拠になった複勝率" />}>
             <Meters
+              note={growthTrend && genderTrend ? '※成長曲線は、2歳戦の偏り（成績上位の種牡馬ほど2歳の数値が高く出る）を補正し、全体の成績水準が近い種牡馬と比べて判定' : undefined}
               items={[
                 { label: '得意なコース傾向', pos: surfacePos, result: surfaceTrendText, scale: ['芝が得意', '差分なし', 'ダートが得意'], ev: ev([['芝', turf], ['ダート', dirt]]) },
                 { label: '得意な距離傾向', pos: distancePos, result: distanceTrendText, scale: ['短距離が得意', '差分なし', '長距離が得意'], ev: ev([['短距離〜マイル', md('短〜マ')], ['中距離〜長距離', md('中〜長')]]) },
                 { label: '得意な馬場傾向 - 芝', pos: turfPos, result: CT[turfPos - 1], scale: ['良馬場が得意', '差分なし', '重馬場が得意'], ev: ev([['良', turfCond.good], ['稍重〜不良', turfCond.bad]]) },
                 { label: '得意な馬場傾向 - ダート', pos: dirtPos, result: CT[dirtPos - 1], scale: ['良馬場が得意', '差分なし', '重馬場が得意'], ev: ev([['良', dirtCond.good], ['稍重〜不良', dirtCond.bad]]) },
+                // 2列で並ぶので、成長と性別は両方そろうときだけ出す（片方だけだと段がずれる）
+                ...(growthTrend && genderTrend ? [
+                  {
+                    label: '成長曲線', pos: growthTrend.pos, result: growthTrend.label, scale: ['早熟', '標準', '晩成'] as [string, string, string],
+                    ev: [['2歳 複勝率', growthTrend.place_rate_2], ['4歳以上 複勝率', growthTrend.place_rate_4]] as [string, number][],
+                    facts: (
+                      <p className={cx('fx')}>
+                        <span>全出走馬の2歳 <b className={cx('num')}>{pct(growthTrend.all_place_rate_2)}</b></span>
+                        <span>4歳以上 <b className={cx('num')}>{pct(growthTrend.all_place_rate_4)}</b></span>
+                      </p>
+                    ),
+                  },
+                  {
+                    label: '牡馬・牝馬の傾向', pos: genderTrend.pos, result: genderTrend.label, scale: ['牡馬が優勢', '差分なし', '牝馬が優勢'] as [string, string, string],
+                    ev: [['牡馬 複勝率', genderTrend.male_place_rate], ['牝馬 複勝率', genderTrend.female_place_rate]] as [string, number][],
+                    facts: (
+                      <p className={cx('fx')}>
+                        <span>全出走馬の牡馬 <b className={cx('num')}>{pct(genderTrend.all_male_place_rate)}</b></span>
+                        <span>牝馬 <b className={cx('num')}>{pct(genderTrend.all_female_place_rate)}</b></span>
+                      </p>
+                    ),
+                  },
+                ] : []),
               ]}
             />
           </Sec>
@@ -1280,6 +1378,16 @@ export default async function SirePage({
             </Pn>
           </Sec>
         )}
+        {hasSexBands && (
+          <Sec id="distance-sex-stats" head={<Hno w={W} title="牡馬・牝馬別の得意距離" sub="芝とダートそれぞれの距離帯別。牡馬はセン馬を含む" />}>
+            <Pn>
+              {sexFigs.map(([key, fig, text]) => (
+                <FigRow key={key} figure={fig} lines={text} />
+              ))}
+            </Pn>
+          </Sec>
+        )}
+        {changeRows2.length > 0 && cond('distance-change-stats', '距離短縮・延長データ', changeRows2, { keyLabel: '前走比' }, { sub: '前走（平地）からの距離の変化' })}
         <Ad unit="dataMid" />
         {cond('gender-stats', '性別データ', genderRows, { keyLabel: '性別' })}
         {cond('age-stats', '馬齢別データ', ageRows, { keyLabel: '馬齢' }, { before: figGrowth ? <FigRow figure={figGrowth} lines={lines(sireGrowthAnswer)} /> : null })}

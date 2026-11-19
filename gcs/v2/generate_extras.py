@@ -61,13 +61,20 @@ def fetch_sire_pedigree():
     from google.cloud import bigquery
     import pyarrow.parquet as pq
     client = bigquery.Client(project='keibaai-v2')
+    # p2〜p6 は父系（父の父、その父…）。系統の判定（sire_line_of）に使う
     sql = """
-    SELECT s.name, b.birth_year, b.birthplace, b.import_kubun, f.name AS father, mf.name AS damsire
+    SELECT s.name, b.birth_year, b.birthplace, b.import_kubun, f.name AS father, mf.name AS damsire,
+           f2.name AS p2, f3.name AS p3, f4.name AS p4, f5.name AS p5, f6.name AS p6
     FROM `keibaai-v2.site.sire` s
     JOIN `keibaai-v2.core.breeding_horse` b USING (breeding_id)
     LEFT JOIN `keibaai-v2.core.breeding_horse` f ON f.breeding_id = b.sire_id
     LEFT JOIN `keibaai-v2.core.breeding_horse` d ON d.breeding_id = b.dam_id
     LEFT JOIN `keibaai-v2.core.breeding_horse` mf ON mf.breeding_id = d.sire_id
+    LEFT JOIN `keibaai-v2.core.breeding_horse` f2 ON f2.breeding_id = f.sire_id
+    LEFT JOIN `keibaai-v2.core.breeding_horse` f3 ON f3.breeding_id = f2.sire_id
+    LEFT JOIN `keibaai-v2.core.breeding_horse` f4 ON f4.breeding_id = f3.sire_id
+    LEFT JOIN `keibaai-v2.core.breeding_horse` f5 ON f5.breeding_id = f4.sire_id
+    LEFT JOIN `keibaai-v2.core.breeding_horse` f6 ON f6.breeding_id = f5.sire_id
     """
     job = client.query(sql, job_config=bigquery.QueryJobConfig(maximum_bytes_billed=2 * 10**9))
     table = job.result().to_arrow()
@@ -91,7 +98,7 @@ def connect():
     if ped.exists():
         con.execute(f"CREATE VIEW sire_pedigree AS SELECT * FROM '{ped}'")
     else:
-        con.execute("CREATE VIEW sire_pedigree AS SELECT NULL::VARCHAR AS name, NULL::BIGINT AS birth_year, NULL::VARCHAR AS birthplace, NULL::VARCHAR AS import_kubun, NULL::VARCHAR AS father, NULL::VARCHAR AS damsire WHERE false")
+        con.execute("CREATE VIEW sire_pedigree AS SELECT NULL::VARCHAR AS name, NULL::BIGINT AS birth_year, NULL::VARCHAR AS birthplace, NULL::VARCHAR AS import_kubun, NULL::VARCHAR AS father, NULL::VARCHAR AS damsire, NULL::VARCHAR AS p2, NULL::VARCHAR AS p3, NULL::VARCHAR AS p4, NULL::VARCHAR AS p5, NULL::VARCHAR AS p6 WHERE false")
     return con
 
 
@@ -185,21 +192,196 @@ def growth_rates(con, name, since):
     return [{**x, 'all_place_rate': base.get(x['age'])} for x in r]
 
 
+# 父系の系統（近い祖先から順に照合し、最初に当たったもの）。名前は JRA-VAN の繁殖馬名（国内登録はカナ、海外は英字）
+SIRE_LINES = [
+    (('サンデーサイレンス', 'Sunday Silence'), 'サンデーサイレンス系'),
+    (('キングマンボ', 'Kingmambo'), 'キングマンボ系'),
+    (('ロベルト', 'Roberto'), 'ロベルト系'),
+    (('ストームキャット', 'Storm Cat'), 'ストームキャット系'),
+    (('エーピーインディ', 'A.P. Indy'), 'エーピーインディ系'),
+    (('デピュティミニスター', 'Deputy Minister'), 'デピュティミニスター系'),
+    (('ダンジグ', 'Danzig'), 'ダンジグ系'),
+    (('サドラーズウェルズ', "Sadler's Wells"), 'サドラーズウェルズ系'),
+    (('ヌレイエフ', 'Nureyev'), 'ヌレイエフ系'),
+    (('リファール', 'Lyphard'), 'リファール系'),
+    (('ヴァイスリージェント', 'Vice Regent'), 'ヴァイスリージェント系'),
+    (('ミスタープロスペクター', 'Mr. Prospector'), 'ミスタープロスペクター系'),
+    (('ヘイロー', 'Halo'), 'ヘイロー系'),
+    (('ノーザンダンサー', 'Northern Dancer'), 'ノーザンダンサー系'),
+    (('ボールドルーラー', 'Bold Ruler'), 'ボールドルーラー系'),
+    (('ヘイルトゥリーズン', 'Hail to Reason'), 'ヘイルトゥリーズン系'),
+    (('グレイソヴリン', 'Grey Sovereign'), 'グレイソヴリン系'),
+    (('ニアークティック', 'Nearctic'), 'ニアークティック系'),
+    (('ナスルーラ', 'Nasrullah'), 'ナスルーラ系'),
+]
+_LINE_OF = {n: label for names, label in SIRE_LINES for n in names}
+_KANA = __import__('re').compile(r'^[゠-ヿ・ー]+$')
+
+
+def sire_line_of(p):
+    """{'name': 'ロベルト系', 'via': 'スクリーンヒーロー'}。父が系統の祖そのもの、または父が英字名のときは via なし"""
+    chain = [p.get(k) for k in ('father', 'p2', 'p3', 'p4', 'p5', 'p6')]
+    for i, a in enumerate(chain):
+        if a and a in _LINE_OF:
+            via = chain[0] if i > 0 and chain[0] and _KANA.match(chain[0]) else None
+            return {'name': _LINE_OF[a], 'via': via}
+    return None
+
+
+# 早熟・晩成：2歳と4歳以上の複勝率（全出走馬を1とした指数）の比。上位の種牡馬ほど2歳が高く出る（素質馬の多い新馬・未勝利が中心）ので、
+# 全体の成績水準が近い種牡馬と比べる：log(4歳以上の指数/2歳の指数) を log(全体の指数) で回帰し、その残差で判定する
+GROWTH_MIN = 30          # 2歳・4歳以上それぞれの出走数の下限
+GROWTH_CUTS = (-0.35, -0.15, 0.15, 0.35)
+GROWTH_LABELS = ['早熟', 'やや早熟', '標準', 'やや晩成', '晩成']
+GENDER_MIN = 100         # 牡馬・牝馬それぞれの出走数の下限（50だと少数の偏りで「優勢」が出すぎる）
+GENDER_CUTS = (-0.25, -0.10, 0.10, 0.25)
+GENDER_LABELS = ['牡馬が優勢', 'やや牡馬が優勢', '差分なし', 'やや牝馬が優勢', '牝馬が優勢']
+_MODELS = {}
+
+
+def pos_of(x, cuts):
+    return 1 + sum(1 for c in cuts if x > c)
+
+
+def sire_models(con, since):
+    """全種牡馬の馬齢別・性別の複勝率と、成長の回帰式（週1回の集計で毎回作り直す）"""
+    if since in _MODELS:
+        return _MODELS[since]
+    import math
+    base = rows(con, """
+      SELECT AVG((rr.finish_position BETWEEN 1 AND 3)::INT) AS b,
+             AVG(CASE WHEN rr.age = 2 THEN (rr.finish_position BETWEEN 1 AND 3)::INT END) AS b2,
+             AVG(CASE WHEN rr.age >= 4 THEN (rr.finish_position BETWEEN 1 AND 3)::INT END) AS b4,
+             AVG(CASE WHEN rr.sex = 2 THEN (rr.finish_position BETWEEN 1 AND 3)::INT END) AS bf,
+             AVG(CASE WHEN rr.sex <> 2 THEN (rr.finish_position BETWEEN 1 AND 3)::INT END) AS bm
+      FROM race_master rm JOIN race_result rr USING (race_id)
+      WHERE rm.race_date >= ? AND rm.surface IN ('芝', 'ダート')
+    """, [since])[0]
+    per = rows(con, """
+      SELECT h.father, COUNT(*) AS n,
+             SUM((rr.age = 2)::INT) AS n2, SUM((rr.age >= 4)::INT) AS n4,
+             SUM((rr.sex = 2)::INT) AS nf, SUM((rr.sex <> 2)::INT) AS nm,
+             AVG((rr.finish_position BETWEEN 1 AND 3)::INT) AS a,
+             AVG(CASE WHEN rr.age = 2 THEN (rr.finish_position BETWEEN 1 AND 3)::INT END) AS a2,
+             AVG(CASE WHEN rr.age >= 4 THEN (rr.finish_position BETWEEN 1 AND 3)::INT END) AS a4,
+             AVG(CASE WHEN rr.sex = 2 THEN (rr.finish_position BETWEEN 1 AND 3)::INT END) AS af,
+             AVG(CASE WHEN rr.sex <> 2 THEN (rr.finish_position BETWEEN 1 AND 3)::INT END) AS am
+      FROM race_master rm JOIN race_result rr USING (race_id) JOIN horse h ON h.horse_id = rr.horse_id
+      WHERE rm.race_date >= ? AND rm.surface IN ('芝', 'ダート') AND h.father IS NOT NULL
+      GROUP BY h.father
+    """, [since])
+    per = {r['father']: r for r in per}
+    pts = [(math.log(r['a'] / base['b']), math.log((r['a4'] / base['b4']) / (r['a2'] / base['b2'])), min(r['n'], 3000))
+           for r in per.values() if r['n2'] >= GROWTH_MIN and r['n4'] >= GROWTH_MIN and r['a2'] and r['a4'] and r['a']]
+    sw = sum(w for _, _, w in pts)
+    mx = sum(w * x for x, _, w in pts) / sw
+    my = sum(w * y for _, y, w in pts) / sw
+    slope = sum(w * (x - mx) * (y - my) for x, y, w in pts) / sum(w * (x - mx) ** 2 for x, _, w in pts)
+    _MODELS[since] = {'base': base, 'per': per, 'a': my - slope * mx, 'b': slope}
+    return _MODELS[since]
+
+
+def growth_trend(con, name, since):
+    import math
+    m = sire_models(con, since)
+    r, base = m['per'].get(name), m['base']
+    if not r or r['n2'] < GROWTH_MIN or r['n4'] < GROWTH_MIN or not r['a2'] or not r['a4']:
+        return None
+    score = math.log((r['a4'] / base['b4']) / (r['a2'] / base['b2'])) - (m['a'] + m['b'] * math.log(r['a'] / base['b']))
+    pos = pos_of(score, GROWTH_CUTS)
+    return {'pos': pos, 'label': GROWTH_LABELS[pos - 1], 'score': round(score, 2),
+            'place_rate_2': round(r['a2'] * 100, 1), 'place_rate_4': round(r['a4'] * 100, 1),
+            'all_place_rate_2': round(base['b2'] * 100, 1), 'all_place_rate_4': round(base['b4'] * 100, 1)}
+
+
+def gender_trend(con, name, since):
+    """牡馬（セン馬を含む）と牝馬の複勝率を、全出走馬の牡馬・牝馬それぞれと比べた指数の比で判定"""
+    import math
+    m = sire_models(con, since)
+    r, base = m['per'].get(name), m['base']
+    if not r or r['nf'] < GENDER_MIN or r['nm'] < GENDER_MIN or not r['af'] or not r['am']:
+        return None
+    score = math.log((r['af'] / base['bf']) / (r['am'] / base['bm']))
+    pos = pos_of(score, GENDER_CUTS)
+    return {'pos': pos, 'label': GENDER_LABELS[pos - 1], 'score': round(score, 2),
+            'male_races': r['nm'], 'female_races': r['nf'],
+            'male_place_rate': round(r['am'] * 100, 1), 'female_place_rate': round(r['af'] * 100, 1),
+            'all_male_place_rate': round(base['bm'] * 100, 1), 'all_female_place_rate': round(base['bf'] * 100, 1)}
+
+
+PROGENY_SINCE = dt.date(2019, 1, 1)  # ローカル DB の最初のレース日。代表産駒はこの日以降の成績で選ぶ
+PROGENY_LIMIT = 20
+_CROP_BASE = {}
+
+
+def crop_stats(con, name, as_of):
+    """世代（生年）別の勝ち上がり率：JRA で出走した産駒のうち、JRA で1勝以上した割合。全出走馬の同じ値と並べる。
+    2017年生まれ（2019年デビュー）から。3歳の年が終わっていない世代は途中の値（complete=False）"""
+    if as_of not in _CROP_BASE:
+        first, last = PROGENY_SINCE.year - 2, as_of.year - 2
+        per = rows(con, """
+          WITH h AS (
+            SELECT rr.horse_id, any_value(h.father) AS father, year(any_value(h.birth_date)) AS crop,
+                   MAX((rr.finish_position = 1)::INT) AS won,
+                   MAX((rr.finish_position = 1 AND rm.grade IN ('G1','G2','G3'))::INT) AS graded
+            FROM race_master rm JOIN race_result rr USING (race_id) JOIN horse h ON h.horse_id = rr.horse_id
+            GROUP BY rr.horse_id
+          )
+          SELECT father, crop, COUNT(*) AS starters, SUM(won) AS winners, SUM(graded) AS graded_winners
+          FROM h WHERE crop BETWEEN ? AND ? AND father IS NOT NULL GROUP BY ROLLUP (crop, father)
+        """, [first, last])
+        base = {r['crop']: r for r in per if r['father'] is None and r['crop'] is not None}
+        by = {}
+        for r in per:
+            if r['father'] is not None:
+                b = base[r['crop']]
+                by.setdefault(r['father'], []).append({
+                    'crop': r['crop'], 'starters': r['starters'], 'winners': r['winners'], 'graded_winners': r['graded_winners'],
+                    'rate': round(r['winners'] / r['starters'] * 100, 1),
+                    'all_rate': round(b['winners'] / b['starters'] * 100, 1),
+                    'complete': r['crop'] + 3 < as_of.year,
+                })
+        _CROP_BASE[as_of] = by
+    return sorted(_CROP_BASE[as_of].get(name, []), key=lambda r: -r['crop'])
+
+
+def distance_change_stats(con, name, since):
+    """前走からの距離変更（短縮・同距離・延長）。前走・今走とも平地（芝・ダート）"""
+    return rows(con, f"""
+      WITH r AS (
+        SELECT rr.*, rm.race_date, rm.surface, rm.distance,
+               LAG(rm.distance) OVER (PARTITION BY rr.horse_id ORDER BY rm.race_date, rm.race_id) AS prev_distance,
+               LAG(rm.surface) OVER (PARTITION BY rr.horse_id ORDER BY rm.race_date, rm.race_id) AS prev_surface
+        FROM race_master rm JOIN race_result rr USING (race_id) JOIN horse h ON h.horse_id = rr.horse_id
+        WHERE h.father = ?
+      )
+      SELECT CASE WHEN rr.distance < rr.prev_distance THEN '距離短縮' WHEN rr.distance = rr.prev_distance THEN '同距離' ELSE '距離延長' END AS category,
+             {STAT_COLS}
+      FROM r rr
+      WHERE rr.race_date >= ? AND rr.surface IN ('芝', 'ダート') AND rr.prev_surface IN ('芝', 'ダート')
+      GROUP BY 1
+      ORDER BY CASE category WHEN '距離短縮' THEN 1 WHEN '同距離' THEN 2 ELSE 3 END
+    """, [name, since])
+
+
 def sire_extras(con, data, since, as_of):
     name = data['name']
     data['growth_rates'] = growth_rates(con, name, since)
+    data['growth_trend'] = growth_trend(con, name, since)
+    data['gender_trend'] = gender_trend(con, name, since)
     ped = rows(con, "SELECT * FROM sire_pedigree WHERE name = ?", [name])
     if ped:
         p = ped[0]
         data['profile'] = {
             'father': p['father'], 'damsire': p['damsire'], 'birth_year': p['birth_year'],
             'birthplace': p['birthplace'], 'imported': str(p['import_kubun'] or '0') != '0',
+            'sire_line': sire_line_of(p),
         }
         if p['birth_year']:
             data['birth_year'] = p['birth_year']  # 生成側は仮の値（2002）が入っている
 
-    # 代表産駒：集計期間の重賞勝ち（G1→G2→G3 の数）→勝利数の順
-    progeny = rows(con, """
+    # 代表産駒：2019年以降の G1 勝利数 → 重賞勝利数 → 勝利数の順（オーナー指示 2026-11-20）
+    progeny = rows(con, f"""
       WITH r AS (
         SELECT rr.horse_id, rr.horse_name, h.sex, h.birth_date, h.mf, rr.finish_position, rm.grade, rm.race_name, rm.race_date
         FROM race_master rm JOIN race_result rr USING (race_id) JOIN horse h ON h.horse_id = rr.horse_id
@@ -211,31 +393,41 @@ def sire_extras(con, data, since, as_of):
              SUM(CASE WHEN finish_position = 1 THEN 1 ELSE 0 END) AS wins,
              SUM(CASE WHEN finish_position = 1 AND grade = 'G1' THEN 1 ELSE 0 END) AS g1_wins,
              SUM(CASE WHEN finish_position = 1 AND grade IN ('G1','G2','G3') THEN 1 ELSE 0 END) AS graded_wins,
-             list(CASE WHEN finish_position = 1 AND grade IN ('G1','G2','G3') THEN grade || ' ' || race_name END ORDER BY grade, race_date DESC) AS titles
+             list(CASE WHEN finish_position = 1 AND grade IN ('G1','G2','G3') THEN grade || ' ' || race_name END ORDER BY grade, race_date DESC) AS titles,
+             MAX(race_date) AS last_date
       FROM r GROUP BY horse_id
       HAVING SUM(CASE WHEN finish_position = 1 THEN 1 ELSE 0 END) > 0
       ORDER BY g1_wins DESC, graded_wins DESC, wins DESC, races ASC
-      LIMIT 10
-    """, [name, since])
+      LIMIT {PROGENY_LIMIT}
+    """, [name, PROGENY_SINCE])
     for p in progeny:
         p['titles'] = [t for t in (p['titles'] or []) if t][:3]
         p['sex'] = SEX_LABEL.get(p['sex'], '')
+        p['birth_year'] = p['birth_date'].year if p['birth_date'] else None
         p['age'] = as_of.year - p['birth_date'].year if p['birth_date'] else None
         del p['birth_date']
     data['notable_progeny'] = progeny
+    data['notable_progeny_since'] = PROGENY_SINCE
 
-    # 芝・ダート別の距離帯
+    # 芝・ダート別の距離帯（全体／牡馬（セン馬を含む）／牝馬）
     band_case = 'CASE ' + ' '.join(f"WHEN rm.distance BETWEEN {lo} AND {hi} THEN '{label}'" for label, lo, hi in DISTANCE_BANDS) + ' END'
     order_case = 'CASE ' + ' '.join(f"WHEN rm.distance BETWEEN {lo} AND {hi} THEN {i}" for i, (_, lo, hi) in enumerate(DISTANCE_BANDS)) + ' END'
-    out = {}
-    for key, surface in [('turf', '芝'), ('dirt', 'ダート')]:
-        out[key] = rows(con, f"""
+
+    def bands(surface, sex_cond=''):
+        return rows(con, f"""
           SELECT {band_case} AS category, {STAT_COLS}
           FROM race_master rm JOIN race_result rr USING (race_id) JOIN horse h ON h.horse_id = rr.horse_id
-          WHERE h.father = ? AND rm.surface = ? AND rm.race_date >= ?
+          WHERE h.father = ? AND rm.surface = ? AND rm.race_date >= ? {sex_cond}
           GROUP BY category, {order_case} ORDER BY {order_case}
         """, [name, surface, since])
-    data['distance_surface_stats'] = out
+
+    data['distance_surface_stats'] = {'turf': bands('芝'), 'dirt': bands('ダート')}
+    data['distance_surface_sex_stats'] = {
+        'male': {'turf': bands('芝', 'AND rr.sex <> 2'), 'dirt': bands('ダート', 'AND rr.sex <> 2')},
+        'female': {'turf': bands('芝', 'AND rr.sex = 2'), 'dirt': bands('ダート', 'AND rr.sex = 2')},
+    }
+    data['distance_change_stats'] = distance_change_stats(con, name, since)
+    data['crop_stats'] = crop_stats(con, name, as_of)
 
 
 # ---------------------------------------------------------------------------

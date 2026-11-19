@@ -32,6 +32,8 @@ export interface NotableHorse {
   damsire?: string | null;
   father?: string | null;
   last_date?: string;
+  g1_wins?: number;
+  birth_year?: number | null;
 }
 
 export interface SireProfile {
@@ -40,6 +42,42 @@ export interface SireProfile {
   birth_year?: number | null;
   birthplace?: string | null;
   imported?: boolean;
+  /** 父系の系統（例 { name: 'ロベルト系', via: 'スクリーンヒーロー' }） */
+  sire_line?: { name: string; via?: string | null } | null;
+}
+
+/** 早熟・晩成の判定（generate_extras.py growth_trend）。pos 1=早熟〜5=晩成 */
+export interface GrowthTrend {
+  pos: number;
+  label: string;
+  place_rate_2: number;
+  place_rate_4: number;
+  all_place_rate_2: number;
+  all_place_rate_4: number;
+}
+
+/** 牡馬・牝馬の判定（generate_extras.py gender_trend）。pos 1=牡馬が優勢〜5=牝馬が優勢 */
+export interface GenderTrend {
+  pos: number;
+  label: string;
+  male_races: number;
+  female_races: number;
+  male_place_rate: number;
+  female_place_rate: number;
+  all_male_place_rate: number;
+  all_female_place_rate: number;
+}
+
+/** 世代（生年）別の勝ち上がり率 */
+export interface CropStat {
+  crop: number;
+  starters: number;
+  winners: number;
+  graded_winners: number;
+  rate: number;
+  all_rate: number | null;
+  /** 3歳の年が終わった世代 */
+  complete: boolean;
 }
 
 export interface PersonProfile {
@@ -124,6 +162,19 @@ const titleList = (h: NotableHorse) => (h.titles.length > 0 ? `（${formatTitles
 // 種牡馬
 // ------------------------------------------------------------
 
+/** 系統の表記（例「ロベルト系（スクリーンヒーロー経由）」） */
+export function sireLineText(profile?: SireProfile | null): string | null {
+  const l = profile?.sire_line;
+  if (!l?.name) return null;
+  return l.via ? `${l.name}（${l.via}経由）` : l.name;
+}
+
+/** 成長の判定を文中で使う形（「早熟タイプ」「やや晩成寄り」「成長曲線は標準的」） */
+export function growthPhrase(g?: GrowthTrend | null): string | null {
+  if (!g) return null;
+  return { 1: '**早熟タイプ**', 2: '**やや早熟寄り**', 3: '成長曲線は標準的', 4: '**やや晩成寄り**', 5: '**晩成タイプ**' }[g.pos] ?? null;
+}
+
 /** データ概要の先頭に置く結論文 */
 export function buildSireLead(args: {
   name: string;
@@ -133,21 +184,25 @@ export function buildSireLead(args: {
   bestTurf: StatLike | null;
   bestDirt: StatLike | null;
   progeny?: NotableHorse[];
+  growth?: GrowthTrend | null;
 }): string {
-  const { name, profile, surfaceTrendText, distanceTrendText, bestTurf, bestDirt, progeny } = args;
+  const { name, profile, surfaceTrendText, distanceTrendText, bestTurf, bestDirt, progeny, growth } = args;
   const lines: string[] = [];
+  const line = sireLineText(profile);
   const pedigree = [profile?.father ? `父${profile.father}` : null, profile?.damsire ? `母父${profile.damsire}` : null].filter(Boolean).join('、');
-  if (pedigree) lines.push(`${name}は${pedigree}の種牡馬です。`);
+  if (line) lines.push(`${name}は**${line}**の種牡馬です${pedigree ? `（${pedigree}）` : ''}。`);
+  else if (pedigree) lines.push(`${name}は${pedigree}の種牡馬です。`);
   const surface = surfaceTrendText === '差分なし' ? '芝・ダートの成績差は小さく' : `**${surfaceTrendText}**で`;
-  const distance = distanceTrendText === '差分なし' ? '距離による差も小さめです。' : `距離は**${distanceTrendText}**です。`;
-  lines.push(`${pedigree ? '産駒' : `${name}産駒`}は${surface}、${distance}`);
+  const g = growthPhrase(growth);
+  const distance = distanceTrendText === '差分なし' ? '距離による差も小さめ' : `距離は**${distanceTrendText}**`;
+  lines.push(`${line || pedigree ? '産駒' : `${name}産駒`}は${surface}、${distance}${g ? `、${g}` : ''}です。`);
   const bands = [
     bestTurf ? `芝が**${bestTurf.category}**（複勝率${bestTurf.place_rate.toFixed(1)}%）` : null,
     bestDirt ? `ダートが**${bestDirt.category}**（複勝率${bestDirt.place_rate.toFixed(1)}%）` : null,
   ].filter(Boolean);
   if (bands.length > 0) lines.push(`最も成績が良い距離帯は、${bands.join('、')}です。`);
-  const stars = (progeny ?? []).filter((h) => h.graded_wins > 0).slice(0, 2);
-  if (stars.length > 0) lines.push(`集計期間の代表産駒は${stars.map((h) => `${h.horse_name}${titleList(h)}`).join('、')}など。`);
+  const stars = (progeny ?? []).filter((h) => h.graded_wins > 0).slice(0, 3);
+  if (stars.length > 0) lines.push(`代表産駒は${stars.map((h) => `${h.horse_name}${titleList(h)}`).join('、')}など。`);
   return lines.join('');
 }
 
@@ -163,10 +218,22 @@ export function buildSireBandAnswer(name: string, turf: StatLike[] | undefined, 
   return `${name}産駒の複勝率が最も高い距離帯は、${parts.join('、')}です。\n※距離帯ごとに出走50回以上を対象にしています。`;
 }
 
+/**
+ * 早熟・晩成の判定方法の説明（ページ本文とQ&Aで使う）。
+ * 一般的な「2歳の成績が良い＝早熟」という見方は、2歳戦の構造による偏りを含んでいる。当サイトはそれを補正して判定している、という点を伝える
+ */
+export const GROWTH_METHOD =
+  '一般に「2歳戦の成績が良い種牡馬＝早熟」と言われがちですが、2歳戦は新馬・未勝利戦が中心で、素質のある馬が多い成績上位の種牡馬ほど2歳の数値が高く出ます。2歳の成績だけで比べると、上位の種牡馬はほとんどが「早熟」になってしまいます。当サイトではこの偏りを補正するため、2歳と4歳以上の成績の差を、全体の成績水準が近い種牡馬と比べて判定しています。';
+
 /** Q&A「早熟？晩成？」：判定はせず、馬齢別の複勝率を全出走馬と並べる */
-export function buildSireGrowthAnswer(name: string, rates: GrowthRate[] | undefined): string | null {
+export function buildSireGrowthAnswer(name: string, rates: GrowthRate[] | undefined, trend?: GrowthTrend | null): string | null {
   const ok = (rates ?? []).filter((r) => r.races >= 30);
   if (ok.length < 2) return null;
+  const verdict = trend
+    ? trend.pos === 3
+      ? `${name}産駒の成長曲線は**標準的**で、早熟・晩成どちらにも偏っていません。`
+      : `${name}産駒は**${trend.label}**の傾向があります。`
+    : '';
   const detail = ok
     .map((r) => `${r.age}**${r.place_rate.toFixed(1)}%**${typeof r.all_place_rate === 'number' ? `（全体${r.all_place_rate.toFixed(1)}%）` : ''}`)
     .join('、');
@@ -179,14 +246,85 @@ export function buildSireGrowthAnswer(name: string, rates: GrowthRate[] | undefi
         return `2歳から4歳以上にかけて複勝率は${Math.abs(diff).toFixed(1)}ポイント${diff >= 0 ? '下がっています' : '上がっています'}（全出走馬は${base.toFixed(1)}ポイント下がる）。`;
       })()
     : '';
-  return [`${name}産駒の馬齢別の複勝率は${detail}です。`, drop, '※平地の芝・ダート。2歳戦は新馬・未勝利戦が中心のため、上位の種牡馬ほど2歳の数値が高く出やすい点に注意してください。'].filter(Boolean).join('\n');
+  return [
+    verdict,
+    `馬齢別の複勝率は${detail}です。`,
+    drop,
+    trend ? GROWTH_METHOD : null,
+    trend ? '※平地の芝・ダート。2歳・4歳以上ともに30走以上の種牡馬が対象です。' : '※平地の芝・ダート。2歳戦は新馬・未勝利戦が中心のため、上位の種牡馬ほど2歳の数値が高く出やすい点に注意してください。',
+  ].filter(Boolean).join('\n');
 }
 
 /** Q&A「代表産駒は？」 */
 export function buildProgenyAnswer(name: string, progeny: NotableHorse[] | undefined): string | null {
   const list = (progeny ?? []).slice(0, 5);
   if (list.length === 0) return null;
-  return `集計期間に勝ち星を挙げた${name}産駒では、${list.map((h) => `**${h.horse_name}**${titleList(h)}`).join('、')}が代表的です。\n※重賞の勝利数→勝利数の順。集計期間外の実績は含みません。`;
+  return `${name}産駒では、${list.map((h) => `**${h.horse_name}**${titleList(h)}`).join('、')}が代表的です。\n※2019年以降のJRAの成績。G1の勝利数→重賞の勝利数→勝利数の順です。`;
+}
+
+/** Q&A「牝馬の特徴は？」：牡馬（セン馬を含む）と牝馬の、芝・ダートそれぞれの得意距離帯 */
+export function buildSireFemaleAnswer(
+  name: string,
+  sex: { male?: { turf?: StatLike[]; dirt?: StatLike[] }; female?: { turf?: StatLike[]; dirt?: StatLike[] } } | undefined,
+  trend?: GenderTrend | null,
+): string | null {
+  if (!sex) return null;
+  const best = (g?: { turf?: StatLike[]; dirt?: StatLike[] }) =>
+    [bestBand(g?.turf, 30), bestBand(g?.dirt, 30)]
+      .map((b, i) => (b ? `${i === 0 ? '芝' : 'ダート'}の${b.category}（複勝率${b.place_rate.toFixed(1)}%）` : null))
+      .filter(Boolean)
+      .join('、');
+  const f = best(sex.female);
+  const m = best(sex.male);
+  if (!f) return null;
+  const head = trend
+    ? trend.pos === 3
+      ? `${name}産駒の牝馬の複勝率は${trend.female_place_rate.toFixed(1)}%（牡馬${trend.male_place_rate.toFixed(1)}%）で、全出走馬の牡馬と牝馬の差と比べて、性別による差は小さめです。`
+      : `${name}産駒は**${trend.label}**です。牝馬の複勝率は${trend.female_place_rate.toFixed(1)}%、牡馬は${trend.male_place_rate.toFixed(1)}%です（全出走馬は牝馬${trend.all_female_place_rate.toFixed(1)}%・牡馬${trend.all_male_place_rate.toFixed(1)}%）。`
+    : '';
+  return [head, `牝馬の成績が最も良い距離帯は**${f}**です。${m ? `牡馬は${m}です。` : ''}`, '※牡馬はセン馬を含みます。距離帯ごとに出走30回以上を対象にしています。']
+    .filter(Boolean)
+    .join('\n');
+}
+
+/** Q&A「距離短縮・延長の成績は？」 */
+export function buildDistanceChangeAnswer(name: string, rows: (StatLike & { category: string })[] | undefined): string | null {
+  const ok = (rows ?? []).filter((r) => r.races >= 30);
+  const by = (c: string) => ok.find((r) => r.category === c);
+  const s = by('距離短縮');
+  const e = by('距離延長');
+  const same = by('同距離');
+  if (!s || !e) return null;
+  const diff = s.place_rate - e.place_rate;
+  const head = Math.abs(diff) < 2
+    ? `${name}産駒は距離短縮と延長の成績差が小さく、`
+    : `${name}産駒は**${diff > 0 ? '距離短縮' : '距離延長'}**の方が成績が良く、`;
+  return `${head}前走からの距離短縮の複勝率は${s.place_rate.toFixed(1)}%、延長は${e.place_rate.toFixed(1)}%${same ? `、同距離は${same.place_rate.toFixed(1)}%` : ''}です。\n※前走・今走とも平地（芝・ダート）のレースが対象です。`;
+}
+
+/** 勝ち上がり率（3歳の年が終わった世代の合計）と全出走馬の同じ値 */
+export function cropTotals(crops: CropStat[] | undefined) {
+  const done = (crops ?? []).filter((c) => c.complete);
+  const starters = done.reduce((a, c) => a + c.starters, 0);
+  if (starters < 30) return null;
+  const winners = done.reduce((a, c) => a + c.winners, 0);
+  const allRates = done.map((c) => c.all_rate).filter((v): v is number => typeof v === 'number');
+  return {
+    starters,
+    winners,
+    rate: (winners / starters) * 100,
+    allRate: allRates.length ? allRates.reduce((a, v) => a + v, 0) / allRates.length : null,
+    from: Math.min(...done.map((c) => c.crop)),
+    to: Math.max(...done.map((c) => c.crop)),
+  };
+}
+
+/** Q&A「勝ち上がり率は？」 */
+export function buildCropAnswer(name: string, crops: CropStat[] | undefined): string | null {
+  const t = cropTotals(crops);
+  if (!t) return null;
+  const cmp = t.allRate === null ? '' : `（全出走馬の平均${t.allRate.toFixed(1)}%）`;
+  return `${t.from}〜${t.to}年生まれの${name}産駒は、JRAで出走した${t.starters.toLocaleString()}頭のうち${t.winners.toLocaleString()}頭が勝ち上がり、勝ち上がり率は**${t.rate.toFixed(1)}%**${cmp}です。\n※JRAで1勝以上した割合。3歳の年が終わった世代が対象です。`;
 }
 
 // ------------------------------------------------------------
