@@ -1,0 +1,249 @@
+/* ===== コラム記事 =====
+   読み物なので本文の読みやすさを最優先にする。
+   1行はおよそ40字（PC）、行間は1.8〜1.95。H2は罫＋大きな字、H3は太字＋下罫で強弱を付ける。
+   淡いマス（#EEF0F2）は「押せるもの」（目次・リンクのマス）だけに使う。押せないもの（H3・定義・まとめ）は罫で囲む。
+   スマホは本文の紙を画面の端まで広げて1行の字数を確保する（題・絵と本文の左端が16pxで揃う） */
+.ar{padding:14px var(--pad-r) 0 var(--pad)}
+.ar-in{margin-inline:auto}
+.ar-cols{display:grid;grid-template-columns:minmax(0,1fr)}
+.ar-main{min-width:0}
+.ts{display:none}
+
+/* 記事の頭 */
+.ar-k{margin-top:10px;font-size:13px;font-weight:700;color:var(--ink-sub)}
+.ar-hd h1{margin-top:2px;font-size:22px;font-weight:700;line-height:1.42;word-break:auto-phrase;text-wrap:balance}
+/* 題が括弧で始まるときは、括弧の左の空きぶんだけ左へ出して本文の左端に揃える */
+.ar-hd h1.hang{text-indent:-.42em}
+.ar-meta{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:8px}
+.ar-by{display:flex;align-items:center;gap:8px;min-width:0;font-size:13px;color:var(--ink-sub);white-space:nowrap}
+.ar-by img{flex:none;width:32px;height:32px;border-radius:50%;object-fit:cover}
+.ar-by b{color:var(--ink);font-size:14px}
+.ar-by time{font-family:var(--f-num)}
+.ar-hero{margin-top:10px}
+.ar-hero img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:12px;background:var(--ad)}
+.sh{flex:none;display:inline-flex;align-items:center;gap:6px;border-radius:9999px;font-weight:700;white-space:nowrap;transition:background-color .15s}
+.sh.sm{height:40px;padding:0 16px;background:var(--panel);font-size:13px;color:var(--ink)}
+.sh.sm svg{width:15px;height:15px}
+.sh.sm:hover{background:var(--chip-hover)}
+.sh.lg{height:44px;padding:0 22px;background:var(--here);color:#FFFFFF;font-size:14px}
+.sh.lg:hover{background:#000000}
+
+/* 本文の紙 */
+.ar-sheet{margin:16px calc(-1 * var(--pad-r)) 0 calc(-1 * var(--pad));padding:22px var(--pad-r) 24px var(--pad);background:var(--panel)}
+.ar-body{font-size:16px;line-height:1.8;color:var(--ink);overflow-wrap:anywhere}
+.ar-body > :first-child{margin-top:0}
+.ar-body p{margin-top:1.15em}
+.ar-body strong{font-weight:700}
+.ar-body a{color:var(--link)}
+.ar-body a:hover{text-decoration:underline}
+/* 文中・箇条書きのリンクは上下に当たり判定を足す（40px以上） */
+.ar-body p a,.ar-body ul:not(.lk) a,.au-a{position:relative}
+.ar-body p a::after,.ar-body ul:not(.lk) a::after,.au-a::after{content:"";position:absolute;inset:-13px -2px}
+.ar-body h2,.ar-body h3{scroll-margin-top:calc(var(--hdr-h) + 16px);word-break:auto-phrase}
+.ar-body h2{margin-top:40px;padding-top:28px;border-top:1px solid var(--line);font-size:22px;font-weight:700;line-height:1.45}
+.ar-body h3{margin-top:36px;padding-bottom:8px;border-bottom:1px solid var(--line);font-size:17px;font-weight:700;line-height:1.5}
+.ar-body h2 + h3{margin-top:24px}
+.ar-body ul{margin-top:1em;padding-left:1.3em}
+.ar-body li{margin-top:.35em}
+.ar-body li::marker{color:var(--ink-sub)}
+.ar-body .note{font-size:13px;line-height:1.7;color:var(--ink-sub)}
+
+/* 定義の並び（春：3月・4月・5月 …）は罫だけの表（スマホ2×2） */
+.ar-body .kv{list-style:none;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.ar-body .kv li{margin:0;padding:9px 12px;font-size:14.5px;line-height:1.5;box-shadow:1px 0 0 var(--line),0 1px 0 var(--line)}
+/* まとめ：罫で囲む */
+.ar-body .sum{list-style:none;padding:16px;border:1px solid var(--line);border-radius:12px;line-height:1.75}
+.ar-body .sum li{position:relative;margin:0;padding-left:16px}
+.ar-body .sum li + li{margin-top:12px}
+.ar-body .sum li::before{content:"";position:absolute;left:0;top:.72em;width:7px;height:7px;border-radius:50%;background:var(--here)}
+/* リンクだけの並び（競馬場のコース別データ）は押しやすいマスに */
+.ar-body .lk{list-style:none;padding:0;display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
+.ar-body .lk li{margin:0}
+.ar-body .lk a{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:44px;padding:0 14px;border-radius:8px;background:var(--chip);font-size:15px;font-weight:700;line-height:1.4;transition:background-color .15s}
+.ar-body .lk a:hover{background:var(--chip-hover)}
+.ar-body .lk .ic{flex:none;width:11px;height:11px;fill:var(--ink-sub)}
+
+/* 目次（本文の中。先に5件、残りは「すべて表示」） */
+.toc{margin-top:28px;padding:14px 16px 0;border-radius:8px;background:var(--chip);line-height:1.5}
+.toc-h{margin:0 !important;font-size:15px;font-weight:700}
+.toc ol{list-style:none;margin-top:6px}
+.ar-body .toc li{margin:0}
+.toc li + li{border-top:1px solid #DDE0E5}
+.toc li a{display:block;padding:10px 0;font-size:14.5px}
+.toc li.l3 a{padding-left:16px;font-size:13.5px}
+.toc li[data-more]{display:none}
+.toc.open li[data-more]{display:block}
+.toc-m{display:block;width:100%;height:46px;border-top:1px solid #DDE0E5;font-size:14px;font-weight:700;color:var(--link)}
+.toc-m:hover{text-decoration:underline}
+.toc.open{padding-bottom:6px}
+.toc.open .toc-m{display:none}
+.ar-body .toc + h2{margin-top:28px}
+
+/* 記事内の広告枠 */
+.ar-ad{margin-top:32px;text-align:center;line-height:1.5}
+.ar-ad span{display:block;margin-bottom:6px;font-size:12px;color:var(--ink-sub)}
+.ar-ad div{display:grid;place-items:center;height:250px;max-width:728px;margin-inline:auto;border-radius:8px;background:var(--ad);font-size:13px;color:var(--ink-sub)}
+.ar-body .ar-ad + h2{margin-top:32px}
+
+/* ---------- 棒グラフ ----------
+   系列の色：牡馬＝青、牝馬＝赤紫、比較の相手＝灰、注目（夏）＝テーマカラー。数値の文字は色を付けず濃い灰。
+   棒は群の幅いっぱいに使う（1100px以上は図を最大640pxにして中央に置き、間延びさせない。それ未満は本文幅いっぱい） */
+.ch{--h:200px;position:relative;margin:22px auto 0;padding:14px 12px 12px;border:1px solid var(--line);border-radius:12px;line-height:1.5}
+.ch figcaption{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:2px 16px}
+.ch figcaption b{font-size:15px;font-weight:700}
+.ch-lg{display:flex;gap:14px;font-size:13px;color:var(--ink-sub);white-space:nowrap}
+.ch-lg i{display:inline-block;width:12px;height:12px;margin-right:5px;border-radius:3px;vertical-align:-1px}
+.ch-plot{position:relative;margin-top:30px}
+.ch-y{position:absolute;left:0;right:0;top:0;height:var(--h)}
+.ch-y span{position:absolute;left:40px;right:0;bottom:calc(var(--t) / var(--max) * 100%);border-top:1px solid var(--line)}
+.ch-y span:first-child{border-top-color:#AEB4BC}
+.ch-y em{position:absolute;left:-40px;top:0;width:34px;transform:translateY(-50%);font-style:normal;font-size:11px;line-height:1;text-align:right;color:var(--ink-sub)}
+.ch-g{position:relative;margin-left:40px;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr))}
+.ch-grp{display:flex;flex-direction:column;align-items:center;min-width:0}
+.ch-bars{display:flex;justify-content:center;gap:2px;width:100%;height:var(--h);padding:0 9%}
+.ch.one .ch-bars{padding:0 18%}
+.ch-b{position:relative;flex:1 1 0}
+.ch-b i{position:absolute;left:0;right:0;bottom:0;height:calc(var(--v) / var(--max) * 100%);border-radius:4px 4px 0 0;transform-origin:50% 100%;transition:transform .7s cubic-bezier(.22,1,.36,1);transition-delay:calc(var(--i,0) * 70ms)}
+.ch-b span{position:absolute;left:50%;bottom:calc(var(--v) / var(--max) * 100% + 4px);transform:translateX(-50%);font-size:12px;font-weight:700;line-height:1;white-space:nowrap;transition:opacity .3s;transition-delay:calc(var(--i,0) * 70ms + 250ms)}
+.ch-b span b{font-weight:700}
+.ch-b small{font-size:.85em;font-weight:500}
+.ch:not(.one) .ch-b small{display:none}
+.ch-x{margin-top:8px;font-size:13.5px;font-weight:700;line-height:1.3}
+.ch-b.male i,.ch-lg i.male{background:#2F6FDE}
+.ch-b.female i,.ch-lg i.female{background:#E0457B}
+.ch-b.mute i,.ch-lg i.mute{background:#858C96}
+.ch-b.acc i,.ch-lg i.acc{background:var(--green)}
+.js-anim .ch:not(.in) .ch-b i{transform:scaleY(0)}
+.js-anim .ch:not(.in) .ch-b span{opacity:0}
+
+/* ---------- 表（体重帯ごとの差分）：数値＋0を中心に左右へ伸びる棒 ---------- */
+.tb{margin-top:22px;border:1px solid var(--line);border-radius:12px;overflow:hidden;line-height:1.4}
+.tb table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:14px}
+.tb thead th{padding:10px 6px;background:var(--chip);font-size:13px;font-weight:700;text-align:center}
+.tb thead th:first-child{width:92px}
+.tb tbody tr{border-top:1px solid var(--line)}
+.tb tbody th{padding:10px 4px 10px 12px;font-size:14px;font-weight:400;text-align:left;white-space:nowrap}
+.tb td{padding:9px 6px}
+.df{display:grid;justify-items:center;gap:5px}
+.df-v{white-space:nowrap}
+.df-v b{font-size:15px;font-weight:700}
+.df-v b.reg{font-weight:400}
+.df-v small{margin-left:1px;font-size:12px;color:var(--ink-sub)}
+.tb td.neg .df-v b{color:#D42A2A}
+.df-b{position:relative;display:block;width:100%;max-width:180px;height:10px;border-radius:3px;background:var(--chip)}
+.df-b::after{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:#858C96}
+.df-b i{position:absolute;top:0;bottom:0;width:var(--w);transition:transform .7s cubic-bezier(.22,1,.36,1)}
+.tb td.pos .df-b i{left:50%;border-radius:0 3px 3px 0;background:var(--green);transform-origin:0 50%}
+.tb td.neg .df-b i{right:50%;border-radius:3px 0 0 3px;background:#D42A2A;transform-origin:100% 50%}
+.js-anim .tb:not(.in) .df-b i{transform:scaleX(0)}
+
+/* シェアと執筆者 */
+.ar-share{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:36px;padding-top:20px;border-top:1px solid var(--line)}
+.ar-share p{font-size:15px;font-weight:700}
+.au{display:grid;grid-template-columns:56px minmax(0,1fr);gap:14px;margin-top:20px;padding-top:20px;border-top:1px solid var(--line)}
+.au > img{width:56px;height:56px;border-radius:50%;object-fit:cover}
+.au-k{font-size:12px;font-weight:700;color:var(--ink-sub)}
+.au-n{font-size:17px;font-weight:700;line-height:1.4}
+.au-b{margin-top:4px;font-size:14px;line-height:1.7;color:var(--ink-sub)}
+.au-l{display:flex;align-items:center;gap:8px;margin-top:10px}
+.au-ic{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--chip);color:var(--ink);transition:background-color .15s}
+.au-ic:hover{background:var(--chip-hover)}
+.au-a{margin-left:6px;font-size:14px;color:var(--link)}
+.au-a::after{inset:-12px -4px}
+.au-a:hover{text-decoration:underline}
+
+/* 前後の記事 */
+.an{display:grid;gap:12px;margin-top:16px}
+.an-i{display:grid;grid-template-columns:112px minmax(0,1fr);align-items:center;gap:12px;padding:12px;border-radius:12px;background:var(--panel);box-shadow:0 1px 2px rgba(16,24,40,.06),0 2px 10px rgba(16,24,40,.05)}
+.an-p{display:block;overflow:hidden;border-radius:8px}
+.an-p img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}
+.an-t small{display:block;font-size:12px;font-weight:700;color:var(--ink-sub)}
+.an-t b{display:block;margin-top:2px;font-size:14px;font-weight:700;line-height:1.45;color:var(--link)}
+.an-i:hover .an-t b{text-decoration:underline}
+
+/* 人気記事（絵の並びは一覧・トップのコラム欄と同じ） */
+.ar-pop{margin-top:32px}
+.ar-pop h2{margin-bottom:10px;font-size:20px;font-weight:700;line-height:1.35}
+.ar-pop .cl{margin-top:0;padding:0}
+
+/* 幅の狭いスマホ：定義の表が折り返さないように字を少し小さく */
+@media (max-width:379.98px){.ar-body .kv li{padding:9px 10px;font-size:13.5px}}
+
+@media (min-width:700px){
+  .ar{padding-top:16px}
+  .ar-in{max-width:760px}
+  /* 題の横に絵を置いて、最初の画面から本文が読めるようにする。左（分類・題／著者・日付・シェア）は絵の上端・下端に揃える */
+  .ar-hd{display:grid;grid-template-columns:minmax(0,1fr) 300px;column-gap:24px;align-items:stretch;margin-top:12px}
+  .ar-ht{display:flex;flex-direction:column;justify-content:space-between;gap:12px;min-width:0}
+  .ar-k{margin-top:0}
+  .ar-hd h1{font-size:26px;line-height:1.4}
+  .ar-meta{margin-top:0}
+  .ar-hero{margin-top:0;align-self:start}
+  .ar-sheet{margin:16px 0 0;padding:32px 40px 32px;border-radius:12px;box-shadow:0 1px 2px rgba(16,24,40,.06),0 2px 10px rgba(16,24,40,.05)}
+  .ar-body{font-size:17px;line-height:1.95}
+  .ar-body h2{margin-top:48px;padding-top:32px;font-size:25px}
+  .ar-body h3{margin-top:40px;padding-bottom:10px;font-size:18px}
+  .ar-body .kv li{font-size:15px}
+  .ar-body .sum{padding:20px 24px}
+  .ar-body .lk{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ar-body .note{font-size:13.5px}
+  .ch{--h:260px;margin-top:26px;padding:18px 20px 16px}
+  .ch figcaption b{font-size:16px}
+  .ch-bars{padding:0 12%}
+  .ch.one .ch-bars{padding:0 22%}
+  .ch-b span{font-size:13px}
+  .ch:not(.one) .ch-b small{display:inline}
+  .ch-x{font-size:14.5px}
+  .tb{margin-top:26px}
+  .tb table{font-size:15px}
+  .tb thead th{padding:11px 12px;font-size:14px}
+  .tb thead th:first-child{width:22%}
+  .tb tbody th{padding-left:20px;font-size:15px}
+  .tb td{padding:11px 16px}
+  .df{grid-template-columns:7.4em minmax(0,1fr);align-items:center;justify-items:stretch;gap:12px}
+  .df-v{text-align:right}
+  .df-v b{font-size:16px}
+  .au{grid-template-columns:72px minmax(0,1fr);gap:16px}
+  .au > img{width:72px;height:72px}
+  .an.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .an-i{grid-template-columns:160px minmax(0,1fr);gap:16px;padding:14px}
+  .an-t b{font-size:16px}
+  .ar-pop{margin-top:40px}
+  .ar-pop h2{margin-bottom:12px;font-size:22px}
+}
+@media (min-width:1100px){
+  .ar{padding-top:20px}
+  .ar-in{max-width:820px}
+  .ar-hd{grid-template-columns:minmax(0,1fr) 360px;column-gap:28px}
+  .ar-hd h1{font-size:30px}
+  .ch{max-width:640px}
+  .ar-by{font-size:14px}
+  .ar-by b{font-size:15px}
+  .sh.sm{font-size:14px}
+  .ar-body h2{font-size:27px}
+  .ar-body h3{font-size:19px}
+  .ar-pop h2{font-size:24px}
+}
+/* PC：右に目次の列を固定する（本文の中の目次は出さない）。本文が狭くならない幅から出す */
+@media (min-width:1360px){
+  .ar-in{max-width:1164px}
+  .ar-cols{grid-template-columns:minmax(0,1fr) 260px;column-gap:24px;align-items:start}
+  .toc{display:none}
+  .ts{display:block;position:sticky;top:calc(var(--hdr-h) + 16px);margin-top:12px}
+  .ts-in{display:block;max-height:calc(100vh - var(--hdr-h) - 32px);overflow-y:auto;padding:16px 12px 12px;border-radius:12px;background:var(--panel);box-shadow:0 1px 2px rgba(16,24,40,.06),0 2px 10px rgba(16,24,40,.05)}
+  .ts-h{padding:0 8px 8px;font-size:16px;font-weight:700}
+  .ts ol{list-style:none}
+  .ts li a{display:flex;align-items:center;min-height:40px;padding:6px 8px;border-radius:8px;font-size:14px;font-weight:500;line-height:1.45;color:var(--ink);transition:background-color .15s,color .15s}
+  .ts li.l3 a{padding-left:20px;font-size:13px;font-weight:400;color:var(--ink-sub)}
+  .ts li a:hover{background:var(--chip)}
+  .ts li a.on{background:var(--here);color:#FFFFFF;font-weight:700}
+}
+@media (min-width:1440px){
+  .ar-sheet{padding-inline:52px}
+  .ar-body .kv{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .ar-body .lk{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (min-width:1800px){
+  .ar-body{font-size:18px}
+}
+@media (prefers-reduced-motion:reduce){.ch-b i,.ch-b span,.df-b i{transition:none}}

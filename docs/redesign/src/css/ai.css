@@ -1,0 +1,439 @@
+/* ===== AI予測の3ページ（ai / ai-races / ai-race）共通 =====
+   クラスは p- で始める（共通CSSの .ai .ac .ad と衝突させない）。色・角丸・影は themes.css の値をそのまま使う */
+:root{
+  --p-shadow:0 1px 2px rgba(16,24,40,.06),0 2px 10px rgba(16,24,40,.05);
+  /* 印：重賞の札（青・赤・緑の四角）と色も形も分ける。丸い形で 赤／濃い灰／濃い紫 */
+  --p-honmei:#D0282E; --p-himo:#4A4F57; --p-kiken:#6B3FA0;
+  --p-gap:16px; --p-px:20px; --p-py:16px;
+}
+.p-w{padding:0 var(--pad-r) 0 var(--pad)}
+.p-pn{background:var(--panel);border-radius:var(--r-panel);box-shadow:var(--p-shadow)}
+
+/* パンくず・ページの題（リンクは見た目24pxのまま、押せる範囲を上下に広げて42pxにする） */
+.p-crumb{display:flex;flex-wrap:wrap;align-items:center;gap:0 8px;padding:10px var(--pad-r) 0 var(--pad);font-size:13px;line-height:24px;color:var(--ink-sub)}
+.chips + .p-crumb{padding-top:0}
+.p-crumb a{position:relative;color:var(--link)}
+.p-crumb a::after{content:"";position:absolute;inset:-9px -4px}
+.p-crumb a:hover{text-decoration:underline}
+.p-crumb i{font-style:normal;color:#9AA0A8}
+.p-crumb .cur i{margin-right:8px}
+.p-top{padding:4px var(--pad-r) 0 var(--pad);scroll-margin-top:calc(var(--hdr-h) + 60px)}
+.p-h1{font-size:28px;font-weight:700;line-height:1.35}
+.p-lead{margin-top:6px;max-width:60em;font-size:15px;line-height:1.7;color:var(--ink-sub)}
+.p-lead a,.p-notes a{color:var(--link);text-decoration:underline;text-underline-offset:3px}
+
+/* 印：丸い形＋濃い塗り＋白い文字。記号と文字を併記して色だけに頼らない */
+.p-mk{display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 10px 0 8px;border-radius:9999px;font-size:13px;font-weight:700;line-height:1;color:#FFFFFF;white-space:nowrap;vertical-align:middle}
+.p-mk b{font-size:15px;font-weight:700}
+.p-mk.honmei{background:var(--p-honmei)}
+.p-mk.himo{background:var(--p-himo)}
+.p-mk.kiken{background:var(--p-kiken)}
+
+/* Xの案内 */
+.p-x{display:grid;grid-template-columns:36px minmax(0,1fr) 12px;align-items:center;gap:14px;min-height:68px;padding:12px var(--p-px)}
+.p-x-i{width:36px;height:36px;padding:9px;border-radius:50%;background:#111111;fill:#FFFFFF}
+.p-x-t{display:flex;flex-direction:column;gap:2px;min-width:0}
+.p-x-t b{font-size:16px;font-weight:700;color:var(--link)}
+.p-x:hover .p-x-t b{text-decoration:underline}
+.p-x-t span{font-size:13px;line-height:1.6;color:var(--ink-sub)}
+.p-x > .ic{font-size:12px;color:var(--ink-sub)}
+
+/* ページ末尾 */
+.p-foot{padding-top:24px}
+.p-back{display:flex;flex-wrap:wrap;gap:8px;margin-top:var(--p-gap)}
+.p-back .pill{height:40px}
+.p-bm{display:none}
+kbd{font-family:var(--f-num);font-size:12px;font-weight:700;padding:2px 6px;border-radius:4px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--line)}
+@media (min-width:1100px){
+  .p-bm{display:block;margin:16px var(--pad-r) 0 var(--pad);font-size:13px;color:var(--ink-sub)}
+}
+
+/* ===== AI予測トップ ===== */
+.p-facts-w{margin-top:14px}
+.p-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.p-facts > div{display:flex;flex-direction:column;justify-content:space-between;gap:2px;padding:14px var(--p-px) 12px;border-left:1px solid var(--line)}
+.p-facts > div:first-child{border-left:0}
+.p-facts dt{display:flex;align-items:baseline;gap:8px;white-space:nowrap;font-size:13px;font-weight:700;color:var(--ink-sub)}
+.p-facts dt small{font-size:12px;font-weight:400}
+.p-facts dd{font-size:15px;font-weight:700;white-space:nowrap}
+.p-facts dd b{font-size:32px;line-height:1.25;margin-right:3px}
+.p-facts .t dd{font-size:17px;line-height:40px}
+.p-duo-w{display:grid;gap:var(--p-gap);margin-top:40px}
+/* このAIについて／予測モデルについて：1枚の板に「見出し｜本文」の行を積む（横に並べると短い方の下に空きが出るため） */
+.p-duo{padding:0 var(--p-px)}
+.p-duo > section{display:grid;grid-template-columns:200px minmax(0,1fr);gap:4px 24px;align-items:start;padding:var(--p-py) 0;scroll-margin-top:calc(var(--hdr-h) + 80px)}
+.p-duo > section + section{border-top:1px solid var(--line)}
+.p-duo h2{font-size:18px;font-weight:700;line-height:1.4}
+.p-prose{display:flex;flex-direction:column;gap:8px;font-size:16px;line-height:1.75;overflow-wrap:anywhere}
+.p-prose strong{font-weight:700}
+/* 印について：図（左）と説明（右） */
+.p-marks{display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:8px 28px;align-items:center;padding:var(--p-py) var(--p-px)}
+.p-marks-f{margin:0}
+.p-marks-f figcaption{margin-top:6px;text-align:center;font-size:12px;line-height:1.6;color:var(--ink-sub)}
+.p-marks-f figcaption b{display:block;font-weight:700;color:var(--ink)}
+.p-mc{display:block;width:100%;height:auto}
+.p-mc-up{fill:#EEF0F2}
+.p-mc-ax{fill:none;stroke:#9AA0A8;stroke-width:1.5}
+.p-mc-dg{fill:none;stroke:#9AA0A8;stroke-width:1.5;stroke-dasharray:5 5}
+.p-mc-t{font-size:16px;font-weight:700;fill:var(--ink-sub)}
+.p-mc-t.d{font-weight:400}
+.p-mc-a{font-size:16px;fill:var(--ink-sub)}
+.p-mc-a.b{font-weight:700;fill:var(--ink)}
+.p-mc-m text{font-size:18px;font-weight:700;fill:#FFFFFF}
+.p-mc-m.honmei rect{fill:var(--p-honmei)}
+.p-mc-m.himo rect{fill:var(--p-himo)}
+.p-mc-m.kiken rect{fill:var(--p-kiken)}
+.js-anim .p-mc:not(.in) .p-mc-m{opacity:0}
+.js-anim .p-mc.in .p-mc-m{animation:p-pop .5s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--i,0) * 160ms)}
+@keyframes p-pop{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.p-marks-r{display:grid;grid-template-columns:76px minmax(0,1fr);gap:14px;align-items:start;padding:14px 0;border-top:1px solid var(--line)}
+.p-marks-r:first-child{border-top:0}
+.p-marks-r p{font-size:15px;line-height:1.75}
+.p-marks-r .p-mk{height:28px;font-size:14px}
+
+/* ===== 予測一覧 ===== */
+.p-sec{padding-top:16px}
+.p-flt{display:grid;gap:8px;padding:12px var(--p-px)}
+.p-flt-r{display:grid;grid-template-columns:56px minmax(0,1fr);align-items:center;gap:8px}
+.p-flt-k{font-size:13px;font-weight:700;color:var(--ink-sub)}
+.p-flt-c{display:flex;flex-wrap:wrap;gap:6px}
+.p-flt-c button{flex:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;height:40px;padding:0 14px;border-radius:8px;background:var(--chip);font-size:14px;font-weight:500;white-space:nowrap;transition:background-color .15s,color .15s}
+.p-flt-c button span{font-size:12px;color:var(--ink-sub)}
+.p-flt-c button:hover{background:var(--chip-hover)}
+.p-flt-c button[aria-pressed="true"]{background:var(--here);color:var(--on-here);font-weight:700}
+.p-flt-c button[aria-pressed="true"] span{color:var(--on-here)}
+.p-sfs .s{display:none}
+/* PC：日付ごとに「レース番号（行）×競馬場（列）」の表 */
+.p-mxw{display:grid;gap:var(--p-gap);margin-top:var(--p-gap)}
+.p-mx{padding:12px var(--p-px) 6px}
+.p-mx[hidden]{display:none}
+.p-mx h2{font-size:18px;font-weight:700;line-height:1.4}
+.p-mx h2 span{margin-left:10px;font-size:13px;font-weight:400;color:var(--ink-sub)}
+.p-mx h2 span b{font-weight:400}
+.p-mx table{width:100%;margin-top:6px;border-collapse:collapse;table-layout:fixed}
+.p-mx th,.p-mx td{position:relative;height:56px;padding:6px 12px;text-align:left;vertical-align:middle;border-top:1px solid var(--line);font-weight:400}
+.p-mx thead th{height:34px;padding-top:0;padding-bottom:0;border-top:0;background:var(--chip);font-size:14px;font-weight:700}
+.p-mx thead th:first-child{border-radius:8px 0 0 8px}
+.p-mx thead th:last-child{border-radius:0 8px 8px 0}
+.p-mx tbody tr:first-child > *{border-top:0}
+.p-mx .c-r{width:64px;font-size:13px;font-weight:700;color:var(--ink-sub);white-space:nowrap}
+.p-mx tbody .c-r b{font-size:20px;color:var(--ink);margin-right:1px}
+.p-mx td a{font-size:16px;font-weight:700;line-height:1.35;color:var(--link)}
+.p-mx td .gr{height:18px;vertical-align:0;position:relative;top:-1px}
+.p-mx td a::after{content:"";position:absolute;inset:0}
+.p-mx td[data-race]:hover{background:#F6F7F9}
+.p-mx td[data-race]:hover a{text-decoration:underline}
+.p-mx-m{display:flex;align-items:center;gap:8px;margin-top:3px;font-size:14px}
+.p-mx td.none{color:#A0A5AD}
+@media (max-width:1599.98px){
+  .p-mx th,.p-mx td{padding-left:8px;padding-right:8px}
+  .p-mx td a{font-size:15px}
+  .p-mx td .gr{margin-right:4px}
+}
+@media (max-width:1099.98px){
+  .p-mx{padding:10px 12px 4px}
+  .p-mx th,.p-mx td{padding-left:6px;padding-right:6px}
+  .p-mx .c-r{width:44px}
+  .p-mx td a{font-size:14px}
+  .p-mx-m{font-size:13px;gap:6px}
+}
+@media (max-width:899.98px){
+  .p-mx td a{font-size:13px}
+  .p-mx td .gr{min-width:26px;padding:0 4px;font-size:11px}
+}
+/* 競馬場を選んだとき：1280px以上は「レース番号×開催日」の表、それ未満は日付ごとの1列の表を最大520pxにする */
+.p-mx[data-kind="venue"]{display:none}
+@media (min-width:1280px){
+  .p-mxw.byv .p-mx[data-kind="date"]{display:none}
+  .p-mxw.byv .p-mx[data-kind="venue"]:not([hidden]){display:block}
+}
+/* 絞り込んで1列だけになった表は、最大520pxにする（1列が横に伸びないように） */
+.p-mx.one table{max-width:520px}
+.p-mxw{container-type:inline-size}
+@container (min-width:1250px){
+  /* 幅があるときは1行（レース名｜馬場と距離） */
+  .p-mx th,.p-mx td{height:44px}
+  .p-mx-m{float:left;width:112px;margin:1px 8px 0 0}
+  .p-mx-m .sf{min-width:46px}
+}
+/* スマホ・タブレット：1件＝1行（行全体が押せる）。行の高さは48pxで固定 */
+.p-lsw{margin-top:var(--p-gap)}
+.p-lsw .p-pn{padding:0 var(--p-px) 2px;overflow:hidden}
+.p-ls,.p-ls tbody{display:block}
+.p-ls thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.p-ls tr{position:relative;display:grid;grid-template-columns:76px minmax(0,1fr) auto;grid-template-areas:"v n c";align-items:center;column-gap:12px;height:48px;border-top:1px solid var(--line)}
+.p-ls tr:not(.p-ls-d):hover{background:#F6F7F9}
+.p-ls th,.p-ls td{padding:0;text-align:left;font-weight:400}
+.p-ls td.c-v{grid-area:v;font-size:15px;font-weight:700;white-space:nowrap}
+.p-ls td.c-v b{font-size:20px;margin-left:4px}
+.p-ls td.c-n{grid-area:n;min-width:0}
+.p-ls td.c-n a{display:block;font-size:16px;font-weight:700;line-height:1.25;color:var(--link);word-break:auto-phrase}
+.p-ls td.c-n a::after{content:"";position:absolute;inset:0}
+.p-ls tr:hover td.c-n a{text-decoration:underline}
+.p-ls td.c-c{grid-area:c;display:flex;align-items:center;gap:8px;font-size:15px;white-space:nowrap}
+.p-ls td.c-c .num{min-width:3.4em;text-align:right}
+.p-ls tr.p-ls-d{display:block;height:auto;margin:0 calc(var(--p-px) * -1);border-top:0}
+.p-ls tr.p-ls-d th{display:flex;align-items:center;height:38px;padding:0 var(--p-px);background:#EDEFF2;font-size:15px;font-weight:700}
+.p-ls-d th i{font-style:normal;font-weight:400;font-size:13px;color:var(--ink-sub)}
+.p-ls-d th span{margin-left:10px;font-size:13px;font-weight:400;color:var(--ink-sub)}
+.p-ls-d th span b{font-weight:400}
+.p-ls-d + tr,.p-ls tr.first{border-top:0}
+.p-ls tr[hidden]{display:none}
+.p-ls-0{margin-top:var(--p-gap);padding:28px 0;text-align:center;font-size:14px;color:var(--ink-sub)}
+.p-pg{display:flex;justify-content:center;align-items:center;gap:6px;margin:var(--p-gap) var(--pad-r) 0 var(--pad)}
+.p-pg a,.p-pg span{position:relative;flex:none;display:inline-flex;align-items:center;justify-content:center;min-width:40px;height:40px;padding:0 12px;border-radius:9999px;font-size:14px;font-weight:500;white-space:nowrap}
+.p-pg a{background:var(--panel);box-shadow:var(--p-shadow);transition:background-color .15s}
+.p-pg a:hover{background:var(--chip-hover)}
+.p-pg a.on{background:var(--here);color:var(--on-here);font-weight:700;box-shadow:none}
+.p-pg span.off{color:#A0A5AD}
+.p-pg span.gap{min-width:20px;padding:0;color:var(--ink-sub)}
+@media (min-width:700px){ .p-lsw,.p-pg{display:none} }
+@media (max-width:699.98px){ .p-mxw{display:none} }
+@media (max-width:1099.98px){
+  .p-flt-c{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-right:calc(var(--p-px) * -1);padding-right:var(--p-px)}
+  .p-flt-c::-webkit-scrollbar{display:none}
+}
+
+/* ===== レースごとの予測 ===== */
+.p-race{display:flex;flex-wrap:wrap;align-items:center;gap:0 14px}
+.p-race-v{font-size:20px}
+.p-race-v b{font-size:30px;line-height:1.2}
+.p-race .p-h1{display:flex;align-items:center;font-size:30px}
+.p-race .p-h1 .gr{height:26px;min-width:38px;margin-right:8px;font-size:14px;vertical-align:0}
+.p-race-m{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:700;white-space:nowrap}
+.p-race-m > span:nth-of-type(2){font-weight:400;color:var(--ink-sub)}
+.p-race-m > span:nth-of-type(2) b{font-weight:700;color:var(--ink);margin-right:1px}
+.p-race-d{margin-left:4px;font-size:14px;font-weight:400;color:var(--ink-sub)}
+.p-race-d .s{display:none}
+/* 本体：PCは左に予測の表（最大760px）、右に同日のレース・印の見方・前後の予測。上端と下端を揃える */
+.p-rg{display:flex;flex-direction:column;gap:var(--p-gap);margin-top:10px;padding:0 var(--pad-r) 0 var(--pad)}
+/* 同じ日のレース：競馬場の切替と、同じ競馬場のレース番号（押せる高さ40px） */
+.p-rs a{flex:none;display:block;height:40px;min-width:48px;padding:0 10px;border-radius:8px;background:var(--panel);font-size:14px;font-weight:500;line-height:40px;text-align:center;white-space:nowrap;transition:background-color .15s,color .15s}
+.p-rs-v a{font-weight:700}
+.p-rs-r a b{font-size:16px;font-weight:700;margin-right:1px}
+.p-rs a:hover{background:var(--chip-hover)}
+.p-rs a.on{background:var(--here);color:var(--on-here);font-weight:700}
+/* 予測の表 */
+.p-pred{position:relative;padding:4px var(--p-px) 6px;min-width:0}
+.p-pred-h{display:flex;align-items:baseline;gap:10px;height:40px;line-height:40px;white-space:nowrap}
+.p-pred-h h2{font-size:18px;font-weight:700}
+.p-pred-h small{font-size:13px;color:var(--ink-sub)}
+.p-tb{width:100%;border-collapse:collapse}
+.p-tb th,.p-tb td{height:36px;padding:0 12px;text-align:left;vertical-align:middle;border-top:1px solid var(--line);font-weight:400}
+.p-tb thead th{height:30px;border-top:0;font-size:13px;font-weight:700;color:var(--ink-sub);white-space:nowrap}
+.p-tb tbody tr:first-child > *{border-top-color:var(--ink-sub)}
+.p-tb .c-n{width:48px;padding:0;text-align:center}
+.p-tb .rk-n{margin:0 auto;width:24px;height:24px;font-size:14px}
+.p-tb .rk-n:not(.t3){font-weight:500;color:var(--ink-sub)}
+.p-tb .c-h{width:1%;white-space:nowrap}
+.p-tb tbody .c-h{font-size:16px;font-weight:700}
+.p-tb .c-m{width:76px;padding:0}
+.p-tb .c-p{width:76px;padding:0 4px 0 0;text-align:right;font-size:12px;color:var(--ink-sub);white-space:nowrap}
+.p-tb tbody .c-p b{font-size:19px;font-weight:700;color:var(--ink);margin-right:1px}
+.p-tb .c-b{padding-right:4px}
+.p-tb tbody tr:hover > *{background:#F6F7F9}
+/* 棒：テーマカラー1色。値が大きいほど長く・濃く。長さは最大400px */
+.p-bar{display:block;height:12px;border-radius:9999px;background:#E3E6EA;overflow:hidden}
+.p-bar i{display:block;height:100%;min-width:4px;border-radius:9999px;background:var(--brand)}
+.js-anim .p-tb .p-bar i{transform:scaleX(0);transform-origin:left center;transition:transform .65s cubic-bezier(.22,1,.36,1);transition-delay:calc(var(--i,0) * 30ms)}
+.js-anim .p-tb.in .p-bar i{transform:scaleX(1)}
+/* 予測を出す前の状態（現行 PredictionGate）：表の高さを保ったまま、表の位置に出す */
+.p-pred:not([data-state="open"]) .p-gate-in{visibility:hidden}
+.p-gate{position:absolute;inset:44px 0 0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:12px;padding:64px 16px 0;text-align:center;font-size:15px;line-height:1.7;color:var(--ink-sub)}
+.p-gate[hidden]{display:none}
+.p-gate p{max-width:28em}
+.p-gate-t{font-size:17px;font-weight:700;color:var(--ink)}
+.p-btn{display:inline-flex;align-items:center;justify-content:center;height:44px;margin-top:4px;padding:0 24px;border-radius:9999px;background:var(--green);color:#FFFFFF;font-size:15px;font-weight:700}
+.p-btn:hover{background:var(--green-hover)}
+.p-spin{width:32px;height:32px;border:3px solid #E3E6EA;border-top-color:var(--brand);border-radius:50%;animation:p-spin .8s linear infinite}
+@keyframes p-spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.p-spin{animation:none}}
+/* 印の見方と注意書き */
+.p-lg{padding:12px var(--p-px) var(--p-py)}
+.p-lg h2{font-size:18px;font-weight:700;line-height:1.4}
+.p-lg-l{list-style:none;display:grid;gap:10px;margin:8px 0 12px}
+.p-lg-l li{display:grid;grid-template-columns:68px minmax(0,1fr);gap:10px;align-items:start}
+.p-lg-l p{font-size:14px;line-height:1.7}
+.p-lg-l p .x{display:none}
+.p-notes{list-style:none;display:grid;gap:2px;padding-top:12px;border-top:1px solid var(--line);font-size:13px;line-height:1.7;color:var(--ink-sub)}
+.p-notes li{position:relative;padding-left:1.2em}
+.p-notes li::before{content:"※";position:absolute;left:0}
+/* 前の予測・次の予測：トップの AI予測カード（.ac）を2枚並べる */
+.p-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--p-gap)}
+.p-nav .ac{width:auto;min-width:0;max-width:none}
+.p-nav-l{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--ink-sub)}
+.p-nav-l .ic{font-size:10px}
+.p-nav .prev .p-nav-l .ic{transform:rotate(180deg)}
+.p-nav .next .p-nav-l{justify-content:flex-end}
+/* 見本用：状態の切替（デザインの一部ではない） */
+.p-demo{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;margin-top:40px;padding:12px 16px;border:2px dashed #9AA0A8;border-radius:var(--r-panel)}
+.p-demo p{flex:1 1 280px;font-size:13px;line-height:1.7;color:var(--ink-sub)}
+.p-demo p b{display:inline-flex;align-items:center;height:22px;margin-right:8px;padding:0 8px;border-radius:4px;background:var(--here);color:#FFFFFF;font-size:12px}
+.p-demo div{display:flex;flex-wrap:wrap;gap:6px}
+.p-demo button{height:40px;padding:0 14px;border-radius:8px;background:var(--panel);box-shadow:inset 0 0 0 1px #9AA0A8;font-size:14px;font-weight:500;white-space:nowrap}
+.p-demo button[aria-pressed="true"]{background:var(--here);color:var(--on-here);font-weight:700;box-shadow:none}
+
+@media (min-width:1240px){
+  .p-rg{display:grid;grid-template-columns:minmax(0,760px) minmax(300px,1fr);grid-template-rows:auto 1fr;grid-template-areas:"pred rs" "pred lg" "nav nav"}
+  .p-pred{grid-area:pred}
+  .p-rs{grid-area:rs;display:grid;gap:8px;padding:12px;background:var(--panel);border-radius:var(--r-panel);box-shadow:var(--p-shadow)}
+  .p-rs-v{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:6px}
+  .p-rs-r{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;padding-top:8px;border-top:1px solid var(--line)}
+  .p-rs a{min-width:0;padding:0;background:var(--chip)}
+  .p-bar{max-width:400px}
+  /* 印の見方：間隔は16px固定。残った高さは注意書きの上に置く */
+  .p-lg{grid-area:lg;display:flex;flex-direction:column}
+  .p-lg-l{gap:16px}
+  .p-notes{margin-top:auto}
+  .p-lg-l + .p-notes{margin-top:auto}
+  .p-nav{grid-area:nav}
+}
+/* 右列の中身は、右列に使える幅（本体の幅）で決める：説明の2文目を出すか、前後の予測を右列に入れるか。
+   表の高さ（18頭で728px）に収まり、空きがいちばん小さくなる組み合わせにしてある */
+.p-rgw{container-type:inline-size}
+@container (min-width:1198px) and (max-width:1267.98px){ .p-lg-l p .x{display:inline} }
+@container (min-width:1348px){ .p-lg-l p .x{display:inline} }
+@container (min-width:1268px){
+  .p-rg{grid-template-rows:auto 1fr auto;grid-template-areas:"pred rs" "pred lg" "pred nav"}
+}
+@media (max-width:1099.98px){
+  :root{--p-px:16px}
+  .p-h1{font-size:24px}
+  .p-race .p-h1{font-size:26px}
+  .p-race-v b{font-size:26px}
+  .p-facts .t dd{font-size:15px}
+}
+@media (max-width:1239.98px){
+  /* 同じ日のレース：1行。競馬場は左に固定、レース番号は横に送る（選択中を中央へ） */
+  .p-rs{display:flex;align-items:center;gap:8px}
+  .p-rs-v{flex:none;display:flex;gap:4px;padding-right:8px;border-right:1px solid #D5D9DE}
+  .p-rs-r{flex:1;min-width:0;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;margin-right:calc(var(--pad-r) * -1);padding-right:var(--pad-r)}
+  .p-rs-r::-webkit-scrollbar{display:none}
+}
+@media (min-width:1100px) and (max-width:1279.98px){
+  .p-marks{grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:8px 24px}
+}
+@media (max-width:1099.98px){
+  /* 印について：図を上（最大420px・中央）、説明を下に全幅 */
+  .p-marks{grid-template-columns:minmax(0,1fr);gap:0}
+  .p-marks-f{max-width:420px;width:100%;margin:0 auto 8px}
+  .p-marks-l .p-marks-r:first-child{border-top:1px solid var(--line)}
+}
+@media (max-width:899.98px){
+  .p-duo > section{grid-template-columns:minmax(0,1fr)}
+  .p-facts .t dd{font-size:13px}
+}
+
+
+/* ===== スマホ（700px未満）：1つのまとまり＝白い板1枚、一覧は1件＝1行 ===== */
+@media (max-width:699.98px){
+  :root{--p-px:14px;--p-py:12px;--p-gap:12px}
+  .p-pn{border-radius:12px}
+  .p-crumb{padding-top:8px;font-size:12px}
+  .p-crumb:has(+ .p-race) .cur{display:none}
+  .p-h1{font-size:22px}
+  .p-lead{font-size:14px}
+  .p-x{grid-template-columns:32px minmax(0,1fr) 12px;gap:12px}
+  .p-x-i{width:32px;height:32px;padding:8px}
+  .p-x-t b{font-size:15px}
+  .p-x-t span{font-size:12px}
+
+  .p-facts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .p-facts > div{padding:10px var(--p-px) 8px}
+  .p-facts > div.t{grid-column:1 / -1;flex-direction:row;align-items:center;justify-content:flex-start;gap:12px;padding:0 var(--p-px);border-left:0;border-top:1px solid var(--line)}
+  .p-facts dt{font-size:12px;gap:4px}
+  .p-facts dt small{font-size:11px}
+  .p-facts dd{font-size:13px}
+  .p-facts dd b{font-size:26px}
+  .p-facts .t dd{font-size:14px;line-height:40px}
+  .p-duo-w{margin-top:28px}
+  .p-duo h2{font-size:16px}
+  .p-prose{font-size:15px;gap:6px}
+  .p-marks-r{grid-template-columns:minmax(0,1fr);gap:6px;padding:12px 0}
+  .p-marks-r p{font-size:14px}
+  .p-marks-r .p-mk{height:24px;font-size:13px}
+
+  .p-sec{padding-top:12px}
+  .p-flt{padding:10px 12px}
+  .p-flt-r{grid-template-columns:44px minmax(0,1fr);gap:6px}
+  .p-flt-k{font-size:12px}
+  .p-flt-c{margin-right:-12px;padding-right:12px}
+  .p-flt-c button{padding:0 11px;font-size:13px;gap:4px}
+  .p-flt-c button span{font-size:11px}
+  .p-sfs{min-width:24px;padding:0 5px}
+  .p-sfs .l{display:none}
+  .p-sfs .s{display:inline}
+  .p-ls tr{grid-template-columns:60px minmax(0,1fr) auto;column-gap:8px}
+  .p-ls td.c-v{font-size:13px}
+  .p-ls td.c-v b{font-size:18px;margin-left:2px}
+  .p-ls td.c-n a{font-size:14px}
+  .p-ls td.c-n .gr{height:18px;min-width:26px;padding:0 4px;margin-right:4px;font-size:11px;vertical-align:1px}
+  .p-ls td.c-c{font-size:13px;gap:5px}
+  .p-ls tr.p-ls-d th{height:36px;font-size:14px}
+  .p-pg{gap:2px}
+  .p-pg a,.p-pg span{min-width:40px;height:40px;padding:0 6px}
+
+  .p-race{gap:0 8px}
+  .p-race-v{order:1;font-size:15px}
+  .p-race-v b{font-size:22px}
+  .p-race-m{order:2;gap:6px;font-size:14px}
+  .p-race-d{margin-left:2px;font-size:13px}
+  .p-race-d .l{display:none}
+  .p-race-d .s{display:inline}
+  .p-race .p-h1{order:3;flex-basis:100%;font-size:24px;line-height:1.3}
+  .p-race .p-h1 .gr{height:22px;min-width:32px;margin-right:6px;font-size:12px}
+  .p-rg{margin-top:8px}
+  .p-rs{gap:6px}
+  .p-rs-v{padding-right:6px}
+  .p-rs a{min-width:44px;padding:0 8px}
+  .p-pred{padding:0 var(--p-px)}
+  .p-pred-h{height:38px;line-height:38px;gap:8px}
+  .p-pred-h h2{font-size:16px}
+  .p-pred-h small{font-size:12px}
+  .p-gate{inset:38px 0 0;padding:48px 16px 0;font-size:14px}
+  .p-tb,.p-tb tbody{display:block}
+  .p-tb thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+  .p-tb tr{display:grid;grid-template-columns:24px minmax(0,max-content) minmax(0,1fr) 62px;grid-template-areas:"n h m p" "n b b p";align-items:center;column-gap:8px;row-gap:4px;height:48px;padding:7px 0 7px;border-top:1px solid var(--line)}
+  .p-tb th,.p-tb td{height:auto;padding:0;border-top:0}
+  .p-tb tbody tr:first-child{border-top-color:var(--ink-sub)}
+  .p-tb tbody tr:hover > *{background:none}
+  .p-tb .c-n{grid-area:n;width:auto}
+  .p-tb .rk-n{width:22px;height:22px;font-size:13px}
+  .p-tb .c-h{grid-area:h;width:auto;line-height:22px}
+  .p-tb tbody .c-h{font-size:15px}
+  .p-tb .c-m{grid-area:m;width:auto;height:22px;display:flex;align-items:center}
+  .p-tb .c-m .p-mk{height:22px;font-size:12px;padding:0 8px 0 6px}
+  .p-tb .c-m .p-mk b{font-size:13px}
+  .p-tb .c-b{grid-area:b;padding:0}
+  .p-tb .c-p{grid-area:p;width:auto;padding:0}
+  .p-tb tbody .c-p b{font-size:20px}
+  .p-bar{height:8px}
+  .p-lg h2{font-size:16px}
+  .p-lg-l{gap:8px}
+  .p-lg-l li{grid-template-columns:64px minmax(0,1fr);gap:8px}
+  .p-lg-l p{font-size:13px;line-height:1.65}
+  .p-notes{font-size:12px}
+  .p-nav .ac-n{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+  .p-nav .ac-d{display:none}
+  .p-foot{padding-top:16px}
+  .p-demo{margin-top:28px;padding:10px 12px}
+  .p-demo button{padding:0 10px;font-size:13px}
+}
+@media (max-width:379.98px){
+  .p-facts dt{gap:3px}
+  .p-facts dt small{font-size:10px}
+  .p-facts > div{padding-left:12px;padding-right:8px}
+  .p-tb tbody .c-h{font-size:14px}
+  .p-tb tr{column-gap:6px;grid-template-columns:24px minmax(0,max-content) minmax(0,1fr) 58px}
+  .p-ls tr{grid-template-columns:56px minmax(0,1fr) auto;column-gap:6px}
+  .p-ls td.c-v{font-size:12px}
+  .p-ls td.c-v b{font-size:17px}
+  .p-pg a,.p-pg span{padding:0 4px;font-size:13px}
+  .p-pg a[data-page]:first-child,.p-pg a[data-page]:last-child,.p-pg span.off{min-width:0}
+}
+
+/* 「レース番号×開催日」の表（4列）はいつも2行マス */
+.p-mx[data-kind="venue"] th,.p-mx[data-kind="venue"] td{height:56px}
+.p-mx[data-kind="venue"] thead th{height:34px}
+.p-mx[data-kind="venue"] .p-mx-m{float:none;width:auto;margin:3px 0 0}
+@media (max-width:1599.98px){ .p-mx[data-kind="venue"] td a{font-size:14px} }

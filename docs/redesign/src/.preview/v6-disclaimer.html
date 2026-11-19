@@ -1,0 +1,1756 @@
+<!doctype html><html lang="ja" data-look="m"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>免責事項 | 競馬データ.com（見本）</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* レイアウト：手本の実測に合わせる。
+   PC＝左にメニュー（YouTube）、本体は画面幅いっぱいの格子。絵は16:9で大きく（YouTube）。
+   「今」のレースは薄い灰の帯に白い角丸の板（WINTICKET）。切替と絞り込みは丸いチップ（YouTube／Airbnb）。
+   色は無彩色の灰（#0F0F0F / #606060 / #F2F2F2）。色を持つのはロゴ・押すボタン・芝ダート・棒だけ。サイト本体と同じライト固定 */
+:root{
+  color-scheme: light;
+  --bg:#FFFFFF; --band:#F2F2F2; --chip:#F2F2F2; --chip-hover:#E5E5E5; --ink:#0F0F0F; --ink-sub:#606060; --line:#E5E5E5;
+  --brand:#1DB854; --cta:#0A7D3C; --cta-hover:#086A33; --on-cta:#FFFFFF;
+  --turf:#1B8F4B; --dirt:#A8642A; --jump:#5F5F5F; --on-solid:#FFFFFF;
+  --foot:#F9F9F9;
+  --f:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",Roboto,system-ui,sans-serif;
+  --f-num:"Roboto","Helvetica Neue",Arial,"Hiragino Sans",sans-serif;
+  --r-img:12px; --r-panel:16px; --r-pill:9999px;
+  --pad:max(16px,env(safe-area-inset-left,0px)); --pad-r:max(16px,env(safe-area-inset-right,0px));
+  --hdr-h:56px; --tab-h:56px; --side-w:0px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;padding-bottom:calc(var(--tab-h) + env(safe-area-inset-bottom,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:40;background:var(--bg)}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:8px}
+.num{font-family:var(--f-num);font-variant-numeric:tabular-nums}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.ic{width:1em;height:1em;fill:currentColor;flex:none}
+
+/* 馬場の札：色を塗る（意味のある色だけ濃く） */
+.sf{display:inline-flex;align-items:center;justify-content:center;min-width:52px;height:28px;padding:0 10px;border-radius:6px;font-style:normal;font-size:13px;font-weight:700;color:var(--on-solid);white-space:nowrap}
+.sf.turf{background:var(--turf)}.sf.dirt{background:var(--dirt)}.sf.steeplechase{background:var(--jump)}
+.sf.sm{min-width:0;height:22px;padding:0 7px;font-size:12px;border-radius:4px}
+
+/* ヘッダー */
+.hdr{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;height:var(--hdr-h);background:var(--bg);display:flex;align-items:center;justify-content:space-between;gap:12px;padding-left:max(8px,env(safe-area-inset-left,0px));padding-right:var(--pad-r)}
+.hdr-l{display:flex;align-items:center;gap:4px;flex:none}
+.hbtn{width:44px;height:44px;display:grid;place-items:center;font-size:18px;border-radius:50%}
+.logo{display:flex;align-items:center;gap:8px;min-height:44px;font-weight:700;font-size:18px;letter-spacing:.01em;white-space:nowrap}
+.search{position:relative;flex:1;max-width:640px;display:none;align-items:center;height:42px;border:1px solid #CCCCCC;border-radius:var(--r-pill)}
+.search input{flex:1;min-width:0;height:100%;padding:0 18px;border:0;outline:0;background:none;font:inherit;font-size:16px;color:var(--ink);border-radius:var(--r-pill) 0 0 var(--r-pill)}
+.search input::placeholder{color:var(--ink-sub)}
+.search:focus-within{border-color:var(--ink)}
+.sb{width:60px;height:100%;display:grid;place-items:center;background:var(--chip);border-left:1px solid #CCCCCC;border-radius:0 var(--r-pill) var(--r-pill) 0;font-size:16px}
+#q-list{position:absolute;left:0;right:0;top:48px;z-index:5;list-style:none;background:var(--bg);border-radius:12px;box-shadow:0 4px 32px rgba(0,0,0,.14);overflow:hidden;padding:8px 0}
+#q-list li{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:44px;padding:0 18px;font-size:15px}
+#q-list small{color:var(--ink-sub);font-size:12px}
+.hdr-r{flex:none;display:flex;align-items:center}
+.hdr-r .cta{display:none}
+.cta{display:inline-flex;align-items:center;height:40px;padding:0 18px;border-radius:var(--r-pill);background:var(--cta);color:var(--on-cta);font-size:14px;font-weight:700;white-space:nowrap}
+.cta:hover{background:var(--cta-hover)}
+
+/* 左のメニュー（PCだけ） */
+.side{display:none}
+.main{min-width:0}
+
+/* チップ */
+.chips{position:sticky;top:calc(var(--hdr-h) + env(safe-area-inset-top,0px));z-index:20;background:var(--bg)}
+.chips > div{display:flex;gap:10px;overflow-x:auto;padding:8px var(--pad-r) 12px var(--pad);scrollbar-width:none}
+.chips > div::-webkit-scrollbar{display:none}
+.chips a{flex:none;position:relative;height:34px;display:flex;align-items:center;padding:0 14px;border-radius:8px;background:var(--chip);font-size:14px;font-weight:500;white-space:nowrap}
+.chips a::after{content:"";position:absolute;inset:-5px 0}
+.chips a:hover{background:var(--chip-hover)}
+.chips a.on{background:var(--ink);color:var(--bg)}
+
+/* 絵の格子（コラム） */
+.vg{display:grid;gap:20px 16px}
+.vc img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:var(--r-img);background:var(--band)}
+.vc-t{margin-top:10px;font-size:16px;font-weight:500;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.vc-m{margin-top:3px;font-size:13px;color:var(--ink-sub)}
+.vg.car{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 var(--pad-r) 0 var(--pad);scroll-padding-left:var(--pad);scrollbar-width:none}
+.vg.car::-webkit-scrollbar{display:none}
+.vg.car .vc{flex:none;width:88%;scroll-snap-align:start}
+.vg.lst{padding:0 var(--pad-r) 0 var(--pad);gap:16px}
+.vg.lst .vc{display:grid;grid-template-columns:44% 1fr;gap:12px;align-items:start}
+.vg.lst .vc-t{margin-top:0;font-size:15px;-webkit-line-clamp:3}
+.vg.lst img{border-radius:8px}
+
+/* 節 */
+.sc{padding-top:40px;scroll-margin-top:calc(var(--hdr-h) + 50px)}
+.feat{scroll-margin-top:calc(var(--hdr-h) + 60px)}
+.hd{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 var(--pad-r) 14px var(--pad)}
+.hd h2{font-size:22px;font-weight:700;line-height:1.35}
+.hd h2 small{display:block;font-size:13px;font-weight:400;color:var(--ink-sub);margin-top:2px}
+.pill{flex:none;display:inline-flex;align-items:center;height:36px;padding:0 16px;border-radius:var(--r-pill);border:1px solid #CCCCCC;font-size:14px;font-weight:500;white-space:nowrap;position:relative}
+.pill::after{content:"";position:absolute;inset:-4px 0}
+.pill:hover{background:var(--chip)}
+.pn h3{display:flex;align-items:baseline;justify-content:space-between;gap:12px;font-size:18px;font-weight:700;line-height:1.4}
+.pn h3 small{font-size:13px;font-weight:400;color:var(--ink-sub)}
+.pn h3 a{display:inline-flex;align-items:center;gap:8px;min-height:44px}
+.pn h3 a .ic{font-size:12px;color:var(--ink-sub)}
+.de{margin-top:6px;font-size:13px;color:var(--ink-sub);line-height:1.7}
+
+/* AI勝率予測：薄い灰の帯に、競馬場ごとの白い板 */
+.band{margin-top:36px;padding:28px 0 28px;background:var(--band)}
+.seg{display:flex;width:max-content;margin:0 var(--pad) 14px;padding:4px;border-radius:var(--r-pill);background:var(--bg)}
+.seg button{height:36px;min-width:76px;padding:0 18px;border-radius:var(--r-pill);font-size:14px;font-weight:700;color:var(--ink-sub)}
+.seg button.on{background:var(--ink);color:var(--bg)}
+.rps{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 var(--pad-r) 0 var(--pad);scroll-padding-left:var(--pad);scrollbar-width:none}
+.rps::-webkit-scrollbar{display:none}
+.rp{flex:none;width:100%;scroll-snap-align:start;background:var(--bg);border-radius:var(--r-panel);padding:8px 0 0;overflow:hidden}
+.rp-h{display:flex;align-items:baseline;justify-content:space-between;padding:12px 18px 8px}
+.rp-h h3{font-size:22px;font-weight:700}
+.rp-h span{font-size:13px;color:var(--ink-sub)}
+.rp ul{list-style:none}
+.rp li a{display:grid;grid-template-columns:48px 1fr 12px;align-items:center;gap:10px;min-height:64px;padding:8px 18px;border-top:1px solid var(--line)}
+.rp li a:hover{background:#FAFAFA}
+.rn{font-size:13px;font-weight:700;color:var(--ink-sub)}
+.rn b{font-size:24px;font-weight:700;color:var(--ink);margin-right:1px}
+.rt{min-width:0;display:flex;flex-direction:column;gap:4px}
+.rt > b{font-size:16px;font-weight:700;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rt > span{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink-sub)}
+.rp li .ic{font-size:12px;color:#909090}
+.rp li[data-more]{display:none}
+.rp.open li[data-more]{display:block}
+.rp-m,.rk-m{display:flex;align-items:center;justify-content:center;width:100%;height:48px;border-top:1px solid var(--line);font-size:14px;font-weight:700}
+.rp-m:hover,.rk-m:hover{background:#FAFAFA}
+
+/* 今週開催：距離は丸いチップ */
+.wk{display:grid;gap:28px;padding:0 var(--pad-r) 0 var(--pad)}
+.ds{display:grid;gap:12px;margin-top:6px}
+.ds-r{display:grid;grid-template-columns:60px 1fr;gap:10px;align-items:start}
+.ds-r > .sf{margin-top:6px}
+.ds-c{display:flex;flex-wrap:wrap;gap:8px}
+.ds-c a{display:inline-flex;align-items:center;justify-content:center;min-width:74px;height:40px;padding:0 14px;border-radius:8px;background:var(--chip);font-size:15px;font-weight:500;position:relative}
+.ds-c a::after{content:"";position:absolute;inset:-2px}
+.ds-c a:hover{background:var(--chip-hover)}
+
+/* コース別データ：競馬場の行 */
+.vl{padding:0 var(--pad-r) 0 var(--pad)}
+.vl details{border-top:1px solid var(--line)}
+.vl details:last-child{border-bottom:1px solid var(--line)}
+.vl summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:1fr auto 16px;align-items:center;gap:12px;min-height:60px}
+.vl summary::-webkit-details-marker{display:none}
+.vl summary b{font-size:17px;font-weight:700}
+.vl-c{display:flex;gap:6px}
+.vl summary .ic{font-size:12px;color:var(--ink-sub);transition:transform .16s}
+.vl details[open] summary .ic{transform:rotate(180deg)}
+.vl details .ds{margin:0 0 18px}
+
+/* リーディング：罫のない行のリスト */
+.two{display:grid;gap:32px;padding:0 var(--pad-r) 0 var(--pad)}
+.rk{list-style:none;margin-top:6px}
+.rk li a{display:grid;grid-template-columns:28px minmax(0,1fr) 64px 58px;align-items:center;gap:10px;min-height:60px;border-bottom:1px solid var(--line)}
+.rk li a:hover{background:#FAFAFA}
+.rk-n{font-size:18px;font-weight:500;text-align:center;color:var(--ink-sub)}
+.rk-n.t3{font-weight:700;color:var(--ink)}
+.rk-t{min-width:0;display:flex;flex-direction:column}
+.rk-t b{font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rk-t span{font-size:13px;color:var(--ink-sub);white-space:nowrap}
+.rk-b{height:8px;border-radius:var(--r-pill);background:var(--chip);overflow:hidden}
+.rk-b i{display:block;height:100%;border-radius:var(--r-pill);background:var(--brand)}
+.rk-w{text-align:right;font-size:13px;color:var(--ink-sub);white-space:nowrap}
+.rk-w b{font-size:22px;font-weight:700;color:var(--ink);margin-right:2px}
+.rk li[data-more]{display:none}
+.rk.open li[data-more]{display:block}
+.rk-m{border-top:0;border-bottom:1px solid var(--line)}
+
+/* 五十音：チップ */
+.kn{margin-top:12px}
+.kn-g{display:flex;flex-wrap:wrap;gap:8px}
+.kn-g button{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 14px;border-radius:8px;background:var(--chip);font-size:15px;font-weight:500;position:relative}
+.kn-g button::after{content:"";position:absolute;inset:-2px}
+.kn-g button span{font-family:var(--f-num);font-size:13px;color:var(--ink-sub)}
+.kn-g button:hover{background:var(--chip-hover)}
+.kn-g button[aria-expanded="true"]{background:var(--ink);color:var(--bg)}
+.kn-g button[aria-expanded="true"] span{color:#C8C8C8}
+.kn-p{margin-top:12px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:16px}
+.kn-p a{display:block;line-height:44px;font-size:15px;border-bottom:1px solid var(--line);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kn-p a:hover{text-decoration:underline}
+
+/* 広告枠 */
+.ad{margin:40px var(--pad-r) 0 var(--pad);text-align:center}
+.ad span{display:block;font-size:12px;color:var(--ink-sub);margin-bottom:6px}
+.ad div{display:grid;place-items:center;height:250px;max-width:728px;margin-inline:auto;border-radius:8px;background:var(--band);font-size:13px;color:var(--ink-sub)}
+
+/* フッターと下部メニュー */
+.ftr{margin-top:56px;padding:28px var(--pad-r) 32px var(--pad);background:var(--foot);border-top:1px solid var(--line)}
+.f-logo{font-weight:700;font-size:16px}
+.ftr nav{display:flex;flex-wrap:wrap;gap:0 20px;margin-top:6px;font-size:14px}
+.ftr nav a{min-height:44px;display:inline-flex;align-items:center}
+.f-note{margin-top:8px;font-size:12px;color:var(--ink-sub)}
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:35;display:grid;grid-template-columns:repeat(5,1fr);background:var(--bg);border-top:1px solid var(--line);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabbar a{height:var(--tab-h);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;font-weight:500;white-space:nowrap}
+.tabbar .ic{font-size:20px}
+
+/* タブレット以上：絵を2列に */
+@media (min-width:700px){
+  .vg.car{display:grid;grid-template-columns:repeat(2,1fr);overflow:visible;gap:24px 16px}
+  .vg.car .vc{width:auto}
+  .vg.car .vc:nth-child(n+5){display:none}
+  .vg.lst{grid-template-columns:repeat(2,1fr)}
+  .seg{display:none}
+  .rps{display:grid;grid-template-columns:repeat(3,1fr);overflow:visible}
+  .rp{width:auto}
+  .rt > b{font-size:15px}
+  .wk{grid-template-columns:repeat(3,1fr);gap:24px}
+  .ds-r{grid-template-columns:1fr;gap:6px}
+  .ds-r > .sf{margin-top:0;justify-self:start}
+  .vl .ds-r{grid-template-columns:60px 1fr;gap:10px}
+  .vl .ds-r > .sf{margin-top:6px}
+  .two{grid-template-columns:repeat(2,minmax(0,1fr));gap:40px}
+  .kn-p{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .ad div{height:90px}
+}
+/* PC：左にメニュー、本体は画面幅いっぱい */
+@media (min-width:1100px){
+  .hdr-r .cta{display:inline-flex}
+  .sbtn{display:none}
+  :root{--pad:24px;--pad-r:24px;--side-w:240px}
+  body{padding-bottom:0;font-size:16px}
+  .tabbar{display:none}
+  .hdr{padding-left:16px;padding-right:24px}
+  .logo{font-size:20px}
+  .search{display:flex}
+  .shell{display:grid;grid-template-columns:var(--side-w) minmax(0,1fr)}
+  .side{display:block;position:sticky;top:var(--hdr-h);align-self:start;height:calc(100vh - var(--hdr-h));overflow-y:auto;padding:12px 12px 24px}
+  .side nav{display:grid}
+  .side nav a{display:flex;align-items:center;gap:22px;height:44px;padding:0 12px;border-radius:10px;font-size:15px}
+  .side nav a:hover{background:var(--chip)}
+  .side nav a.on{background:var(--chip);font-weight:700}
+  .side .ic{font-size:18px;width:22px}
+  .side h2{margin:14px 0 4px;padding:14px 12px 0;border-top:1px solid var(--line);font-size:16px;font-weight:700}
+  .vd{width:10px;height:10px;margin:0 6px;border-radius:50%;background:var(--brand);flex:none}
+  .side nav.cols{grid-template-columns:1fr 1fr}
+  .chips{top:var(--hdr-h)}
+  .chips a{height:36px;font-size:15px;padding:0 14px}
+  .chips > div{flex-wrap:wrap;padding-top:12px}
+  .vg.car{grid-template-columns:repeat(3,1fr);gap:32px 16px}
+  .vg.car .vc:nth-child(n+4){display:none}
+  .vc-t{font-size:17px}
+  .vc-m{font-size:14px}
+  .vg.lst{grid-template-columns:repeat(3,1fr);gap:24px 16px}
+  .vg.lst .vc{grid-template-columns:42% 1fr}
+  .sc{padding-top:56px}
+  .hd h2{font-size:26px}
+  .hd h2 small{font-size:14px}
+  .band{margin-top:48px;padding:36px 0 36px}
+  .rp li[data-more]{display:block}
+  .rp-m{display:none}
+  .rp li a{min-height:60px}
+  .rt > b{font-size:16px}
+  .rk li[data-more]{display:block}
+  .rk-m{display:none}
+  .rk li a{grid-template-columns:36px minmax(0,1fr) minmax(80px,200px) 70px;min-height:60px}
+  .vl{display:grid;grid-template-columns:repeat(2,1fr);column-gap:40px}
+  .vl details:nth-last-child(2){border-bottom:1px solid var(--line)}
+  .kn-p{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .pn h3{font-size:20px}
+  .ftr{padding-left:24px}
+}
+@media (min-width:1700px){
+  .vg.car{grid-template-columns:repeat(4,1fr)}
+  .vg.car .vc:nth-child(n+4){display:block}
+  .vg.car .vc:nth-child(n+5){display:none}
+  .vg.lst{grid-template-columns:repeat(4,1fr)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ===== 第5.1版：色と塊 =====
+   地を薄い灰にして、データの塊はすべて白い角丸の板に入れる（WINTICKET と同じ作り）。絵は地に直接置く。
+   色は3つだけ ── 濃い緑（ヘッダー・フッター・選択中）、黄（押してほしいボタンと上位3位）、棒の明るい緑。
+   黄はコラム画像の文字色と同じ。芝・ダート・障害の札は淡い色にして、ブランドの緑と競合させない */
+:root{
+  --ground:#ECEEF1; --panel:#FFFFFF; --chip:#EFF1F4; --chip-hover:#E3E6EA; --ink:#14171A; --ink-sub:#5A5F66; --line:#E7E9ED;
+  --green:#0C6B38; --green-hover:#095A2F; --on-green:#FFFFFF; --yellow:#FFD43B; --yellow-hover:#F5C518; --on-yellow:#14171A;
+  --turf-bg:#DDF3E4; --turf-fg:#0C532A; --dirt-bg:#F6E3D0; --dirt-fg:#633D1E; --jump-bg:#E4E6EA; --jump-fg:#3F444B;
+  --ad:#E0E3E8;
+}
+body{background:var(--ground)}
+body::before{background:var(--green)}
+:focus-visible{outline-color:var(--ink)}
+.hdr :focus-visible,.ftr :focus-visible{outline-color:var(--on-green)}
+
+.sf.turf{background:var(--turf-bg);color:var(--turf-fg)}
+.sf.dirt{background:var(--dirt-bg);color:var(--dirt-fg)}
+.sf.steeplechase{background:var(--jump-bg);color:var(--jump-fg)}
+
+/* ヘッダー：濃い緑に白抜きのロゴ、黄のボタン */
+.hdr{background:var(--green);color:var(--on-green)}
+.logo img{filter:brightness(0) invert(1)}
+.hbtn:hover{background:rgba(255,255,255,.14)}
+.search{background:var(--panel);border-color:transparent;color:var(--ink)}
+.search:focus-within{border-color:var(--yellow);box-shadow:0 0 0 2px var(--yellow)}
+.sb{border-left-color:var(--line);background:var(--chip)}
+#q-list{color:var(--ink)}
+.cta{background:var(--yellow);color:var(--on-yellow)}
+.cta:hover{background:var(--yellow-hover)}
+
+/* チップ：地の上は白、選択中は濃い緑 */
+.chips{background:var(--ground)}
+.chips a{background:var(--panel)}
+.chips a:hover{background:var(--chip-hover)}
+.chips a.on{background:var(--green);color:var(--on-green)}
+.pill{background:var(--panel);border-color:transparent}
+.pill:hover{background:var(--chip-hover)}
+
+/* 見出しは地の上、データは白い板の中 */
+.hd{padding-bottom:16px}
+.band{margin-top:0;padding:40px 0 0;background:none}
+.sc{padding-top:48px}
+.seg button.on{background:var(--green);color:var(--on-green)}
+.rp li a:hover,.rk li a:hover,.rp-m:hover,.rk-m:hover{background:#F6F7F9}
+.wk{gap:12px}
+.wk .pn,.two .pn{background:var(--panel);border-radius:var(--r-panel);padding:18px 18px 20px}
+.two{gap:12px}
+.two .pn{padding-bottom:6px}
+.two .pn:last-child{padding-bottom:20px}
+.rk li:last-child a{border-bottom:0}
+.rk.open li:nth-child(5) a,.rk li:nth-child(5) a{border-bottom:1px solid var(--line)}
+.rk-m{border-bottom:0}
+.vl{margin:0 var(--pad-r) 0 var(--pad);padding:4px 18px;background:var(--panel);border-radius:var(--r-panel)}
+.vl details:first-child{border-top:0}
+.vl details:last-child{border-bottom:0}
+.vg.lst{margin:0 var(--pad-r) 0 var(--pad);padding:18px;background:var(--panel);border-radius:var(--r-panel)}
+.ds-c a,.kn-g button{background:var(--chip)}
+.ds-c a:hover,.kn-g button:hover{background:var(--chip-hover)}
+.kn-g button[aria-expanded="true"]{background:var(--green);color:var(--on-green)}
+.kn-g button[aria-expanded="true"] span{color:#CFE6D8}
+.rk-b{background:var(--chip)}
+
+/* 上位3位：黄の丸 */
+.rk-n{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;font-size:16px}
+.rk-n.t3{background:var(--yellow);color:var(--on-yellow)}
+
+.ad div{background:var(--ad)}
+.ftr{background:var(--green);color:var(--on-green);border-top:0}
+.ftr .f-note{color:#CFE6D8}
+.tabbar{background:var(--panel)}
+
+@media (min-width:700px){
+  .two{gap:16px}
+  .wk{gap:16px}
+}
+@media (min-width:1100px){
+  .side{background:var(--panel)}
+  .side nav a:hover{background:var(--chip)}
+  .side nav a.on{background:var(--chip)}
+  .vd{background:var(--brand)}
+  .sc{padding-top:64px}
+  .band{padding-top:56px}
+  .wk .pn,.two .pn{padding:22px 24px 24px}
+  .two .pn{padding-bottom:8px}
+  .two .pn:last-child{padding-bottom:24px}
+  .vl{padding:6px 24px;column-gap:48px}
+  .vl details:nth-child(2){border-top:0}
+  .vl details:nth-last-child(2){border-bottom:0}
+  .vg.lst{padding:24px}
+  .rk li:nth-child(5) a{border-bottom:1px solid var(--line)}
+}
+
+.two{align-items:start}
+
+.two{align-items:start}
+
+/* AI勝率予測：最新のレースをカードで並べる */
+.ai{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x proximity;padding:0 var(--pad-r) 4px var(--pad);scroll-padding-left:var(--pad);scrollbar-width:none}
+.ai::-webkit-scrollbar{display:none}
+.ac{flex:none;width:210px;scroll-snap-align:start;display:flex;flex-direction:column;gap:6px;background:var(--panel);border-radius:var(--r-panel);padding:16px 18px}
+.ac:hover{background:#F6F7F9}
+.ac-d{font-size:13px;color:var(--ink-sub)}
+.ac-n{font-size:17px;font-weight:700;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ac-m{display:flex;align-items:center;gap:8px;margin-top:4px;font-size:14px}
+.ac-v{font-weight:700;margin-right:2px}
+.ac-v b{font-size:17px;margin-left:3px}
+@media (min-width:1100px){
+  .ai{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px;overflow:visible}
+  .ac{width:auto;padding:18px 20px}
+}
+
+/* 押せる文字は青にする（押せない文字は濃い灰のまま） */
+:root{--link:#0B57A4}
+.ac-n,.rk-t b,.kn-p a,.ds-c a,.pn h3 a,.pn h3 a .ic{color:var(--link)}
+.ac:hover .ac-n,.rk li a:hover .rk-t b,.kn-p a:hover,.ds-c a:hover,.pn h3 a:hover,.vc:hover .vc-t{text-decoration:underline}
+
+/* 同系色の地に同系色の文字を重ねない：色の面には白い文字だけを載せる */
+.sf.turf{background:#3F8425;color:#FFFFFF}
+.sf.dirt{background:#8A5418;color:#FFFFFF}
+.sf.steeplechase{background:#666A72;color:#FFFFFF}
+.ftr .f-note{color:#FFFFFF}
+.kn-g button[aria-expanded="true"] span{color:#FFFFFF}
+
+/* 現在地・選択中は「黒い塗り＋白い文字」に統一する（芝の緑・ヘッダーの緑と区別する） */
+:root{--here:#1F2328;--on-here:#FFFFFF}
+.chips a.on,.kn-g button[aria-expanded="true"]{background:var(--here);color:var(--on-here);font-weight:700}
+.kn-g button[aria-expanded="true"] span{color:var(--on-here)}
+@media (min-width:1100px){
+  .side nav a.on{background:var(--here);color:var(--on-here);font-weight:700}
+  .side nav a.on .ic{color:var(--on-here)}
+}
+
+/* ===== 強弱を付ける =====
+   1) 色の面：AI勝率予測の節だけ、ヘッダーと同じ緑の帯にして白いカードを載せる（JRA の緑の大きな板と同じ使い方）
+   2) 大きさの差：冒頭のコラムは1本目を大きく、残りを小さく
+   3) 奥行き：白い板とカードに薄い影。押せるカードは乗せると少し浮く */
+.band{margin-top:44px;padding:32px 0 36px;background:var(--green)}
+.band .hd h2,.band .hd h2 small{color:#FFFFFF}
+.band .pill{background:#FFFFFF;color:var(--ink);border-color:transparent}
+.band + .sc{padding-top:44px}
+.pn,.vl,.vg.lst{box-shadow:0 1px 2px rgba(16,24,40,.06),0 2px 10px rgba(16,24,40,.05)}
+.ac{box-shadow:0 2px 6px rgba(0,0,0,.18);transition:transform .15s,box-shadow .15s}
+.ac:hover{background:var(--panel);transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.24)}
+.vc img{transition:filter .15s}
+.vc:hover img{filter:brightness(1.06)}
+@media (min-width:1100px){
+  .band{margin-top:56px;padding:40px 0 48px}
+  .band + .sc{padding-top:56px}
+  .hd h2{font-size:28px}
+  /* 冒頭のコラム：1本目を大きく */
+  .vg.car{grid-template-columns:2fr 1fr;grid-template-rows:auto auto;gap:16px}
+  .vg.car .vc:first-child{grid-row:1 / span 2;position:relative;border-radius:var(--r-img);overflow:hidden;min-height:0}
+  .vg.car .vc:first-child img{height:100%;aspect-ratio:auto;border-radius:0}
+  .vg.car .vc:first-child .vc-t{position:absolute;left:0;right:0;bottom:0;margin:0;padding:72px 24px 44px;font-size:26px;line-height:1.4;color:#FFFFFF;background:linear-gradient(to top,rgba(0,0,0,.82),rgba(0,0,0,0))}
+  .vg.car .vc:first-child .vc-m{position:absolute;left:24px;bottom:18px;margin:0;color:#FFFFFF;font-size:14px}
+  .vg.car .vc:first-child:hover .vc-t{text-decoration:underline}
+}
+@media (prefers-reduced-motion:reduce){.ac:hover{transform:none}}
+@media (min-width:1100px){
+  /* 1本目の絵は16:9のまま切らずに見せる */
+  .vg.car{grid-template-columns:minmax(0,2.75fr) minmax(0,1fr);align-items:start}
+  .vg.car .vc:first-child img{height:auto;aspect-ratio:16/9}
+}
+
+
+/* ===================== 配色案（data-look で切替） ===================== */
+/* 案の切替（見本用。デザインの一部ではない） */
+.looks{position:fixed;left:50%;bottom:calc(var(--tab-h) + 12px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:50;display:flex;align-items:center;gap:4px;padding:5px;border-radius:9999px;background:#FFFFFF;box-shadow:0 4px 24px rgba(0,0,0,.28);border:1px dashed #888;font-family:var(--f)}
+.looks span{padding:0 8px 0 10px;font-size:12px;color:#555;white-space:nowrap}
+.looks button{height:36px;padding:0 14px;border-radius:9999px;font-size:13px;font-weight:700;color:#111;white-space:nowrap}
+.looks button[aria-pressed="true"]{background:#111;color:#FFF}
+@media (min-width:1100px){.looks{bottom:16px}}
+
+/* 共通：芝・ダート・障害の札をはっきりした色に */
+:root[data-look] .sf.turf{background:#3A8A10}
+:root[data-look] .sf.dirt{background:#B4590E}
+:root[data-look] .sf.steeplechase{background:#4B5563}
+
+/* ---------- 案A：緑の面を大きく使う（JRA 型）。緑×黄×黒 ---------- */
+:root[data-look="a"]{
+  --ground:#F4F5F7; --panel:#FFFFFF; --chip:#EEF0F2; --chip-hover:#E0E3E7; --ink:#111111; --ink-sub:#555B63; --line:#E3E6EA;
+  --green:#00A04A; --green-hover:#008A40; --on-green:#FFFFFF; --yellow:#FFD900; --yellow-hover:#F2CC00; --on-yellow:#111111;
+  --brand:#00B956; --link:#0B5ED7; --here:#111111; --ad:#E3E6EA;
+}
+:root[data-look="a"] .ftr{background:#00703A}
+:root[data-look="a"] .hd h2{font-weight:800}
+
+/* ---------- 案B：白地に黒い枠と原色（スポーツ紙・netkeiba 型）。白×黒×赤×黄 ---------- */
+:root[data-look="b"]{
+  --ground:#FFFFFF; --panel:#FFFFFF; --chip:#F1F1F1; --chip-hover:#E2E2E2; --ink:#111111; --ink-sub:#4D4D4D; --line:#D9D9D9;
+  --green:#FFFFFF; --on-green:#111111; --yellow:#E60012; --yellow-hover:#C4000F; --on-yellow:#FFFFFF;
+  --brand:#00A04A; --link:#0041C2; --here:#111111; --ad:#F1F1F1; --r-panel:6px; --r-img:6px;
+}
+:root[data-look="b"] body::before{background:#FFFFFF}
+:root[data-look="b"] .hdr{border-bottom:4px solid #111111}
+:root[data-look="b"] .logo img{filter:none}
+:root[data-look="b"] .hbtn:hover{background:#F1F1F1}
+:root[data-look="b"] .search{border:2px solid #111111}
+:root[data-look="b"] .sb{background:#111111;color:#FFFFFF;border-left:0}
+:root[data-look="b"] .chips{background:#FFFFFF}
+:root[data-look="b"] .chips a,:root[data-look="b"] .pill{border:2px solid #111111;background:#FFFFFF}
+:root[data-look="b"] .chips a.on{background:#111111;color:#FFFFFF}
+:root[data-look="b"] .band{background:#FFE600}
+:root[data-look="b"] .band .hd h2,:root[data-look="b"] .band .hd h2 small{color:#111111}
+:root[data-look="b"] .band .pill{background:#111111;color:#FFFFFF;border-color:#111111}
+:root[data-look="b"] .pn,:root[data-look="b"] .vl,:root[data-look="b"] .vg.lst,:root[data-look="b"] .ac{border:2px solid #111111;box-shadow:none}
+:root[data-look="b"] .ac:hover{box-shadow:4px 4px 0 #111111;transform:translate(-2px,-2px)}
+:root[data-look="b"] .pn h3{margin:-18px -18px 14px;padding:10px 18px;background:#111111;color:#FFFFFF}
+:root[data-look="b"] .pn h3 small,:root[data-look="b"] .pn h3 a,:root[data-look="b"] .pn h3 a .ic{color:#FFFFFF}
+:root[data-look="b"] .ds-c a,:root[data-look="b"] .kn-g button{background:#FFFFFF;border:1.5px solid #111111}
+:root[data-look="b"] .ds-c a:hover,:root[data-look="b"] .kn-g button:hover{background:#FFE600}
+:root[data-look="b"] .kn-g button[aria-expanded="true"]{background:#111111}
+:root[data-look="b"] .rk-n.t3{background:#E60012;color:#FFFFFF}
+:root[data-look="b"] .rk-b{background:#E2E2E2}
+:root[data-look="b"] .ftr{background:#111111}
+:root[data-look="b"] .tabbar{border-top:2px solid #111111}
+:root[data-look="b"] .ad div{border:2px dashed #999999;background:none}
+:root[data-look="b"] .hd h2{font-weight:800}
+@media (min-width:1100px){
+  :root[data-look="b"] .side{border-right:2px solid #111111}
+  :root[data-look="b"] .pn h3{margin:-22px -24px 16px;padding:12px 24px}
+}
+
+/* ---------- 案C：紺の面に黄を効かせる（スポーツ中継型）。紺×黄×白 ---------- */
+:root[data-look="c"]{
+  --ground:#F2F4F9; --panel:#FFFFFF; --chip:#ECEFF6; --chip-hover:#DCE2EE; --ink:#101828; --ink-sub:#4A5672; --line:#DFE4EE;
+  --green:#0A2A8C; --green-hover:#081F6B; --on-green:#FFFFFF; --yellow:#FFD500; --yellow-hover:#F2C800; --on-yellow:#101828;
+  --brand:#1DB854; --link:#1456E0; --here:#0A2A8C; --ad:#DFE4EE;
+}
+:root[data-look="c"] .ftr{background:#071A52}
+:root[data-look="c"] .hd h2{font-weight:800;text-decoration:underline;text-decoration-color:#FFD500;text-decoration-thickness:7px;text-underline-offset:5px;text-decoration-skip-ink:none}
+:root[data-look="c"] .hd h2 small{display:inline-block;width:100%;margin-top:10px}
+:root[data-look="c"] .pn h3{color:#0A2A8C}
+:root[data-look="c"] .rk-w b,:root[data-look="c"] .ac-v b{color:#0A2A8C}
+
+/* 上の切替バー（見本用） */
+.looks.top{position:static;transform:none;justify-content:center;flex-wrap:wrap;border-radius:0;box-shadow:none;border:0;border-bottom:1px dashed #888;background:#FFF6CC;padding:8px 12px;gap:8px}
+.looks.top span{font-size:13px;font-weight:700;color:#111}
+.looks.top button{border:1.5px solid #111;background:#FFF;height:38px}
+.looks.top button[aria-pressed="true"]{background:#111;color:#FFF}
+
+/* ---------- 中間：はっきりした色・冒頭の大きな絵・薄い影は残し、色の帯と黒い枠は使わない ---------- */
+:root[data-look="m"]{
+  --ground:#F4F5F7; --panel:#FFFFFF; --chip:#EEF0F2; --chip-hover:#E0E3E7; --ink:#111111; --ink-sub:#555B63; --line:#E3E6EA;
+  --green:#00A04A; --green-hover:#008A40; --on-green:#FFFFFF; --yellow:#FFD900; --yellow-hover:#F2CC00; --on-yellow:#111111;
+  --brand:#00B956; --link:#0B5ED7; --here:#111111; --ad:#E3E6EA;
+}
+:root[data-look="m"] .ftr{background:#00703A}
+:root[data-look="m"] .band{margin-top:0;padding:44px 0 0;background:none}
+:root[data-look="m"] .band .hd h2{color:var(--ink)}
+:root[data-look="m"] .band .hd h2 small{color:var(--ink-sub)}
+:root[data-look="m"] .band .pill{background:var(--panel);color:var(--ink)}
+:root[data-look="m"] .ac{box-shadow:0 1px 2px rgba(16,24,40,.08),0 3px 12px rgba(16,24,40,.08)}
+:root[data-look="m"] .ac:hover{box-shadow:0 8px 22px rgba(16,24,40,.16)}
+@media (min-width:1100px){
+  :root[data-look="m"] .band{padding-top:60px}
+}
+
+/* テーマカラーは #1DB854 のまま使う（ずらさない）。緑は1色だけにし、フッターは現行と同じ濃い灰 */
+:root[data-look="m"]{--green:#1DB854; --green-hover:#19A54B; --brand:#1DB854}
+:root[data-look="m"] .ftr{background:#2B2F33}
+:root[data-look="m"] .vd{background:#1DB854}
+/* 案が決まったので切替は出さない */
+.looks{display:none}
+
+/* 芝・ダート・障害の札は、ひとつ前に好評だった色に戻す */
+:root[data-look] .sf.turf{background:#3F8425}
+:root[data-look] .sf.dirt{background:#8A5418}
+:root[data-look] .sf.steeplechase{background:#666A72}
+
+/* ===== 揃え =====
+   横に並ぶものは上端と下端を必ず揃える。余白は16pxを基準に統一する */
+.chips > div{padding-top:16px;padding-bottom:16px}
+.two{align-items:stretch}
+@media (min-width:1100px){
+  /* 冒頭のコラム：左の大きな1本の高さに、右の2本をぴったり収める */
+  .vg.car{grid-template-columns:minmax(0,2.75fr) minmax(0,1fr);grid-template-rows:1fr 1fr;align-items:stretch;gap:16px}
+  .vg.car .vc:not(:first-child){display:flex;flex-direction:column;min-height:0}
+  .vg.car .vc:not(:first-child) img{flex:1 1 0;height:0;min-height:0;aspect-ratio:auto}
+  .vg.car .vc:not(:first-child) .vc-t{font-size:15px;margin-top:8px}
+  .vg.car .vc:not(:first-child) .vc-m{font-size:13px}
+}
+@media (min-width:1100px){
+  .vg.car .vc:nth-child(n+4):not(:first-child){display:none}
+}
+
+/* 黒を弱める：文字・見出し・現在地の塗りを、真っ黒から濃い灰へ */
+:root[data-look="m"]{--ink:#333333; --ink-sub:#666666; --here:#3A3D42; --on-yellow:#333333}
+
+@media (min-width:1100px){
+  /* 冒頭のコラム：右の2本も絵を切らずに大きく見せる。左は右の2倍＋間隔ぶんの幅にして、上下の端をぴったり揃える */
+  .vg.car{grid-template-columns:minmax(0,1fr) calc((100% - 44.44px) / 3);grid-template-rows:auto auto}
+  .vg.car .vc:not(:first-child){display:block;position:relative;border-radius:var(--r-img);overflow:hidden}
+  .vg.car .vc:nth-child(n+4):not(:first-child){display:none}
+  .vg.car .vc:not(:first-child) img{display:block;width:100%;height:auto;aspect-ratio:16/9;border-radius:0}
+  .vg.car .vc:not(:first-child) .vc-t{position:absolute;left:0;right:0;bottom:0;margin:0;padding:40px 16px 34px;font-size:16px;line-height:1.4;color:#FFFFFF;background:linear-gradient(to top,rgba(0,0,0,.85),rgba(0,0,0,0));-webkit-line-clamp:2}
+  .vg.car .vc:not(:first-child) .vc-m{position:absolute;left:16px;bottom:12px;margin:0;color:#FFFFFF;font-size:13px}
+  .vg.car .vc:not(:first-child):hover .vc-t{text-decoration:underline}
+}
+@media (min-width:1100px){
+  /* 絵に重ねる文字：暗いぼかしはカード側に敷き、タイトルは2行で確実に切る（3行目が日付に重ならないように） */
+  .vg.car .vc::after{content:"";position:absolute;left:0;right:0;bottom:0;height:55%;background:linear-gradient(to top,rgba(0,0,0,.85),rgba(0,0,0,0));pointer-events:none}
+  .vg.car .vc .vc-t,.vg.car .vc .vc-m{z-index:1}
+  .vg.car .vc:first-child .vc-t{padding:0 24px;bottom:46px;background:none}
+  .vg.car .vc:not(:first-child) .vc-t{padding:0 16px;bottom:36px;background:none}
+}
+
+/* 黒は中間：真っ黒と濃い灰のあいだ */
+:root[data-look="m"]{--ink:#222222; --ink-sub:#5E5E5E; --here:#26292D; --on-yellow:#222222}
+
+/* 下のコラム：絵を上に置いた大きなカードにする（タブレット2列・PC3列）。タイトルは2行ぶんの高さを取り、日付の位置を揃える */
+@media (min-width:700px){
+  .vg.lst{grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 16px;padding:20px}
+  .vg.lst .vc{display:block}
+  .vg.lst img{border-radius:var(--r-img)}
+  .vg.lst .vc-t{margin-top:12px;font-size:17px;line-height:1.45;-webkit-line-clamp:2;min-height:2.9em}
+  .vg.lst .vc-m{margin-top:4px;font-size:14px}
+}
+@media (min-width:1100px){
+  .vg.lst{grid-template-columns:repeat(3,minmax(0,1fr));gap:32px 20px;padding:24px}
+  .vg.lst .vc-t{font-size:18px}
+}
+
+/* ===== 動き（画面に入ったときに1回だけ。動きを減らす設定では出さない） =====
+   棒は左から伸び、勝利数は0から数え上がる。AI予測のカードは左から順に浮き上がる。絵は乗せると少し寄る */
+.rk-b{height:10px}
+.js-anim .rk-b i{transform:scaleX(0);transform-origin:left center;transition:transform .65s cubic-bezier(.22,1,.36,1);transition-delay:calc(var(--i,0) * 45ms)}
+.js-anim .rk.in .rk-b i{transform:scaleX(1)}
+.js-anim .ai:not(.in) .ac{opacity:0}
+.js-anim .ai.in .ac{animation:rise .5s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--i,0) * 45ms)}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.vc{overflow:hidden}
+.vc img{transition:transform .35s cubic-bezier(.22,1,.36,1),filter .15s}
+.vg.lst .vc,.vg.car .vc{border-radius:var(--r-img)}
+.vg.lst .vc{overflow:visible}
+.vg.car .vc:hover img{transform:scale(1.035)}
+.chips a,.ds-c a,.kn-g button,.side nav a,.pill{transition:background-color .15s,color .15s}
+
+/* 下のコラム：白い板で囲わず、地に直接置く（冒頭のコラムと同じ扱い） */
+.vg.lst{background:none;box-shadow:none;border-radius:0;padding:0}
+@media (min-width:700px){.vg.lst{padding:0}}
+@media (min-width:1100px){.vg.lst{padding:0}}
+
+/* グラフの強弱：棒はテーマカラー1色のまま、値が大きいほど濃く・小さいほど淡く（長さと濃さの両方で差を見せる） */
+.rk-b{background:#ECEEF0}
+/* 順位の丸：1位は金、2位は銀、3位は銅 */
+:root[data-look="m"] .rk-n.m1{background:#F2C200;color:#222222}
+:root[data-look="m"] .rk-n.m2{background:#BFC5CC;color:#222222}
+:root[data-look="m"] .rk-n.m3{background:#D49A5E;color:#222222}
+
+/* ===== 広い画面 =====
+   本体は幅1440pxまで。それより広い画面では本体を広げず、右に広告とAI予測の案内の列（300px）を出し、残りは左右の余白にする */
+.rail{display:none}
+@media (min-width:1100px){
+  .cols{display:grid;grid-template-columns:minmax(0,1440px);justify-content:center}
+  .cols > main{min-width:0}
+}
+@media (min-width:1800px){
+  .cols{grid-template-columns:minmax(0,1440px) 300px;column-gap:0;padding-right:24px}
+  .rail{display:block;padding-top:16px}
+  .rail-in{position:sticky;top:calc(var(--hdr-h) + 16px);display:grid;gap:16px}
+  .rail-ai{padding:20px}
+  .rail-k{font-size:12px;font-weight:700;color:var(--ink-sub)}
+  .rail-ai h2{margin-top:4px;font-size:18px;font-weight:700;line-height:1.4}
+  .rail-ai p:not(.rail-k){margin-top:8px;font-size:14px;line-height:1.7;color:var(--ink-sub)}
+  .rail-ai .cta{display:flex;justify-content:center;margin-top:14px;height:44px}
+  .rail-ad{margin:0}
+  .rail-ad div{height:600px;max-width:300px;line-height:1.8}
+}
+
+/* テーマカラーを少しだけ落ち着かせる（色相は同じ、明るさを1段下げる）：#1DB854 → #1AA84E */
+:root[data-look="m"]{--green:#1AA84E; --green-hover:#17964A; --brand:#1AA84E}
+:root[data-look="m"] .vd{background:#1AA84E}
+
+/* 右列の案内は白い板にする（地と同化させない） */
+.rail-ai{background:var(--panel);border-radius:var(--r-panel)}
+
+/* 広い画面の余白を統一：左メニュー・本体・右列をひとかたまりにして中央に置き、かたまりの左右の余白を同じにする。
+   かたまりの中の間隔はすべて24px */
+@media (min-width:1100px){
+  .shell{max-width:2052px;margin-inline:auto}
+  .cols{grid-template-columns:minmax(0,1fr);justify-content:stretch;padding-right:0}
+}
+@media (min-width:1700px){
+  .cols{grid-template-columns:minmax(0,1fr) 300px;column-gap:0;padding-right:24px}
+  .rail{display:block;padding-top:16px}
+  .rail-in{position:sticky;top:calc(var(--hdr-h) + 16px);display:grid;gap:16px}
+  .rail-ai{padding:20px}
+  .rail-k{font-size:12px;font-weight:700;color:var(--ink-sub)}
+  .rail-ai h2{margin-top:4px;font-size:18px;font-weight:700;line-height:1.4}
+  .rail-ai p:not(.rail-k){margin-top:8px;font-size:14px;line-height:1.7;color:var(--ink-sub)}
+  .rail-ai .cta{display:flex;justify-content:center;margin-top:14px;height:44px}
+  .rail-ad{margin:0}
+  .rail-ad div{height:600px;max-width:300px;line-height:1.8}
+}
+@media (min-width:1100px){
+  /* かたまりの外側の余白を左右で同じにする（右列の右に24pxあるぶん、左にも同じだけ取る） */
+  .shell{max-width:2076px;padding-left:clamp(0px, 100vw - 2052px, 24px)}
+}
+@media (min-width:1100px){
+  /* ヘッダーの中身も、下のかたまりと同じ左端に揃える */
+  .hdr{padding-left:max(16px, calc((100vw - 2076px) / 2 + 28px))}
+}
+@media (min-width:1100px){
+  /* 左メニューの白を画面の左端まで塗る（浮いた板に見えないように） */
+  body{background:linear-gradient(to right,var(--panel) calc(max(0px, (100vw - 2076px) / 2) + clamp(0px, 100vw - 2052px, 24px) + 240px),var(--ground) 0)}
+}
+
+/* ===== 余白を詰める =====
+   板の中に空きを作らない。横に並べて高さが揃わない中身は、表にして1枚にまとめるか、行を伸ばして埋める */
+.wkt{display:none}
+.sc{padding-top:36px}
+.hd{padding-bottom:10px}
+:root[data-look="m"] .band{padding-top:36px}
+.wk .pn,.two .pn{padding:14px 16px 16px}
+.ac{padding:12px 14px;gap:4px}
+.ai{gap:10px}
+.rk li a{min-height:52px}
+.ds{gap:10px}
+.ds-c{gap:6px}
+.ds-c a{height:36px;min-width:68px;padding:0 12px}
+.kn-g{gap:6px}
+.kn-g button{height:36px;padding:0 12px}
+.kn-p{margin-top:10px;grid-template-columns:repeat(auto-fill,minmax(128px,1fr))}
+.kn-p a{line-height:40px}
+.vl summary{min-height:50px}
+.ad{margin-top:32px}
+.ftr{margin-top:44px}
+@media (min-width:1100px){
+  .sc{padding-top:44px}
+  :root[data-look="m"] .band{padding-top:44px}
+  .band + .sc{padding-top:44px}
+  .hd{padding-bottom:12px}
+  .hd h2{font-size:24px}
+  .two{gap:16px}
+  .two .pn{padding:16px 20px 12px;display:flex;flex-direction:column}
+  .two .pn:last-child{padding-bottom:16px}
+  .pn h3{font-size:18px}
+  .ac{padding:14px 16px}
+  .ai{gap:12px}
+  /* リーディング：板の高さいっぱいに行を広げ、下に空きを作らない */
+  .rk{flex:1;display:flex;flex-direction:column;margin-top:4px}
+  .rk li,.rk li[data-more]{flex:1;display:flex}
+  .rk li a{flex:1;min-height:48px}
+  .rk li:last-child a{border-bottom:0}
+  /* 今週開催：3枚の板をやめ、競馬場×芝・ダート・障害の表にして1枚にまとめる（空きが出ない） */
+  .wk{display:none}
+  .wkt{display:block;margin:0 var(--pad-r) 0 var(--pad);padding:4px 20px;background:var(--panel);border-radius:var(--r-panel)}
+  .wkt-r{display:grid;grid-template-columns:150px minmax(0,2.3fr) minmax(0,1.25fr) minmax(0,1fr);column-gap:24px;align-items:start;padding:12px 0;border-top:1px solid var(--line)}
+  .wkt-r:first-child{border-top:0}
+  .wkt-r h3{font-size:17px;font-weight:700}
+  .wkt-r h3 a{display:inline-flex;align-items:center;gap:8px;min-height:36px;color:var(--link)}
+  .wkt-r h3 a .ic{font-size:11px}
+  .wkt-c{display:grid;grid-template-columns:52px minmax(0,1fr);column-gap:10px;align-items:start}
+  .wkt-c > .sf{margin-top:6px;min-width:0}
+  .vl summary{min-height:48px}
+  .vg.lst{gap:24px 16px}
+  .ad{margin-top:36px}
+}
+
+/* ===== 要素を大きく使う（スカスカにしない） ===== */
+/* リーディング（スマホ）：棒を名前の下に、行の幅いっぱいで見せる */
+.rk li a{grid-template-columns:28px minmax(0,1fr) auto;grid-template-areas:"n t w" "n b w";row-gap:6px;padding:10px 0;min-height:0}
+.rk-n{grid-area:n}
+.rk-t{grid-area:t}
+.rk-b{grid-area:b;height:10px}
+.rk-w{grid-area:w;align-self:center;padding-left:8px}
+.rk-w b{font-size:24px}
+/* 五十音と距離：行の幅いっぱいに均等に並べる */
+.kn-g{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
+.kn-g button{justify-content:center;padding:0 4px;font-size:14px;gap:4px;white-space:nowrap}
+.ds-c{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr))}
+.ds-c a{min-width:0;padding:0 4px}
+.kn-p{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (min-width:700px){
+  .kn-p{grid-template-columns:repeat(auto-fill,minmax(128px,1fr))}
+}
+@media (min-width:1100px){
+  /* リーディング（PC）：棒の列を残りの幅いっぱいに広げる */
+  .rk li a{grid-template-columns:36px 190px minmax(0,1fr) 76px;grid-template-areas:"n t b w";row-gap:0;padding:0;column-gap:14px}
+  .rk-b{height:12px}
+  .kn-g button{font-size:15px}
+  .wkt .ds-c{display:flex;flex-wrap:wrap}
+  .wkt .ds-c a{min-width:68px;padding:0 12px}
+}
+@media (min-width:1100px){
+  /* 今週開催：競馬場ごとに、芝・ダート・障害を縦に3行。距離は同じ幅のマスで左から並べ、列をそろえる */
+  .wkt{padding:0 20px}
+  .wkt-r{grid-template-columns:150px minmax(0,1fr);column-gap:16px;padding:14px 0;align-items:start}
+  .wkt-s{display:grid;row-gap:8px}
+  .wkt-c{grid-template-columns:56px minmax(0,1fr);column-gap:12px;align-items:center}
+  .wkt-c > .sf{margin-top:0;min-width:0;height:26px}
+  .wkt .ds-c{display:grid;grid-template-columns:repeat(auto-fill,88px);gap:6px}
+  .wkt .ds-c a{min-width:0;padding:0;height:34px}
+  .wkt-r h3 a{min-height:34px}
+}
+@media (min-width:1100px){
+  .wkt-c{align-items:start}
+  .wkt-c > .sf{margin-top:4px}
+}
+
+/* 五十音で開く名前：罫線つきの文字の列をやめ、距離と同じ「押せるマス」にそろえる */
+.kn-p{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.kn-p a{display:inline-flex;align-items:center;height:36px;padding:0 12px;border:0;border-radius:8px;background:var(--chip);font-size:14px;font-weight:500;line-height:1;color:var(--link);white-space:nowrap}
+.kn-p a:hover{background:var(--chip-hover);text-decoration:underline}
+@media (min-width:700px){.kn-p{display:flex}}
+@media (min-width:1100px){.kn-p{display:flex}.kn-p a{font-size:15px}}
+
+/* ===================== PCレビューの指摘を反映 ===================== */
+/* AI予測のカード：1行目に競馬場とレース番号（右に日付）、2行目にレース名、3行目に馬場と距離。どの幅でも折り返さず、10枚の高さをそろえる */
+.ac-h{display:flex;align-items:baseline;justify-content:space-between;gap:8px;white-space:nowrap}
+.ac-v{font-size:15px;font-weight:700;color:var(--ink);white-space:nowrap;margin:0}
+.ac-v b{font-size:20px;margin-left:4px}
+.ac-d{font-size:12px;color:var(--ink-sub);white-space:nowrap}
+.ac-n{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ac-m{flex-wrap:nowrap;white-space:nowrap;margin-top:2px}
+/* 下のコース別データ：左右の列を独立させ、片方を開いても隣に空きを作らない */
+@media (min-width:1100px){
+  .vl{display:block;columns:2;column-gap:48px;padding:4px 20px}
+  .vl details{break-inside:avoid;border-top:0;border-bottom:1px solid var(--line)}
+  .vl details:nth-child(2){border-top:0}
+  .vl details:nth-child(5),.vl details:last-child{border-bottom:0}
+}
+/* 余白の統一：節の間40px、板と板・カードとカード16px、板の内側 上下16px 左右20px */
+.sc,.band + .sc{padding-top:40px}
+:root[data-look="m"] .band{padding-top:40px}
+.ad{margin-top:40px}
+.ftr{margin-top:48px;padding-top:28px;padding-bottom:28px}
+.f-logo{font-size:18px}
+.ftr nav{font-size:14px}
+.ftr .f-note{font-size:13px}
+@media (min-width:1100px){
+  .sc,.band + .sc{padding-top:40px}
+  :root[data-look="m"] .band{padding-top:40px}
+  .ad{margin-top:40px}
+  .ai{gap:16px}
+  .two .pn,.two .pn:last-child{padding:16px 20px}
+  /* リーディング：行の高さは56pxで固定。右の板は左と同じ高さに収め、名前が多い行は板の中で送る */
+  .rk{flex:none;display:block;margin-top:4px}
+  .rk li,.rk li[data-more]{display:block;flex:none}
+  .rk li a{height:56px;min-height:0}
+  .two{align-items:stretch}
+  .two .pn:last-child{contain:size;display:flex;flex-direction:column;min-height:0}
+  .kn{flex:1;min-height:0;display:flex;flex-direction:column}
+  .kn-p{flex:1;min-height:0;overflow-y:auto;align-content:start;scrollbar-width:thin}
+  /* 名前のマス：同じ幅の列にそろえる */
+  .kn-p{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+  .kn-p[hidden]{display:none}
+  .kn-p a{justify-content:center;padding:0 8px;overflow:hidden;text-overflow:ellipsis}
+  #sires .kn-p{grid-template-columns:repeat(auto-fill,minmax(176px,1fr))}
+  /* 今週開催：マスを少し詰め、8個までは1行に収める */
+  .wkt-r{grid-template-columns:130px minmax(0,1fr)}
+  .wkt .ds-c{grid-template-columns:repeat(auto-fill,76px)}
+  .wkt .ds-c a{font-size:14px}
+  /* 冒頭の大きいコラムの題：1語だけ次の行に落ちないように */
+  .vg.car .vc:first-child .vc-t{font-size:clamp(20px,1.8vw,26px);text-wrap:balance}
+  /* フッターの地を画面の右端まで塗る */
+  .ftr{box-shadow:100vw 0 0 #2B2F33;clip-path:inset(0 -100vw 0 0)}
+}
+/* 右列：1800pxから出す。上端を冒頭のコラムにそろえ、板と広告の間は16px */
+@media (min-width:1700px) and (max-width:1799.98px){
+  .cols{grid-template-columns:minmax(0,1fr);padding-right:0}
+  .rail{display:none}
+}
+@media (min-width:1800px){
+  .rail{padding-top:68px}
+  .rail-in{top:calc(var(--hdr-h) + 68px);gap:16px}
+  .rail-ad{margin:0 !important}
+}
+
+/* ===================== スマホレビューの指摘を反映 ===================== */
+/* 色の面には白い文字だけ：順位の丸は濃い金・銀・銅＋白、右列のボタンは緑＋白 */
+:root[data-look="m"] .rk-n.m1{background:#B8860B;color:#FFFFFF}
+:root[data-look="m"] .rk-n.m2{background:#7A828C;color:#FFFFFF}
+:root[data-look="m"] .rk-n.m3{background:#A8642A;color:#FFFFFF}
+.rail-ai .cta{background:var(--green);color:#FFFFFF}
+.rail-ai .cta:hover{background:var(--green-hover)}
+.rk-b{background:#E3E6EA}
+.rk-m{color:var(--link)}
+.kn-more{display:none}
+
+/* スマホ・タブレット（1100px未満） */
+@media (max-width:1099.98px){
+  /* 固定する部分を減らす：上のチップは固定しない。ヘッダーは52px */
+  :root{--hdr-h:52px}
+  .chips{position:static}
+  .chips > div{padding-top:12px;padding-bottom:12px;gap:8px}
+  /* 余白は 8 / 16 / 32 の3段 */
+  .sc,.band + .sc{padding-top:32px}
+  :root[data-look="m"] .band{padding-top:32px}
+  .hd{padding-bottom:12px}
+  .hd h2{font-size:clamp(19px,5.6vw,22px)}
+  .wk,.two{gap:16px}
+  .wk .pn,.two .pn{padding:16px}
+  .vl{padding:0 16px}
+  .vl summary{padding:0}
+  .ad{margin-top:32px}
+  /* 冒頭のコラム：題を強く、次の1枚を多めに覗かせる */
+  .vg.car .vc{width:86%}
+  .vg.car .vc-t{font-size:18px;font-weight:700}
+  /* AI予測のカード：大きく */
+  .ai{gap:12px}
+  .ac{width:72vw;max-width:300px;padding:16px;gap:6px}
+  .ac-v{font-size:16px}
+  .ac-v b{font-size:24px}
+  .ac-d{font-size:13px}
+  .ac-n{font-size:18px}
+  .ac-m{font-size:15px}
+  /* 距離・五十音・名前のマス：高さ44px、間隔8px、同じ幅の列 */
+  .ds{gap:12px}
+  .ds-c{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .ds-c a{height:44px;font-size:14px}
+  .ds-r > .sf{height:44px;margin-top:0}
+  .vl details .ds-r > .sf{height:44px;margin-top:0}
+  .kn-g{gap:8px}
+  .kn-g button{height:44px;font-size:14px}
+  #sires .kn-g{grid-template-columns:repeat(6,minmax(0,1fr))}
+  #sires .kn-g button{font-size:13px;gap:2px}
+  #sires .kn-g button span{font-size:11px}
+  .kn-p{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .kn-p[hidden]{display:none}
+  #sires .kn-p{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .kn-p a{height:44px;justify-content:center;padding:0 6px;overflow:hidden;text-overflow:ellipsis;display:block;line-height:44px;text-align:center}
+  .kn-p:not(.all) a:nth-child(n+13){display:none}
+  .kn-more{display:flex;align-items:center;justify-content:center;grid-column:1 / -1;height:44px;border-radius:8px;font-size:14px;font-weight:700;color:var(--link)}
+  .vl-c .sf{min-width:44px}
+  /* 下のコラム：絵を上に置いた2列のカード。題は2行、日付の位置をそろえる */
+  .vg.lst{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 12px;margin:0 var(--pad-r) 0 var(--pad)}
+  .vg.lst .vc{display:block;padding:0;border:0}
+  .vg.lst .vc:first-child{border:0}
+  .vg.lst img{border-radius:10px}
+  .vg.lst .vc-t{margin-top:8px;font-size:14px;line-height:1.45;-webkit-line-clamp:2;min-height:2.9em}
+  .vg.lst .vc-m{font-size:12px}
+  .ftr nav{display:grid;grid-template-columns:1fr 1fr}
+}
+/* タブレット（700〜1099px）：横に並べると高さがそろわない板は縦に積む。順位は10位まで出す */
+@media (min-width:700px) and (max-width:1099.98px){
+  .wk,.two{grid-template-columns:minmax(0,1fr)}
+  .ds-r{grid-template-columns:60px 1fr;gap:10px}
+  .ds-c{grid-template-columns:repeat(auto-fill,minmax(88px,1fr))}
+  .rk li[data-more]{display:block}
+  .rk-m{display:none}
+  .kn-p,#sires .kn-p{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+  .kn-p:not(.all) a:nth-child(n+13){display:block}
+  .kn-more{display:none}
+  .vg.lst{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .ac{width:260px}
+}
+@media (max-width:1099.98px){ .hd h2{font-size:clamp(17px,5vw,22px)} }
+/* 今週開催：狭いPC幅でも、いちばん多い行（11個）が1行に収まるようにマスを詰める */
+@media (min-width:1100px) and (max-width:1439.98px){
+  .wkt .ds-c{grid-template-columns:repeat(auto-fill,minmax(60px,1fr))}
+  .wkt .ds-c a{font-size:13px}
+}
+
+/* ===================== スマホ（700px未満）をゼロから組み直す =====================
+   板の中に板を置かない。白い地に中身を直接置き、節は灰色の帯（8px）で区切る（netkeiba・YouTube のスマホと同じ作り）。
+   一覧は「1件＝1行」。チップの塗りはやめ、距離や名前は文字のリンクを詰めて並べる */
+@media (max-width:699.98px){
+  body{background:var(--panel)}
+  .chips a{background:var(--chip)}
+  .sc,.band + .sc,:root[data-look="m"] .band{margin-top:24px;padding-top:20px;border-top:8px solid var(--ground)}
+  .hd{padding-bottom:8px}
+  .hd h2{font-size:20px}
+  .pill{background:var(--chip);height:32px;padding:0 12px;font-size:13px}
+  .pn,.vl,.wk .pn,.two .pn{background:none;box-shadow:none;border-radius:0;padding:0}
+  .wk,.two{gap:0}
+  .ad{margin-top:24px}
+
+  /* AI予測：中身ぴったりの小さなカードを横に送る（余白を作らない） */
+  .ai{gap:8px}
+  .ac{width:auto;min-width:132px;max-width:190px;padding:10px 12px;gap:2px;background:var(--chip);box-shadow:none;border-radius:10px}
+  .ac-h{gap:10px}
+  .ac-v{font-size:14px}
+  .ac-v b{font-size:18px;margin-left:3px}
+  .ac-d{font-size:12px}
+  .ac-n{font-size:15px}
+  .ac-m{font-size:13px;gap:6px;margin-top:2px}
+
+  /* 今週開催・コース別：競馬場名の行＋「芝｜距離…」の行。距離は文字のリンクを1行に詰める */
+  .wk .pn h3,.pn h3{padding:0}
+  .wk .pn h3{display:block;font-size:15px;background:var(--ground);padding:0 var(--pad)}
+  .wk .pn h3 a{min-height:36px;color:var(--ink)}
+  .wk .pn h3 a .ic{color:var(--ink-sub)}
+  .wk{padding:0}
+  .ds{gap:0;margin:0}
+  .ds-r{grid-template-columns:28px minmax(0,1fr);gap:8px;align-items:center;padding:0 var(--pad);border-bottom:1px solid var(--line)}
+  .ds-r > .sf,.vl details .ds-r > .sf{min-width:0;width:28px;height:24px;padding:0;margin:0;font-size:0}
+  .ds-r > .sf span{display:none}
+  .ds-r > .sf::after{content:attr(data-short);font-size:13px}
+  .ds-c{display:flex;flex-wrap:wrap;gap:0}
+  .ds-c a{height:40px;min-width:41px;padding:0 3px;background:none;border-radius:0;font-size:15px;font-weight:500;justify-content:center}
+  .ds-c a::after{display:none}
+  .ds-c .u{display:none}
+  .vl{margin:0;padding:0}
+  .vl summary{padding:0 var(--pad);min-height:46px}
+  .vl details .ds{padding:0;border-top:1px solid var(--line)}
+  .vl details .ds-r:last-child{border-bottom:0}
+  .vl-c{display:flex;gap:4px}
+
+  /* リーディング：1人＝1行（順位・名前・棒・勝利数）。10位まで出す */
+  .two{padding:0}
+  .two .pn h3{padding:12px var(--pad) 6px;font-size:15px}
+  .rk{margin:0;padding:0 var(--pad)}
+  .rk li[data-more]{display:block}
+  .rk-m{display:none}
+  .rk li a{grid-template-columns:24px minmax(0,9.2em) minmax(0,1fr) 54px;grid-template-areas:"n t b w";row-gap:0;column-gap:8px;align-items:center;height:42px;min-height:0;padding:0}
+  .rk-n{width:22px;height:22px;font-size:13px}
+  .rk-t b{font-size:15px}
+  .rk-t span{display:none}
+  .rk-b{height:8px}
+  .rk-w{padding-left:0;font-size:12px}
+  .rk-w b{font-size:19px}
+  .rk li:last-child a{border-bottom:0}
+
+  /* 全データ：五十音は横に送る1行のタブ。名前は文字のリンクを3列に詰める */
+  .two .pn + .pn{border-top:1px solid var(--line)}
+  .de{padding:0 var(--pad);margin:0;font-size:12px}
+  .kn{margin-top:6px}
+  .kn-g,#sires .kn-g{display:flex;gap:0;overflow-x:auto;scrollbar-width:none;padding:0 calc(var(--pad) - 10px);border-bottom:1px solid var(--line)}
+  .kn-g::-webkit-scrollbar{display:none}
+  .kn-g button,#sires .kn-g button{flex:none;height:40px;padding:0 10px;background:none;border-radius:0;font-size:14px;gap:3px;color:var(--ink-sub);box-shadow:inset 0 -3px 0 transparent}
+  .kn-g button span,#sires .kn-g button span{font-size:11px}
+  .kn-g button[aria-expanded="true"]{background:none;color:var(--ink);font-weight:700;box-shadow:inset 0 -3px 0 var(--here)}
+  .kn-g button[aria-expanded="true"] span{color:var(--ink-sub)}
+  .kn-p,#sires .kn-p{margin:0;padding:4px var(--pad) 0;border:0;gap:0 8px}
+  .kn-p a{height:38px;line-height:38px;background:none;border-radius:0;padding:0;text-align:left;font-size:15px;font-weight:400}
+  .kn-more{height:40px;border-top:1px solid var(--line);border-radius:0}
+
+  /* 下のコラム */
+  .vg.lst{gap:16px 12px}
+}
+@media (max-width:699.98px){
+  .kn-g,#sires .kn-g{flex-wrap:nowrap}
+  :root[data-look="m"] .band .pill{background:var(--chip)}
+  /* 距離は1行に8個まで入る幅にする（内・外つきは少し広く） */
+  .ds-c a{flex:0 0 12.5%;min-width:0;padding:0}
+  .ds-c a.v{flex-basis:18%}
+}
+@media (max-width:699.98px){
+  /* 横送りのタブが板の幅を押し広げないようにする */
+  .two{grid-template-columns:minmax(0,1fr)}
+  .two .pn,.kn{min-width:0}
+  /* 距離：数字どうしがくっつかない大きさにする */
+  .ds-c a{font-size:14px}
+  .ds-c a.v{flex-basis:19%}
+}
+@media (max-width:699.98px){
+  /* 距離は1行6個（内・外つきは5個ぶんの幅）。数字の間に十分な間隔を取る */
+  .ds-c a{flex:0 0 16.66%;font-size:15px}
+  .ds-c a.v{flex-basis:20%}
+}
+
+/* スマホ：中間に戻す。灰の地に「1セクション＝白い板1枚」。板の中には板もチップも置かず、行と文字で並べる */
+@media (max-width:699.98px){
+  body{background:var(--ground)}
+  .chips a,.pill,:root[data-look="m"] .band .pill{background:var(--panel)}
+  .sc,.band + .sc,:root[data-look="m"] .band{margin-top:0;padding-top:28px;border-top:0}
+  .hd{padding-bottom:10px}
+  .ad{margin-top:28px}
+  .ac{background:var(--panel);box-shadow:0 1px 2px rgba(16,24,40,.08),0 2px 8px rgba(16,24,40,.06)}
+  .ai{padding-bottom:6px}
+  .wk,.vl,.two{margin:0 var(--pad-r) 0 var(--pad);background:var(--panel);border-radius:12px;overflow:hidden;box-shadow:0 1px 2px rgba(16,24,40,.06),0 2px 10px rgba(16,24,40,.05)}
+  .wk .pn h3{padding:0 14px;background:#EDEFF2}
+  .ds-r{padding:0 14px}
+  .wk .pn:last-child .ds-r:last-child{border-bottom:0}
+  .vl summary{padding:0 14px}
+  .two .pn h3{padding:14px 14px 6px}
+  .rk{padding:0 14px}
+  .de{padding:0 14px}
+  .kn-g,#sires .kn-g{padding:0 4px}
+  .kn-p,#sires .kn-p{padding:4px 14px 6px}
+  .two .pn + .pn{border-top:8px solid var(--ground)}
+}
+@media (max-width:699.98px){ .ds-c a{font-size:14px} }
+@media (max-width:379.98px){ .ds-c a{font-size:13px} }
+
+/* スマホ：もう少し元寄りに。競馬場ごとの板に戻し、距離・五十音・名前は淡いマスに戻す（ただし詰めて並べる）。リーディングは1人1行のまま */
+@media (max-width:699.98px){
+  /* 今週開催：競馬場ごとに板1枚 */
+  .wk{margin:0;padding:0 var(--pad-r) 0 var(--pad);background:none;box-shadow:none;border-radius:0;overflow:visible;display:grid;gap:12px}
+  .wk .pn{background:var(--panel);border-radius:12px;overflow:hidden;padding:12px 14px 14px;box-shadow:0 1px 2px rgba(16,24,40,.06),0 2px 10px rgba(16,24,40,.05)}
+  .wk .pn h3{padding:0;background:none;font-size:16px}
+  .wk .pn h3 a{min-height:32px;color:var(--link)}
+  .wk .pn h3 a .ic{color:var(--link)}
+  /* 距離：淡いマス。1行5個で詰める */
+  .ds{gap:8px;margin-top:6px}
+  .ds-r{grid-template-columns:44px minmax(0,1fr);gap:8px;align-items:start;padding:0;border-bottom:0}
+  .ds-r > .sf,.vl details .ds-r > .sf{width:44px;height:34px;font-size:12px}
+  .ds-r > .sf span{display:inline}
+  .ds-r > .sf::after{content:none}
+  .ds-c{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+  .ds-c a,.ds-c a.v{flex:none;height:34px;background:var(--chip);border-radius:8px;font-size:14px;padding:0}
+  .ds-c a.v{font-size:12px}
+  .vl details .ds{padding:10px 14px 14px;border-top:1px solid var(--line)}
+  /* 五十音：マスに戻す（5列、種牡馬は6列） */
+  .kn-g,#sires .kn-g{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;overflow:visible;padding:0 14px;border-bottom:0}
+  #sires .kn-g{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .kn-g button,#sires .kn-g button{height:36px;padding:0;background:var(--chip);border-radius:8px;color:var(--ink);box-shadow:none;justify-content:center;font-size:13px}
+  .kn-g button[aria-expanded="true"]{background:var(--here);color:var(--on-here);box-shadow:none}
+  .kn-g button[aria-expanded="true"] span{color:var(--on-here)}
+  /* 名前：同じ幅の淡いマス */
+  .kn-p,#sires .kn-p{padding:10px 14px 12px;gap:6px}
+  .kn-p a{height:36px;line-height:36px;background:var(--chip);border-radius:8px;text-align:center;padding:0 6px;font-size:14px;font-weight:500}
+  .kn-more{border-top:0}
+  .de{padding-bottom:8px}
+}
+@media (max-width:379.98px){ .ds-c a{font-size:13px} .ds-c a.v{font-size:11px} }
+
+/* スマホ：五十音だけ、横に送る1行のタブに戻す */
+@media (max-width:699.98px){
+  .kn-g,#sires .kn-g{display:flex;flex-wrap:nowrap;gap:0;overflow-x:auto;scrollbar-width:none;padding:0 4px;border-bottom:1px solid var(--line)}
+  .kn-g button,#sires .kn-g button{flex:none;height:40px;padding:0 10px;background:none;border-radius:0;font-size:14px;gap:3px;color:var(--ink-sub);box-shadow:inset 0 -3px 0 transparent}
+  .kn-g button[aria-expanded="true"]{background:none;color:var(--ink);font-weight:700;box-shadow:inset 0 -3px 0 var(--here)}
+  .kn-g button[aria-expanded="true"] span{color:var(--ink-sub)}
+}
+@media (max-width:699.98px){
+  .two .pn,.two .pn:last-child{padding:0}
+  .kn-p,#sires .kn-p{padding-bottom:6px}
+}
+/* スマホ：距離に「m」を付ける。1行4個にして文字が収まる幅を取る */
+@media (max-width:699.98px){
+  .ds-c .u{display:inline}
+  .ds-c{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .ds-c a{font-size:14px}
+  .ds-c a.v{font-size:13px}
+}
+@media (max-width:379.98px){ .ds-c a{font-size:13px} .ds-c a.v{font-size:12px} }
+@media (max-width:699.98px){ .ds-c a.v{font-size:12px;letter-spacing:-.02em} .wk .pn{padding-left:12px;padding-right:12px} .ds-r{grid-template-columns:42px minmax(0,1fr);gap:6px} .ds-r > .sf,.vl details .ds-r > .sf{width:42px} }
+@media (max-width:379.98px){ .ds-c a.v{font-size:11px} }
+
+/* 馬場の札は、右に並ぶ距離の行数に合わせて縦に伸ばす（2行なら2行ぶんの高さ） */
+.ds-r,.wkt-c{align-items:stretch}
+.ds-r > .sf,.vl details .ds-r > .sf,.wkt-c > .sf{height:auto;min-height:34px;margin-top:0;align-self:stretch}
+@media (min-width:1100px){ .wkt-c > .sf{min-height:34px;margin-top:0} }
+
+/* 五十音：スマホはアコーディオン（1行＝1つの行、開くと名前のマス）。700px以上は従来のマス＋一覧 */
+.kn-acc{display:none}
+@media (max-width:699.98px){
+  .kn-g,.kn-p{display:none !important}
+  .kn{margin-top:4px}
+  .kn-acc{display:block;border-top:1px solid var(--line)}
+  .kn-acc details{border-bottom:1px solid var(--line)}
+  .kn-acc details:last-child{border-bottom:0}
+  .kn-acc summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:1fr auto 14px;align-items:center;gap:10px;min-height:46px;padding:0 14px}
+  .kn-acc summary::-webkit-details-marker{display:none}
+  .kn-acc summary b{font-size:15px;font-weight:700}
+  .kn-acc summary span{font-size:13px;color:var(--ink-sub)}
+  .kn-acc summary .ic{font-size:12px;color:var(--ink-sub);transition:transform .16s}
+  .kn-acc details[open] summary .ic{transform:rotate(180deg)}
+  .kn-a{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:2px 14px 14px}
+  #sires .kn-a{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .kn-a a{display:block;height:36px;line-height:36px;padding:0 6px;border-radius:8px;background:var(--chip);font-size:14px;font-weight:500;color:var(--link);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+}
+
+/* ===================== トップの第三者レビュー（2回目）を反映 ===================== */
+/* 押せる小物の高さは40px以上 */
+.chips a{height:40px}
+.pill{height:40px}
+/* コース別の件数の札：3列の位置を固定し、行ごとにずれないようにする */
+.vl-c{display:grid;grid-template-columns:repeat(3,48px);gap:4px}
+.vl-c .sf{min-width:0;width:48px;padding:0}
+
+/* 1100px未満：メニューボタンで左メニューを引き出す */
+@media (max-width:1099.98px){
+  .sc,.feat{scroll-margin-top:calc(var(--hdr-h) + 8px)}
+  body.menu-open .side{display:block;position:fixed;z-index:60;top:calc(var(--hdr-h) + env(safe-area-inset-top,0px));left:0;bottom:0;width:min(300px,84vw);overflow-y:auto;background:var(--panel);padding:12px 12px 80px;box-shadow:0 0 0 100vmax rgba(0,0,0,.45)}
+  .side nav{display:grid}
+  .side nav a{display:flex;align-items:center;gap:16px;height:46px;padding:0 12px;border-radius:8px;font-size:15px}
+  .side nav a.on{background:var(--here);color:var(--on-here);font-weight:700}
+  .side nav a.on .ic{color:var(--on-here)}
+  .side .ic{font-size:18px;width:22px}
+  .side h2{margin:12px 0 4px;padding:14px 12px 0;border-top:1px solid var(--line);font-size:14px;font-weight:700}
+  .side nav.cols{grid-template-columns:1fr 1fr}
+  .vd{width:10px;height:10px;margin:0 6px;border-radius:50%;background:var(--green);flex:none}
+}
+
+/* スマホ */
+@media (max-width:699.98px){
+  .pill{height:40px;font-size:13px}
+  .wk .pn h3 a{display:flex;min-height:40px}
+  /* 距離のマスは文字の大きさをそろえる（内・外つきも同じ） */
+  .ds-c a,.ds-c a.v{font-size:13px;letter-spacing:0}
+  /* 長い名前は2マスぶん使って切らない */
+  .kn-a a.w8{grid-column:span 2}
+  #sires .kn-a a.w8{grid-column:auto}
+  #sires .kn-a a.w11{grid-column:span 2}
+  .kn-acc summary{scroll-margin-top:calc(var(--hdr-h) + 8px)}
+}
+@media (max-width:379.98px){ .ds-c a,.ds-c a.v{font-size:12px} }
+
+/* タブレット（700〜1099px）：PCの部品を積むだけにしない */
+@media (min-width:700px) and (max-width:1099.98px){
+  /* 冒頭のコラムは列の幅いっぱいに */
+  .vg.car{padding:0 var(--pad-r) 0 var(--pad);gap:16px}
+  .vg.car .vc{width:auto;max-width:none}
+  /* 今週開催はPCと同じ1枚の表 */
+  .wk{display:none}
+  .wkt{display:block;margin:0 var(--pad-r) 0 var(--pad);padding:0 16px;background:var(--panel);border-radius:var(--r-panel);box-shadow:0 1px 2px rgba(16,24,40,.06),0 2px 10px rgba(16,24,40,.05)}
+  .wkt-r{display:grid;grid-template-columns:110px minmax(0,1fr);column-gap:12px;align-items:start;padding:14px 0;border-top:1px solid var(--line)}
+  .wkt-r:first-child{border-top:0}
+  .wkt-r h3{font-size:16px;font-weight:700;display:block;padding:0;border:0}
+  .wkt-r h3 a{display:inline-flex;align-items:center;gap:8px;min-height:40px;color:var(--link)}
+  .wkt-r h3 a .ic{font-size:11px}
+  .wkt-s{display:grid;row-gap:8px}
+  .wkt-c{display:grid;grid-template-columns:56px minmax(0,1fr);column-gap:10px}
+  .wkt .ds-c{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:6px}
+  .wkt .ds-c a{height:36px;min-width:0;padding:0;font-size:14px}
+  /* リーディングは1人1行、右に名前の一覧を並べる */
+  .two{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:stretch}
+  .two .pn{padding:16px}
+  .rk li a{grid-template-columns:24px minmax(0,8.4em) minmax(0,1fr) 54px;grid-template-areas:"n t b w";row-gap:0;column-gap:8px;align-items:center;height:44px;min-height:0;padding:0}
+  .rk-n{width:22px;height:22px;font-size:13px}
+  .rk-t b{font-size:15px}
+  .rk-t span{display:none}
+  .rk-b{height:8px}
+  .rk-w b{font-size:19px}
+  .rk li:last-child a{border-bottom:0}
+  .two .pn:last-child{contain:size;display:flex;flex-direction:column;min-height:0}
+  .kn{flex:1;min-height:0;display:flex;flex-direction:column}
+  .kn-g{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .kn-p,#sires .kn-p{flex:1;min-height:0;overflow-y:auto;align-content:start;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));scrollbar-width:thin}
+  #sires .kn-p{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+  .ad div{max-width:none}
+}
+
+/* PCの下限（1100〜1279px） */
+@media (min-width:1100px) and (max-width:1279.98px){
+  .ac-d{display:none}
+  .ac-n{font-size:15px}
+  .rk li a{grid-template-columns:32px 132px minmax(0,1fr) 68px;column-gap:10px}
+  .rk-t span{font-size:12px}
+  #sires .kn-p{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+}
+@media (min-width:1280px) and (max-width:1439.98px){ .ac-n{font-size:15px} }
+@media (min-width:1800px){ #sires .kn-p{grid-template-columns:repeat(auto-fill,minmax(196px,1fr))} }
+@media (max-width:379.98px){ .kn-a a{font-size:13px;padding:0 3px} }
+@media (min-width:700px) and (max-width:1099.98px){ .rk li a{grid-template-columns:24px minmax(0,9.6em) minmax(0,1fr) 54px} }
+@media (min-width:1100px) and (max-width:1279.98px){
+  .rk li a{grid-template-columns:32px 152px minmax(0,1fr) 68px}
+  .ac-n{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;min-height:2.7em;font-size:14px;line-height:1.35}
+}
+
+/* 重賞の格付けの札（全ページ共通）：G1＝青、G2＝赤、G3＝緑。四角い札に白文字 */
+.gr{display:inline-flex;align-items:center;justify-content:center;height:20px;min-width:30px;padding:0 6px;margin-right:6px;border-radius:4px;font-family:var(--f-num);font-style:normal;font-size:12px;font-weight:700;line-height:1;color:#FFFFFF;vertical-align:2px;flex:none}
+.gr.g1{background:#1E50B5}.gr.g2{background:#C6283C}.gr.g3{background:#2E8B3D}
+/* AI予測カード：幅1280〜1339pxでは格付けの札つきの長いレース名が1px足りず切れるので、文字を一段小さくする */
+@media (min-width:1280px) and (max-width:1339.98px){ .ac-n{font-size:14px} }
+/* AI予測カードの中の格付けの札は18px（行の高さを押し広げない。札のあるカードと無いカードの高さをそろえる） */
+.ac-n .gr{height:18px;vertical-align:1px}
+
+/* ===== 固定ページ（サイト情報・データの出典・お問い合わせ・プライバシーポリシー・免責事項・404）共通 =====
+   読み物なので本文の読みやすさを最優先にする。
+   ・本文の1行は全角40字前後まで（PC 17px × 680px、スマホ 16px）。行間は PC 1.9／スマホ 1.8
+   ・1ページ＝白い板1枚。節は罫で区切り、見出しは板の中に置く
+   ・PC（1100px以上）は右に列を出す。追従するのは目次だけ。サイト案内は列の下端（本文の下端と揃う位置）に置く
+   ・1800px以上は共通の右列（広告・AI案内）と上端・追従位置・列の間隔を揃える
+   ・スマホ・タブレットは本文の上に開閉できる目次、各節の末尾に「目次へ」。サイト案内はフッターと重なるので出さない */
+/* 板（白・角丸・薄い影1種類）。共通の .pn は置き場所ごとに上書きが重なっているため、固定ページ用に持つ */
+.st-pn{background:var(--panel);border-radius:12px;box-shadow:0 1px 2px rgba(16,24,40,.06),0 2px 10px rgba(16,24,40,.05)}
+.nw{white-space:nowrap}
+
+.st{display:flex;flex-direction:column;width:100%;max-width:calc(760px + var(--pad) + var(--pad-r));margin-inline:auto;padding:14px var(--pad-r) 0 var(--pad)}
+.st-aside{display:contents}
+.st-h{order:0}
+.st-toc-m{order:1}
+.st-art,.nf{order:2}
+.st-toc-w,.st-nav{display:none}
+
+/* ---------- パンくず・題・リード ---------- */
+.st-crumb{font-size:13px;line-height:1.6;color:var(--ink-sub)}
+.st-c{white-space:nowrap}
+.st-c i{margin:0 8px;font-style:normal;color:#A0A6AE}
+/* 上下の余白は行の高さを変えずに押せる範囲だけ広げる（高さ約49px） */
+.st-crumb a{padding:14px 0;color:var(--link)}
+.st-crumb a:hover{text-decoration:underline}
+.st-h h1{margin-top:10px;font-size:24px;font-weight:700;line-height:1.4;letter-spacing:.01em}
+.st-lead{max-width:42em;margin-top:10px;font-size:15px;line-height:1.8;color:var(--ink);text-wrap-style:pretty}
+
+/* ---------- 本文の板 ---------- */
+/* overflow:hidden は付けない（付けると板がスクロールの枠になり、節の scroll-margin-top が効かず見出しがヘッダーに隠れる） */
+.st .st-art{margin-top:16px;padding:0}
+.st-art section{padding:22px 16px 20px;scroll-margin-top:calc(var(--hdr-h) + 12px)}
+.st-art section + section{border-top:1px solid var(--line)}
+.st-art h2{font-size:19px;font-weight:700;line-height:1.45}
+.st-p{margin-top:10px;font-size:16px;line-height:1.8;overflow-wrap:anywhere;line-break:strict}
+.st-p > * + *{margin-top:14px}
+/* 本文中のリンクは青＋細い下線（スマホには hover が無いので常に出す） */
+.st-p a:not(.st-btn),.nf-note a{color:var(--link);font-weight:500;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+.st-p a:not(.st-btn):hover,.nf-note a:hover{text-decoration-thickness:2px}
+.st-meta{font-size:13px;line-height:1.7;color:var(--ink-sub)}
+
+/* 箇条書き */
+.st-ul{list-style:none}
+.st-ul li{position:relative;padding-left:1.1em}
+.st-ul li + li{margin-top:8px}
+.st-ul li::before{content:"";position:absolute;left:.2em;top:calc(.9em - 3px);width:6px;height:6px;border-radius:50%;background:#8A9099}
+
+/* 用語と説明の表（罫で区切った行。用語は太字） */
+.st-df{border-top:1px solid var(--line)}
+.st-df > div{padding:12px 0;border-bottom:1px solid var(--line)}
+/* 節の最後に来る表は、節の区切りの罫と二重にしない */
+.st-p > .st-df:last-child > div:last-child{border-bottom:0;padding-bottom:0}
+.st-df dt{font-weight:700;line-height:1.6}
+.st-df dt small{font-size:inherit;font-weight:400}
+.st-df dd{margin-top:2px}
+.st-df.row > div{display:grid;grid-template-columns:var(--tw,5em) minmax(0,1fr);column-gap:12px;align-items:baseline}
+.st-df.row dt{line-height:inherit}
+.st-df.row dd{margin-top:0}
+
+/* 運営者：写真の右に 名前／肩書（補足）／X の3行 */
+.st-prof{display:flex;align-items:center;gap:12px}
+.st-prof img{flex:none;width:64px;height:64px;border-radius:50%;object-fit:cover}
+.st-prof > div{min-width:0}
+.st-prof p{line-height:1.55}
+.st-prof-n{font-size:17px;font-weight:700}
+.st-prof-t{display:block;font-size:13px;font-weight:400;color:var(--ink-sub);white-space:nowrap;margin-left:-.5em}
+.st-prof-x{font-size:15px;white-space:nowrap}
+.st-prof-x a{padding:13px 0}
+@media (max-width:374.98px){
+  .st-prof{gap:10px}
+  .st-prof img{width:52px;height:52px}
+  .st-prof-x{font-size:14px}
+}
+
+/* 動画（見本は静止画＋再生ボタン） */
+.st-v a{position:relative;display:block;border-radius:12px;overflow:hidden;background:#000}
+.st-v img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}
+.st-play{position:absolute;left:50%;top:50%;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;background:rgba(0,0,0,.72);display:grid;place-items:center;transition:transform .15s,background-color .15s}
+.st-play svg{width:26px;height:26px;fill:#FFFFFF}
+.st-v a:hover .st-play{background:var(--green);transform:scale(1.06)}
+
+/* お問い合わせ：フォームを開くボタンと、予備のメールアドレス */
+.st-act{display:flex}
+.st-btn{flex:1;display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 28px;border-radius:9999px;background:var(--green);color:#FFFFFF;font-size:16px;font-weight:700;line-height:1.4;text-align:center;transition:background-color .15s}
+.st-btn:hover{background:var(--green-hover)}
+.st-sub{padding:14px 16px;border-radius:8px;background:var(--chip);font-size:14px;line-height:1.7;text-align:center}
+.st-sub p{text-wrap-style:balance}
+.st-sub p + p{margin-top:2px;font-size:16px}
+
+/* ---------- 目次（スマホ・タブレット：開閉） ---------- */
+.st .st-toc-m{margin-top:16px;padding:0;overflow:hidden;scroll-margin-top:calc(var(--hdr-h) + 12px)}
+.st-toc-m summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;min-height:48px;padding:0 16px}
+.st-toc-m summary::-webkit-details-marker{display:none}
+.st-toc-m summary b{font-size:16px;font-weight:700}
+.st-toc-m summary > span{margin-left:auto;font-size:13px;color:var(--ink-sub)}
+.st-toc-m summary .ic{font-size:12px;color:var(--ink-sub);transition:transform .16s}
+.st-toc-m[open] summary .ic{transform:rotate(180deg)}
+.st-toc-m ol{list-style:none;border-top:1px solid var(--line);padding:6px 8px 8px}
+.st-toc-m li a{display:flex;align-items:baseline;gap:10px;min-height:42px;padding:9px 8px;border-radius:8px;font-size:15px;line-height:1.6;color:var(--link);font-weight:500}
+.st-toc-m li a:hover{background:var(--chip)}
+.st-toc-m .n{flex:none;width:1.3em;text-align:right;font-size:14px;font-weight:400;color:var(--ink-sub)}
+/* 節の末尾の「目次へ」（目次が上にしか無い幅でだけ出す） */
+.st-back{display:flex;justify-content:flex-end;margin-top:14px}
+/* 短い節（画面の半分に満たない）の後ろには出さない（static.js が hidden を付ける） */
+.st-back[hidden]{display:none}
+.st-back a{position:relative;display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px 0 10px;border-radius:9999px;background:var(--chip);font-size:13px;font-weight:500;color:var(--ink);transition:background-color .15s}
+.st-back a::after{content:"";position:absolute;inset:-6px 0}
+.st-back a:hover{background:var(--chip-hover)}
+.st-back .ic{font-size:10px;transform:rotate(180deg);color:var(--ink-sub)}
+
+/* ---------- 404 ---------- */
+.nf-code{margin-top:18px;font-size:64px;font-weight:700;line-height:1;letter-spacing:.01em;color:var(--ink)}
+.st-solo .st-h h1{margin-top:6px}
+.st .nf{margin-top:18px;padding:16px 12px 16px}
+.nf h2{padding:0 4px;font-size:17px;font-weight:700;line-height:1.5}
+.nf-g{list-style:none;display:grid;grid-template-columns:minmax(0,1fr);gap:8px;margin-top:10px}
+.nf-g a{display:flex;align-items:center;gap:12px;height:52px;padding:0 14px;border-radius:8px;background:var(--chip);color:var(--link);font-size:16px;font-weight:700;line-height:1.3;transition:background-color .15s}
+.nf-g a:hover{background:var(--chip-hover)}
+.nf-g a > .ic:first-child{font-size:19px;width:22px;color:var(--ink)}
+.nf-g a > span{flex:1;min-width:0}
+.nf-g a > .ic:last-child{font-size:11px;color:var(--ink-sub)}
+/* 先頭（トップページ）は目立たせたいボタン：テーマカラーの塗り＋白文字 */
+.nf-g li:first-child a{background:var(--green);color:#FFFFFF}
+.nf-g li:first-child a:hover{background:var(--green-hover)}
+.nf-g li:first-child a .ic{color:#FFFFFF}
+.nf-note{margin-top:14px;padding:0 4px;font-size:14px;line-height:1.8;color:var(--ink)}
+
+/* 用語が長めの表は、本文の板が640px以上あるときだけ横並びにする（板が狭い幅では縦積み） */
+.st-art{container-type:inline-size}
+@container (min-width:640px){
+  .st-df.row-pc > div{display:grid;grid-template-columns:var(--tw,8em) minmax(0,1fr);column-gap:20px;align-items:baseline}
+  .st-df.row-pc dt{line-height:inherit}
+  .st-df.row-pc dd{margin-top:0}
+}
+
+/* ---------- タブレット以上 ---------- */
+@media (min-width:700px){
+  .st{padding-top:20px}
+  .st-h h1{font-size:28px}
+  .st-lead{font-size:16px;max-width:none}
+  .st-solo .st-lead{max-width:760px}
+  .st-art section{padding:28px 32px 24px}
+  .st-art h2{font-size:21px}
+  .st-df.row > div{column-gap:20px}
+  .st-prof{gap:18px}
+  .st-prof img{width:88px;height:88px}
+  .st-prof-n{font-size:18px}
+  .st-prof-t{font-size:14px}
+  .st-prof-x{font-size:16px}
+  /* 動画2本は文章の後ろに横並び（上端・下端が揃う） */
+  .st-p.st-vids{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:16px}
+  .st-vids > p{grid-column:1 / -1}
+  .st-vids > .st-v{order:1}
+  .st-act{justify-content:center}
+  .st-btn{flex:none;min-width:320px}
+  .st .nf{padding:22px 24px 22px}
+  .nf h2{padding:0;font-size:18px}
+  .nf-g{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+  .nf-g li:first-child{grid-column:1 / -1}
+  .nf-g a{height:60px;padding:0 18px}
+  .nf-note{padding:0;font-size:15px}
+  .nf-code{font-size:88px}
+}
+
+/* ---------- PC：本文（最大760px）＋右の列。左メニューが出る幅から2列にして、本文の幅を段差なく広げる ---------- */
+@media (min-width:1100px){
+  .st-pn{border-radius:var(--r-panel)}
+  .st{padding-top:24px}
+  .st-h h1{font-size:30px}
+  .st-p{font-size:17px;line-height:1.9}
+  .st-p > * + *{margin-top:16px}
+  .st-ul li::before{top:calc(.95em - 3px)}
+  .st-art section{padding:30px 24px 34px;scroll-margin-top:calc(var(--hdr-h) + 24px)}
+  .st-art h2{font-size:22px}
+  .st-df > div{padding:13px 0}
+  .st-sub{font-size:15px}
+  .st-back{display:none}
+
+  /* 404 は右列なしで、ほかのページの「本文＋右列」と同じ幅・同じ寄せ方にする（左端が揃う） */
+  .st{max-width:calc(1032px + var(--pad) + var(--pad-r))}
+  .st:not(.st-solo){display:grid;grid-template-columns:minmax(0,760px) 240px;grid-template-rows:auto 1fr;column-gap:32px;align-items:start;justify-content:center}
+  .st:not(.st-solo) .st-h{grid-column:1 / -1;grid-row:1;max-width:760px}
+  .st:not(.st-solo) .st-art{grid-column:1;grid-row:2}
+  .st-aside{display:flex;flex-direction:column;gap:16px;grid-column:2;grid-row:2;align-self:stretch;margin-top:16px;min-width:0}
+  .st-toc-m{display:none}
+  /* 追従するのは目次だけ。目次の枠（.st-toc-w）が列の残りを占め、その中で目次が止まる */
+  .st-toc-w{display:block;flex:1 1 auto}
+  .st-toc{position:sticky;top:calc(var(--hdr-h) + 24px);padding:14px 12px 12px;max-height:calc(100vh - var(--hdr-h) - 48px);overflow-y:auto;scrollbar-width:thin}
+  .st-nav{display:block;flex:none;padding:14px 12px 12px}
+  .st-nav h2,.st-toc h2{padding:0 8px 6px;font-size:15px;font-weight:700;line-height:1.5}
+  .st-nav ul,.st-toc ol{list-style:none}
+  .st-toc li a{display:flex;align-items:baseline;gap:8px;min-height:36px;padding:7px 8px;border-radius:8px;font-size:13px;line-height:1.6;color:var(--ink);transition:background-color .15s,color .15s}
+  .st-toc li a > span:last-child{text-wrap-style:balance}
+  .st-toc li a:hover{background:var(--chip)}
+  .st-toc .n{flex:none;width:1.3em;text-align:right;color:var(--ink-sub)}
+  .st-toc li a.on{background:var(--here);color:var(--on-here);font-weight:700}
+  .st-toc li a.on .n{color:var(--on-here)}
+  /* サイト案内：現在のページは太字だけ（目次の現在地の塗りと紛れないように） */
+  .st-nav li a{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:36px;padding:7px 8px;border-radius:8px;font-size:13px;line-height:1.6;transition:background-color .15s}
+  .st-nav li a .ic{font-size:10px;color:var(--ink-sub)}
+  .st-nav li a:hover{background:var(--chip)}
+  .st-nav li a.on{font-weight:700;cursor:default}
+  .st-nav li a.on:hover{background:none}
+  .st-nav li a.on .ic{visibility:hidden}
+}
+@media (min-width:1240px){
+  .nf-g{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .st-art section{padding-left:32px;padding-right:32px}
+}
+@media (min-width:1400px){
+  .st{max-width:calc(1080px + var(--pad) + var(--pad-r))}
+  .st:not(.st-solo){grid-template-columns:minmax(0,760px) 280px;column-gap:40px}
+  .st-art section{padding-left:40px;padding-right:40px}
+}
+/* ---------- 1800px以上：共通の右列（y=124 始まり・追従位置はヘッダー＋68px）と揃える。
+   本文＋目次を右へ寄せ、目次〜共通の右列の間を、本文〜目次の間（40px）と同じにする。404 も同じ左端・右端に置く ---------- */
+@media (min-width:1800px){
+  /* 余りの幅は本文に使う：本文880px（18px・左右56px＝1行約42.7字）＋目次280px */
+  .st{max-width:none;margin-inline:0;padding-right:40px}
+  .st:not(.st-solo){grid-template-columns:minmax(0,880px) 280px;justify-content:end}
+  .st:not(.st-solo) .st-h{grid-column:1;max-width:880px}
+  .st-solo{width:auto;max-width:1200px;margin-left:auto;box-sizing:content-box}
+  .st-solo .st-lead{max-width:880px}
+  .st-p{font-size:18px}
+  .st-art section{padding-left:56px;padding-right:56px}
+  .st-aside{grid-row:1 / 3;margin-top:44px}
+  .st-toc{top:calc(var(--hdr-h) + 68px);max-height:calc(100vh - var(--hdr-h) - 92px)}
+}
+
+</style>
+<header class="hdr">
+  <div class="hdr-l"><button class="hbtn" type="button" aria-label="メニュー"><svg class="ic" viewBox="0 0 448 512" aria-hidden="true" focusable="false"><path d="M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z"/></svg></button><a class="logo" href="#" data-inert><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAAAXNSR0IArs4c6QAAAQplWElmTU0AKgAAAAgABwESAAMAAAABAAEAAAEaAAUAAAABAAAAYgEbAAUAAAABAAAAagEoAAMAAAABAAIAAAExAAIAAAA5AAAAcgE7AAIAAAAQAAAArIdpAAQAAAABAAAAvAAAAAAAAABgAAAAAQAAAGAAAAABQ2FudmEgZG9jPURBSEFkRGlsNDZrIHVzZXI9VUFGNFZ3bGFuRG8gYnJhbmQ9QkFGNFY0UFFZcFEAAOS5heS/neeUsOWkp+aZugAABpAAAAcAAAAEMDIxMJEBAAcAAAAEAQIDAKAAAAcAAAAEMDEwMKABAAMAAAABAAEAAKACAAQAAAABAAAAYKADAAQAAAABAAAAYAAAAADgBhR+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAGTGlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNi4wLjAiPgogICA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPgogICAgICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgICAgICAgICB4bWxuczpleGlmPSJodHRwOi8vbnMuYWRvYmUuY29tL2V4aWYvMS4wLyIKICAgICAgICAgICAgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgICAgICAgICAgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIj4KICAgICAgICAgPGV4aWY6Q29sb3JTcGFjZT42NTUzNTwvZXhpZjpDb2xvclNwYWNlPgogICAgICAgICA8ZXhpZjpQaXhlbFhEaW1lbnNpb24+NTAwPC9leGlmOlBpeGVsWERpbWVuc2lvbj4KICAgICAgICAgPGV4aWY6RXhpZlZlcnNpb24+MDIxMDwvZXhpZjpFeGlmVmVyc2lvbj4KICAgICAgICAgPGV4aWY6Rmxhc2hQaXhWZXJzaW9uPjAxMDA8L2V4aWY6Rmxhc2hQaXhWZXJzaW9uPgogICAgICAgICA8ZXhpZjpQaXhlbFlEaW1lbnNpb24+NTAwPC9leGlmOlBpeGVsWURpbWVuc2lvbj4KICAgICAgICAgPGV4aWY6Q29tcG9uZW50c0NvbmZpZ3VyYXRpb24+CiAgICAgICAgICAgIDxyZGY6U2VxPgogICAgICAgICAgICAgICA8cmRmOmxpPjE8L3JkZjpsaT4KICAgICAgICAgICAgICAgPHJkZjpsaT4yPC9yZGY6bGk+CiAgICAgICAgICAgICAgIDxyZGY6bGk+MzwvcmRmOmxpPgogICAgICAgICAgICAgICA8cmRmOmxpPjA8L3JkZjpsaT4KICAgICAgICAgICAgPC9yZGY6U2VxPgogICAgICAgICA8L2V4aWY6Q29tcG9uZW50c0NvbmZpZ3VyYXRpb24+CiAgICAgICAgIDx4bXA6Q3JlYXRvclRvb2w+Q2FudmEgZG9jPURBSEFkRGlsNDZrIHVzZXI9VUFGNFZ3bGFuRG8gYnJhbmQ9QkFGNFY0UFFZcFE8L3htcDpDcmVhdG9yVG9vbD4KICAgICAgICAgPHRpZmY6UmVzb2x1dGlvblVuaXQ+MjwvdGlmZjpSZXNvbHV0aW9uVW5pdD4KICAgICAgICAgPHRpZmY6T3JpZW50YXRpb24+MTwvdGlmZjpPcmllbnRhdGlvbj4KICAgICAgICAgPHRpZmY6WFJlc29sdXRpb24+OTY8L3RpZmY6WFJlc29sdXRpb24+CiAgICAgICAgIDx0aWZmOllSZXNvbHV0aW9uPjk2PC90aWZmOllSZXNvbHV0aW9uPgogICAgICAgICA8ZGM6dGl0bGU+CiAgICAgICAgICAgIDxyZGY6QWx0PgogICAgICAgICAgICAgICA8cmRmOmxpIHhtbDpsYW5nPSJ4LWRlZmF1bHQiPuWQjeensOacquioreWumuOBruODh+OCtuOCpOODsyAtIDE8L3JkZjpsaT4KICAgICAgICAgICAgPC9yZGY6QWx0PgogICAgICAgICA8L2RjOnRpdGxlPgogICAgICAgICA8ZGM6Y3JlYXRvcj4KICAgICAgICAgICAgPHJkZjpTZXE+CiAgICAgICAgICAgICAgIDxyZGY6bGk+5LmF5L+d55Sw5aSn5pm6PC9yZGY6bGk+CiAgICAgICAgICAgIDwvcmRmOlNlcT4KICAgICAgICAgPC9kYzpjcmVhdG9yPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAgPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KDYdRogAAJ9dJREFUeAHtfQmcVMW1d1XdpffpWViGTVBwR58Eo7LPsIhrYhLRmEQfTxNUBHTYEY1jRBaRXUHc9cXoJ/GZ+KkIMjAswX1XEDdAZRuYtXt6uUvV+9ft6bF7pmeYQRDjo35z+9atOrXcc6pOnTrn1B1CjoVjGDiGgWMYOIaBYxg4hoFjGDiGgf9DGOg+/uddei/vrR3tV2ZHuwM/ePsFRNXvHTh1bwfPy9s+N3N+8PYbNKg2eP5JP7pnDT3BzCXzTC+7jNfE97p/BG/7f2YGdLi34PesHV1rB9TLBBBPGTWpX+NHmwY/+RnQdvTp/siJbRZV+JRr4zrQbViEKJQwhdosZthNEaDzgvN/HzDFm1snv/p5UzCHI/0nT4CaE9vPMPO0aznnhNbaMaEphKjMbVHGq92KnAxpocfYHq49Jx0364BLjKqOWL3TMo/Aw0+aBbVdVHiRyFJu4oITFrZ3K/uil5Ba/hphlAhBGIn5aSpOPdMHdvnmhE4rollKkWnzKlIlylPzj0T8J0uA9sV92xkedZ7hpiqLc0stt8dYd7xWQiwMelsQahKFmFFMh0RoP6/gPN5JXWlka5fK2WKbfE9od6g6mX+k7j9ZAtTme+8M+ZVTqGDEHeKPGXesfx5IpJQJuRIQLpmP5nHWgI4Lh1wXztFeMrLU04XMoJSoXHxLHnzHlLBHMvzk1oDjpvbPqeys/qLWy64TYDDekPVR4IA1PZLEIqMYdJL/2Ia7Ju6KLiiYWxZkEyyVUGJBKAJ7IowRKug3ySJH8v6TIcDpxQX+3UE6c6+LXSY00ZlTTn0xUe2L8Bv2ztq4XyKxGGN7DiSgKHDMXSwvcqrveeFXz+NYEIiFRIx851IYMRXyxZFEfLLuHx0BJANIdu5OxB8u6uMKB10uOx5R3C6vxlyql3DLy1TijqtMhzDjDdi2f6diXxHNdV9lS2RKxoKBLuK8pGzC2s3J+uQdOAYA5oDGsonGzpPrgdOkvEmGTLE+IA0TYUeTMirADlc4ogTovfxS7zdRGtB5POAVhg/CiNtQqU8TIlDLeVaECq/FaDCokrywoF6LMFdbSgJARFaYUE9cCLfCRJZNmY+QgBqhVBWMelSiuIAAhVOmQKBnYaISQ2JWLrAJ/OJGiZeINrUOzhOJxXLgU5rAaz1okt5I4Ihj9IMVmYyTXf/2BIhH7X6m236iivGAQhQd76cIRSKN4l2FgxX5zlEnjhGLeMSZABI7CBjNlrNaJh4TCKHEwMKaGrC1SgRZgbO3RXlE0UhI3tIDGnMyZY5sJ3mvg0KbwiJVZszYk17uyDylv8lhbuPjf0TWRaPx+y2F+KMeqsc1qhhMEAMvLhFr4xJY+DguYQG9ZvICFmVcjmiJUIl5ySrkIikvhygSeQjAnwKdJmYVoESUqJRQVSFqiFdHK+0FgKgDdKABDirJhVbiXY52iQEsuk5EQsp0k1eQL2NViB3xcEQJQEpLrVhR6d3+GL9Js6nhvLAc8pCz5eh2gnxh560Tjxl/HRiZU9ddWVYWB7JdWFQ71/J3O5abl5JK80oQTrAac71eZQyrnb6upEF91Ab6JZ9XuIhpliinGup0JkWyPyCgEAcggkYblD0ij0eWAHVdrrmpZKkrzG/RbExuzACHAA4G6166/tXqMY2U1HgSQE4HlHFERYz6CP80t4pfn/9RbeHOietXdojbu12cUi1mPRyZtv6tZKn6ewFRLCH8UEUQZpAX8ivMAn+UbGR4doJDCI4VhUgRtGHn6qs5nJEfhACyw+Exa5YpFdYoYti1Uhn2Hf4lolMv+Zh8liXr4vImWYaOJTjKy1iFVezebQ3YM2bNg28seaNGQsb9+gkKYAKC7ZTPjcKwQYVCIT3VCI8Lky3/ZlLpx9quqkuUA/ZSJhcSSQhJXJ11OXPu+Vj4j3z4wQiA4USpwT8HPw85SHXwKn9kSN7rBp1zc0ogC3fMGupSic+mEU+VtdRfZvThRaV3hopLDyTKJ36jTDnO5sQ0KHaxDcPEM31qQJmDhflrd4RdZI5dvU6CVBS/UWPesuYmpVZcD/5UJcVX26v2+zRXPEeK+5/QsJrD/fyDECB7Rt+u2cuHLbPa6muIR8lPLKJAusPLgWDIp05A1BGF5F0GiXwd7EJQ4Qnzf3SqtgojY0vGVBdv+ioBkP6rU9EdVZW597nL0nPw1D5nnK3SXqTSuCF848q1svVUGLNozYNKyL6URcVWDqwYbjac5rvWkNl9hqfCHe54cugd7nqd+rqN7Ob+umfXa4lPnSqytC6OpCMlmLRXl6DJbtShhYIgYMQKBBYap2/oJrk7ctPqFwHYqKTTUN2Pa+mQl6FpCEZvfLVfaro+c8BpVlB7G+LXw7xo7bjUvIZxz5yCzoZPWcYD7BIhtwxRO8Ji7PY/37xuYXFCJmtY5Hs912sDv1ctGQp3nF3Qf+/xuY/ygDpauFjQESvrEZ1aQCI/eQG/ck5CLGQR8wt3jTk970DN+IrJmz5JLZExPqq3Jtq5pym2+NBauf2f9TAjiKKcceLjnDGV7wpdTTbtala6sdbsqBHtuj6v+22XUNU+wqfq1K0Mf/v8bl3b/Tx/Y03pt82Wr2+3hZHDvhPuCzXwZ229kyo89CZTJZ6k+rd+lMsxLPHt3OWIr3sA4hlEQiVklcFwskzfYywN37u5rF6JdrAXyuPZ2MrlK5x/nAqqDBr8X6auX8gi9kVk1pst0+8/XhozCJnsmz/kkzgj8ywvzQtnKSNt4j0t++6+11dN3/x+ahvfJ3741gCMNN+8gdd80tGzsSpbmRhTaQL5qUwjKftLpEulpBzukDooeL0L0pG/2lyWsz/a15hQWiyR35oX0wP+tioRAS/n9VrMtvcMPFH1uebSGH/SHr16ZWvqk7C140ueoGWRC1mN/b7AjjDiI+eEc/XVyj19rmptXU3BH5YZkD2rT6+Qz3VXxKtcDCUX5EG5dZVBIjqVAonU7zhRYvFlnNqeauPqqkmbnnfkyTqw1ty4QjqAvmooJvY55cCSQj59sWXyqLuaT2vxTGrQqDlt81v+4r7Do0FloQjoV1k+tS3E1SfZ4oLjeEXpXFKcUH40KNbix+81A7KLC7LVRYOLQznudXZQu9jhJpADnSA5i3PJHxnqExCXzUrC4EKyYILVqkpb0vvQHaWgTT6eCs59EdOZOexk3yioPi6wq42JkSmv7kZjhxzCxZvL7KKNV2uVxmQWE2Hi0VSoGGcGgoPOPeRK6woeEgEk2jrdV3BJtLO2zs7T7rDdyUVWIrUO4Q5+nZ+6plLiSVUCQCk2ZcIWIe5Slqt/ytlMlgz5Ayk+N6u1L4alsqutsGpRLXaR4j49hFebKcLmc2TSumdaW1cT8HZ80sa5tEaMJhYEaTdjiqZe0ARsi5NbzYJ8d597pp7tv5V42AhTh7gilWYOT0ebdbhPa13iXQaZJ+NJRZqUv7DjdcXEy/7qeFFIKN11Lx0ddbOHeOfAX/Tlg58Q1eSv8clrvwTkQQNl7HhMpT0Vm60oGZm1CMo7w707MinWStExq3h4Ls8zz9INHunw+v53P1nxCdbj70LWfvZCVZDv5m7WWVHpALyS3Lcn3/I7wBbGMqEsc9FZ/XNUr34zd5GbuVfNdrSSEjKpNnAW2Ab9cPIkENJllnwGARhMULTGekR41KsUg482b1n3pISSQV9U0JO7lZFCUX/PbQEzgv0CsaylpGj9awmIzL/afYWvq4LsiFr8nyzX/Tdlb/SP5pQNj2SGzpwKQ37P6nbepw0v64m67KyQsTpYYYz8EiwotYRr+eBV8aB6vqvG/jZnu/GzpMUtFaal8RaxoKuhF+mY419C27ju4AEtG3rkxEiuRzqwK0kpEexcMp7ahbp0mSRFTYO85/1q31QS5wegZT4lFdK4ufRj6/qSiXYZO1PE+CTUczLV1TVkSeF6ZUHB78nkfoFUeCc+8qxsU6H58II4Xgnq9/CIvcr8sraeqI3gm0gI5bpmGEHWU5ooDXSzup37QrONe3xDcKgsXpfGmzgX+Xt99MSG+a15bhEL6l7bN7rO//YUXyj2PzEiLjW5GCY02klKPImF1xneCaTLqBMkBerS61IkURSIn7phLQzd/2k5WZj/DaX0tGR22v3WldKO+yAZMeIR0f9AAcTV67Epepie4t4tlg97hJTFnya3b9iuzBn4C+JXb7U11sV2067QN4VJrRjfrEfDRCjaguF84ta7eL3qiR4mTof/yRkRDy0k0i4hDT4YGdIcYWrKmWn9woMVs1+jEby7rsAoavfGcEwzezaEb+45bZw2B5iaB7GsHfcpfVSFnR9z0z6mSzkLpkII9Oi4nBVJ3CcLyTRJC5dC3BH+r/zN5tAd2Oy4FhU+bDJ2Hn/OPkvaDpLgTd6XDD1D8dBREPz+wGMWNBV0E3WxAuFhiT0H2oW3Z02wyhzScbe+taqT1r6Sm/mcmt2iQhzPVXoy9sU90MEumMJ5aEeDKjrupiAnJTuJRk6EzbKTkGI0RpbicZFgubG4YsyrN6f1acbgTiSPfUB8Sh4rjz3Ni9b/Li2/FQ+HRIDU+pWZfS+323qegapYSawHUgxtwNnqWBXsrLa7yrw0At29rENdOGQC08kdWd8aJx+YubHFJkDPjIFdoi52HclitxE3zF/Owo4KJe0hVSkm2aNC448x0RGo1Kw45qxllSN7h6DscyD3E1i9tmGI7yRRspdUx8vJgteinnkD+8aytf8HCaczPEeJWmW9pVTYV8SKS3fI/qYERu4/fw0JskJSa+0lYeMcMmFD/QYwBe6g0RaxoKZq8c8579RowDUfGxMgAVAOOVOHfwp9pRGk0ngxEl6/KlmfZVqfaR5XwMhlnZHWYgJEb3NetpgsG3wZsP4fyfok4aVi1eK2DwrsVW7T2qYLuk1ExZdGRWQXVBEVgJVzMWOITtiwmSwd+hQsbePUivg4c2tohfngO5m842BDFX/DOlBI/Fo+XlzOkIkZKz1I4iEToA0Ww0jA9TDP0rvAyJJAfpL9yEblayZ3wVLkNGF7t9lMUpyyc+TiC7Au23ZpciFrbMFCYrMhbm8hXvYf9TVKa5sOm3/IXGaPWzMVHhGtDwJrUkS8ZxaVPtxs4QPmM9SFdSmgnU3cyg1k8fBnybhVbzZbJkNmA16RAaKJpNqO6oxYQOvrqJgdbOPlkwh3kC9Hf90MkEgxxTPm+LXpHSzP/hbcYx/ssqc20UyTyTmzewcVTekGnkMcu64cSpAdtai53RUxljZZsLmMq8/0YTd9JoxGbzcH5uQVl4Yhpd2GwWcQnfqoxjG4TnfcHg9aNgXgkAjgmT/wd0D+TdKboX70OciuQ7i8JRdeKNtYjFeq0fjclHYT0XteCAmT74CBPLMk1KhAXcK1Jwdq/MEnhab+jJSbRTDWzGCW2CFFXN0SX0Smbjokfky6+zrAT6MDiVvvNNV0WvrYNatIKP6YIzm56RCS025kWn4LHlpNAH12nzMMnzpfqBh6dYtrfTty5Cdng3MHgSAcKbX2o0bRhq31cCkRATMlnLROJsUFLWOHo3p7yRkdHrUV5RJebfyRFK1dGBm95nYeEpPB5gi8Hnp1mdGnY0oTLY6qfrU7BDngxPygxYXisbtIhH/jKCF15TYyo0+nFpcFYKsIcAKmvQi6H7Q9SvuES19dU3LzVY94Gcclb5BIaK1VBlPffXWQGW7WFluOOkKyM2SmJ404XWe98h4iWe7LSY05ikwq/Ws9QFVsPQlbu003a3PAoxbWp7cm4nedAcexAzBq7mhxsfGv7QIBZjmaAb/ShQTdt7a4LABbQwC6yx+cZQf084iJoe6MdollBGcmJKJpswLsRzHsZbFpjcS4OmDcKPsA+x4vcdP23yVmiEG9TAbmL2U+9XcsIm4kU0ofSYOS6gKLl2JwkHhA/2VaXgsf4N91jo8qW8mcNZkkn6Zr+errR0mtvUHaNmD4/6/AksI0k2jTBVtBALZ4yKi4X72BS+WbDA7uHSoknpO/dTSRLiRaXGxvQ+37k1mZ7t6A+hFVWIj4iBRFM4cCsKdTAovB46/j5fExfOyqBzIBKoZY6SgHFVpA5mOz1JpQXOCOMdoLR5dazn6S9S/5Ig6OMInERcjyaJ6QR50NlupOZjd3b9EMUGf37y+8bA6QDt0xqksiuVHNMkNWibu069pi/t5xCdfwRqB1CZFA9j6hKt9omta9CRhGfsXmE69+A44XjeFFJU0SVI+ydSzKDwidtYGv45Am6sucrJhdsaHrasXtQzM3joOEZ5FlUkdEvGp/kq//KXND6akHJ8Dd57YnWcpyoZGgo4RLL5/+5KwFSJJ0wBUntANGgj8dqMHTFStsjJ6ddlM6oaXnzwBfHQvvhAlkQtPIl7VGb1u7Cw6Qm5y1R1N+gyTZk5YFXTkdEp3Kao1PWlYgA1S1mEci9hdyDDJNTHfdM7ipQVVfuFkC9Abf1bO8Syy/67R69XN90UyRxPs6+I9ZW4ibjaNdXW8rSwtHNWtkscR2yEtpWlGn9oXD/kw86jRSbd1KikrmZ2qxYZods/8htWjMpfTz3j0cu9SWBd2l9sIMKDej8a9aViID1KTVZWCDt8MkK4RO25se8ecMUGlJzRLggzMD460sbYSD/OToTiue+iDRDv6EzZgK+3V2SFyFU4Z9hCHe44p6H23re0e7f8h1pBhiZMNA+U64SEMUTclbOHgKlF13korYHHLz6lkNizT5HGFroCfejwPZebGgLVUELQuQr3DW4AtS/FplywpkhrL3GX+HNLYSikICo81VyryBF2WGTKQ2SQBlyeALuVe7gycVXc3V4uQB+VIRA95v2WJbHtu5DYj7mFy/+ipRbZ8nFG0dd+sLadd2r5FFQ/6TFPXx1FdpkzKwjXwSCAwmY2GOXDz0Fprtng3JYjGZsLZVYh35YN9+uNLtltIY97Ip5L7BD4ENNi/iyr4o9DTg7F30KYNkUd/Tg0eKodWNWbeBZcJ2zDSYa+9ubvZnJEDwnr7doZZdxqVfT6qIefDmAYEzuXFr8xfjIBkkw+S175IbVo3yCNZHNfn7VCcPkJM8b5IHhlynPjhsEFhVEdGoikMwK8ipgXfwPJfVGI+SLRVSwQWqtiL07QBpSulGDBSTHnbZ6h/VLvqL+vzC05uspa3SBeCdeIy3bAfcZEV1GRM2vEei/H7HWBLQzlLzfGObKtKIAN2kOJbtvR+8tytWdQSHozco3/QgoSijWGRjgwLOY/iPL31sjlr1nyIm+jFF2UI0ZZmlKyVQoJ3jjDtdccO40gMsz1Al6zmEY6KKJs6BWyM88YB8U5hyJ275WD8rS12tzCn8daZ+Af4kCBg6iJbm1JURtqWJu405UD9+SDQcvwxo4/UFQzPquxpt/79upxZzjzI8seg2hejEYvtdX/DsJMkD0LzWZZEPjO8yG8eK1r4L9FwJE+NInqU9Js+2OG7hElLql9zMawXUvnj6TCalBamK6Kgfl+P39Mq2xJbtU9elye1wcRkCwwrOOom9pCJ+jSJ847mPXIAZ3ZHlqE+r9xXeaZnmMxDRLBKCzCgZoVe7APuWChI1G7eX1ngrHmZvqoTN4DYMguexO88lPnE3rHsjyApIfSkhbQbk3jf0CuGlEx1xs1WsRxIKFMDmy03otv47PdtT2mgy6osZn2gGjstgB5kw5qAeSUipPdVUR3ztDP7c4Z4hA7xLh93Elg/7b9Y7+03a3vNWTVD52y5qp4t5IA4+S9BPCgLYsHxMpv/rVXtN6NfKgfgMeMfFQQgdM+FuEvS8S3K975PO3vdIW1w+7UaCI1TeNtrlUvJrssOtzYBDMTPoCpwOJ9RLLlMKyq9oWEUaAaii5uN8VZ2SrSHoQZ4lwaRxitA3Vy5Z+R3/b6aYXWF+A+VZlXMwQtJQngMD39ZjNs732g4bE27bG2JidixbvQ8ey3/gfuV04VP83DSjxDDSFXzHZ50Kk2N3uRnCrFrnNL3itah1S+ntoir+Gxoj24kLGmOXGgSLzSF+PYcEcOkYOQrzxwPsoQ975b4SnDtwcDPdbk2WUKP2nTRqlwsFxzM15S8QCNJE4zQClIf5IzBmbKxHiByOEjHNBjlkEyNYnq/FIlvaLHgys5iw2hOyJ9pe3Y9jjxFn86SiOzq4om1/WbVi3RYJugsOteGK2l/z8tjrjg5K6qEgaSlM3WnsCX2TrM65+5W+xA8jZwSzKmxvSsubtPElUW4PI9X2DFJhPkAqjGWkCnaDansZqbGeJVGryoby0Awog6PZ+iu+xYMecRf//IS0Og7hwRi7+lO12liCdyQ4G9FDb6uPTK0mfQ2YtLqWzh8wkSl6Cdeo35E/HPm/GSrILAmDGUBNu1IV4vXUBjLGpVYzp8MieK/dQMPWZF4bXcVceoEmtxBMHE+9ypjs3/a/terSTXeRYsLzs7xtyjUlGytqgtZgWS5CPrKWfhJOrV/RxSAbix4Jm1+TGPswNc+JJ5y8bm+ULhPmFvRkBp/GPeoVULdrhoteyzR6obpw0ILAnvCDlXMymiYzVtUw0YjYHxIc1JWDDGeb03CeNgNkQXP8xjchQi2Qo0y+b4uCw34wKi3xzi0H1qaPyoYVSL+efu0fw5mBG+B5PJWPXj2XTNr4IR9Xsjh+c8n86WPX3hyM8H/kKPpFI4oJ1WcPPKMqT/uHna2eAj5eidG6Vc5K2xBpOpvAzCF52IdAmkImp2+Q4tKqhk03+4zzYnzM2t+TGnohCYkNUgLkPrUDfF7vMU7IKc1b0IQE1WyldZkB7TfSIwT7mlqrxvpnapFGBJCZvDJyL04gviOPB7WMCHhpufAJUlKMEZvaQFp86hk5pJP+LDpzJXjyKD6pdE5aPh6K0Xz7cPza7P3mJf+867yTrCz9f2I+pQerNcOecHwk2Roa7N5nvq6H7K9Sy0Z1+1TBlE7OVDfsQ/bTIUWr1pDXtg0Hm7oR/kU7YHUjtQH1rFC2tiLrgaHLTr//ILqt1E7J+JzCk6mXXeIIGrYoIVPXpIm6GQlAcHDNZdoTmMVjTVoMJOupYwnyhulrZxuJhVPmNApwJSGd27yg6MogvSp2JZm6/iEJI437DWE/mrap8r08zWu18z4rslgPEjKjrDw+KjJhwwtk6Vt7g9uNX3QMK6+mlmNe9TjhUhgcs2AaNp31IzW/VfHHd8TIxNIHSLnoz2rpPTQuqvHdIRbKYjdsJWxCa+pibjoSfktBuB4InYtHUdbBXLKOzARAbnjcuvVajC/F546SsOn3evYksQ8YQ+yLlott6UCJJ33OwFNpvvcVnBI6mZbFLzWmbXxO5rjmDz4/fpJ/c3DxkMtTy8nFjwWU53mO3lPEsUAfiF9rTN70NGCcVvcu2bj/01kl5allDEPsF/LoPaY6Rm231LxDjkO7yq9fOUWt4gU0wj+W3A2OLze0Ke7XsUV1Fp+VDWPTCMkWRYxuMXawNQ3LNYHdBJgetmdpNfY2uXikh9Rn2St5/FxsxbHRNKTIMtqCwT+z2/pe0fHtDHd1fLh1x8YSme6fP2AQz1b/OwRH2IiXPe6ZX+jIyJ7i/sfZub6/Q4/TC5JMDPbkP5KdkeeCf+77JzKqd9oCJuupD2XGxxBjYVugcGpghfXphyFiFr36Ps6szSAxeOzilGeNX7mmJdUqWbmFxEu7Oz6OMf43cu/q2oblmiVAaGLpASwb2M3hneTEcRRzSeTLOxIl70ctPiHeSCSkNDG3YCi0qa/gBEyN2McvjEyDjgTBfc+gAaZPe8Z0kXbyK4a4+yw/e8SzqHC82U572srVe0GvbpD9xmh73NqnSa/gI+H23uuaVU3M3LgX3/x5z+kSEX2D+HBTSk++d9Quj66khv2pwBBQ8TEoaR8/WKXYs/wO7AeGCnx7IkrlDG4Umh5RdaD2xNLntMVDnrKylWvgQuKIm4ldKwDkDhYaUMW28bEMni5+Liy4EidJHsfi+a5aUXVltPiNb2WVHnybzfCrz9henBeuMXfAjHeH7lEmmT61p63zeThqBEsONyHtjCNT1j9GFgxaTLL1q+0aaxNy6qgua2oU4NJsbcR3ay5kOg5s5+FMMCFrG0EdagLWRbGw4CmoyO8y/XqPCiv4K1T1uFPdhT1cZECuHzJbEDhpA5bcHpu7M0Gsixz2zPn/kEmrt2dq+qAEQCERiNrTq1RSIHzsOGe3KvHgoEKyH0Qtso9U8XpnJs/CIePiPnWRiFor7T3hq6N1pxM98wefY2crK2wP60grzN2i3Pgt+fOmN1xzCt+w4NePEXMyiWGaVdmT4fGwnC0u/DOcgMc6nnfOZ60IPf7mIe22LyrZl+ll4Ke5GcZ9nFPSmBUTgwBz+AggGwzzJ2iAjDY9rEONV5lJlw69BOhph11hDnRQOcBFALzCh7sC7S5wA+4QFbYSUx6FVJsxNMuCkiUqppR+q0bMW6lc5OSmSyJf/jirErg/Z28emJ5wrvUsv2BqPM+zSInxv7b7ev+I5NFQz9z+5/Js5e+Gj3V21Vr7lGr7col8WVNoyrptfE/NL9Uq+0NWFp8J5C+U6XCBHwqvMzTlGKMx/YjY15EWk78MPEPmNwo1VXLz9Y30Lo8zPpAUy+FxGAN8UoVQnpKjmoMIIkf9jcjWBkBS6wlVeifMjizmxdcq5CyOWQLSU43foE9amwPpHoEpXWpxB42JG55WY/RZ6X3mBGfDgxjO9VsRu1SmsYeG342RPwsHJBaaG3Zft+/eD51FxztnWEfLpz0LP/AuLGQf0CPWiJ5ldGvXWwdIfyCi31Uw3acH3Naa6j58+qY7oC+RMxNegtBtSGJ/10sRcYtuNFtdlmbQkZXIMPsjWLNweAILASxSINK5LZNWEqVb9KtHzMfUCD5nE8M5hCpzFz6R8xG889Zi3/AEqeQzvSFzrDfMryDVfJCoMM+esCc+qqEGNLWhlrCgJDz3EtetkbhZYGrw4ZHrgcROHAtAuHYrWTJ4Pj5GViTC/HZy/coZyULyHmC0uiJO1ilV9sW02r4qVGm9v/0U/wuumDUT2XtMrzibuNiNngHeK90Fwy9UK6NP4HTG58iT6Jf4BKFlewgWX0Zy9H+y7uxOpExOJKb8mnwtsZQrqUZysTc4E7rfb1Nyv3fUGFeypc28i/odsOOCVIoqskcJEZx1SFacphtBYnEyo4n7d2OrCYDU5OrRL32VG+NL1FT9kERRrm8JZsYYtcoYx0e9nIZ8WX4fdEzm1po/abvNc6xtOzZ5jlOfCvlpQZltOawRHhdRM0frFM9zra328aL9qnRzRmC4O8jHLalFn7DuBQUaRnglTyLzCv7gwKX+yMU6goN6bpVqujIgNetwxQ9MePkzMnnD50R+jTEF+YdSf6sIIBsAxvzOx03rBif4Mz5IBp+eiD0jPnr1kiY7AetWMOguU3uf8HTMr1/Ko6jJkt8lQYA22OFo8K2FPt+GO12CABLpjuiLe8IjSUITq3TPTFFtriJ+11J97pD0I0TvVXwBe8an+C4Q8bi1/jCBSI78ow2tIkB7HNar1dhl0OFjdOJHbtDkHw7tqYweVO6uVWIXkyA+Hy/1/pKlJAkg63KGuqwMG4v6UMfmZDZoVJ8sj47ui1yPL6BXgR09mpt6rljmcbpJ9i+q0jPX/7xvt/pyP8JIqwjQVrP9ihC5CQct4EMOWwQBA4gV0G70P3L+850eGTay7fyCHtiANxp5UUH8CU4iywKr3DniJ6uQKE78pvbIOXUPWEfySs0A7N2bd7Iq8zqM9F61ef50txXBNkhPaUNnWZUud1+n7h/pT4O3ar6Xri1VFbppfeqM/OQoluwap9yIj7nCXnrZXp0+VuVn7yoFBf8iiwtmq/MGDOkGnYis2cYGyxn9Et1QGahunBqTAceGnbsc/JKo8TqDGpPbbGTJC8kNgzWx5FV3ZXQ6voI7Wrmn/zX1+dXiPRjYqzlMm4pOC+rTf4SRVhHgHfDxrDCdFghZu5xTKW7YbiET01r+Mj6I8ai/hn8F8xsx3UrAztHPJW1cU3iOe01Zh7x3A/MGPYYjPb90Zo9EKFpWKT6d5wRg3VkEgGVn1NdhisE+KdmTM9Ok01HjEHqB3GtFrBdIlmtZ1pyC8xwIm+/UBXHMlfh8QV+Cz5U1LvnjSGkVAWSXd05duzlYYRXipPs0UmPPV6NkxKCnjF/Grl91XW6FfrYvxIeqIesuNWRvwmasFsdIScSvHh9u4xopcly/cZgNcCoXXiwcJ/aQ23gbyJXolVfqSFfkDJHAMkgnnwwBx1tFVeQm0Kgslqs/ij1EGxhjrCzO/8VQra2S7lp+XmO3xwxVHY0k9VAa/fZ2iGDY9siycgiXygjC19Nekm59Jc41YoSSM7DytHjMutQU4hJs1XtaLjUAeT+xAEvk+NX7d13ceYwCrzhbuqNgtEOmkuSIyPqA9MSSkSBCKmkS2clf6Jn0+cNG2nnK6kA7Nj9EyDVu7AcU0xpvufBZV0UMAOg7SfAf073RQnnYOrdli4it/KrMfGn7Ru47+3EtEFphMwbVAwvhw+ZSk5jDdaZabiUfK4DfYTNSqsK3oBVV/9L7s3a7TJ8yAkqt4x02ZInPyYvbn2qqf9aqr3b6B3cL20F9Mhl03G5XXHsxAmMI15QsNWbH7ZU7nmmq7NFMT87vH7YP84fnwvrcD3LSRXBIHAQd/knQoyQGA8a5HPdw8NoD4SoIGK+j/ghbr5Ib1p5/kI4yz7Lhj1sedjnZVzOQ4RMG8Wz9V7TS+lbsqj0rqZc6SB0/aPaRmwHNvcaqL6Nk1fbPyCvbXyL5HZ+E0mAl+P8OXCr2BrlYG1z4bjq+og6FQt3iTLnI1Qd39tFBXQ1+Wodq8uauTL5HouMZHUprA8ov8R2Hi22LfIHDGr3B2PwqV9bwkh1fNdeto5F3dGZA02+qkJkFJ8JTrT9zs/Pxgef+0Ih2kNpNqQaXUio8I7hq8y9URkqwyK8UNeYb8otWqVVqM/qdzXNca2yduqASduNrK8Rdac6NjlvXWHeUWvAoxH9sBEhDgXfBgA5x5hpgU34hZNYBkJy6Ey8mLUQH2XGGE/o4EfMtPju8icXsEhycLo1PK/0SWcKzaMhvoeT7q6VgWcd+oE2Evz/ys7L+99ZpaNMaOooPP2oCpOFlytAgybLPVrOUC+B3PwxapNPxUQ35Dx0c0RVeGURE7Boc0vtQmNbLeoy85MrTZ4YD7GKpyHODlQUM8ZZRa82tvmX9irS6j+LDvw8BUpEEh121c6AX89ACmDALbSZ+hoUca0fd60i7kWFHMPZj+ERNbv3eAr6rasS2POXGr0NT1///1CqPVvzfkwANsYV/0glZaRBVxK/wb6r6Cq+ah1lChDxSiz9H7yR3EXIrB2czT7X5YnRMyS9kDq6jGn4aBEhF4fS+XT1t3H3xb34KbBf9LVdYltSh16u1sR74YvbbF61efd6KFQ55Ukv/4PGfHgFSUJi7bNii6mxtnB2FalSOdamDwr8AgkT019joV69OAT1q0Vbrgo5aTw+hYU+E369XGl873n1SBQKtLc6efW1XmvMOobojUuQnPQMkxlzF/U+yc/WroRPqCl+Gz7Wy6N/it2/+8ohg81ilxzBwDAPHMHAMA8cwcAwDxzBwDAMtxMD/AstHB91ykk2FAAAAAElFTkSuQmCC" alt="" width="30" height="30">競馬データ.com</a></div>
+</header>
+<div class="shell">
+  <aside class="side" aria-label="メニュー">
+    <nav><a href="#" data-inert><svg class="ic" viewBox="0 0 512 512" aria-hidden="true" focusable="false"><path d="M277.8 8.6c-12.3-11.4-31.3-11.4-43.5 0l-224 208c-9.6 9-12.8 22.9-8 35.1S18.8 272 32 272l16 0 0 176c0 35.3 28.7 64 64 64l288 0c35.3 0 64-28.7 64-64l0-176 16 0c13.2 0 25-8.1 29.8-20.3s1.6-26.2-8-35.1l-224-208zM240 320l32 0c26.5 0 48 21.5 48 48l0 96-128 0 0-96c0-26.5 21.5-48 48-48z"/></svg><span>ホーム</span></a><a href="#" data-inert><svg class="ic" viewBox="0 0 640 512" aria-hidden="true" focusable="false"><path d="M352 0c0-17.7-14.3-32-32-32S288-17.7 288 0l0 64-96 0c-53 0-96 43-96 96l0 224c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-224c0-53-43-96-96-96l-96 0 0-64zM160 368c0-13.3 10.7-24 24-24l32 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-32 0c-13.3 0-24-10.7-24-24zm120 0c0-13.3 10.7-24 24-24l32 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-32 0c-13.3 0-24-10.7-24-24zm120 0c0-13.3 10.7-24 24-24l32 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-32 0c-13.3 0-24-10.7-24-24zM224 176a48 48 0 1 1 0 96 48 48 0 1 1 0-96zm144 48a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zM64 224c0-17.7-14.3-32-32-32S0 206.3 0 224l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96zm544-32c-17.7 0-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32z"/></svg><span>AI予測</span></a><a href="#" data-inert><svg class="ic" viewBox="0 0 448 512" aria-hidden="true" focusable="false"><path d="M64 32C64 14.3 49.7 0 32 0S0 14.3 0 32L0 480c0 17.7 14.3 32 32 32s32-14.3 32-32l0-121.6 62.7-18.8c41.9-12.6 87.1-8.7 126.2 10.9 42.7 21.4 92.5 24 137.2 7.2l37.1-13.9c12.5-4.7 20.8-16.6 20.8-30l0-247.7c0-23-24.2-38-44.8-27.7l-11.8 5.9c-44.9 22.5-97.8 22.5-142.8 0-36.4-18.2-78.3-21.8-117.2-10.1L64 54.4 64 32z"/></svg><span>コースデータ</span></a><a href="#" data-inert><svg class="ic" viewBox="0 0 576 512" aria-hidden="true" focusable="false"><path d="M352 264l0-200c0-17.7-14.3-32-32-32l-64 0c-17.7 0-32 14.3-32 32l0 200c0 13.3-10.7 24-24 24s-24-10.7-24-24l0-185.9C90 109.8 32 191.8 32 288l0 64 512 0 0-64c-1-95.2-58.4-177.7-144-209.8L400 264c0 13.3-10.7 24-24 24s-24-10.7-24-24zM40 400c-22.1 0-40 17.9-40 40s17.9 40 40 40l496 0c22.1 0 40-17.9 40-40s-17.9-40-40-40L40 400z"/></svg><span>騎手データ</span></a><a href="#" data-inert><svg class="ic" viewBox="0 0 576 512" aria-hidden="true" focusable="false"><path d="M448 238.1l0-78.1 16 0 9.8 19.6c12.5 25.1 42.2 36.4 68.3 26 20.5-8.2 33.9-28 33.9-50.1L576 80c0-19.1-8.4-36.3-21.7-48l5.7 0c8.8 0 16-7.2 16-16S568.8 0 560 0L448 0C377.3 0 320 57.3 320 128l-171.2 0C118.1 128 91.2 144.3 76.3 168.8 33.2 174.5 0 211.4 0 256l0 56c0 13.3 10.7 24 24 24s24-10.7 24-24l0-56c0-13.4 6.6-25.2 16.7-32.5 1.6 13 6.3 25.4 13.6 36.4l28.2 42.4c8.3 12.4 6.4 28.7-1.2 41.6-16.5 28-20.6 62.2-10 93.9l17.5 52.4c4.4 13.1 16.6 21.9 30.4 21.9l33.7 0c21.8 0 37.3-21.4 30.4-42.1l-20.8-62.5c-2.1-6.4-.5-13.4 4.3-18.2l12.7-12.7c13.2-13.2 20.6-31.1 20.6-49.7 0-2.3-.1-4.6-.3-6.9l84 24c4.1 1.2 8.2 2.1 12.3 2.8L320 480c0 17.7 14.3 32 32 32l32 0c17.7 0 32-14.3 32-32l0-164.3c19.2-19.2 31.5-45.7 32-75.7l0 0 0-1.9zM496 64a16 16 0 1 1 0 32 16 16 0 1 1 0-32z"/></svg><span>血統データ</span></a><a href="#" data-inert><svg class="ic" viewBox="0 0 448 512" aria-hidden="true" focusable="false"><path d="M224 248a120 120 0 1 0 0-240 120 120 0 1 0 0 240zm-29.7 56C95.8 304 16 383.8 16 482.3 16 498.7 29.3 512 45.7 512l356.6 0c16.4 0 29.7-13.3 29.7-29.7 0-98.5-79.8-178.3-178.3-178.3l-59.4 0z"/></svg><span>調教師データ</span></a><a href="#" data-inert><svg class="ic" viewBox="0 0 512 512" aria-hidden="true" focusable="false"><path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L368 46.1 465.9 144 490.3 119.6c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L432 177.9 334.1 80 172.4 241.7zM96 64C43 64 0 107 0 160L0 416c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-96c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7-14.3 32-32 32L96 448c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 64z"/></svg><span>コラム</span></a></nav>
+    <h2>今週開催</h2>
+    <nav><a href="#" data-inert><i class="vd"></i><span>福島競馬場</span></a><a href="#" data-inert><i class="vd"></i><span>東京競馬場</span></a><a href="#" data-inert><i class="vd"></i><span>京都競馬場</span></a></nav>
+    <h2>競馬場</h2>
+    <nav class="cols"><a href="#" data-inert><span>札幌</span></a><a href="#" data-inert><span>函館</span></a><a href="#" data-inert><span>福島</span></a><a href="#" data-inert><span>新潟</span></a><a href="#" data-inert><span>東京</span></a><a href="#" data-inert><span>中山</span></a><a href="#" data-inert><span>中京</span></a><a href="#" data-inert><span>京都</span></a><a href="#" data-inert><span>阪神</span></a><a href="#" data-inert><span>小倉</span></a></nav>
+  </aside>
+  <div class="main">
+    <div class="cols">
+      <main><div class="st" id="st-top">
+  <header class="st-h">
+    <nav class="st-crumb" aria-label="パンくず"><span class="st-c"><a href="#" data-inert>HOME</a></span><wbr><span class="st-c"><i aria-hidden="true">/</i><span aria-current="page">免責事項</span></span></nav>
+    <h1>免責事項</h1>
+    
+  </header>
+  <aside class="st-aside">
+    
+    <nav class="st-pn st-nav" aria-label="サイト案内"><h2>サイト案内</h2><ul><li><a href="#" data-inert><span>サイト情報・運営者情報</span><svg class="ic" viewBox="0 0 320 512" aria-hidden="true" focusable="false"><path d="M311.1 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L243.2 256 73.9 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg></a></li><li><a href="#" data-inert><span>データの出典と集計方法</span><svg class="ic" viewBox="0 0 320 512" aria-hidden="true" focusable="false"><path d="M311.1 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L243.2 256 73.9 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg></a></li><li><a href="#" data-inert><span>お問い合わせ</span><svg class="ic" viewBox="0 0 320 512" aria-hidden="true" focusable="false"><path d="M311.1 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L243.2 256 73.9 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg></a></li><li><a href="#" data-inert><span>プライバシーポリシー</span><svg class="ic" viewBox="0 0 320 512" aria-hidden="true" focusable="false"><path d="M311.1 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L243.2 256 73.9 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg></a></li><li><a href="#" data-inert class="on" aria-current="page"><span>免責事項</span><svg class="ic" viewBox="0 0 320 512" aria-hidden="true" focusable="false"><path d="M311.1 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L243.2 256 73.9 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg></a></li></ul></nav>
+  </aside>
+  <article class="st-pn st-art">
+    <section id="sec-1"><h2>データの利用について</h2><div class="st-p">
+    <p>当サイトで提供する情報は、過去のレース結果に基づく統計データであり、将来のレース結果を保証するものではありません。馬券の購入は自己責任で行ってくだ<span class="nw">さい。</span></p></div></section>
+    <section id="sec-2"><h2>免責について</h2><div class="st-p">
+    <p>当サイトの情報を利用して生じたいかなる損害についても、当サイトは一切の責任を負いかねます。また、掲載している情報は予告なく変更される場合があり<span class="nw">ます。</span></p>
+    <p>データの正確性には最善を尽くしていますが、誤りや最新性の欠如がある可能性がございます。重要な情報については、必ず公式データをご確認くだ<span class="nw">さい。</span></p></div></section>
+    <section id="sec-3"><h2>外部リンクについて</h2><div class="st-p">
+    <p>当サイトから外部サイトへのリンクが含まれる場合がありますが、リンク先のサイトの内容について当サイトは一切の責任を負いま<span class="nw">せん。</span></p></div></section>
+    <section id="sec-4"><h2>サービスの中断・停止について</h2><div class="st-p">
+    <p>当サイトは、メンテナンスやシステム障害等により、予告なくサービスを一時的に中断または停止する場合があります。これにより生じた損害について、当サイトは一切の責任を負いま<span class="nw">せん。</span></p></div></section>
+  </article>
+</div></main>
+      <aside class="rail" aria-label="お知らせと広告">
+        <div class="rail-in">
+          <div class="pn rail-ai"><p class="rail-k">AI勝率予測</p><h2>出走馬ごとの勝率をAIで予測</h2><p>独自のモデルで出走馬の勝率を算出し、対象レースの約5分前に無料で公開しています。</p><a class="cta" href="#" data-inert>予測を見る</a></div>
+          <div class="ad rail-ad" role="note" aria-label="広告枠"><span>スポンサーリンク</span><div>広告枠<br>300×600</div></div>
+        </div>
+      </aside>
+    </div>
+    <footer class="ftr">
+      <p class="f-logo">競馬データ.com</p>
+      <nav aria-label="サイト情報"><a href="#" data-inert>サイト情報・運営者情報</a><a href="#" data-inert>データの出典と集計方法</a><a href="#" data-inert>免責事項</a><a href="#" data-inert>プライバシーポリシー</a><a href="#" data-inert>お問い合わせ</a></nav>
+      <p class="f-note">馬券の購入は20歳になってから。掲載しているデータは参考情報であり、的中を保証するものではありません。</p>
+      <p class="f-note">© 2026 競馬データ.com</p>
+    </footer>
+  </div>
+</div>
+<nav class="tabbar" aria-label="メインメニュー"><a href="#" data-inert><svg class="ic" viewBox="0 0 448 512" aria-hidden="true" focusable="false"><path d="M64 32C64 14.3 49.7 0 32 0S0 14.3 0 32L0 480c0 17.7 14.3 32 32 32s32-14.3 32-32l0-121.6 62.7-18.8c41.9-12.6 87.1-8.7 126.2 10.9 42.7 21.4 92.5 24 137.2 7.2l37.1-13.9c12.5-4.7 20.8-16.6 20.8-30l0-247.7c0-23-24.2-38-44.8-27.7l-11.8 5.9c-44.9 22.5-97.8 22.5-142.8 0-36.4-18.2-78.3-21.8-117.2-10.1L64 54.4 64 32z"/></svg><span>コース</span></a><a href="#" data-inert><svg class="ic" viewBox="0 0 576 512" aria-hidden="true" focusable="false"><path d="M352 264l0-200c0-17.7-14.3-32-32-32l-64 0c-17.7 0-32 14.3-32 32l0 200c0 13.3-10.7 24-24 24s-24-10.7-24-24l0-185.9C90 109.8 32 191.8 32 288l0 64 512 0 0-64c-1-95.2-58.4-177.7-144-209.8L400 264c0 13.3-10.7 24-24 24s-24-10.7-24-24zM40 400c-22.1 0-40 17.9-40 40s17.9 40 40 40l496 0c22.1 0 40-17.9 40-40s-17.9-40-40-40L40 400z"/></svg><span>騎手</span></a><a href="#" data-inert><svg class="ic" viewBox="0 0 576 512" aria-hidden="true" focusable="false"><path d="M448 238.1l0-78.1 16 0 9.8 19.6c12.5 25.1 42.2 36.4 68.3 26 20.5-8.2 33.9-28 33.9-50.1L576 80c0-19.1-8.4-36.3-21.7-48l5.7 0c8.8 0 16-7.2 16-16S568.8 0 560 0L448 0C377.3 0 320 57.3 320 128l-171.2 0C118.1 128 91.2 144.3 76.3 168.8 33.2 174.5 0 211.4 0 256l0 56c0 13.3 10.7 24 24 24s24-10.7 24-24l0-56c0-13.4 6.6-25.2 16.7-32.5 1.6 13 6.3 25.4 13.6 36.4l28.2 42.4c8.3 12.4 6.4 28.7-1.2 41.6-16.5 28-20.6 62.2-10 93.9l17.5 52.4c4.4 13.1 16.6 21.9 30.4 21.9l33.7 0c21.8 0 37.3-21.4 30.4-42.1l-20.8-62.5c-2.1-6.4-.5-13.4 4.3-18.2l12.7-12.7c13.2-13.2 20.6-31.1 20.6-49.7 0-2.3-.1-4.6-.3-6.9l84 24c4.1 1.2 8.2 2.1 12.3 2.8L320 480c0 17.7 14.3 32 32 32l32 0c17.7 0 32-14.3 32-32l0-164.3c19.2-19.2 31.5-45.7 32-75.7l0 0 0-1.9zM496 64a16 16 0 1 1 0 32 16 16 0 1 1 0-32z"/></svg><span>血統</span></a><a href="#" data-inert><svg class="ic" viewBox="0 0 448 512" aria-hidden="true" focusable="false"><path d="M224 248a120 120 0 1 0 0-240 120 120 0 1 0 0 240zm-29.7 56C95.8 304 16 383.8 16 482.3 16 498.7 29.3 512 45.7 512l356.6 0c16.4 0 29.7-13.3 29.7-29.7 0-98.5-79.8-178.3-178.3-178.3l-59.4 0z"/></svg><span>調教師</span></a><a href="#" data-inert><svg class="ic" viewBox="0 0 640 512" aria-hidden="true" focusable="false"><path d="M352 0c0-17.7-14.3-32-32-32S288-17.7 288 0l0 64-96 0c-53 0-96 43-96 96l0 224c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-224c0-53-43-96-96-96l-96 0 0-64zM160 368c0-13.3 10.7-24 24-24l32 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-32 0c-13.3 0-24-10.7-24-24zm120 0c0-13.3 10.7-24 24-24l32 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-32 0c-13.3 0-24-10.7-24-24zm120 0c0-13.3 10.7-24 24-24l32 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-32 0c-13.3 0-24-10.7-24-24zM224 176a48 48 0 1 1 0 96 48 48 0 1 1 0-96zm144 48a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zM64 224c0-17.7-14.3-32-32-32S0 206.3 0 224l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96zm544-32c-17.7 0-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32z"/></svg><span>AI予測</span></a></nav>
+<script>
+(function () {
+  // 配色案の切替（見本用）
+  var looks = document.querySelectorAll('.looks button');
+  function setLook(k) {
+    if (['m', 'a', 'b', 'c'].indexOf(k) === -1) k = 'm';
+    document.documentElement.setAttribute('data-look', k);
+    looks.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.look === k)); });
+  }
+  looks.forEach(function (b) { b.addEventListener('click', function () { setLook(b.dataset.look); try { history.replaceState(null, '', '#' + b.dataset.look); } catch (e) {} }); });
+  setLook('m');
+  
+
+  // スマホ・タブレット：メニューボタンで左メニューを引き出す
+  var hb = document.querySelector('.hbtn');
+  if (hb) {
+    hb.setAttribute('aria-expanded', 'false');
+    hb.addEventListener('click', function () {
+      var open = !document.body.classList.contains('menu-open');
+      document.body.classList.toggle('menu-open', open);
+      hb.setAttribute('aria-expanded', String(open));
+    });
+    document.addEventListener('click', function (e) {
+      if (document.body.classList.contains('menu-open') && !e.target.closest('.side') && !e.target.closest('.hbtn')) { document.body.classList.remove('menu-open'); hb.setAttribute('aria-expanded', 'false'); }
+    });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { document.body.classList.remove('menu-open'); hb.setAttribute('aria-expanded', 'false'); } });
+  }
+
+  // 見本でつないでいないリンクは動かさない
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('a[data-inert]')) e.preventDefault();
+  });
+
+  // ページ内の移動（履歴に積まない）と、チップの現在地
+  var chips = document.querySelectorAll('.chips a');
+  document.querySelectorAll('.chips a, .cta, .side a[href^="#"]:not([data-inert])').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var el = document.getElementById(a.getAttribute('href').slice(1));
+      if (!el) return;
+      e.preventDefault();
+      el.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+      // 押したチップを現在地にして、移動が終わるまで固定する（短い節で隣のチップが点くのを防ぐ）
+      if (a.parentNode && a.parentNode.parentNode && a.parentNode.parentNode.classList.contains('chips')) { lockUntil = Date.now() + 1200; setChip(a.getAttribute('href')); }
+    });
+  });
+  var lockUntil = 0;
+  function setChip(h) {
+    chips.forEach(function (c) {
+      var on = c.getAttribute('href') === h;
+      c.classList.toggle('on', on);
+      if (on) { var box = c.parentNode; box.scrollTo({ left: c.offsetLeft - (box.clientWidth - c.offsetWidth) / 2, behavior: 'smooth' }); }
+    });
+  }
+  // ページの一番下では最後のチップを現在地にする
+  addEventListener('scroll', function () {
+    if (!chips.length || Date.now() < lockUntil) return;
+    if (innerHeight + scrollY >= document.documentElement.scrollHeight - 4) setChip(chips[chips.length - 1].getAttribute('href'));
+    else if (scrollY < 200) { chips.forEach(function (c) { c.classList.remove('on'); }); if (chips[0]) chips[0].parentNode.scrollTo({ left: 0 }); }
+  }, { passive: true });
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (en) {
+        if (!en.isIntersecting || Date.now() < lockUntil) return;
+        setChip('#' + en.target.id);
+      });
+    }, { rootMargin: '-25% 0px -65% 0px' });
+    chips.forEach(function (c) { var el = document.getElementById(c.getAttribute('href').slice(1)); if (el) io.observe(el); });
+  }
+
+  // 開閉（レース・順位）
+  function toggler(sel, boxSel) {
+    document.querySelectorAll(sel).forEach(function (b) {
+      b.addEventListener('click', function () {
+        var open = b.getAttribute('aria-expanded') !== 'true';
+        var box = boxSel ? b.previousElementSibling : b.parentNode;
+        (boxSel ? box : b.parentNode).classList.toggle('open', open);
+        b.setAttribute('aria-expanded', String(open));
+        b.textContent = open ? b.dataset.close : b.dataset.open;
+      });
+    });
+  }
+  toggler('.rp-m', false);
+  toggler('.rk-m', true);
+
+  // スマホ：競馬場の切替は横送りの位置を動かすだけ（中身は隠さない）
+  var rps = document.querySelector('.rps'), segs = document.querySelectorAll('.seg button');
+  if (rps) segs.forEach(function (b) {
+    b.addEventListener('click', function () {
+      var p = rps.children[+b.dataset.seg];
+      rps.scrollTo({ left: p.offsetLeft - rps.children[0].offsetLeft, behavior: 'smooth' });
+    });
+  });
+  if (rps) rps.addEventListener('scroll', function () {
+    var w = rps.children[0].offsetWidth + 12, i = Math.round(rps.scrollLeft / w);
+    segs.forEach(function (b, k) { b.classList.toggle('on', k === i); });
+  }, { passive: true });
+
+  // スマホ：検索欄を開閉
+  var sbtn = document.querySelector('.sbtn'), hdr = document.querySelector('.hdr');
+  if (sbtn) sbtn.addEventListener('click', function () {
+    var open = !hdr.classList.contains('searching');
+    hdr.classList.toggle('searching', open);
+    sbtn.setAttribute('aria-expanded', String(open));
+    if (open) document.getElementById('q').focus();
+  });
+
+  // 五十音
+  document.querySelectorAll('.kn').forEach(function (kn) {
+    var btns = kn.querySelectorAll('.kn-g button'), panels = kn.querySelectorAll('.kn-p');
+    btns.forEach(function (b) {
+      b.addEventListener('click', function () {
+        // 選択中をもう一度押しても閉じない（板の中身が空にならないように）
+        btns.forEach(function (x) { x.setAttribute('aria-expanded', 'false'); });
+        panels.forEach(function (p) { p.hidden = true; });
+        b.setAttribute('aria-expanded', 'true');
+        var pn = kn.querySelector('[data-p="' + b.dataset.i + '"]'); pn.hidden = false; pn.scrollTop = 0;
+      });
+    });
+  });
+
+  // 動き：画面に入ったら1回だけ（棒が伸びる・勝利数が数え上がる・カードが順に浮く）
+  if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.documentElement.classList.add('js-anim');
+    document.querySelectorAll('.rk li, .ai .ac').forEach(function (el) {
+      el.style.setProperty('--i', Array.prototype.indexOf.call(el.parentNode.children, el));
+    });
+    var seen = new IntersectionObserver(function (es) {
+      es.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        seen.unobserve(en.target);
+        en.target.classList.add('in');
+        en.target.querySelectorAll('.rk-w b').forEach(function (b, k) {
+          var to = parseInt(b.textContent, 10), t0 = performance.now() + k * 45;
+          b.textContent = '0';
+          (function tick(now) {
+            var p = Math.min(1, Math.max(0, (now - t0) / 650)), e = 1 - Math.pow(1 - p, 3);
+            b.textContent = String(Math.round(to * e));
+            if (p < 1) requestAnimationFrame(tick);
+          })(performance.now());
+        });
+      });
+    }, { threshold: 0.2 });
+    document.querySelectorAll('.rk, .ai').forEach(function (el) { seen.observe(el); });
+  }
+
+  // スマホ：名前が多い行は先頭12件までにして、ボタンで全部開く
+  document.querySelectorAll('.kn-p').forEach(function (p) {
+    var n = p.children.length;
+    if (n <= 12) return;
+    var m = document.createElement('button');
+    m.type = 'button'; m.className = 'kn-more'; m.setAttribute('aria-expanded', 'false');
+    m.textContent = 'すべて表示（' + n + '件）';
+    m.addEventListener('click', function () {
+      var open = !p.classList.contains('all');
+      p.classList.toggle('all', open);
+      m.setAttribute('aria-expanded', String(open));
+      m.textContent = open ? '12件までにする' : 'すべて表示（' + n + '件）';
+    });
+    p.appendChild(m);
+  });
+
+  // 検索：名前と読みで絞り込む
+  var INDEX = [["丹内祐次","騎手","たんないゆうじ"],["松山弘平","騎手","まつやまこうへい"],["鮫島克駿","騎手","さめしまかつま"],["佐々木大輔","騎手","ささきだいすけ"],["戸崎圭太","騎手","とさきけいた"],["幸英明","騎手","みゆきひであき"],["岩田望来","騎手","いわたみらい"],["横山武史","騎手","よこやまたけし"],["菅原明良","騎手","すがわらあきら"],["坂井瑠星","騎手","さかいりゅうせい"],["団野大成","騎手","だんのたいせい"],["田口貫太","騎手","たぐちかんた"],["西村淳也","騎手","にしむらあつや"],["和田竜二","騎手","わだりゅうじ"],["原優介","騎手","はらゆうすけ"],["木幡巧也","騎手","こわたたくや"],["津村明秀","騎手","つむらあきひで"],["永島まなみ","騎手","ながしままなみ"],["三浦皇成","騎手","みうらこうせい"],["C.ルメール","騎手","るめーる"],["大野拓弥","騎手","おおのたくや"],["菊沢一樹","騎手","きくざわかずき"],["横山和生","騎手","よこやまかずお"],["小沢大仁","騎手","おざわだいと"],["内田博幸","騎手","うちだひろゆき"],["武豊","騎手","たけゆたか"],["北村友一","騎手","きたむらゆういち"],["石川裕紀人","騎手","いしかわゆきと"],["斎藤新","騎手","さいとうあらた"],["菱田裕二","騎手","ひしだゆうじ"],["松若風馬","騎手","まつわかふうま"],["川田将雅","騎手","かわだゆうが"],["田辺裕信","騎手","たなべひろのぶ"],["丸山元気","騎手","まるやまげんき"],["吉村誠之助","騎手","よしむらせいのすけ"],["M.デムーロ","騎手","でむーろ"],["松岡正海","騎手","まつおかまさみ"],["石橋脩","騎手","いしばししゅう"],["荻野極","騎手","おぎのきわむ"],["酒井学","騎手","さかいまなぶ"],["角田大和","騎手","つのだやまと"],["西塚洸二","騎手","にしづかこうじ"],["古川吉洋","騎手","ふるかわよしひろ"],["吉田豊","騎手","よしだゆたか"],["岩田康誠","騎手","いわたやすなり"],["藤岡佑介","騎手","ふじおかゆうすけ"],["富田暁","騎手","とみたあかつき"],["横山琉人","騎手","よこやまりゅうと"],["杉原誠人","騎手","すぎはらまこと"],["高杉吏麒","騎手","たかすぎりき"],["丸田恭介","騎手","まるたきょうすけ"],["北村宏司","騎手","きたむらひろし"],["柴田大知","騎手","しばただいち"],["池添謙一","騎手","いけぞえけんいち"],["浜中俊","騎手","はまなかすぐる"],["吉田隼人","騎手","よしだはやと"],["今村聖奈","騎手","いまむらせいな"],["小林美駒","騎手","こばやしみく"],["黛弘人","騎手","まゆずみひろと"],["秋山稔樹","騎手","あきやまとしき"],["河原田菜々","騎手","かわはらだなな"],["野中悠太郎","騎手","のなかゆうたろう"],["武藤雅","騎手","むとうみやび"],["横山典弘","騎手","よこやまのりひろ"],["長浜鴻緒","騎手","ながはまこお"],["藤懸貴志","騎手","ふじかけたかし"],["国分恭介","騎手","こくぶんきょうすけ"],["国分優作","騎手","こくぶんゆうさく"],["古川奈穂","騎手","ふるかわなほ"],["川須栄彦","騎手","かわすはるひこ"],["亀田温心","騎手","かめだはーと"],["江田照男","騎手","えだてるお"],["小崎綾也","騎手","こざきりょうや"],["松本大輝","騎手","まつもとひろき"],["川端海翼","騎手","かわばたかいと"],["鷲頭虎太","騎手","わしずこた"],["石田拓郎","騎手","いしだたくろう"],["柴田裕一郎","騎手","しばたゆういちろう"],["長岡禎仁","騎手","ながおかよしひと"],["石神深道","騎手","いしがみふかみち"],["小林脩斗","騎手","こばやししゅうと"],["小林凌大","騎手","こばやしりょうた"],["水沼元輝","騎手","みずぬまげんき"],["佐藤翔馬","騎手","さとうしょうま"],["泉谷楓真","騎手","いずみやふうま"],["太宰啓介","騎手","だざいけいすけ"],["嶋田純次","騎手","しまだじゅんじ"],["中井裕二","騎手","なかいゆうじ"],["高倉稜","騎手","たかくらりょう"],["荻野琢真","騎手","おぎのたくま"],["柴田善臣","騎手","しばたよしとみ"],["J.モレイラ","騎手","もれいら"],["原田和真","騎手","はらだかずま"],["木幡初也","騎手","こわたはつや"],["川又賢治","騎手","かわまたけんじ"],["B.ムルザバエフ","騎手","むるざばえふ"],["R.キング","騎手","きんぐ"],["城戸義政","騎手","きどよしまさ"],["岩部純二","騎手","いわべじゅんじ"],["田中健","騎手","たなかけん"],["木幡育也","騎手","こわたいくや"],["T.マーカンド","騎手","まーかんど"],["土田真翔","騎手","つちだまなと"],["石神深一","騎手","いしがみしんいち"],["小牧加矢太","騎手","こまきかやた"],["橋木太希","騎手","はしきたいき"],["和田陽希","騎手","わだはるき"],["D.レーン","騎手","れーん"],["舟山瑠泉","騎手","ふなやまるい"],["上野翔","騎手","うえのしょう"],["五十嵐雄祐","騎手","いがらしゆうすけ"],["大江原圭","騎手","おおえはらけい"],["田山旺佑","騎手","たやまおうすけ"],["遠藤汰月","騎手","えんどうたつき"],["小野寺祐太","騎手","おのでらゆうた"],["A.ルメートル","騎手","るめーとる"],["A.シュタルケ","騎手","しゅたるけ"],["草野太郎","騎手","くさのたろう"],["鮫島良太","騎手","さめしまりょうた"],["伴啓太","騎手","ばんけいた"],["加藤祥太","騎手","かとうしょうた"],["H.ドイル","騎手","どいる"],["伊藤工真","騎手","いとうたくま"],["黒岩悠","騎手","くろいわゆう"],["森一馬","騎手","もりかずま"],["的場勇人","騎手","まとばはやと"],["森田誠也","騎手","もりたせいや"],["中村将之","騎手","なかむらまさゆき"],["C.デムーロ","騎手","でむーろ"],["難波剛健","騎手","なんばよしやす"],["上里直汰","騎手","うえざとなおた"],["菅原隆一","騎手","すがはらりゅういち"],["T.オシェア","騎手","おしぇあ"],["井上敏樹","騎手","いのうえとしき"],["M.ディー","騎手","でぃー"],["大久保友雅","騎手","おおくぼゆうが"],["高田潤","騎手","たかだじゅん"],["江田勇亮","騎手","えだゆうすけ"],["R.ムーア","騎手","むーあ"],["西村太一","騎手","にしむらたいち"],["R.ピーヒュレク","騎手","ぴーひゅれく"],["小坂忠士","騎手","こさかただし"],["金子光希","騎手","かねこみつき"],["L.モリス","騎手","もりす"],["蓑島靖典","騎手","みのしまやすのり"],["A.バデル","騎手","ばでる"],["坂口智康","騎手","さかぐちともやす"],["R.キングスコート","騎手","きんぐすこーと"],["西谷誠","騎手","にしたにまこと"],["田村太雅","騎手","たむらたいが"],["岡田祥嗣","騎手","おかだよしつぐ"],["W.ビュイック","騎手","びゅいっく"],["谷原柚希","騎手","たにはらゆずき"],["K.ティータン","騎手","てぃーたん"],["F.ゴンサルベス","騎手","ごんさるべす"],["A.プーシャン","騎手","ぷーしゃん"],["T.ハマーハンセン","騎手","はまーはんせん"],["J.コレット","騎手","これっと"],["F.ジェルー","騎手","じぇるー"],["M.ミシェル","騎手","みしぇる"],["国枝栄","調教師","くにえださかえ"],["小西一男","調教師","こにしかずお"],["土田稔","調教師","つちだみのる"],["上原博之","調教師","うえはらひろゆき"],["森秀行","調教師","もりひでゆき"],["佐々木晶三","調教師","ささきしょうぞう"],["谷潔","調教師","たにきよし"],["南田美知雄","調教師","みなみだみちお"],["杉浦宏昭","調教師","すぎうらひろあき"],["萩原清","調教師","はぎわらきよし"],["宮徹","調教師","みやとおる"],["相沢郁","調教師","あいざわいくお"],["伊藤圭三","調教師","いとうけいぞう"],["萱野浩二","調教師","かやのこうじ"],["鈴木伸尋","調教師","すずきのぶひろ"],["田村康仁","調教師","たむらやすひと"],["西園正都","調教師","にしぞのまさと"],["根本康広","調教師","ねもとやすひろ"],["伊藤伸一","調教師","いとうしんいち"],["大根田裕之","調教師","おおねだひろゆき"],["佐藤吉勝","調教師","さとうよしかつ"],["手塚貴久","調教師","てづかたかひさ"],["中竹和也","調教師","なかたけかずや"],["安達昭夫","調教師","あだちあきお"],["石栗龍彦","調教師","いしくりたつひこ"],["昆貢","調教師","こんみつぐ"],["勢司和浩","調教師","せいしかずひろ"],["畠山吉宏","調教師","はたけやまよしひろ"],["岩戸孝樹","調教師","いわとたかき"],["菊川正達","調教師","きくかわまさたつ"],["戸田博文","調教師","とだひろふみ"],["藤原英昭","調教師","ふじわらひであき"],["本間忍","調教師","ほんましのぶ"],["大久保龍志","調教師","おおくぼりゅうじ"],["加藤征弘","調教師","かとうゆきひろ"],["友道康夫","調教師","ともみちやすお"],["藤岡健一","調教師","ふじおかけんいち"],["的場均","調教師","まとばひとし"],["武藤善則","調教師","むとうよしのり"],["大橋勇樹","調教師","おおはしゆうき"],["岡田稲男","調教師","おかだいなお"],["久保田貴士","調教師","くぼたたかし"],["小島茂之","調教師","こじましげゆき"],["中尾秀正","調教師","なかおひでまさ"],["堀宣行","調教師","ほりのりゆき"],["池江泰寿","調教師","いけえやすとし"],["宮本博","調教師","みやもとひろし"],["奥平雅士","調教師","おくひらまさし"],["矢作芳人","調教師","やはぎよしと"],["小笠倫弘","調教師","おがさみちひろ"],["加藤和宏","調教師","かとうかずひろ"],["北出成人","調教師","きたでよしひと"],["古賀慎明","調教師","こがまさあき"],["清水英克","調教師","しみずひでかつ"],["中川公成","調教師","なかがわただしげ"],["平田修","調教師","ひらたおさむ"],["梅田智之","調教師","うめだともゆき"],["小崎憲","調教師","こざきけん"],["斎藤誠","調教師","さいとうまこと"],["庄野靖志","調教師","しょうのやすし"],["高木登","調教師","たかぎのぼる"],["武市康男","調教師","たけいちやすお"],["天間昭一","調教師","てんましょういち"],["羽月友彦","調教師","はつきともひこ"],["松永幹夫","調教師","まつながみきお"],["松永康利","調教師","まつながやすとし"],["水野貴広","調教師","みずのたかひろ"],["荒川義之","調教師","あらかわよしゆき"],["粕谷昌央","調教師","かすやまさお"],["鹿戸雄一","調教師","しかとゆういち"],["野中賢二","調教師","のなかけんじ"],["本田優","調教師","ほんだまさる"],["松山将樹","調教師","まつやままさき"],["吉田直弘","調教師","よしだなおひろ"],["大竹正博","調教師","おおたけまさひろ"],["尾関知人","調教師","おぜきともひと"],["笹田和秀","調教師","ささだかずひで"],["須貝尚介","調教師","すがいなおすけ"],["牧光二","調教師","まきこうじ"],["矢野英一","調教師","やのえいいち"],["伊藤大士","調教師","いとうだいし"],["清水久詞","調教師","しみずひさし"],["鈴木孝志","調教師","すずきたかし"],["田島俊明","調教師","たじまとしあき"],["牧浦充徳","調教師","まきうらみつのり"],["和田正一郎","調教師","わだしょういちろう"],["菊沢隆徳","調教師","きくざわたかのり"],["新開幸一","調教師","しんかいこういち"],["高野友和","調教師","たかのともかず"],["高柳瑞樹","調教師","たかやなぎみずき"],["田中剛","調教師","たなかつよし"],["千田輝彦","調教師","ちだてるひこ"],["角田晃一","調教師","つのだこういち"],["牧田和弥","調教師","まきたかずや"],["大和田成","調教師","おおわだなる"],["小野次郎","調教師","おのじろう"],["木村哲也","調教師","きむらてつや"],["栗田徹","調教師","くりたとおる"],["今野貞一","調教師","こんのていいち"],["高橋義忠","調教師","たかはしよしただ"],["吉村圭司","調教師","よしむらけいじ"],["蛯名利弘","調教師","えびなとしひろ"],["金成貴史","調教師","かなりたかし"],["黒岩陽一","調教師","くろいわよういち"],["高橋文雅","調教師","たかはしふみまさ"],["高橋康之","調教師","たかはしやすゆき"],["高橋亮","調教師","たかはしりょう"],["中内田充正","調教師","なかうちだみつまさ"],["浜田多実雄","調教師","はまだたみお"],["飯田祐史","調教師","いいだゆうじ"],["石橋守","調教師","いしばしまもる"],["尾形和幸","調教師","おがたかずゆき"],["森田直行","調教師","もりたなおゆき"],["和田雄二","調教師","わだゆうじ"],["池添学","調教師","いけぞえまなぶ"],["奥村武","調教師","おくむらたけし"],["奥村豊","調教師","おくむらゆたか"],["武井亮","調教師","たけいりょう"],["西村真幸","調教師","にしむらまさゆき"],["松下武士","調教師","まつしたたけし"],["池上昌和","調教師","いけがみまさかず"],["斉藤崇史","調教師","さいとうたかし"],["竹内正洋","調教師","たけうちまさひろ"],["中舘英二","調教師","なかだてえいじ"],["橋口慎介","調教師","はしぐちしんすけ"],["渡辺薫彦","調教師","わたなべくにひこ"],["青木孝文","調教師","あおきたかふみ"],["杉山晴紀","調教師","すぎやまはるき"],["寺島良","調教師","てらしまりょう"],["高柳大輔","調教師","たかやなぎだいすけ"],["武幸四郎","調教師","たけこうしろう"],["武英智","調教師","たけひでのり"],["田中博康","調教師","たなかひろやす"],["林徹","調教師","はやしとおる"],["安田翔伍","調教師","やすだしょうご"],["和田勇介","調教師","わだゆうすけ"],["石坂公一","調教師","いしざかこういち"],["稲垣幸雄","調教師","いながきゆきお"],["上村洋行","調教師","うえむらひろゆき"],["加藤士津八","調教師","かとうしづや"],["坂口智康","調教師","さかぐちともやす"],["小手川準","調教師","こてがわひとし"],["新谷功一","調教師","しんたにこういち"],["長谷川浩大","調教師","はせがわこうだい"],["深山雅史","調教師","ふかやままさし"],["宮田敬介","調教師","みやたけいすけ"],["吉岡辰弥","調教師","よしおかたつや"],["伊坂重信","調教師","いさかしげのぶ"],["杉山佳明","調教師","すぎやまよしあき"],["鈴木慎太郎","調教師","すずきしんたろう"],["田中克典","調教師","たなかかつのり"],["茶木太樹","調教師","ちゃきたいき"],["辻哲英","調教師","つじてつひで"],["辻野泰之","調教師","つじのやすゆき"],["四位洋文","調教師","しいひろふみ"],["小林真也","調教師","こばやししんや"],["中村直也","調教師","なかむらなおや"],["西田雄一郎","調教師","にしだゆういちろう"],["畑端省吾","調教師","はたばたしょうご"],["堀内岳志","調教師","ほりうちたけし"],["村田一誠","調教師","むらたいっせい"],["蛯名正義","調教師","えびなまさよし"],["上原佑紀","調教師","うえはらゆうき"],["緒方努","調教師","おがたつとむ"],["小栗実","調教師","おぐりみのる"],["嘉藤貴行","調教師","かとうたかゆき"],["西園翔太","調教師","にしぞのしょうた"],["小椋研介","調教師","おぐらけんすけ"],["河嶋宏樹","調教師","かわしまひろき"],["千葉直人","調教師","ちばなおと"],["藤野健太","調教師","ふじのけんた"],["森一誠","調教師","もりかずとも"],["矢嶋大樹","調教師","やじまだいき"],["福永祐一","調教師","ふくながゆういち"],["浅利英明","調教師","あさりひであき"],["佐藤悠太","調教師","さとうゆうた"],["高橋一哉","調教師","たかはしかずや"],["田中勝春","調教師","たなかかつはる"],["柄崎将寿","調教師","つかざきまさとし"],["東田明士","調教師","ひがしだあきし"],["前川恭子","調教師","まえかわきょうこ"],["宮地貴稔","調教師","みやじたかとし"],["秋山真一郎","調教師","あきやましんいちろう"],["井上智史","調教師","いのうえさとし"],["加藤公太","調教師","かとうこうた"],["柴田卓","調教師","しばたすぐる"],["橋田宜長","調教師","はしだよしたけ"],["室井潔","調教師","むろいきよし"],["平岩大典","調教師","ひらいわだいすけ"],["手塚貴徳","調教師","てづかたかのり"],["秋本大介","調教師","あきもとだいすけ"],["松尾卓哉","調教師","まつおたくや"],["古賀大生","調教師","こがひろき"],["クリソベリル","種牡馬",""],["アニマルキングダム","種牡馬",""],["ナダル","種牡馬",""],["スピルバーグ","種牡馬",""],["ジャングルポケット","種牡馬",""],["ダノンバラード","種牡馬",""],["ハービンジャー","種牡馬",""],["レーヴミストラル","種牡馬",""],["シャンハイボビー","種牡馬",""],["エポカドーロ","種牡馬",""],["ダイワメジャー","種牡馬",""],["グレーターロンドン","種牡馬",""],["インカンテーション","種牡馬",""],["ホッコータルマエ","種牡馬",""],["マジェスティックウォリアー","種牡馬",""],["アドマイヤムーン","種牡馬",""],["グランプリボス","種牡馬",""],["ゴールドアクター","種牡馬",""],["Tapit","種牡馬",""],["ディープインパクト","種牡馬",""],["シスキン","種牡馬",""],["ドリームジャーニー","種牡馬",""],["ケープブランコ","種牡馬",""],["ベンバトル","種牡馬",""],["ロゴタイプ","種牡馬",""],["ドゥラメンテ","種牡馬",""],["バトルプラン","種牡馬",""],["カレンブラックヒル","種牡馬",""],["シルバーステート","種牡馬",""],["タートルボウル","種牡馬",""],["カリフォルニアクローム","種牡馬",""],["ホークビル","種牡馬",""],["リーチザクラウン","種牡馬",""],["スワーヴリチャード","種牡馬",""],["ザファクター","種牡馬",""],["アメリカンペイトリオット","種牡馬",""],["ハーツクライ","種牡馬",""],["ディスクリートキャット","種牡馬",""],["ガルボ","種牡馬",""],["レッドベルジュール","種牡馬",""],["ストロングリターン","種牡馬",""],["レッドファルクス","種牡馬",""],["ノヴェリスト","種牡馬",""],["インディチャンプ","種牡馬",""],["ダノンシャーク","種牡馬",""],["ロージズインメイ","種牡馬",""],["Gun Runner","種牡馬",""],["ゼンノロブロイ","種牡馬",""],["プリサイスエンド","種牡馬",""],["ワールドエース","種牡馬",""],["ダノンレジェンド","種牡馬",""],["ゴールドシップ","種牡馬",""],["ベルシャザール","種牡馬",""],["アポロキングダム","種牡馬",""],["Speightstown","種牡馬",""],["スクリーンヒーロー","種牡馬",""],["ミュゼスルタン","種牡馬",""],["モンテロッソ","種牡馬",""],["コパノリッキー","種牡馬",""],["Kingman","種牡馬",""],["パドトロワ","種牡馬",""],["リオンディーズ","種牡馬",""],["トランセンド","種牡馬",""],["サウスヴィグラス","種牡馬",""],["ビーチパトロール","種牡馬",""],["エイシンフラッシュ","種牡馬",""],["ポエティックフレア","種牡馬",""],["メイショウボーラー","種牡馬",""],["ディープブリランテ","種牡馬",""],["タワーオブロンドン","種牡馬",""],["サンダースノー","種牡馬",""],["モーリス","種牡馬",""],["スズカコーズウェイ","種牡馬",""],["トーセンジョーダン","種牡馬",""],["アイファーソング","種牡馬",""],["エピファネイア","種牡馬",""],["ラニ","種牡馬",""],["リアルインパクト","種牡馬",""],["マインドユアビスケッツ","種牡馬",""],["クリエイターII","種牡馬",""],["トーセンラー","種牡馬",""],["ノーブルミッション","種牡馬",""],["ブリックスアンドモルタル","種牡馬",""],["ロジユニヴァース","種牡馬",""],["トビーズコーナー","種牡馬",""],["コントレイル","種牡馬",""],["フィレンツェファイア","種牡馬",""],["ダノンスマッシュ","種牡馬",""],["ゴールドドリーム","種牡馬",""],["スマートファルコン","種牡馬",""],["シュヴァルグラン","種牡馬",""],["フェノーメノ","種牡馬",""],["Saxon Warrior","種牡馬",""],["ウインブライト","種牡馬",""],["ニシケンモノノフ","種牡馬",""],["ナカヤマフェスタ","種牡馬",""],["サトノクラウン","種牡馬",""],["バンブーエール","種牡馬",""],["モーニン","種牡馬",""],["ルヴァンスレーヴ","種牡馬",""],["ヤマカツエース","種牡馬",""],["ファインニードル","種牡馬",""],["ラブリーデイ","種牡馬",""],["ブラックタイド","種牡馬",""],["クロフネ","種牡馬",""],["ダンカーク","種牡馬",""],["サートゥルナーリア","種牡馬",""],["シニスターミニスター","種牡馬",""],["リアルスティール","種牡馬",""],["ロジャーバローズ","種牡馬",""],["ミスチヴィアスアレックス","種牡馬",""],["サングレーザー","種牡馬",""],["ニューイヤーズデイ","種牡馬",""],["アルアイン","種牡馬",""],["ミスターメロディ","種牡馬",""],["トゥザグローリー","種牡馬",""],["ジョーカプチーノ","種牡馬",""],["Arrogate","種牡馬",""],["Uncle Mo","種牡馬",""],["マクマホン","種牡馬",""],["ディーマジェスティ","種牡馬",""],["ネオユニヴァース","種牡馬",""],["ベーカバド","種牡馬",""],["マクフィ","種牡馬",""],["キタサンブラック","種牡馬",""],["ベストウォーリア","種牡馬",""],["サトノアラジン","種牡馬",""],["ミッキーアイル","種牡馬",""],["Into Mischief","種牡馬",""],["モズアスコット","種牡馬",""],["メイショウサムソン","種牡馬",""],["ヘニーヒューズ","種牡馬",""],["オーヴァルエース","種牡馬",""],["ダノンシャンティ","種牡馬",""],["パイロ","種牡馬",""],["ケイムホーム","種牡馬",""],["マツリダゴッホ","種牡馬",""],["Mendelssohn","種牡馬",""],["レイデオロ","種牡馬",""],["エスケンデレヤ","種牡馬",""],["キングカメハメハ","種牡馬",""],["ミッキーロケット","種牡馬",""],["シンボリクリスエス","種牡馬",""],["トゥザワールド","種牡馬",""],["フィエールマン","種牡馬",""],["Dark Angel","種牡馬",""],["ルーラーシップ","種牡馬",""],["Invincible Spirit","種牡馬",""],["アドミラブル","種牡馬",""],["Frosted","種牡馬",""],["エイシンヒカリ","種牡馬",""],["Frankel","種牡馬",""],["ハクサンムーン","種牡馬",""],["アドマイヤマーズ","種牡馬",""],["フォーウィールドライブ","種牡馬",""],["トーホウジャッカル","種牡馬",""],["バゴ","種牡馬",""],["ビッグアーサー","種牡馬",""],["レインボーライン","種牡馬",""],["デクラレーションオブウォー","種牡馬",""],["キセキ","種牡馬",""],["サトノダイヤモンド","種牡馬",""],["アポロケンタッキー","種牡馬",""],["ゴールドアリュール","種牡馬",""],["オルフェーヴル","種牡馬",""],["バンドワゴン","種牡馬",""],["タリスマニック","種牡馬",""],["Practical Joke","種牡馬",""],["エスポワールシチー","種牡馬",""],["Justify","種牡馬",""],["ドレフォン","種牡馬",""],["American Pharoah","種牡馬",""],["ロードカナロア","種牡馬",""],["ゴールデンマンデラ","種牡馬",""],["キンシャサノキセキ","種牡馬",""],["イスラボニータ","種牡馬",""],["ヴァンセンヌ","種牡馬",""],["アスカクリチャン","種牡馬",""],["ミッキーグローリー","種牡馬",""],["アジアエクスプレス","種牡馬",""],["ワンアンドオンリー","種牡馬",""],["ヘンリーバローズ","種牡馬",""],["ダノンプレミアム","種牡馬",""],["アイルハヴアナザー","種牡馬",""],["マテラスカイ","種牡馬",""],["ヴァンゴッホ","種牡馬",""],["エピカリス","種牡馬",""],["ウインバリアシオン","種牡馬",""],["ネロ","種牡馬",""],["ヴィクトワールピサ","種牡馬",""],["シルポート","種牡馬",""],["ジャスタウェイ","種牡馬",""],["フリオーソ","種牡馬",""],["キズナ","種牡馬",""],["Quality Road","種牡馬",""],["ダノンキングリー","種牡馬",""],["Liam's Map","種牡馬",""],["ニホンピロアワーズ","種牡馬",""],["カラヴァッジオ","種牡馬",""],["グァンチャーレ","種牡馬",""],["セイウンコウセイ","種牡馬",""],["サトノジェネシス","種牡馬",""],["タニノフランケル","種牡馬",""],["ブルドッグボス","種牡馬",""],["ワールドプレミア","種牡馬",""],["ユアーズトゥルーリ","種牡馬",""],["ショウナンバッハ","種牡馬",""],["ウォータービルド","種牡馬",""],["エフフォーリア","種牡馬",""],["サリオス","種牡馬",""],["タイセイレジェンド","種牡馬",""],["アルバート","種牡馬",""],["ジャンダルム","種牡馬",""],["ホットロッドチャーリー","種牡馬",""],["アレスバローズ","種牡馬",""],["スマートオーディン","種牡馬",""],["リオンリオン","種牡馬",""],["St Mark's Basilica","種牡馬",""]];
+  var q = document.getElementById('q'), list = document.getElementById('q-list');
+  if (q) q.addEventListener('input', function () {
+    var v = q.value.trim();
+    var ws = v.split(/\s+/);
+    var hit = v ? INDEX.filter(function (x) { return ws.every(function (w) { return x[0].indexOf(w) !== -1 || (x[2] && x[2].indexOf(w) !== -1); }); }).slice(0, 8) : [];
+    list.innerHTML = '';
+    if (v && !hit.length) { var n = document.createElement('li'); n.textContent = '見つかりませんでした'; list.appendChild(n); }
+    hit.forEach(function (x) {
+      var li = document.createElement('li');
+      li.textContent = x[0];
+      var s = document.createElement('small'); s.textContent = x[1]; li.appendChild(s);
+      list.appendChild(li);
+    });
+    list.hidden = !v;
+  });
+  if (q) document.addEventListener('click', function (e) { if (!e.target.closest('.search')) list.hidden = true; });
+})();
+
+// 固定ページ：目次（ページ内の移動と、読んでいる節の表示）
+(function () {
+  var st = document.querySelector('.st');
+  if (!st) return;
+  var links = st.querySelectorAll('.st-toc a, .st-toc-m a');
+  if (!links.length) return;
+  var pc = st.querySelectorAll('.st-toc a');
+  var secs = Array.prototype.map.call(pc, function (a) { return document.getElementById(a.getAttribute('href').slice(1)); });
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // 目次で押した節。着くまでと、着いた位置から動くまで（下へ8px超、または節の頭が判定線より下に出るまで）現在地に固定する
+  var pin = null;
+  var hdrH = function () { return (document.querySelector('.hdr') || { offsetHeight: 56 }).offsetHeight; };
+  var maxY = function () { return document.documentElement.scrollHeight - innerHeight; };
+
+  function set(i) {
+    pc.forEach(function (a, k) {
+      var on = k === i;
+      if (a.classList.contains('on') === on) return;
+      a.classList.toggle('on', on);
+      if (on) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current');
+    });
+  }
+  // 判定線：ふだんは画面の上から3割。ページの終わりが近づくと画面の下端へ向けて下げ、
+  // 終わりの短い節も順に現在地になるようにする（一番下では、最後の節）
+  function lineY() {
+    var base = Math.max(hdrH() + 48, innerHeight * 0.3), span = innerHeight - base, left = maxY() - scrollY;
+    return left >= span ? base : base + (span - Math.max(0, left));
+  }
+  function spy() {
+    var line = lineY(), cur = 0;
+    for (var i = 0; i < secs.length; i++) if (secs[i].getBoundingClientRect().top <= line) cur = i;
+    if (pin) {
+      if (!pin.arrived && (Math.abs(scrollY - pin.y) <= 2 || Date.now() > pin.until)) { pin.arrived = true; pin.y = scrollY; }
+      if (!pin.arrived) cur = pin.i;
+      else if (scrollY - pin.y > 8 || secs[pin.i].getBoundingClientRect().top > line) pin = null;
+      else cur = pin.i;
+    }
+    set(cur);
+  }
+  links.forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var id = a.getAttribute('href').slice(1), el = document.getElementById(id);
+      if (!el) return;
+      e.preventDefault();
+      var i = secs.indexOf(el);
+      if (i >= 0) {
+        // 着く位置（節の頭 − scroll-margin-top。ページの終わりより先へは行かない）
+        var y = Math.min(maxY(), Math.max(0, Math.round(el.getBoundingClientRect().top + scrollY - (parseFloat(getComputedStyle(el).scrollMarginTop) || 0))));
+        pin = { i: i, y: y, arrived: false, until: Date.now() + 2500 };
+        set(i);
+        setTimeout(spy, 2600);
+      }
+      el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+      try { history.replaceState(null, '', '#' + id); } catch (err) {}
+    });
+  });
+  // スマホ・タブレット：節の末尾の「目次へ」。目次を開いて、そこまで戻る。短い節（画面の半分未満）には出さない
+  var tocM = document.getElementById('st-toc-m');
+  function backs() {
+    st.querySelectorAll('.st-back').forEach(function (p) {
+      p.hidden = false;
+      p.hidden = p.parentNode.getBoundingClientRect().height < innerHeight / 2;
+    });
+  }
+  st.querySelectorAll('.st-back a').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      if (!tocM) return;
+      tocM.open = true;
+      tocM.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    });
+  });
+  backs();
+  var tick = false;
+  addEventListener('scroll', function () {
+    if (tick) return; tick = true;
+    requestAnimationFrame(function () { tick = false; spy(); });
+  }, { passive: true });
+  addEventListener('resize', function () { backs(); spy(); });
+  spy();
+})();
+
+</script>
+</body></html>

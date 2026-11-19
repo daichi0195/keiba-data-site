@@ -1,0 +1,105 @@
+{
+  "slug": "20261115-kyoto-11",
+  "date": "2026-11-15",
+  "dateLabel": "2026年11月15日",
+  "venue": "kyoto",
+  "venueLabel": "京都",
+  "raceNumber": 11,
+  "raceName": "エリザベス女王杯",
+  "surface": "芝",
+  "distance": 2200,
+  "predictions": [
+    {
+      "rank": 1,
+      "winRate": 19.4,
+      "name": "カムニャック"
+    },
+    {
+      "rank": 2,
+      "winRate": 12.9,
+      "name": "ジュウリョクピエロ"
+    },
+    {
+      "rank": 3,
+      "winRate": 10.9,
+      "name": "クイーンズウォーク"
+    },
+    {
+      "rank": 4,
+      "winRate": 8.3,
+      "name": "アクアヴァーナル"
+    },
+    {
+      "rank": 5,
+      "winRate": 8.1,
+      "name": "ヴーレヴー"
+    },
+    {
+      "rank": 6,
+      "winRate": 7.8,
+      "name": "セキトバイースト",
+      "mark": "【本命】"
+    },
+    {
+      "rank": 7,
+      "winRate": 7.6,
+      "name": "ジョスラン"
+    },
+    {
+      "rank": 8,
+      "winRate": 5.8,
+      "name": "ラフターラインズ"
+    },
+    {
+      "rank": 9,
+      "winRate": 5.6,
+      "name": "コガネノソラ"
+    },
+    {
+      "rank": 10,
+      "winRate": 3.9,
+      "name": "シャドウメテオ"
+    },
+    {
+      "rank": 11,
+      "winRate": 2.5,
+      "name": "チェルヴィニア",
+      "mark": "【紐】"
+    },
+    {
+      "rank": 12,
+      "winRate": 1.9,
+      "name": "ラヴァンダ"
+    },
+    {
+      "rank": 13,
+      "winRate": 1.0,
+      "name": "ステレンボッシュ"
+    },
+    {
+      "rank": 14,
+      "winRate": 1.0,
+      "name": "レーゼドラマ"
+    },
+    {
+      "rank": 15,
+      "winRate": 1.0,
+      "name": "ニシノティアモ"
+    },
+    {
+      "rank": 16,
+      "winRate": 0.8,
+      "name": "レイクラシック"
+    },
+    {
+      "rank": 17,
+      "winRate": 0.8,
+      "name": "ケリフレッドアスク"
+    },
+    {
+      "rank": 18,
+      "winRate": 0.7,
+      "name": "エストゥペンダ"
+    }
+  ]
+}

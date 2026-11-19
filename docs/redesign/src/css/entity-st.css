@@ -1,0 +1,158 @@
+/* ===== 種牡馬詳細（v6-sire）・調教師詳細（v6-trainer）だけの部品 =====
+   板・表・横棒・メーター・ページ内ナビは騎手詳細（css/jockey.css）をそのまま使う（pages/_entity-st.mjs が先に読み込む）。
+   ここには、騎手詳細にない部品だけを書く（es- で始まるクラス）：
+   図と説明の左右の枠、成長曲線のラベルの振り分け、芝・ダートの棒、馬の一覧、表の小見出し。
+   芝・ダートの棒は札と同じ色で、濃淡は付けない（長さだけで比べる） */
+:root{--es-tf:#3F8425;--es-dt:#8A5418}
+
+/* 冒頭：小さい方の題がかっこで始まるとき、かっこの左の空きを打ち消す（2行になっても左がへこまない） */
+.jk-hero h1 small.es-par{margin-left:-.5em;padding-left:0}
+/* 傾向の行：「ダートの馬場」は768px以上で出す。狭い幅は「ダの馬場」 */
+.es-lg{display:none}
+/* 基本情報のマス：父の名前（最長9文字）が1行に収まる大きさにする */
+.es-tl dd b{font-size:15px}
+@media (max-width:379.98px){.jk-tiles.es-tl dd b{font-size:14px}}
+@media (min-width:700px){.es-tl dd b{font-size:16px}}
+@media (min-width:1100px){.jk-tiles.es-tl dd b{font-size:17px}}
+@media (min-width:1440px) and (max-width:1699.98px){.jk-tiles.es-tl dd b{font-size:16px}}
+/* コース別：障害の札も並ぶので、狭い画面では札を詰めて競馬場名を1行に保つ */
+.jk-acc summary b{white-space:nowrap}
+@media (max-width:379.98px){.jk-acc summary{gap:6px}.jk-acc .ac-c{gap:3px}.jk-acc .ac-c .sf{padding:0 4px}.jk-acc summary b{font-size:15px}}
+
+/* 図と説明：スマホは図→説明の順に積む。1100px以上は左に図（最大640px）、右に説明 */
+.es-fx{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.es-ex{font-size:14px;line-height:1.75}
+.es-ex b{font-weight:700}
+.es-ex .note{font-size:12px;color:var(--ink-sub)}
+.es-fn{margin-top:8px;font-size:12px;line-height:1.6;color:var(--ink-sub)}
+.es-sub{display:flex;align-items:flex-start;gap:10px;margin:0 0 4px;padding-top:12px;border-top:1px solid var(--line);font-size:13px;line-height:22px;color:var(--ink-sub)}
+.es-sub .sf{flex:none;min-width:44px}
+.es-sub b{font-weight:700;color:var(--ink)}
+.jk-st + .es-sub{margin-top:var(--jk-pad)}
+/* 上の図と同じ数字なので、棒の一覧は出さない（〜899pxは「全項目を見る」の中の表だけ） */
+.jk-st.es-nol > .jk-bl{display:none}
+.jk-st.es-nol:not(:last-child) > .jk-ft{margin-bottom:0;border-bottom:1px solid var(--line)}
+
+/* 成長曲線：値が低い方の線のラベルを点の下に出す */
+.es-lc .jk-plot{margin-bottom:8px}
+.es-lc .pt.dn b{bottom:auto;top:10px}
+.es-lc .xs div > small{font-size:11px;color:var(--ink-sub)}
+
+/* 芝とダートの距離帯別。スマホ：距離帯1行に、芝・ダートの棒を上下2本（幅いっぱい） */
+.es-bf .lg .sq.tf{background:var(--es-tf)}
+.es-bf .lg .sq.dt{background:var(--es-dt)}
+.es-bf-h{display:none}
+.es-bf-row{display:grid;grid-template-columns:86px minmax(0,1fr);grid-template-areas:"k l" "k r";align-items:center;gap:3px 8px;padding:7px 0;border-top:1px solid var(--line)}
+.es-bf figcaption + .es-bf-h + .es-bf-row{border-top:0}
+.es-bf figcaption{margin-bottom:4px}
+.es-bf-k{grid-area:k;font-size:13px;white-space:nowrap}
+.es-bf-s{display:grid;grid-template-columns:minmax(0,1fr) 46px 44px;grid-template-areas:"b v n";align-items:center;column-gap:6px;min-width:0}
+.es-bf-s.l{grid-area:l}
+.es-bf-s.r{grid-area:r}
+.es-bf-s .tg{display:none}
+.es-bf-s b{grid-area:v;font-size:14px;font-weight:500;text-align:right;white-space:nowrap}
+.es-bf-s.win b{font-weight:700}
+.es-bf-s small{grid-area:n;font-size:11px;text-align:right;color:var(--ink-sub);white-space:nowrap}
+.es-bf-s .jk-b{grid-area:b}
+.es-bf-s.l .jk-b i,.es-cb .tf .jk-b i{background:var(--es-tf)}
+.es-bf-s.r .jk-b i,.es-cb .dt .jk-b i{background:var(--es-dt)}
+
+/* 良馬場と道悪の横棒（芝2行・ダート2行） */
+.es-cb-l{list-style:none;display:grid;grid-template-columns:max-content max-content minmax(0,1fr) max-content max-content;column-gap:10px;margin-top:4px}
+.es-cb-l li{display:grid;grid-template-columns:subgrid;grid-column:1 / -1;align-items:center;height:36px}
+.es-cb-l li.g1:not(:first-child){border-top:1px solid var(--line)}
+.es-cb-l .t .sf{min-width:44px}
+.es-cb-l .l{font-size:14px;font-weight:500;white-space:nowrap}
+.es-cb-l b{min-width:48px;text-align:right;font-size:15px;font-weight:700}
+.es-cb-l small{min-width:44px;text-align:right;font-size:12px;color:var(--ink-sub);white-space:nowrap}
+
+/* 馬の一覧（代表産駒・主な管理馬）。〜899px：1頭2〜3行（名前・性齢・成績／勝ち鞍／補足） */
+.es-lt{margin:0 calc(-1 * var(--jk-pad))}
+.es-lt table{width:100%;border-collapse:separate;border-spacing:0;font-size:14px}
+.es-lt tr.more{display:none}
+.es-lt b{font-weight:700}
+.es-lt .none{color:var(--ink-sub)}
+.es-lt .tt{display:inline-block;margin:1px 12px 1px 0}
+.es-lt .tt .gr{margin-right:5px}
+.es-lt thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.es-lt table,.es-lt tbody{display:block}
+.es-lt tr{display:flex;flex-wrap:wrap;align-items:baseline;gap:3px 8px;padding:10px var(--jk-pad);border-top:1px solid var(--line)}
+.es-lt tbody tr:first-child{border-top:0;padding-top:0}
+.open-m .es-lt tr.more{display:flex}
+.es-lt td{display:block}
+.es-lt td.m1{font-size:15px}
+.es-lt td.m1b{font-size:13px;color:var(--ink-sub)}
+.es-lt td.m2{margin-left:auto;font-size:14px;font-weight:700;white-space:nowrap}
+.es-lt td.m3{flex:0 0 100%;font-size:13px}
+.es-lt td.m3:has(.none){display:none}
+.es-lt td.m4{font-size:13px;color:var(--ink-sub)}
+.es-lt td.m4[data-l]::before{content:attr(data-l) " "}
+
+@media (min-width:700px){
+  /* 芝とダートの距離帯別：左右に伸びる棒（左が芝、右がダート。値は外側、棒は中央から伸びる） */
+  .es-bf .lg{display:none}
+  .es-bf-h,.es-bf-row{display:grid;grid-template-columns:minmax(0,1fr) 104px minmax(0,1fr);grid-template-areas:"l k r";align-items:center;gap:0 12px}
+  .es-bf-h{margin-top:6px;padding-bottom:6px;font-size:12px;color:var(--ink-sub)}
+  .es-bf-h span:nth-child(2){text-align:center}
+  .es-bf-h span:last-child{text-align:right}
+  .es-bf-h .sf{min-width:44px}
+  .es-bf-row{min-height:38px;padding:0}
+  .es-bf figcaption + .es-bf-h + .es-bf-row{border-top:1px solid var(--line)}
+  .es-bf-k{text-align:center;font-size:14px}
+  .es-bf-s.l{grid-template-columns:54px 48px minmax(0,1fr);grid-template-areas:"v n b"}
+  .es-bf-s.r{grid-template-columns:minmax(0,1fr) 48px 54px;grid-template-areas:"b n v"}
+  .es-bf-s b{font-size:15px}
+  .es-bf-s.l b,.es-bf-s.l small{text-align:left}
+  .es-bf-s small{font-size:12px}
+  .es-bf-s.l .jk-b{display:flex;justify-content:flex-end}
+  .es-bf-s.l .jk-b i{transform-origin:right center}
+  .es-ex{font-size:14px}
+}
+@media (min-width:768px){
+  .es-s{display:none}
+  .es-lg{display:inline}
+  .jk-vr{grid-template-columns:88px 70px minmax(0,1fr) 10px}
+}
+@media (min-width:900px){
+  /* 馬の一覧：表にする（見出しの地・行の高さは13項目の表と同じ）。勝ち鞍は折り返して、横に送らず全列を見せる */
+  .es-lt thead{position:static;width:auto;height:auto;overflow:visible;clip-path:none;display:table-header-group}
+  .es-lt table{display:table}
+  .es-lt tbody{display:table-row-group}
+  .es-lt tr,.es-lt tbody tr:first-child{display:table-row;padding:0}
+  .es-lt tr.more{display:none}
+  .open-m .es-lt tr.more{display:table-row}
+  .es-lt th,.es-lt td,.es-lt td.m1,.es-lt td.m1b,.es-lt td.m2,.es-lt td.m3,.es-lt td.m4{display:table-cell;height:var(--row);padding:4px 8px;border-top:0;border-bottom:1px solid var(--line);text-align:left;font-size:14px;font-weight:400;color:var(--ink);vertical-align:middle}
+  .es-lt thead th{height:40px;background:var(--chip);font-size:12px;font-weight:700;color:var(--ink-sub);white-space:nowrap}
+  .es-lt th:first-child,.es-lt td:first-child{padding-left:var(--jk-pad)}
+  .es-lt th:last-child,.es-lt td:last-child{padding-right:var(--jk-pad)}
+  .es-lt .r,.es-lt td.m2{text-align:right}
+  .es-lt td.m1,.es-lt td.m1b,.es-lt td.m2,.es-lt td.m4{white-space:nowrap}
+  .es-lt td.m2{font-weight:500}
+  .es-lt td.m3:has(.none){display:table-cell}
+  .es-lt td.m4[data-l]::before{content:none}
+  /* 板の先頭が表のとき、見出し行を板の上端に付ける（騎手詳細の同じ指定 .jk-pn > .jk-st:first-child と同じ値） */
+  .jk-pn > .es-lt:first-child{margin-top:-16px}
+  .jk-st.es-nol:not(:last-child) > .jk-ft{border-bottom:0}
+  /* 図と説明を左右に置く（図が横に間延びしないように） */
+  .es-fx{grid-template-columns:minmax(0,min(640px,56%)) minmax(0,1fr);align-items:center;gap:28px}
+}
+@media (hover:hover){.es-lt tbody tr:hover > td{background:#F7F8FA}}
+@media (min-width:1100px){
+  .es-fx{gap:40px;margin-bottom:16px;padding-bottom:16px}
+  .es-ex{font-size:15px}
+  .es-ex .note{font-size:13px}
+  .es-fn{font-size:13px}
+  .es-sub{font-size:14px}
+  .es-bf-row{min-height:42px}
+  .es-bf-s b{font-size:16px}
+  .es-cb-l li{height:40px}
+  .es-cb-l .l{font-size:15px}
+  .es-cb-l b{font-size:16px;min-width:56px}
+  .es-cb-l small{font-size:13px;min-width:56px}
+  .es-lt th,.es-lt td,.es-lt td.m1,.es-lt td.m1b,.es-lt td.m2,.es-lt td.m3,.es-lt td.m4{padding:4px 10px}
+}
+@media (min-width:1280px){
+  .jk-vr{grid-template-columns:88px 96px minmax(0,1fr) 10px}
+  .es-lt th,.es-lt td,.es-lt td.m1,.es-lt td.m1b,.es-lt td.m2,.es-lt td.m3,.es-lt td.m4{font-size:15px;padding:4px 14px}
+  .es-lt thead th{font-size:12px}
+}

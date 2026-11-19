@@ -1,0 +1,228 @@
+/* ===== 固定ページ（サイト情報・データの出典・お問い合わせ・プライバシーポリシー・免責事項・404）共通 =====
+   読み物なので本文の読みやすさを最優先にする。
+   ・本文の1行は全角40字前後まで（PC 17px × 680px、スマホ 16px）。行間は PC 1.9／スマホ 1.8
+   ・1ページ＝白い板1枚。節は罫で区切り、見出しは板の中に置く
+   ・PC（1100px以上）は右に列を出す。追従するのは目次だけ。サイト案内は列の下端（本文の下端と揃う位置）に置く
+   ・1800px以上は共通の右列（広告・AI案内）と上端・追従位置・列の間隔を揃える
+   ・スマホ・タブレットは本文の上に開閉できる目次、各節の末尾に「目次へ」。サイト案内はフッターと重なるので出さない */
+/* 板（白・角丸・薄い影1種類）。共通の .pn は置き場所ごとに上書きが重なっているため、固定ページ用に持つ */
+.st-pn{background:var(--panel);border-radius:12px;box-shadow:0 1px 2px rgba(16,24,40,.06),0 2px 10px rgba(16,24,40,.05)}
+.nw{white-space:nowrap}
+
+.st{display:flex;flex-direction:column;width:100%;max-width:calc(760px + var(--pad) + var(--pad-r));margin-inline:auto;padding:14px var(--pad-r) 0 var(--pad)}
+.st-aside{display:contents}
+.st-h{order:0}
+.st-toc-m{order:1}
+.st-art,.nf{order:2}
+.st-toc-w,.st-nav{display:none}
+
+/* ---------- パンくず・題・リード ---------- */
+.st-crumb{font-size:13px;line-height:1.6;color:var(--ink-sub)}
+.st-c{white-space:nowrap}
+.st-c i{margin:0 8px;font-style:normal;color:#A0A6AE}
+/* 上下の余白は行の高さを変えずに押せる範囲だけ広げる（高さ約49px） */
+.st-crumb a{padding:14px 0;color:var(--link)}
+.st-crumb a:hover{text-decoration:underline}
+.st-h h1{margin-top:10px;font-size:24px;font-weight:700;line-height:1.4;letter-spacing:.01em}
+.st-lead{max-width:42em;margin-top:10px;font-size:15px;line-height:1.8;color:var(--ink);text-wrap-style:pretty}
+
+/* ---------- 本文の板 ---------- */
+/* overflow:hidden は付けない（付けると板がスクロールの枠になり、節の scroll-margin-top が効かず見出しがヘッダーに隠れる） */
+.st .st-art{margin-top:16px;padding:0}
+.st-art section{padding:22px 16px 20px;scroll-margin-top:calc(var(--hdr-h) + 12px)}
+.st-art section + section{border-top:1px solid var(--line)}
+.st-art h2{font-size:19px;font-weight:700;line-height:1.45}
+.st-p{margin-top:10px;font-size:16px;line-height:1.8;overflow-wrap:anywhere;line-break:strict}
+.st-p > * + *{margin-top:14px}
+/* 本文中のリンクは青＋細い下線（スマホには hover が無いので常に出す） */
+.st-p a:not(.st-btn),.nf-note a{color:var(--link);font-weight:500;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+.st-p a:not(.st-btn):hover,.nf-note a:hover{text-decoration-thickness:2px}
+.st-meta{font-size:13px;line-height:1.7;color:var(--ink-sub)}
+
+/* 箇条書き */
+.st-ul{list-style:none}
+.st-ul li{position:relative;padding-left:1.1em}
+.st-ul li + li{margin-top:8px}
+.st-ul li::before{content:"";position:absolute;left:.2em;top:calc(.9em - 3px);width:6px;height:6px;border-radius:50%;background:#8A9099}
+
+/* 用語と説明の表（罫で区切った行。用語は太字） */
+.st-df{border-top:1px solid var(--line)}
+.st-df > div{padding:12px 0;border-bottom:1px solid var(--line)}
+/* 節の最後に来る表は、節の区切りの罫と二重にしない */
+.st-p > .st-df:last-child > div:last-child{border-bottom:0;padding-bottom:0}
+.st-df dt{font-weight:700;line-height:1.6}
+.st-df dt small{font-size:inherit;font-weight:400}
+.st-df dd{margin-top:2px}
+.st-df.row > div{display:grid;grid-template-columns:var(--tw,5em) minmax(0,1fr);column-gap:12px;align-items:baseline}
+.st-df.row dt{line-height:inherit}
+.st-df.row dd{margin-top:0}
+
+/* 運営者：写真の右に 名前／肩書（補足）／X の3行 */
+.st-prof{display:flex;align-items:center;gap:12px}
+.st-prof img{flex:none;width:64px;height:64px;border-radius:50%;object-fit:cover}
+.st-prof > div{min-width:0}
+.st-prof p{line-height:1.55}
+.st-prof-n{font-size:17px;font-weight:700}
+.st-prof-t{display:block;font-size:13px;font-weight:400;color:var(--ink-sub);white-space:nowrap;margin-left:-.5em}
+.st-prof-x{font-size:15px;white-space:nowrap}
+.st-prof-x a{padding:13px 0}
+@media (max-width:374.98px){
+  .st-prof{gap:10px}
+  .st-prof img{width:52px;height:52px}
+  .st-prof-x{font-size:14px}
+}
+
+/* 動画（見本は静止画＋再生ボタン） */
+.st-v a{position:relative;display:block;border-radius:12px;overflow:hidden;background:#000}
+.st-v img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}
+.st-play{position:absolute;left:50%;top:50%;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;background:rgba(0,0,0,.72);display:grid;place-items:center;transition:transform .15s,background-color .15s}
+.st-play svg{width:26px;height:26px;fill:#FFFFFF}
+.st-v a:hover .st-play{background:var(--green);transform:scale(1.06)}
+
+/* お問い合わせ：フォームを開くボタンと、予備のメールアドレス */
+.st-act{display:flex}
+.st-btn{flex:1;display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 28px;border-radius:9999px;background:var(--green);color:#FFFFFF;font-size:16px;font-weight:700;line-height:1.4;text-align:center;transition:background-color .15s}
+.st-btn:hover{background:var(--green-hover)}
+.st-sub{padding:14px 16px;border-radius:8px;background:var(--chip);font-size:14px;line-height:1.7;text-align:center}
+.st-sub p{text-wrap-style:balance}
+.st-sub p + p{margin-top:2px;font-size:16px}
+
+/* ---------- 目次（スマホ・タブレット：開閉） ---------- */
+.st .st-toc-m{margin-top:16px;padding:0;overflow:hidden;scroll-margin-top:calc(var(--hdr-h) + 12px)}
+.st-toc-m summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;min-height:48px;padding:0 16px}
+.st-toc-m summary::-webkit-details-marker{display:none}
+.st-toc-m summary b{font-size:16px;font-weight:700}
+.st-toc-m summary > span{margin-left:auto;font-size:13px;color:var(--ink-sub)}
+.st-toc-m summary .ic{font-size:12px;color:var(--ink-sub);transition:transform .16s}
+.st-toc-m[open] summary .ic{transform:rotate(180deg)}
+.st-toc-m ol{list-style:none;border-top:1px solid var(--line);padding:6px 8px 8px}
+.st-toc-m li a{display:flex;align-items:baseline;gap:10px;min-height:42px;padding:9px 8px;border-radius:8px;font-size:15px;line-height:1.6;color:var(--link);font-weight:500}
+.st-toc-m li a:hover{background:var(--chip)}
+.st-toc-m .n{flex:none;width:1.3em;text-align:right;font-size:14px;font-weight:400;color:var(--ink-sub)}
+/* 節の末尾の「目次へ」（目次が上にしか無い幅でだけ出す） */
+.st-back{display:flex;justify-content:flex-end;margin-top:14px}
+/* 短い節（画面の半分に満たない）の後ろには出さない（static.js が hidden を付ける） */
+.st-back[hidden]{display:none}
+.st-back a{position:relative;display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px 0 10px;border-radius:9999px;background:var(--chip);font-size:13px;font-weight:500;color:var(--ink);transition:background-color .15s}
+.st-back a::after{content:"";position:absolute;inset:-6px 0}
+.st-back a:hover{background:var(--chip-hover)}
+.st-back .ic{font-size:10px;transform:rotate(180deg);color:var(--ink-sub)}
+
+/* ---------- 404 ---------- */
+.nf-code{margin-top:18px;font-size:64px;font-weight:700;line-height:1;letter-spacing:.01em;color:var(--ink)}
+.st-solo .st-h h1{margin-top:6px}
+.st .nf{margin-top:18px;padding:16px 12px 16px}
+.nf h2{padding:0 4px;font-size:17px;font-weight:700;line-height:1.5}
+.nf-g{list-style:none;display:grid;grid-template-columns:minmax(0,1fr);gap:8px;margin-top:10px}
+.nf-g a{display:flex;align-items:center;gap:12px;height:52px;padding:0 14px;border-radius:8px;background:var(--chip);color:var(--link);font-size:16px;font-weight:700;line-height:1.3;transition:background-color .15s}
+.nf-g a:hover{background:var(--chip-hover)}
+.nf-g a > .ic:first-child{font-size:19px;width:22px;color:var(--ink)}
+.nf-g a > span{flex:1;min-width:0}
+.nf-g a > .ic:last-child{font-size:11px;color:var(--ink-sub)}
+/* 先頭（トップページ）は目立たせたいボタン：テーマカラーの塗り＋白文字 */
+.nf-g li:first-child a{background:var(--green);color:#FFFFFF}
+.nf-g li:first-child a:hover{background:var(--green-hover)}
+.nf-g li:first-child a .ic{color:#FFFFFF}
+.nf-note{margin-top:14px;padding:0 4px;font-size:14px;line-height:1.8;color:var(--ink)}
+
+/* 用語が長めの表は、本文の板が640px以上あるときだけ横並びにする（板が狭い幅では縦積み） */
+.st-art{container-type:inline-size}
+@container (min-width:640px){
+  .st-df.row-pc > div{display:grid;grid-template-columns:var(--tw,8em) minmax(0,1fr);column-gap:20px;align-items:baseline}
+  .st-df.row-pc dt{line-height:inherit}
+  .st-df.row-pc dd{margin-top:0}
+}
+
+/* ---------- タブレット以上 ---------- */
+@media (min-width:700px){
+  .st{padding-top:20px}
+  .st-h h1{font-size:28px}
+  .st-lead{font-size:16px;max-width:none}
+  .st-solo .st-lead{max-width:760px}
+  .st-art section{padding:28px 32px 24px}
+  .st-art h2{font-size:21px}
+  .st-df.row > div{column-gap:20px}
+  .st-prof{gap:18px}
+  .st-prof img{width:88px;height:88px}
+  .st-prof-n{font-size:18px}
+  .st-prof-t{font-size:14px}
+  .st-prof-x{font-size:16px}
+  /* 動画2本は文章の後ろに横並び（上端・下端が揃う） */
+  .st-p.st-vids{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:16px}
+  .st-vids > p{grid-column:1 / -1}
+  .st-vids > .st-v{order:1}
+  .st-act{justify-content:center}
+  .st-btn{flex:none;min-width:320px}
+  .st .nf{padding:22px 24px 22px}
+  .nf h2{padding:0;font-size:18px}
+  .nf-g{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+  .nf-g li:first-child{grid-column:1 / -1}
+  .nf-g a{height:60px;padding:0 18px}
+  .nf-note{padding:0;font-size:15px}
+  .nf-code{font-size:88px}
+}
+
+/* ---------- PC：本文（最大760px）＋右の列。左メニューが出る幅から2列にして、本文の幅を段差なく広げる ---------- */
+@media (min-width:1100px){
+  .st-pn{border-radius:var(--r-panel)}
+  .st{padding-top:24px}
+  .st-h h1{font-size:30px}
+  .st-p{font-size:17px;line-height:1.9}
+  .st-p > * + *{margin-top:16px}
+  .st-ul li::before{top:calc(.95em - 3px)}
+  .st-art section{padding:30px 24px 34px;scroll-margin-top:calc(var(--hdr-h) + 24px)}
+  .st-art h2{font-size:22px}
+  .st-df > div{padding:13px 0}
+  .st-sub{font-size:15px}
+  .st-back{display:none}
+
+  /* 404 は右列なしで、ほかのページの「本文＋右列」と同じ幅・同じ寄せ方にする（左端が揃う） */
+  .st{max-width:calc(1032px + var(--pad) + var(--pad-r))}
+  .st:not(.st-solo){display:grid;grid-template-columns:minmax(0,760px) 240px;grid-template-rows:auto 1fr;column-gap:32px;align-items:start;justify-content:center}
+  .st:not(.st-solo) .st-h{grid-column:1 / -1;grid-row:1;max-width:760px}
+  .st:not(.st-solo) .st-art{grid-column:1;grid-row:2}
+  .st-aside{display:flex;flex-direction:column;gap:16px;grid-column:2;grid-row:2;align-self:stretch;margin-top:16px;min-width:0}
+  .st-toc-m{display:none}
+  /* 追従するのは目次だけ。目次の枠（.st-toc-w）が列の残りを占め、その中で目次が止まる */
+  .st-toc-w{display:block;flex:1 1 auto}
+  .st-toc{position:sticky;top:calc(var(--hdr-h) + 24px);padding:14px 12px 12px;max-height:calc(100vh - var(--hdr-h) - 48px);overflow-y:auto;scrollbar-width:thin}
+  .st-nav{display:block;flex:none;padding:14px 12px 12px}
+  .st-nav h2,.st-toc h2{padding:0 8px 6px;font-size:15px;font-weight:700;line-height:1.5}
+  .st-nav ul,.st-toc ol{list-style:none}
+  .st-toc li a{display:flex;align-items:baseline;gap:8px;min-height:36px;padding:7px 8px;border-radius:8px;font-size:13px;line-height:1.6;color:var(--ink);transition:background-color .15s,color .15s}
+  .st-toc li a > span:last-child{text-wrap-style:balance}
+  .st-toc li a:hover{background:var(--chip)}
+  .st-toc .n{flex:none;width:1.3em;text-align:right;color:var(--ink-sub)}
+  .st-toc li a.on{background:var(--here);color:var(--on-here);font-weight:700}
+  .st-toc li a.on .n{color:var(--on-here)}
+  /* サイト案内：現在のページは太字だけ（目次の現在地の塗りと紛れないように） */
+  .st-nav li a{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:36px;padding:7px 8px;border-radius:8px;font-size:13px;line-height:1.6;transition:background-color .15s}
+  .st-nav li a .ic{font-size:10px;color:var(--ink-sub)}
+  .st-nav li a:hover{background:var(--chip)}
+  .st-nav li a.on{font-weight:700;cursor:default}
+  .st-nav li a.on:hover{background:none}
+  .st-nav li a.on .ic{visibility:hidden}
+}
+@media (min-width:1240px){
+  .nf-g{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .st-art section{padding-left:32px;padding-right:32px}
+}
+@media (min-width:1400px){
+  .st{max-width:calc(1080px + var(--pad) + var(--pad-r))}
+  .st:not(.st-solo){grid-template-columns:minmax(0,760px) 280px;column-gap:40px}
+  .st-art section{padding-left:40px;padding-right:40px}
+}
+/* ---------- 1800px以上：共通の右列（y=124 始まり・追従位置はヘッダー＋68px）と揃える。
+   本文＋目次を右へ寄せ、目次〜共通の右列の間を、本文〜目次の間（40px）と同じにする。404 も同じ左端・右端に置く ---------- */
+@media (min-width:1800px){
+  /* 余りの幅は本文に使う：本文880px（18px・左右56px＝1行約42.7字）＋目次280px */
+  .st{max-width:none;margin-inline:0;padding-right:40px}
+  .st:not(.st-solo){grid-template-columns:minmax(0,880px) 280px;justify-content:end}
+  .st:not(.st-solo) .st-h{grid-column:1;max-width:880px}
+  .st-solo{width:auto;max-width:1200px;margin-left:auto;box-sizing:content-box}
+  .st-solo .st-lead{max-width:880px}
+  .st-p{font-size:18px}
+  .st-art section{padding-left:56px;padding-right:56px}
+  .st-aside{grid-row:1 / 3;margin-top:44px}
+  .st-toc{top:calc(var(--hdr-h) + 68px);max-height:calc(100vh - var(--hdr-h) - 92px)}
+}

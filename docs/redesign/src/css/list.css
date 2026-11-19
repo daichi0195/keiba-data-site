@@ -1,0 +1,220 @@
+/* ===================== 一覧4ページ（コース・騎手・種牡馬・調教師）共通 =====================
+   色・角丸・余白・マスの大きさはトップ見本（top.css → themes.css）の値をそのまま使う。
+   スマホ＝灰の地に白い板、五十音はアコーディオン。PC＝板1枚の表（左に見出し、右に同じ幅のマス） */
+.lc [hidden],.ln [hidden],.lf [hidden],.lx[hidden],.lc[hidden],.lc-0[hidden]{display:none !important}
+
+/* ---------- 冒頭：パンくず・h1・件数と更新日・リード文 ---------- */
+.lh{padding:14px var(--pad-r) 0 var(--pad)}
+.lh-c{display:flex;align-items:center;gap:6px;font-size:12px;line-height:1.5;color:var(--ink-sub)}
+.lh-c a{color:var(--link)}
+.lh-c a:hover{text-decoration:underline}
+.lh h1{margin-top:4px;font-size:22px;font-weight:700;line-height:1.35}
+.lh-m{display:flex;flex-wrap:wrap;gap:0 14px;margin-top:2px;font-size:13px;color:var(--ink-sub);white-space:nowrap}
+.lh-m b{font-weight:700;color:var(--ink)}
+@media (max-width:379.98px){.lh-m{font-size:12px;gap:0 10px}}
+@media (max-width:379.98px){.lf-i input::placeholder{font-size:13px}}
+.lh-l{margin-top:6px;font-size:13px;line-height:1.7;color:var(--ink-sub)}
+
+/* ---------- 絞り込み ---------- */
+.lf{padding:12px var(--pad-r) 0 var(--pad)}
+.lf-b{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.lf-i{flex:1 1 100%;display:flex;align-items:center;gap:10px;height:44px;padding:0 6px 0 16px;border:1px solid #C3C8CF;border-radius:var(--r-pill);background:var(--panel);cursor:text}
+.lf-i > .ic{font-size:15px;color:var(--ink-sub)}
+.lf-i input{flex:1;min-width:0;height:100%;border:0;outline:0;background:none;font:inherit;font-size:16px;color:var(--ink)}
+.lf-i input::placeholder{color:var(--ink-sub);font-size:14px}
+.lf-i:focus-within{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink)}
+.lf-x{flex:none;display:grid;place-items:center;width:32px;height:32px;border-radius:50%;font-size:14px;color:var(--ink-sub)}
+.lf-x:hover{background:var(--chip)}
+.lf-n{margin-top:8px;font-size:13px;line-height:1.5;color:var(--ink-sub)}
+.lf-n b{font-weight:700;color:var(--ink)}
+/* 馬場の切替：同じ幅の4つのマス。選択中は濃い灰の塗り＋白文字（トップの現在地と同じ） */
+.lf-s{flex:1 1 100%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.lf-s button{display:flex;align-items:center;justify-content:center;gap:5px;height:40px;border-radius:8px;background:var(--panel);font-size:14px;font-weight:500;white-space:nowrap;transition:background-color .15s,color .15s}
+.lf-s button span{font-size:12px;color:var(--ink-sub)}
+.lf-s button:hover{background:var(--chip-hover)}
+.lf-s button[aria-pressed="true"]{background:var(--here);color:var(--on-here);font-weight:700}
+.lf-s button[aria-pressed="true"] span{color:var(--on-here)}
+
+/* ---------- ページ内の移動（トップのチップに件数と今週開催の点を足す） ---------- */
+.lj > div{flex-wrap:nowrap}
+.lj a{gap:5px}
+.lj a span{font-size:12px;color:var(--ink-sub)}
+.lj a.on span{color:var(--on-here)}
+.lw-d{flex:none;width:8px;height:8px;border-radius:50%;background:var(--brand)}
+.sc.l1{padding-top:4px}
+
+/* ---------- 白い板 ---------- */
+.lp{margin:0 var(--pad-r) 0 var(--pad);background:var(--panel);border-radius:12px;overflow:clip;box-shadow:0 1px 2px rgba(16,24,40,.06),0 2px 10px rgba(16,24,40,.05)}
+.sc,.lc-v,.ln-g{scroll-margin-top:calc(var(--hdr-h) + 8px)}
+
+/* ---------- リーディング（トップの rank() をそのまま使う） ---------- */
+.lk .rk li:last-child a{border-bottom:0}
+/* 見出しの補足は、文の切れ目でだけ折り返す */
+.lx .hd h2 small span{display:inline-block}
+
+/* ---------- 五十音順の全件 ---------- */
+.ln-r{display:none}
+.ln-g + .ln-g{border-top:1px solid var(--line)}
+.ln-d summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:1fr auto 14px;align-items:center;gap:10px;min-height:46px;padding:0 14px}
+.ln-d summary::-webkit-details-marker{display:none}
+.ln-d summary b{font-size:15px;font-weight:700}
+.ln-d summary span{font-size:13px;color:var(--ink-sub)}
+.ln-d summary i,.ln-r h3 i{font-style:normal}
+.ln-d summary .ic{font-size:12px;color:var(--ink-sub);transition:transform .16s}
+.ln-d[open] summary .ic{transform:rotate(180deg)}
+.ln-a{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:2px 14px 14px}
+.ln.wide .ln-a{grid-template-columns:repeat(2,minmax(0,1fr))}
+.ln-a a,.ln-c a{display:flex;align-items:center;justify-content:center;height:36px;padding:0 6px;border-radius:8px;background:var(--chip);font-size:14px;font-weight:500;line-height:1.2;color:var(--link);text-align:center;white-space:nowrap;overflow:hidden;transition:background-color .15s}
+.ln-a a:hover,.ln-c a:hover{background:var(--chip-hover);text-decoration:underline}
+/* 長い名前は2マスぶん使って切らない（トップ見本と同じ。文字の大きさは変えない） */
+.ln-a a.w8{grid-column:span 2}
+.ln.wide .ln-a a.w8{grid-column:auto}
+.ln.wide .ln-a a.w11{grid-column:span 2}
+@media (max-width:379.98px){.ln-a a{font-size:13px;padding:0 3px}}
+.ln-0,.lc-0{padding:20px 14px;font-size:14px;color:var(--ink-sub);text-align:center}
+.lc-0{margin:0 var(--pad-r) 0 var(--pad)}
+
+/* ---------- コース：競馬場ごとの板（トップの「今週開催」と同じ作り） ---------- */
+.lc{display:grid;gap:12px;padding:0 var(--pad-r) 0 var(--pad)}
+.lc-v{background:var(--panel);border-radius:12px;padding:10px 12px 14px;box-shadow:0 1px 2px rgba(16,24,40,.06),0 2px 10px rgba(16,24,40,.05)}
+.lc-h{display:flex;align-items:center;gap:10px;min-height:32px}
+.lc-h h2{font-size:16px;font-weight:700;line-height:1.4}
+.lw{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--ink);white-space:nowrap}
+.lc-n{margin-left:auto;font-size:13px;color:var(--ink-sub);white-space:nowrap}
+.lc-n b{font-weight:700;color:var(--ink);margin-right:1px}
+.lc .ds-r > .sf{justify-self:stretch}
+.lc2{margin-top:28px}
+.lx[hidden] + .lc2{margin-top:12px}
+
+/* ---------- 末尾：ほかの一覧・AI予測・ブックマーク ---------- */
+.lo a{display:grid;grid-template-columns:20px minmax(0,1fr) auto 12px;align-items:center;gap:10px;min-height:48px;padding:0 14px;border-bottom:1px solid var(--line)}
+.lo a:last-child{border-bottom:0}
+.lo a > .ic:first-child{font-size:16px;color:var(--ink)}
+.lo a b{font-size:15px;font-weight:700;color:var(--link);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lo a span{font-size:13px;color:var(--ink-sub);white-space:nowrap}
+.lo a > .ic:last-child{font-size:12px;color:var(--ink-sub)}
+.lo a:hover{background:#F6F7F9}
+.lo a:hover b{text-decoration:underline}
+.la{margin-top:12px;padding:14px 14px 16px;display:grid;gap:12px}
+.la-k{font-size:12px;font-weight:700;color:var(--ink-sub)}
+.la h2{margin-top:2px;font-size:16px;font-weight:700;line-height:1.4}
+.la-p{margin-top:4px;font-size:13px;line-height:1.7;color:var(--ink-sub)}
+.la-b{display:flex;align-items:center;justify-content:center;height:44px;padding:0 28px;border-radius:var(--r-pill);background:var(--green);color:#FFFFFF;font-size:14px;font-weight:700;white-space:nowrap;transition:background-color .15s}
+.la-b:hover{background:var(--green-hover)}
+.lb{display:none}
+
+/* ---------- タブレット以上（700px〜）：五十音は表（左に行、右に名前のマス）。リーディングは5位ずつ2列 ---------- */
+@media (min-width:700px){
+  .lh h1{font-size:24px}
+  .lh-t{display:flex;align-items:baseline;justify-content:space-between;gap:16px}
+  .lh-m{margin-top:0;font-size:14px}
+  .lh-l{font-size:14px;margin-top:4px}
+  .lf-i{flex:1 1 240px;max-width:420px}
+  .lf-s{flex:0 0 auto;grid-template-columns:repeat(4,auto)}
+  .lf-s button{padding:0 16px;height:44px;font-size:15px}
+  .lf-s button span{font-size:13px}
+  .lp{border-radius:var(--r-panel)}
+  .lk{padding:2px 20px}
+  .lk .rk{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(5,auto);grid-auto-flow:column;column-gap:40px;margin:0}
+  .lk .rk li:nth-child(5) a{border-bottom:0}
+  .ln{padding:0 20px}
+  .ln-d{display:none}
+  .ln-r{display:grid;grid-template-columns:76px minmax(0,1fr);column-gap:16px;align-items:start;padding:14px 0}
+  .ln-r h3{display:flex;flex-direction:column;justify-content:center;min-height:36px;line-height:1.2}
+  .ln-r h3 b{font-size:17px;font-weight:700}
+  .ln-r h3 span{margin-top:2px;font-size:12px;font-weight:400;color:var(--ink-sub)}
+  .ln-c{display:grid;grid-template-columns:repeat(auto-fill,minmax(126px,1fr));gap:8px}
+  .ln.wide .ln-c{grid-template-columns:repeat(auto-fill,minmax(184px,1fr))}
+  .ln-c a.p2{grid-column:span 2}
+  /* コース：板1枚の表（競馬場｜芝・ダート・障害の行｜距離のマス）。トップの今週開催と同じ寸法 */
+  .lc{display:block;margin:0 var(--pad-r) 0 var(--pad);padding:0 16px;background:var(--panel);border-radius:var(--r-panel);box-shadow:0 1px 2px rgba(16,24,40,.06),0 2px 10px rgba(16,24,40,.05)}
+  .lc2{margin-top:32px}
+  .lx[hidden] + .lc2{margin-top:16px}
+  .lc-v{display:grid;grid-template-columns:110px minmax(0,1fr);column-gap:12px;align-items:start;padding:14px 0;background:none;border-radius:0;box-shadow:none;border-top:1px solid var(--line)}
+  .lc-v:first-child,.lc-v.first{border-top:0}
+  .lc-h{display:block;min-height:0}
+  .lc-h h2{font-size:16px;line-height:36px}
+  .lc-n{display:block;margin:0;line-height:1.4}
+  .lw{margin-bottom:4px}
+  .lc .ds{margin:0;gap:8px}
+  .lc .ds-r{grid-template-columns:56px minmax(0,1fr);gap:10px}
+  .lc .ds-r > .sf{min-width:0;min-height:36px}
+  .lc .ds-c{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:6px}
+  .lc .ds-c a{min-width:0;height:36px;padding:0;font-size:14px}
+  .lo a{padding:0 20px;min-height:52px}
+  .la{margin-top:16px;padding:16px 20px;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:24px}
+  .la h2{font-size:18px}
+  .la-p{font-size:14px}
+}
+
+/* ---------- PC（1100px〜）：コースは板1枚の表（競馬場｜芝・ダート・障害の行｜距離のマス） ---------- */
+@media (min-width:1100px){
+  .lh{padding-top:16px}
+  .lh h1{font-size:28px}
+  .sc,.lc-v,.ln-g{scroll-margin-top:calc(var(--hdr-h) + 76px)}
+  .sc.l1{padding-top:0}
+  .ln-r{grid-template-columns:88px minmax(0,1fr)}
+  .ln-c{grid-template-columns:repeat(auto-fill,minmax(132px,1fr))}
+  .ln-c a{font-size:15px}
+  .ln.wide .ln-c{grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}
+  .lc{padding:0 20px}
+  .lc2{margin-top:40px}
+  .lc-v{grid-template-columns:130px minmax(0,1fr);column-gap:16px}
+  .lc-h h2{font-size:17px;line-height:34px}
+  .lc .ds-r{gap:12px}
+  .lc .ds-r > .sf{min-height:34px}
+  .lc .ds-c{grid-template-columns:repeat(auto-fill,76px)}
+  .lc .ds-c a{height:34px}
+  .lb{display:block;margin:16px var(--pad-r) 0 var(--pad);font-size:13px;color:var(--ink-sub);text-align:center}
+  .lb kbd{display:inline-block;margin:0 4px;padding:2px 8px;border-radius:6px;background:var(--panel);box-shadow:0 0 0 1px var(--line);font-family:var(--f-num);font-size:13px;font-weight:700;color:var(--ink)}
+}
+/* 狭いPC幅：いちばん多い行（京都の芝11個）が1行に収まるようにマスを詰める（トップと同じ） */
+@media (min-width:1100px) and (max-width:1439.98px){
+  .lc .ds-c{grid-template-columns:repeat(auto-fill,minmax(60px,1fr))}
+  .lc .ds-c a{font-size:13px}
+  .lc .ds-c a.v{font-size:12px;letter-spacing:-.02em}
+}
+/* ほかの一覧：1280px以上は3列のマス（それより狭いと長い題が収まらないので行のまま） */
+@media (min-width:1280px){
+  .lo{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:16px 20px}
+  .lo a{grid-template-columns:20px minmax(0,1fr) 12px;grid-template-areas:"i b c" "i s c";row-gap:2px;min-height:64px;padding:10px 14px;border:0;border-radius:8px;background:var(--chip);transition:background-color .15s}
+  .lo a > .ic:first-child{grid-area:i}
+  .lo a b{grid-area:b}
+  .lo a span{grid-area:s}
+  .lo a > .ic:last-child{grid-area:c}
+  .lo a:hover{background:var(--chip-hover)}
+}
+/* 右列（1800px〜）にAI予測の案内が出るので、本文側の案内は出さない */
+@media (min-width:1800px){
+  .la{display:none}
+  /* 右列に広告があるので、コースの表の途中の広告枠は出さず、表を1枚につなげる（つなぐのは list.js） */
+  .lc-ad{display:none}
+}
+
+/* ===================== 絞り込み中（body.lf-on） =====================
+   結果が入力欄のすぐ下に来るように、チップ・節の見出し・行の見出しをたたむ（リーディングと途中の広告枠は .lx で隠す） */
+body.lf-on .lj,body.lf-on #all .hd{display:none}
+body.lf-on #all{padding-top:10px}
+body.lf-on .lc-n{display:none}
+.ln-f{display:none}
+@media (min-width:700px){
+  /* コース：今週開催は点だけにして競馬場名の横へ（行の高さをそろえる） */
+  body.lf-on .lc-h{display:flex;align-items:center;gap:8px}
+  body.lf-on .lw{margin:0;font-size:0;gap:0}
+}
+.lf-n.warn{color:#B3261E;font-weight:700}
+@media (max-width:699.98px){
+  /* 名前：行で分けず、一致した名前のマスだけを1つの並びに詰める（.ln-f は list.js が入れる） */
+  body.lf-on .ln-g{display:none}
+  body.lf-on .ln-f{display:grid;padding:12px 14px}
+  body.lf-on .ln-f:empty{display:none}
+  /* コース：競馬場ごとの板をやめ、「競馬場名｜札｜距離」を1行にまとめた板1枚に */
+  body.lf-on .lc{display:block;margin:0 var(--pad-r) 0 var(--pad);padding:0 12px;background:var(--panel);border-radius:12px;box-shadow:0 1px 2px rgba(16,24,40,.06),0 2px 10px rgba(16,24,40,.05)}
+  body.lf-on .lc-v{display:grid;grid-template-columns:40px minmax(0,1fr);column-gap:8px;align-items:start;padding:8px 0;background:none;border-radius:0;box-shadow:none;border-top:1px solid var(--line)}
+  body.lf-on .lc-v.first{border-top:0}
+  body.lf-on .lc-h{display:block;min-height:0}
+  body.lf-on .lc-h h2{font-size:15px;line-height:34px;white-space:nowrap}
+  body.lf-on .lc-h h2 span,body.lf-on .lw{display:none}
+  body.lf-on .lc .ds{margin:0;gap:6px}
+  body.lf-on .lc .ds-c{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
