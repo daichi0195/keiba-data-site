@@ -31,6 +31,8 @@ export default function StatsView({ rows, sums = [], keyLabel, o }: { rows: VRow
   const { rank, medal, initial, bar, barLabel, tone, hint, list, listAlways, sub, extra, lm, bcCol, deferMore, closed } = o;
   // 隠れている行のセルは、見せる直前（さらに表示を押した・開閉を開いた）に描く。最初の HTML には名前とリンクだけを載せる
   const [full, setFull] = useState(false);
+  // 条件別（.lm）の〜899px：「全項目を見る」を開いても横棒は残し、その下に表を出す。棒の一覧は開いたときに初めて描く
+  const [bars, setBars] = useState(false);
   const ref = useRef<HTMLTableElement>(null);
   useEffect(() => {
     if (!closed || full) return;
@@ -67,8 +69,8 @@ export default function StatsView({ rows, sums = [], keyLabel, o }: { rows: VRow
   const few = (r: VRow) => (r.f !== undefined ? <small className={cx('num')}>出走{r.f}</small> : null);
   const ii = (i: number) => (initial ? i % initial : i);
 
-  const listEl = list && listAlways ? (
-    <ul className={cx('jk-bl', tone, rank && 'rkl', sub && 'has-sub')} data-anim="">
+  const listEl = list && (listAlways || (lm && bars)) ? (
+    <ul className={cx('jk-bl', tone, rank && 'rkl', sub && 'has-sub', !listAlways && 'lmb')} data-anim={listAlways ? '' : undefined}>
       {rows.map((r, i) => (
         <li key={i} className={initial && i >= initial ? cx('more') : undefined} style={iv(ii(i))}>
           {rk(i)}
@@ -145,7 +147,10 @@ export default function StatsView({ rows, sums = [], keyLabel, o }: { rows: VRow
       hint={hint ? <span key="hint" className={cx('jk-hint')}>{hint}</span> : undefined}
       more={rest > 0 ? { rest, initial } : undefined}
       table={list}
-      onOpen={deferMore || closed ? () => setFull(true) : undefined}
+      onOpen={(k) => {
+        if (deferMore || closed) setFull(true);
+        if (k === 't' && lm) setBars(true);
+      }}
     >
       <>
         {listEl}

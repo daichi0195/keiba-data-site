@@ -265,7 +265,11 @@
   .lm:not(.open-t) .jk-t td.v .hl{all:unset}
   /* 上の図と同じ数字の表（es-nol）：〜899pxは「全項目を見る」を開いたときだけ */
   .es-nol:not(.open-t) > .jk-full{display:none}
+  /* 開いたときは横棒（.lmb）を残し、その下に表を出す */
+  .lm.open-t > .lmb{display:grid;margin-bottom:8px}
 }
+/* 開いたときだけ描く横棒（.lmb）：900px以上と閉じているあいだは出さない */
+.lmb{display:none}
 @media (max-width:379.98px){.lm:not(.open-t) .jk-t{column-gap:8px}}
 
 /* 板の下端：補足・定義リンクと、開閉のボタン（コース詳細の .cd-m / .rkt-f / .cp-f と同じ作り） */
