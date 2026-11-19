@@ -1,38 +1,28 @@
 import { Metadata } from 'next';
-import AdSlot from '@/components/AdSlot';
+import type { ReactNode } from 'react';
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
-import TableOfContents from '@/components/TableOfContents';
 import { getTrainerDataFromGCS } from '@/lib/getTrainerDataFromGCS';
 import { ALL_TRAINERS } from '@/lib/trainers';
-import DataSourceNote from '@/components/DataSourceNote';
 import { ALL_JOCKEYS } from '@/lib/jockeys';
 import { buildTrainerSummaryKeyed } from '@/lib/dataPageText';
 import { jaDateToIso, periodFromDataPeriod, buildWebPageJsonLd } from '@/lib/dataDate';
 import { toTrainerSummaryBlocks } from '@/lib/trainerPageData';
 import { resolveCourseUrl, courseLabel } from '@/lib/courseLinks';
-import { MIN_RACES_FOR_MENTION, hasEnoughRaces, THIN_PAGE_ROBOTS } from '@/lib/dataPageRules';
-import ThinDataNotice from '@/components/ThinDataNotice';
-import pageStyles from '@/app/static-page.module.css';
-import AIBanner from '@/components/AIBanner';
-import s from '@/components/course/course.module.css';
-import CourseSectionNav from '@/components/course/CourseSectionNav';
-import RankingTable from '@/components/course/RankingTable';
-import CourseFaq from '@/components/course/CourseFaq';
-import { ConditionCard, Meter, RichText, StatsTable, type ConditionRow, type NameLink } from '@/components/course/CourseParts';
-import t from '@/components/datapage/trainer/trainer.module.css';
-import TrainerLeadingChart from '@/components/datapage/trainer/TrainerLeadingChart';
-import BarTableCard from '@/components/datapage/trainer/BarTableCard';
-import { type LinkStatRow } from '@/components/datapage/trainer/LinkStatsTable';
-import { CourseGroupsCard, type CourseGroup } from '@/components/datapage/trainer/TrainerParts';
-import HighlightCoursesCard, { MIN_RACES_FOR_HIGHLIGHT, type HighlightCourseRow } from '@/components/datapage/shared/HighlightCoursesCard';
-import VerdictRow, { VerdictRows } from '@/components/datapage/shared/VerdictRow';
-import DefinitionLink from '@/components/datapage/shared/DefinitionLink';
+import { MIN_RACES_FOR_TRENDS, hasEnoughRaces, THIN_PAGE_ROBOTS } from '@/lib/dataPageRules';
 import { trainerDescription } from '@/lib/metaDescriptions';
-import InfoTiles from '@/components/datapage/shared/InfoTiles';
-import ListTable from '@/components/datapage/shared/ListTable';
-import sh from '@/components/datapage/shared/shared.module.css';
-import { ageAt, buildGradedAnswer, formatTitles, buildPersonLead, gradedTotals, jaDate, shortDate, thisYearOf, type GradedWin, type NotableHorse, type PersonProfile } from '@/lib/entityExtras';
+import { ageAt, buildGradedAnswer, formatTitles, buildPersonLead, gradedTotals, jaDate, thisYearOf, type GradedWin, type NotableHorse, type PersonProfile } from '@/lib/entityExtras';
+import {
+  About, Ad, BestNote, Cnt, CourseAcc, DefLink, EntityRoot, Faq, GTag, GradedWins, H, Head, Highlights, Hero, Hno, HorseList, MaybeLink, Meters,
+  Nb, PageNav, Pn, Sec, SfTag, Stats, Subs, Summary, ThinNote, Tiles, Titles, sfKey,
+  type CourseRow, type NameLink,
+} from '@/components/v6/entity/parts';
+import { YearCharts } from '@/components/v6/entity/charts';
+import { R, ZERO, fill, int, pct, slashDate, type Row } from '@/components/v6/entity/format';
+import type { StatsProps } from '@/components/v6/entity/Stats';
+import { cx } from '@/components/v6/entity/cx';
+
+// 旧部品の行の型（集計の途中で使う）
+type ConditionRow = any;
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
@@ -1048,435 +1038,241 @@ export default async function TrainerPage({
     dateModified: jaDateToIso(trainer.last_updated),
   });
 
-  // ===== 表示用データ（docs/redesign のデザイン） =====
-  const periodText = periodFromDataPeriod(trainer.data_period);
-  const dateModifiedIso = jaDateToIso(trainer.last_updated);
+  // ===== 表示（リデザイン v6。見本 docs/redesign/src/pages/trainer.mjs と同じ並び・同じ整形） =====
+  const periodText = periodFromDataPeriod(trainer.data_period) ?? '直近3年間';
+  const dateIso = jaDateToIso(trainer.last_updated);
+  const n = trainer.name;
+  const W = `${n}調教師`;
+  const ST = `${n}厩舎`;
+  // 対象レース数が少ないページは傾向判定・特徴・注目ポイント・データQ&Aを出さない（現行どおり）
+  const enoughRaces = hasEnoughRaces(trainer.total_races);
   const jockeyIds = new Set(ALL_JOCKEYS.map((j) => String(j.id)));
 
-  // 判定の表示名（3ページ共通の文言・向き：左＝芝／短距離、右＝ダート／長距離）
-  const surfaceTrendTexts: Record<number, string> = {
-    1: '芝が得意', 2: 'やや芝が得意', 3: '差分なし', 4: 'ややダートが得意', 5: 'ダートが得意',
-  };
-  const distanceTrendTexts: Record<number, string> = {
-    1: '短距離が得意', 2: 'やや短距離が得意', 3: '差分なし', 4: 'やや長距離が得意', 5: '長距離が得意',
-  };
+  // 判定（3ページ共通の向き：左＝芝／短距離、右＝ダート／長距離）
+  const sText: Record<number, string> = { 1: '芝が得意', 2: 'やや芝が得意', 3: '差分なし', 4: 'ややダートが得意', 5: 'ダートが得意' };
+  const dText: Record<number, string> = { 1: '短距離が得意', 2: 'やや短距離が得意', 3: '差分なし', 4: 'やや長距離が得意', 5: '長距離が得意' };
   // 調教師データでは芝・ダートの判定が gate_position に入っており、1＝ダートが得意。表示用に反転する（6 - 値）
   const rawSurfaceTrend = trainer.characteristics?.gate_position;
-  const surfaceTrend = typeof rawSurfaceTrend === 'number' ? 6 - rawSurfaceTrend : undefined;
-  const distanceTrend = trainer.characteristics?.distance_trend_position;
-  // 対象レース数が少ないページは傾向判定を出さない（コースページと同じ方針）
-  const enoughRaces = hasEnoughRaces(trainer.total_races);
-  const hasSurfaceTrend = typeof surfaceTrend === 'number' && surfaceTrend >= 1 && surfaceTrend <= 5;
-  const hasDistanceTrend = typeof distanceTrend === 'number' && distanceTrend >= 1 && distanceTrend <= 5;
-  const mergedShort = (mergedDistanceStats as any[]).find((d) => d.category === '短〜マ');
-  const mergedLong = (mergedDistanceStats as any[]).find((d) => d.category === '中〜長');
+  const surfacePos = typeof rawSurfaceTrend === 'number' ? 6 - rawSurfaceTrend : 0;
+  const distancePos = trainer.characteristics?.distance_trend_position ?? 0;
+  const hasS = surfacePos >= 1 && surfacePos <= 5;
+  const hasD = typeof distancePos === 'number' && distancePos >= 1 && distancePos <= 5;
+  const md = (c: string) => (mergedDistanceStats as any[]).find((d) => d.category === c);
+  const turf = trainer.surface_stats.find((r) => r.surface === '芝');
+  const dirt = trainer.surface_stats.find((r) => r.surface === 'ダート');
+  const ev = (pairs: [string, any][]): [string, number][] => pairs.filter(([, r]) => r).map(([l, r]) => [`${l} 複勝率`, r.place_rate]);
 
   // 騎手のリンク（騎手ページが存在する騎手だけ）
-  const jockeyRows = trainer.jockey_stats.map((j: any) => {
+  const jockeyUrl = (j: any): string | undefined => {
     const fromData = typeof j.link === 'string' && jockeyIds.has(j.link.split('/').pop() ?? '') ? j.link : undefined;
     const byName = ALL_JOCKEYS.find((x) => x.name === j.name);
-    return { ...j, link: fromData ?? (byName ? `/jockeys/${byName.id}` : undefined) };
-  });
+    return fromData ?? (byName ? `/jockeys/${byName.id}` : undefined);
+  };
+  const courses = trainer.course_stats.filter((c) => c.surface_en !== 'obstacle') as unknown as CourseRow[];
 
-  // コース別成績（実在するコースページへリンク）
-  const courseRowsWithUrl = trainer.course_stats
-    .filter((c) => c.surface_en !== 'obstacle')
-    .map((c) => ({ ...c, url: resolveCourseUrl(c) }));
-
-  // データ概要（見出し付きのブロック、名前は詳細ページへリンク）
+  // データ概要（先頭に結論の1文。騎手名・コース名は詳細ページへリンク）
   const summaryBlocks = toTrainerSummaryBlocks(buildTrainerSummaryKeyed(trainer as any));
   if (enoughRaces && summaryBlocks.length > 0) {
     summaryBlocks.unshift({
       key: 'lead',
       text: buildPersonLead({
         kind: '調教師',
-        name: trainer.name,
+        name: n,
         region: (trainer as any).stable,
         debutYear: trainer.debut_year,
-        traits: [
-          hasSurfaceTrend ? surfaceTrendTexts[surfaceTrend] : '',
-          hasDistanceTrend ? distanceTrendTexts[distanceTrend] : '',
-        ].filter((t) => t && t !== '差分なし'),
+        traits: [hasS ? sText[surfacePos] : '', hasD ? dText[distancePos] : ''].filter((x) => x && x !== '差分なし'),
         graded: trainerGraded,
         recentWin: trainerGradedWins[0] ?? null,
       }),
     });
   }
-  const summaryLinks: Record<string, NameLink[]> = {
-    jockey: jockeyRows.filter((j) => j.link).map((j) => ({ name: j.name, href: j.link as string })),
-    racecourse: courseRowsWithUrl.filter((c) => c.url).map((c) => ({ name: c.name, href: c.url as string })),
+  const summaryLinks: Partial<Record<string, NameLink[]>> = {
+    jockey: trainer.jockey_stats.filter((j: any) => jockeyUrl(j)).map((j: any) => ({ name: j.name, href: jockeyUrl(j) as string })),
+    racecourse: courses.map((c) => ({ name: c.name, href: resolveCourseUrl(c) ?? '' })).filter((l) => l.href),
   };
 
-  // 条件別の行
-  const popularityBands: [keyof TrainerData['popularity_stats'], string][] = [
-    ['fav1', '1番人気'], ['fav2', '2番人気'], ['fav3', '3番人気'], ['fav4', '4番人気'],
-    ['fav5', '5番人気'], ['fav6to9', '6〜9番人気'], ['fav10plus', '10番人気〜'],
+  // 基本情報
+  const ts = trainer.total_stats;
+  const tiles: [string, ReactNode, ReactNode?][] = [
+    ['所属', (trainer as any).stable ?? trainerProfile.region ?? '', ''],
+    ['生年月日', jaDate(trainerProfile.birth_date) ?? '', trainerAge !== null ? `${trainerAge}歳` : ''],
+    ['開業', trainer.debut_year ? `${trainer.debut_year}年` : '', trainer.debut_year ? `${trainerAsOf.getFullYear() - Number(trainer.debut_year) + 1}年目` : ''],
+    ...(trainerThisYear ? [[`${trainerThisYear.year}年の勝利数`, <><Cnt v={trainerThisYear.wins} />勝</>, trainerThisYear.ranking > 0 ? `リーディング${trainerThisYear.ranking}位` : ''] as [string, ReactNode, ReactNode]] : []),
+    // 冒頭のマスと大きな数字が重ならないよう、着度数を主に見せて勝率・複勝率は補足行に残す（騎手詳細と同じ）
+    ['着度数（直近3年間）', <span className={cx('num')}>{`${ts.wins}-${ts.places_2}-${ts.places_3}-${ts.races - ts.wins - ts.places_2 - ts.places_3}`}</span>, <Nb>勝率{ts.win_rate.toFixed(1)}%／複勝{ts.place_rate.toFixed(1)}%</Nb>],
+    ['重賞勝ち（平地）', <><Cnt v={trainerGraded.wins} />勝</>, `直近3年間・G1 ${trainerGraded.g1}勝`],
   ];
-  const popularityRows: ConditionRow[] = popularityBands
-    .filter(([key]) => trainer.popularity_stats?.[key])
-    .map(([key, label]) => ({ ...trainer.popularity_stats[key], label }));
 
-  // クラス別は現行の ClassTable と同じく9クラスすべてを表示（データがないクラスは0）
-  const allClasses = ['G1', 'G2', 'G3', 'オープン', '3勝', '2勝', '1勝', '未勝利', '新馬'];
-  const classRows: ConditionRow[] = allClasses.map((className) => {
-    const row = trainer.class_stats.find((c) => c.class_name === className);
-    return row
-      ? { ...row, label: className }
-      : { label: className, races: 0, wins: 0, places_2: 0, places_3: 0, win_rate: 0, quinella_rate: 0, place_rate: 0, win_payback: 0, place_payback: 0 };
-  });
-  const distanceRows: ConditionRow[] = trainer.distance_stats.map((d: any) => ({ ...d, label: d.category }));
-  const genderRows: ConditionRow[] = trainer.gender_stats.map((g: any) => ({ ...g, label: g.name }));
-  const intervalRows: ConditionRow[] = trainer.interval_stats.map((r: any) => ({ ...r, label: r.interval }));
-  const surfaceRows: ConditionRow[] = surfaceStatsData.map((r) => ({ ...r, label: r.name }));
-  const yearlyRows: ConditionRow[] = yearlyStatsDataForTable.map((r) => ({ ...r, label: `${r.year}年` }));
-  const racecourseRows: LinkStatRow[] = racecourseSummaryDataWithTotals.map((r: any) => ({
-    ...r,
-    label: r.name,
-    summary: r.name === '中央' || r.name === 'ローカル',
-  }));
+  // 年度別（図は古い順、表は新しい順）
+  const YEAR = dateIso ? Number(dateIso.slice(0, 4)) : currentYear;
+  const years = [YEAR - 2, YEAR - 1, YEAR];
+  const ystat = years.map((y) => ({ ...ZERO, ...(trainer.yearly_stats.find((r) => r.year === y) ?? {}), year: y }));
+  const leadYears = years.map((y) => trainer.yearly_leading.find((r) => r.year === y) ?? { year: y, wins: 0, ranking: 0 });
 
-  // 年度別グラフ（左から2年前→1年前→当年。データがない年も含める）
-  const leadingData = yearsForChart.map((year) => trainer.yearly_leading.find((stat) => stat.year === year) || { year, wins: 0, ranking: 0 });
+  // 条件別の行（並び・件数は現行どおり）
+  const classRows = ['G1', 'G2', 'G3', 'オープン', '3勝', '2勝', '1勝', '未勝利', '新馬'].map((c) =>
+    R(trainer.class_stats.find((x) => x.class_name === c), /^G\d$/.test(c) ? <GTag g={c} /> : c, c));
+  const POP = [['fav1', '1番人気'], ['fav2', '2番人気'], ['fav3', '3番人気'], ['fav4', '4番人気'], ['fav5', '5番人気'], ['fav6to9', '6〜9番人気'], ['fav10plus', '10番人気〜']] as const;
+  const popRows = POP.filter(([k]) => (trainer.popularity_stats as any)?.[k]).map(([k, l]) => R((trainer.popularity_stats as any)[k], l));
+  const distRows = trainer.distance_stats.map((r: any) => R(r, r.category));
+  const genderRows = trainer.gender_stats.map((r: any) => R(r, r.name));
+  const ageRows: Row[] = ((trainer as any).age_stats ?? []).map((r: any) => R(r, r.age));
+  // スマホの横棒の行には勝率も添える（表では勝率の列にある）
+  const intervalRows = fill(['連闘', '1-3週', '4-7週', '8-10週', '11週-'], trainer.interval_stats ?? [], (r: any) => r.interval).map((r) => ({ ...r, listSub: `勝率${pct(r.win_rate)}` }));
+  const SFEN: Record<string, string> = { 芝: 'turf', ダート: 'dirt', 障害: 'steeplechase' };
+  const surfRows = trainer.surface_stats.map((r) => R(r, SFEN[r.surface] ? <SfTag sf={sfKey(SFEN[r.surface])} /> : r.surface, r.surface));
+  const RCS: [string, string][] = [['sapporo', '札幌'], ['hakodate', '函館'], ['fukushima', '福島'], ['niigata', '新潟'], ['tokyo', '東京'], ['nakayama', '中山'], ['chukyo', '中京'], ['kyoto', '京都'], ['hanshin', '阪神'], ['kokura', '小倉']];
+  const rcRows = RCS.map(([en, ja]) => (trainer.racecourse_stats ?? []).find((x: any) => x.racecourse_en === en || x.name === ja))
+    .map((r, i) => (r ? R(r, RCS[i][1]) : null))
+    .filter((r): r is Row => r !== null);
+  const rcSum = ['中央', 'ローカル']
+    .map((nm) => (trainer.racecourse_stats ?? []).find((r: any) => r.name === nm))
+    .filter(Boolean)
+    .map((r: any) => R(r, <b>{r.name}</b>, r.name));
+  const nameRow = (r: any, href: string | undefined, i: number): Row => ({ ...R(r, <MaybeLink href={href}>{r.name}</MaybeLink>, r.name), rowKey: `${r.name}-${i}` });
+  const jockeyList = trainer.jockey_stats.map((r: any, i: number) => nameRow(r, jockeyUrl(r), i));
+  const ownerList = trainer.owner_stats.map((r: any, i: number) => nameRow(r, undefined, i));
 
-  // 注目ポイント（現行の JockeyTrainerHighlights と同じ：出走10回以上、複勝率の上位5・下位5）
-  const highlightPool = courseRowsWithUrl.filter((c) => c.races >= MIN_RACES_FOR_HIGHLIGHT).sort((a, b) => b.place_rate - a.place_rate);
-  const toHighlight = (c: (typeof courseRowsWithUrl)[number]): HighlightCourseRow => ({
-    ...c,
-    label: courseLabel(c, { withRacecourse: true, shortDirt: true }),
-    shortName: courseLabel(c, { withRacecourse: true, shortDirt: true }),
-    link: c.url,
-  });
-  const highlightTop = highlightPool.slice(0, 5).map(toHighlight);
-  const highlightBottom = highlightPool.slice(-5).reverse().map(toHighlight);
-  const hasHighlights = highlightTop.length > 0 || highlightBottom.length > 0;
-
-  // コース別成績（競馬場ごと。芝→ダート、距離順）
-  const courseGroups: CourseGroup[] = racecourseOrder
-    .map((rc) => ({
-      racecourse_ja: rc.ja,
-      racecourse_en: rc.en,
-      rows: courseRowsWithUrl
-        .filter((c) => c.racecourse_en === rc.en)
-        .sort((a, b) => (a.surface_en !== b.surface_en ? (a.surface_en === 'turf' ? -1 : 1) : a.distance - b.distance))
-        .map((c) => ({ ...c, label: courseLabel(c), link: c.url })),
-    }))
-    .filter((g) => g.rows.length > 0);
-
-  // ページ内ナビ（チップの表示名は短く、id は目次と共通）
-  const chipLabels: Record<string, string> = {
-    'profile-section': '基本情報', 'active-horses-section': '管理馬', 'graded-wins-section': '重賞勝ち', 'age-stats': '馬齢別',
-    'summary-section': '概要', leading: '年度別', characteristics: '特徴', 'highlights-section': '注目',
-    'class-stats': 'クラス別', 'popularity-stats': '人気別', 'distance-stats': '距離別', 'gender-stats': '性別',
-    'interval-stats': '間隔別', 'surface-stats': '芝ダート別', 'racecourse-stats': '競馬場別', 'course-stats': 'コース別',
-    'jockey-stats': '騎手', 'owner-stats': '馬主', 'faq-section': 'Q&A',
-  };
-  // 対象レース数が少ないページは「特徴」「注目ポイント」「データQ&A」を出さないので、ナビ・目次からも外す
-  const thinHiddenIds = new Set(['characteristics', 'highlights-section', 'faq-section']);
-  const tocItems = navigationItems.filter(
-    (item) => (item.id !== 'highlights-section' || hasHighlights) && (enoughRaces || !thinHiddenIds.has(item.id))
+  // 節：条件別（補足文「出走30以上で…」は板の外、見出しの下）とランキング
+  const cond = (
+    w: string, id: string, title: string, rows: Row[], opt: Partial<StatsProps> & { keyLabel: string },
+    { sub = '', note = true, markRows = null }: { sub?: string; note?: boolean; markRows?: Row[] | null } = {},
+  ) => (
+    <Sec id={id} head={<H w={w} title={title} sub={sub || note ? <Subs sub={sub} note={note ? <BestNote rows={markRows ?? rows} /> : null} /> : undefined} />}>
+      <Pn><Stats rows={rows} mark={note} markRows={markRows} {...opt} /></Pn>
+    </Sec>
+  );
+  const rankSec = (id: string, title: string, rows: Row[], keyLabel: string) => (
+    <Sec id={id} head={<H w={W} title={title} sub={<Subs sub="勝利数順" />} />}>
+      <Pn><Stats rows={rows} keyLabel={keyLabel} rank initial={10} bar="wins" barLabel={'勝利数\n（横棒）'} hint="最大50件まで表示" shrink /></Pn>
+    </Sec>
   );
 
-  const chipItems = tocItems.map((item) => ({ id: item.id, label: chipLabels[item.id] ?? item.label }));
+  // ページ内の移動（データがない節・対象レース数が少ないページで出さない節は外す）
+  const hasHighlights = courses.some((c) => c.races >= 10);
+  const thinHidden = new Set(['characteristics', 'highlights-section', 'faq-section']);
+  const showChars = enoughRaces && Boolean(trainer.characteristics) && (hasS || hasD);
+  const navItems = [
+    ['profile-section', '基本情報'], ...(summaryBlocks.length ? [['summary-section', '概要']] : []), ['leading', '年度別'],
+    ...(activeHorses.length ? [['active-horses-section', '管理馬']] : []), ...(trainerGradedWins.length ? [['graded-wins-section', '重賞勝ち']] : []),
+    ...(showChars ? [['characteristics', '特徴']] : []), ...(hasHighlights ? [['highlights-section', '注目']] : []), ['class-stats', 'クラス別'], ['popularity-stats', '人気別'],
+    ['distance-stats', '距離別'], ['gender-stats', '性別'], ...(ageRows.length ? [['age-stats', '馬齢別']] : []), ['interval-stats', '間隔別'],
+    ['surface-stats', '芝ダート別'], ['racecourse-stats', '競馬場別'], ['course-stats', 'コース別'], ['jockey-stats', '騎手'], ['owner-stats', '馬主'], ['faq-section', 'Q&A'],
+  ].filter(([id]) => enoughRaces || !thinHidden.has(id)).map(([id, label]) => ({ id, label }));
+
+  const faqItems = [
+    { q: `${n}調教師の得意な競馬場は？`, a: trainerGoodRacecourseAnswer },
+    { q: `${n}調教師の得意なコースは？`, a: trainerGoodCourseAnswer },
+    { q: `${n}調教師は芝とダートどちらが得意？`, a: trainerSurfaceFaqAnswer, lead: true },
+    { q: `${n}調教師の得意な距離は？`, a: trainerDistanceFaqAnswer, lead: true },
+    { q: `${n}調教師の重賞成績は？`, a: trainerGradedAnswer },
+    ...(activeHorsesAnswer ? [{ q: `${n}厩舎の主な管理馬は？`, a: activeHorsesAnswer }] : []),
+    ...(twoYoAnswer ? [{ q: `${n}厩舎の2歳戦の成績は？`, a: twoYoAnswer }] : []),
+    { q: `${n}調教師の苦手な競馬場は？`, a: trainerBadRacecourseAnswer },
+    { q: `${n}調教師の苦手なコースは？`, a: trainerBadCourseAnswer },
+  ];
+  const stable = (trainer as any).stable as string | undefined;
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageJsonLd) }}
-      />
-      {/* 構造化データの埋め込み */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
-      />
-      {enoughRaces && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqTrainerJsonLd) }}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageJsonLd) }} />
+      {enoughRaces && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqTrainerJsonLd) }} />}
+      <EntityRoot>
+        <PageNav items={navItems} />
+        <Hero
+          crumb={{ label: '調教師一覧', href: '/trainers' }}
+          name={n}
+          h1={ST}
+          h1s="（調教師）の傾向・成績データ"
+          lead={`${W}${stable || trainer.debut_year ? `（${[stable, trainer.debut_year ? `${trainer.debut_year}年開業` : ''].filter(Boolean).join('・')}）` : ''}の成績・データをまとめたページです。独自のデータベースで直近3年間・${int(trainer.total_races)}レースのデータを集計し、毎週更新しています。`}
+          kpi={[['出走数', ts.races, 0, ''], ['1着', ts.wins, 0, ''], ['勝率', ts.win_rate, 1, '%'], ['連対率', ts.quinella_rate, 1, '%'], ['複勝率', ts.place_rate, 1, '%']]}
+          races={trainer.total_races}
+          period={periodText}
+          updated={trainer.last_updated}
+          iso={dateIso}
+          verdictTitle={`${W}の傾向`}
+          verdict={enoughRaces ? [
+            ...(hasS ? [{ label: '芝・ダート', pos: surfacePos, text: sText[surfacePos] }] : []),
+            ...(hasD ? [{ label: '距離', pos: distancePos, text: dText[distancePos] }] : []),
+          ] : null}
         />
-      )}
-      <div className={s.canvas}>
-      <div className={pageStyles.staticPageContainer}>
-        <div className={`${pageStyles.staticPageColumns3} ${pageStyles.staticPageColumns3Ad}`}>
-          {/* 左サイドバー（現行どおり） */}
-          <aside className={`${pageStyles.staticPageLeftSidebar} ${pageStyles.staticPageLeftSidebarAd}`}>
-            <AIBanner bookmarkOnly />
-            <AdSlot unit="sidebar" variant="sidebar" />
-          </aside>
+        {!enoughRaces && <ThinNote totalRaces={trainer.total_races} minRaces={MIN_RACES_FOR_TRENDS} hiddenItems="「調教師の傾向」「調教師の特徴」「注目ポイント」「データQ&A」" />}
+        <Ad unit="dataTop" />
 
-          <article>
-            {/* パンくずリスト */}
-            <nav className={s.crumb} aria-label="パンくず">
-              <Link href="/">HOME</Link>
-              <span aria-hidden="true">/</span>
-              <Link href="/trainers">調教師一覧</Link>
-              <span aria-hidden="true">/</span>
-              <span>{trainer.name}</span>
-            </nav>
-
-            {/* 冒頭 */}
-            <div className={s.hero}>
-              <div className={s.badges}>
-                <span className={s.badge}>調教師</span>
-                {trainer.stable && <span className={s.badge}>{trainer.stable}</span>}
-                {trainer.debut_year ? <span className={s.badge}>{trainer.debut_year}年開業</span> : null}
-              </div>
-              <h1 className={s.title}>{trainer.name}厩舎（調教師）の傾向・成績データ</h1>
-              <p className={s.lead}>
-                {trainer.name}調教師の成績・データをまとめたページです。独自のデータベースで直近3年間・{trainer.total_races.toLocaleString()}レースのデータを集計し、毎週更新しています。
-              </p>
-              <div className={s.meta}>
-                <span>集計 <b>{periodText ?? '直近3年間分'}</b></span>
-                <span>対象 <b>{trainer.total_races.toLocaleString()}レース</b></span>
-                <span>更新 <b><time dateTime={dateModifiedIso}>{trainer.last_updated}</time></b></span>
-              </div>
-            </div>
-
-            {/* 対象レース数が少ない場合の注意 */}
-            {!enoughRaces && (
-              <ThinDataNotice totalRaces={trainer.total_races} hiddenItems="「調教師の傾向」「調教師の特徴」「注目ポイント」「データQ&A」" />
-            )}
-
-            {/* 結論カード */}
-            {enoughRaces && (hasSurfaceTrend || hasDistanceTrend) && (
-              <div className={`${s.card} ${s.verdict}`}>
-                <div className={s.vHead}>
-                  <h2>{trainer.name}調教師の傾向</h2>
-                  <span className={s.note}>{trainer.total_races.toLocaleString()}レース</span>
-                </div>
-                <VerdictRows>
-                  {hasSurfaceTrend && (
-                    <VerdictRow label="芝・ダート" value={surfaceTrend} result={surfaceTrendTexts[surfaceTrend]} href="#characteristics" />
-                  )}
-                  {hasDistanceTrend && (
-                    <VerdictRow label="距離" value={distanceTrend} result={distanceTrendTexts[distanceTrend]} href="#characteristics" />
-                  )}
-                </VerdictRows>
-              </div>
-            )}
-
-            <AdSlot unit="dataTop" />
-
-            <CourseSectionNav items={chipItems} />
-
-            {/* 基本情報 */}
-            <section id="profile-section" className={s.section} aria-label="基本情報">
-              <div className={s.sh}><h2 className={s.h2}>{trainer.name}厩舎の基本情報</h2></div>
-              <InfoTiles items={profileTiles} />
-            </section>
-
-            {/* データ概要（固有解説文） */}
-            {summaryBlocks.length > 0 && (
-              <section id="summary-section" className={s.section} aria-label="データの概要">
-                <div className={s.sh}><h2 className={s.h2}>{trainer.name}調教師のデータ概要</h2></div>
-                <div className={`${s.card} ${s.article}`}>
-                  {summaryBlocks.map((block) => (
-                    <div key={block.key} className={s.blk}>
-                      {block.title && <h3>{block.title}</h3>}
-                      <p><RichText text={block.text} links={summaryLinks[block.key]} /></p>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
-
-
-            {/* 年度別成績 */}
-            <section id="leading" className={s.section} aria-label="年度別成績">
-              <div className={s.sh}><h2 className={s.h2}>{trainer.name}調教師 年度別成績</h2><p>勝利数とリーディング順位</p></div>
-              <div className={`${s.card} ${t.yearCard}`}>
-                <TrainerLeadingChart
-                  data={leadingData}
-                  label={`${trainer.name}調教師の年度別勝利数とリーディング順位：${leadingData.map((d) => `${d.year}年 ${d.wins}勝${d.ranking > 0 ? `・${d.ranking > 50 ? '50位未満' : `${d.ranking}位`}` : ''}`).join('、')}`}
-                />
-                <StatsTable rows={yearlyRows} keyLabel="年度" />
-              </div>
-            </section>
-
-            {/* 現役の主な管理馬（直近半年に出走・集計期間の重賞勝ち→勝利数の順） */}
-            {activeHorses.length > 0 && (
-              <section id="active-horses-section" className={s.section} aria-label="主な管理馬">
-                <div className={s.sh}><h2 className={s.h2}>{trainer.name}厩舎の主な管理馬</h2><p>直近半年に出走した馬。集計期間の重賞勝ち→勝利数の順</p></div>
-                <ListTable
-                  note="成績は直近3年間・当厩舎での出走分"
-                  columns={[{ label: '馬名' }, { label: '性齢' }, { label: '成績', numeric: true }, { label: '主な勝ち鞍' }, { label: '父' }, { label: '最終出走' }]}
-                  rows={activeHorses.map((h) => ({
-                    key: String(h.horse_id),
-                    cells: [
-                      h.horse_name,
-                      `${h.sex}${h.age ?? ''}`,
-                      `${h.wins}-${h.places_2 ?? 0}-${h.places_3 ?? 0}-${h.races - h.wins - (h.places_2 ?? 0) - (h.places_3 ?? 0)}`,
-                      h.titles.length > 0 ? formatTitles(h.titles).join('、') : '—',
-                      h.father ?? '—',
-                      h.last_date ? shortDate(h.last_date) : '—',
-                    ],
-                  }))}
-                />
-              </section>
-            )}
-
-            {/* 重賞勝ち（直近3年間・新しい順） */}
-            {trainerGradedWins.length > 0 && (
-              <section id="graded-wins-section" className={s.section} aria-label="重賞勝ち">
-                <div className={s.sh}><h2 className={s.h2}>{trainer.name}厩舎の重賞勝ち</h2><p>直近3年間・平地・新しい順（G1 {trainerGraded.g1}勝・G2 {trainerGraded.g2}勝・G3 {trainerGraded.g3}勝）</p></div>
-                <ListTable
-                  note={trainerGradedWins.length >= 30 ? '最大30件まで表示' : undefined}
-                  columns={[{ label: 'レース' }, { label: '日付' }, { label: '馬名' }, { label: '騎手' }, { label: '人気', numeric: true }]}
-                  rows={trainerGradedWins.map((w) => ({
-                    key: `${w.date}-${w.race_name}`,
-                    cells: [
-                      <><span className={sh.grade}>{w.grade}</span>{w.race_name}</>,
-                      shortDate(w.date),
-                      w.horse_name,
-                      w.jockey_name ?? '—',
-                      w.popularity ? `${w.popularity}` : '—',
-                    ],
-                  }))}
-                />
-              </section>
-            )}
-
-            {/* 調教師の特徴 */}
-            {enoughRaces && trainer.characteristics && (
-              <section id="characteristics" className={`${s.section} ${t.resetSection}`} aria-label="調教師特徴">
-                <div className={s.sh}><h2 className={s.h2}>{trainer.name}調教師の特徴</h2><p>判定と、その根拠になった数字</p></div>
-                <div className={s.card}>
-                  {hasSurfaceTrend && (
-                    <Meter
-                      label="得意なコース傾向"
-                      result={surfaceTrendTexts[surfaceTrend]}
-                      value={surfaceTrend}
-                      scale={['芝が得意', '差分なし', 'ダートが得意']}
-                      pair={trainerTurfStat || trainerDirtStat ? [
-                        ['芝 複勝率', trainerTurfStat ? `${trainerTurfStat.place_rate.toFixed(1)}%` : '-'],
-                        ['ダート 複勝率', trainerDirtStat ? `${trainerDirtStat.place_rate.toFixed(1)}%` : '-'],
-                      ] : undefined}
-                    />
-                  )}
-                  {hasDistanceTrend && (
-                    <Meter
-                      label="得意な距離傾向"
-                      result={distanceTrendTexts[distanceTrend]}
-                      value={distanceTrend}
-                      scale={['短距離が得意', '差分なし', '長距離が得意']}
-                      pair={mergedShort || mergedLong ? [
-                        ['短〜マ 複勝率', mergedShort ? `${mergedShort.place_rate.toFixed(1)}%` : '-'],
-                        ['中〜長 複勝率', mergedLong ? `${mergedLong.place_rate.toFixed(1)}%` : '-'],
-                      ] : undefined}
-                    />
-                  )}
-                  <DefinitionLink anchor="criteria" />
-                </div>
-              </section>
-            )}
-
-            {/* 注目ポイント */}
-            {enoughRaces && hasHighlights && (
-              <section id="highlights-section" className={s.section} aria-label="注目ポイント">
-                <div className={s.sh}>
-                  <h2 className={s.h2}>{trainer.name}調教師の注目ポイント</h2>
-                  <p>{trainer.name}調教師の管理馬が得意・苦手なコース。コース名をタップすると詳細へ</p>
-                </div>
-                <div className={s.legend}>
-                  <span><i style={{ borderColor: '#5FC28A' }} />得意</span>
-                  <span><i style={{ borderColor: '#D98A9E' }} />苦手</span>
-                </div>
-                <HighlightCoursesCard top={highlightTop} bottom={highlightBottom} />
-                <p className={s.note}>※出走回数{MIN_RACES_FOR_HIGHLIGHT}回以上のコースを対象に、複勝率で評価しています</p>
-              </section>
-            )}
-
-            {/* 条件別 */}
-            <section id="class-stats" className={s.section} aria-label="クラス別データ">
-              <div className={s.sh}><h2 className={s.h2}>{trainer.name}調教師 クラス別データ</h2></div>
-              <ConditionCard rows={classRows} keyLabel="クラス" />
-            </section>
-            <section id="popularity-stats" className={s.section} aria-label="人気別データ">
-              <div className={s.sh}><h2 className={s.h2}>{trainer.name}調教師 人気別データ</h2></div>
-              <ConditionCard rows={popularityRows} keyLabel="人気" />
-            </section>
-            <section id="distance-stats" className={s.section} aria-label="距離別データ">
-              <div className={s.sh}><h2 className={s.h2}>{trainer.name}調教師 距離別データ</h2></div>
-              <ConditionCard
-                rows={distanceRows}
-                keyLabel="距離"
-                extra={
-                  <DefinitionLink anchor="distance" />
-                }
-              />
-            </section>
-            <AdSlot unit="dataMid" />
-
-            <section id="gender-stats" className={s.section} aria-label="性別データ">
-              <div className={s.sh}><h2 className={s.h2}>{trainer.name}調教師 性別データ</h2></div>
-              <ConditionCard rows={genderRows} keyLabel="性別" />
-            </section>
-            {trainerAgeRows.length > 0 && (
-              <section id="age-stats" className={s.section} aria-label="馬齢別データ">
-                <div className={s.sh}><h2 className={s.h2}>{trainer.name}厩舎 馬齢別データ</h2><p>2歳戦（新馬・未勝利が中心）の成績も確認できます</p></div>
-                <ConditionCard rows={trainerAgeRows} keyLabel="馬齢" />
-              </section>
-            )}
-            <section id="interval-stats" className={s.section} aria-label="レース間隔別データ">
-              <div className={s.sh}><h2 className={s.h2}>{trainer.name}調教師 レース間隔別データ</h2></div>
-              <ConditionCard rows={intervalRows} keyLabel="間隔" />
-            </section>
-            <section id="surface-stats" className={s.section} aria-label="コース区分別データ">
-              <div className={s.sh}><h2 className={s.h2}>{trainer.name}調教師 コース区分別データ</h2></div>
-              <ConditionCard rows={surfaceRows} keyLabel="区分" />
-            </section>
-            <section id="racecourse-stats" className={s.section} aria-label="競馬場別成績">
-              <div className={s.sh}><h2 className={s.h2}>{trainer.name}調教師 競馬場別成績</h2></div>
-              <BarTableCard rows={racecourseRows} keyLabel="競馬場" />
-            </section>
-            <section id="course-stats" className={s.section} aria-label="コース別成績">
-              <div className={s.sh}><h2 className={s.h2}>{trainer.name}調教師 コース別成績</h2><p>競馬場をタップすると開きます</p></div>
-              <CourseGroupsCard groups={courseGroups} />
-            </section>
-
-            {/* 騎手・馬主（現行仕様：10件＋さらに表示で最大50件） */}
-            <section id="jockey-stats" className={s.section} aria-label="騎手別データ">
-              <div className={s.sh}><h2 className={s.h2}>{trainer.name}調教師 騎手別データ</h2></div>
-              <RankingTable rows={jockeyRows} nameLabel="騎手" note="最大50件まで表示" />
-            </section>
-            <section id="owner-stats" className={`${s.section} ${t.resetSection}`} aria-label="馬主別データ">
-              <div className={s.sh}><h2 className={s.h2}>{trainer.name}調教師 馬主別データ</h2></div>
-              <RankingTable rows={trainer.owner_stats} nameLabel="馬主" note="最大50件まで表示" />
-            </section>
-
-            <AdSlot unit="dataBottom" />
-
-            {/* データQ&A */}
-            {enoughRaces && (
-            <section id="faq-section" className={s.section} aria-label="データQ&A">
-              <div className={s.sh}><h2 className={s.h2}>データQ&amp;A</h2></div>
-              <div className={s.card}>
-                <CourseFaq items={[
-                  { question: `${trainer.name}調教師の得意な競馬場は？`, answer: trainerGoodRacecourseAnswer },
-                  { question: `${trainer.name}調教師の得意なコースは？`, answer: trainerGoodCourseAnswer },
-                  { question: `${trainer.name}調教師は芝とダートどちらが得意？`, answer: trainerSurfaceFaqAnswer, boldFirstLine: true },
-                  { question: `${trainer.name}調教師の得意な距離は？`, answer: trainerDistanceFaqAnswer, boldFirstLine: true },
-                  { question: `${trainer.name}調教師の重賞成績は？`, answer: trainerGradedAnswer },
-                              ...(activeHorsesAnswer ? [{ question: `${trainer.name}厩舎の主な管理馬は？`, answer: activeHorsesAnswer }] : []),
-                              ...(twoYoAnswer ? [{ question: `${trainer.name}厩舎の2歳戦の成績は？`, answer: twoYoAnswer }] : []),
-                  { question: `${trainer.name}調教師の苦手な競馬場は？`, answer: trainerBadRacecourseAnswer },
-                  { question: `${trainer.name}調教師の苦手なコースは？`, answer: trainerBadCourseAnswer },
-                ]} />
-              </div>
-            </section>
-            )}
-
-            {/* データの出典・集計方法 */}
-            <div className={s.section}>
-              <DataSourceNote periodText={periodText} lastUpdated={trainer.last_updated} className={s.about} />
-            </div>
-          </article>
-
-          {/* PC用：右サイドバー目次 */}
-          <TableOfContents items={tocItems} />
-        </div>
-      </div>
-      </div>
+        <Sec id="profile-section" head={<Hno w={ST} title="基本情報" />}>
+          <Tiles className="es-tl" items={tiles.filter((x) => x[1])} />
+        </Sec>
+        {summaryBlocks.length > 0 && (
+          <Sec id="summary-section" head={<Hno w={W} title="データ概要" />}>
+            <Summary blocks={summaryBlocks} links={summaryLinks} />
+          </Sec>
+        )}
+        <Sec id="leading" head={<H w={W} title="年度別成績" sub="勝利数とリーディング順位（直近3年）" />}>
+          <YearCharts lead={leadYears} ystat={ystat} />
+        </Sec>
+        {activeHorses.length > 0 && (
+          <Sec id="active-horses-section" head={<Hno w={ST} title="主な管理馬" sub="直近半年に出走した馬。集計期間の重賞勝ち→勝利数の順" />}>
+            <HorseList
+              label={`${ST}の主な管理馬`}
+              note="成績は「1着-2着-3着-着外」。直近3年間・当厩舎での出走分"
+              cols={[{ label: '馬名', m: 'm1' }, { label: '性齢', m: 'm1b' }, { label: '成績', m: 'm2', num: true }, { label: '主な勝ち鞍', m: 'm3' }, { label: '父', m: 'm4', ml: '父' }, { label: '最終出走', m: 'm4', ml: '最終出走' }]}
+              rows={activeHorses.map((h: NotableHorse) => {
+                const p2 = h.places_2 ?? 0, p3 = h.places_3 ?? 0;
+                return [
+                  <b key="n">{h.horse_name}</b>,
+                  `${h.sex}${h.age ?? ''}`,
+                  <span key="r" className={cx('num')}>{`${h.races}戦 ${h.wins}-${p2}-${p3}-${h.races - h.wins - p2 - p3}`}</span>,
+                  <Titles key="t" list={formatTitles(h.titles)} />,
+                  h.father ?? '—',
+                  h.last_date ? <span key="d" className={cx('num')}>{slashDate(h.last_date)}</span> : '—',
+                ];
+              })}
+            />
+          </Sec>
+        )}
+        {trainerGradedWins.length > 0 && (
+          <Sec id="graded-wins-section" head={<Hno w={ST} title="重賞勝ち" sub="直近3年間・平地・新しい順" />}>
+            <GradedWins wins={trainerGradedWins} classStats={trainer.class_stats} fourth={['騎手', (w) => w.jockey_name ?? '—']} />
+          </Sec>
+        )}
+        {showChars && (
+          <Sec id="characteristics" head={<Hno w={W} title="特徴" sub="判定と、その根拠になった数字" />}>
+            <Meters
+              items={[
+                ...(hasS ? [{ label: '得意なコース傾向', pos: surfacePos, result: sText[surfacePos], scale: ['芝が得意', '差分なし', 'ダートが得意'] as [string, string, string], ev: ev([['芝', turf], ['ダート', dirt]]) }] : []),
+                ...(hasD ? [{ label: '得意な距離傾向', pos: distancePos, result: dText[distancePos], scale: ['短距離が得意', '差分なし', '長距離が得意'] as [string, string, string], ev: ev([['短距離〜マイル', md('短〜マ')], ['中距離〜長距離', md('中〜長')]]) }] : []),
+              ]}
+            />
+          </Sec>
+        )}
+        {enoughRaces && hasHighlights && (
+          <Sec id="highlights-section" head={<Hno w={W} title="注目ポイント" sub="管理馬が得意・苦手なコース。コース名をタップすると詳細へ" />}>
+            <Highlights courses={courses} urlOf={(c) => resolveCourseUrl(c)} shortOf={(c) => courseLabel(c, { withRacecourse: true, shortDirt: true })} />
+          </Sec>
+        )}
+        {cond(W, 'class-stats', 'クラス別データ', classRows, { keyLabel: 'クラス' })}
+        {cond(W, 'popularity-stats', '人気別データ', popRows, { keyLabel: '人気' }, { note: false })}
+        {cond(W, 'distance-stats', '距離別データ', distRows, { keyLabel: '距離', hint: <DefLink anchor="distance" /> })}
+        <Ad unit="dataMid" />
+        {cond(W, 'gender-stats', '性別データ', genderRows, { keyLabel: '性別' })}
+        {ageRows.length > 0 && cond(ST, 'age-stats', '馬齢別データ', ageRows, { keyLabel: '馬齢' }, { sub: '2歳戦（新馬・未勝利が中心）の成績も確認できます' })}
+        {cond(W, 'interval-stats', 'レース間隔別データ', intervalRows, { keyLabel: '間隔' })}
+        {cond(W, 'surface-stats', 'コース区分別データ', surfRows, { keyLabel: '区分' }, { markRows: surfRows.filter((r) => r.text !== '障害') })}
+        {cond(W, 'racecourse-stats', '競馬場別成績', rcRows, { keyLabel: '競馬場', summaryRows: rcSum })}
+        <Sec id="course-stats" head={<H w={W} title="コース別成績" sub="競馬場をタップすると、コースごとの13項目を表示" />}>
+          <CourseAcc courses={courses} urlOf={(c) => resolveCourseUrl(c)} labelOf={(c) => courseLabel(c)} />
+        </Sec>
+        {rankSec('jockey-stats', '騎手別データ', jockeyList, '騎手')}
+        {rankSec('owner-stats', '馬主別データ', ownerList, '馬主')}
+        <Ad unit="dataBottom" />
+        {enoughRaces && (
+          <Sec id="faq-section" head={<Head title="データQ&A" />}>
+            <Faq items={faqItems} />
+          </Sec>
+        )}
+        <About period={periodFromDataPeriod(trainer.data_period)} updated={trainer.last_updated} />
+      </EntityRoot>
     </>
   );
 }

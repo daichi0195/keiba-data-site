@@ -1,0 +1,745 @@
+/* ===== 騎手詳細・種牡馬詳細・調教師詳細の共通部品（リデザイン v6） =====
+   見本：docs/redesign/src/css/jockey.css（騎手詳細。種牡馬・調教師も読み込む）＋ css/entity-st.css（種牡馬・調教師だけの部品）
+   ＋ 見本の共通クラス（top.css → themes.css の最終値：.sc / .hd / .chips / .sf / .gr / .num / .vh / .ad）。
+   クラス名は見本と同じ（JSX では cx('jk-pn') のように引く）。色・余白は app/globals.css の v6 変数を見本の名前に置き換えて使う。
+   幅：スマホ <700 ／ タブレット 700〜1099（900以上は条件別を表で出す）／ PC 1100〜 */
+
+/* ---------- 見本の変数名と、ページの土台（globals.css の要素指定を打ち消す） ---------- */
+.root{
+  --panel:var(--c-panel);--chip:var(--c-cell);--chip-hover:var(--c-cell-hover);--ink:var(--c-text);--ink-sub:var(--c-text-sub);
+  --line:var(--c-rule);--link:var(--c-link);--brand:var(--c-theme);--green:var(--c-theme);--here:var(--c-here);--on-here:#FFFFFF;
+  --ground:var(--c-ground);--f:var(--f-sans);
+  font-family:var(--f);font-size:15px;line-height:1.5;color:var(--ink);-webkit-font-smoothing:antialiased;
+}
+.root :where(a){color:inherit;text-decoration:none}
+.root :where(button){font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+.root :where(ul){list-style:none}
+.root :where(p,li,td,th){font-size:inherit;line-height:inherit}
+.root :where(h3){font-size:inherit;color:inherit}
+.root :where(section){margin-bottom:0}
+.root :where(:focus-visible){outline:2px solid var(--ink);outline-offset:2px;border-radius:8px}
+.num{font-family:var(--f-num);font-variant-numeric:tabular-nums}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.ic{width:1em;height:1em;fill:currentColor;flex:none}
+
+/* 馬場の札（芝・ダート・障害：色の面に白い文字） */
+.sf{display:inline-flex;align-items:center;justify-content:center;min-width:52px;height:28px;padding:0 10px;border-radius:6px;font-style:normal;font-size:13px;font-weight:700;color:#FFFFFF;white-space:nowrap}
+.sf.turf{background:var(--c-turf)}.sf.dirt{background:var(--c-dirt)}.sf.steeplechase{background:var(--c-jump)}
+.sf.sm{min-width:0;height:22px;padding:0 7px;font-size:12px;border-radius:4px}
+/* 重賞の格付けの札 */
+.gr{display:inline-flex;align-items:center;justify-content:center;height:20px;min-width:30px;padding:0 6px;margin-right:6px;border-radius:4px;font-family:var(--f-num);font-style:normal;font-size:12px;font-weight:700;line-height:1;color:#FFFFFF;vertical-align:2px;flex:none}
+.gr.g1{background:var(--c-g1)}.gr.g2{background:var(--c-g2)}.gr.g3{background:var(--c-g3)}
+
+/* 節と見出し（見出しは地の上） */
+.sc{padding-top:28px}
+.hd{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 var(--pad-r) 10px var(--pad)}
+.hd h2{font-size:20px;font-weight:700;line-height:1.35}
+.hd h2 small{display:block;font-size:13px;font-weight:400;line-height:1.35;color:var(--ink-sub);margin-top:2px}
+
+/* ページ内の移動（チップ） */
+.chips{position:sticky;top:calc(var(--hdr-h) + env(safe-area-inset-top,0px));z-index:20;background:var(--ground)}
+.chips > div{display:flex;gap:8px;overflow-x:auto;padding:12px var(--pad-r) 12px var(--pad);scrollbar-width:none}
+.chips > div::-webkit-scrollbar{display:none}
+.chips a{flex:none;position:relative;height:34px;display:flex;align-items:center;padding:0 14px;border-radius:8px;background:var(--panel);font-size:14px;font-weight:500;white-space:nowrap;transition:background-color .15s,color .15s}
+.chips a::after{content:"";position:absolute;inset:-5px 0}
+.chips a:hover{background:var(--chip-hover)}
+
+/* 広告枠（見本の .ad の位置。中身は既存の AdSlot） */
+.ad{margin:28px var(--pad-r) 0 var(--pad)}
+.ad > div{margin:0}
+
+@media (min-width:700px){
+  .sc{padding-top:32px}
+  .hd{padding-bottom:12px}
+  .hd h2{font-size:22px}
+  .ad{margin-top:32px}
+}
+@media (min-width:1100px){
+  .root{font-size:16px}
+  .sc{padding-top:40px}
+  .hd h2{font-size:24px}
+  .hd h2 small{font-size:14px}
+  .ad{margin-top:40px}
+}
+
+/* ==================== 見本 css/jockey.css ==================== */
+/* ===== 騎手詳細（v6-jockey）。種牡馬詳細・調教師詳細もこのファイルを読み込む =====
+   クラスは jk- で始める。共通の .sc / .hd / .chips / .ad / .sf / .gr / .num と色の変数はトップと同じものを使う。
+   表・横棒・メーター・ボタン・ページ内ナビの寸法はコース詳細（css/course.css）に合わせている。
+   幅：スマホ <700 ／ タブレット 700〜1099（900以上は条件別を表で出す）／ PC 1100〜 */
+.root{--jk-hl:#D2F1DD;--jk-k:#26292D;--jk-s:#8A929C;--jk-shadow:0 1px 2px rgba(16,24,40,.06),0 2px 10px rgba(16,24,40,.05);--jk-pad:14px;--tp:6px;--row:40px}
+/* チップで飛んだとき・表を閉じたとき：見出しが「ヘッダー＋ナビ＋12px」の位置に来る（js/jockey.js が実測して --jk-sm を入れる） */
+.sc{scroll-margin-top:var(--jk-sm,calc(var(--hdr-h) + 52px + 12px - 28px))}
+.nb{display:inline-block}
+
+/* 板（白い角丸：スマホ12px／700px以上16px。トップの板と同じ影） */
+.jk-pn{margin:0 var(--pad-r) 0 var(--pad);min-width:0;padding:14px var(--jk-pad) var(--jk-pad);background:var(--panel);border-radius:12px;box-shadow:var(--jk-shadow);overflow:hidden}
+.jk-h3{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:0 12px;margin-bottom:6px}
+.jk-h3 h2,.jk-h3 h3{font-size:16px;font-weight:700;line-height:1.4}
+.jk-h3 small{font-size:12px;color:var(--ink-sub);white-space:nowrap}
+/* 見出しの対象名：節名と同じ太字（小さい灰色にしない）。語の途中で折れない */
+.jk-who{display:inline-block;margin-right:.3em}
+.jk-foot{padding:8px var(--pad-r) 0 var(--pad);font-size:12px;color:var(--ink-sub)}
+.sc .hd h2{min-width:0}
+/* 見出しの下の補足文（板の外） */
+.hd h2 small .jk-sb,.hd h2 small .jk-nt{display:block}
+.hd h2 small b{font-weight:700;color:var(--ink)}
+.jk-note{margin-bottom:4px;font-size:13px;line-height:1.5;color:var(--ink-sub)}
+.jk-note b{color:var(--ink);font-weight:700;white-space:nowrap}
+
+/* ページ内の移動：ヘッダーの下に留める。帯はスマホ52px（コース詳細と同じ）。罫は引かない。PCは折り返して全項目を見せる */
+.chips.jk-nav{position:sticky;top:calc(var(--hdr-h) + env(safe-area-inset-top,0px));z-index:20}
+.jk-nav > div{flex-wrap:nowrap;padding-top:6px;padding-bottom:6px;gap:8px;overflow-x:auto}
+.jk-nav a{height:40px;padding:0 14px;font-size:14px}
+.jk-nb{display:none!important}
+
+/* 冒頭 */
+.jk-crumb{display:flex;flex-wrap:wrap;align-items:center;gap:0 6px;padding:10px var(--pad-r) 8px var(--pad);font-size:12px;color:var(--ink-sub)}
+.jk-crumb a{display:inline-block;padding:12px 4px;margin:-12px -4px;color:var(--link)}
+.jk-hero{display:grid;gap:14px}
+.jk-hl,.jk-hv{min-width:0}
+.jk-bd{display:flex;gap:6px;margin-bottom:8px}
+.jk-bd span{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:9999px;background:var(--chip);font-size:12px;font-weight:700}
+.jk-hero h1{font-size:24px;font-weight:700;line-height:1.3}
+.jk-hero h1 small{display:inline-block;padding-left:.3em;font-size:14px;font-weight:700;color:var(--ink-sub);white-space:nowrap}
+.jk-lead{margin-top:6px;font-size:13px;line-height:1.7;color:var(--ink-sub)}
+.jk-kpi{list-style:none;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:12px}
+.jk-kpi li{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-height:56px;padding:6px 2px;border-radius:8px;background:var(--chip)}
+.jk-kpi li > span{font-size:11px;color:var(--ink-sub)}
+.jk-kpi b{font-size:18px;font-weight:700;line-height:1.2;white-space:nowrap}
+.jk-kpi b small{font-size:11px;font-weight:700;margin-left:1px}
+.jk-meta{display:flex;flex-wrap:wrap;gap:2px 14px;margin-top:10px;font-size:12px;color:var(--ink-sub)}
+.jk-meta b{font-weight:500;color:var(--ink)}
+.jk-hv{padding-top:12px;border-top:1px solid var(--line)}
+.jk-hv .jk-h3{margin-bottom:2px}
+.jk-vr{display:grid;grid-template-columns:64px 70px minmax(0,1fr) 10px;align-items:center;gap:10px;min-height:44px;border-top:1px solid var(--line)}
+.jk-vr:first-child{border-top:0}
+.jk-vr:last-child{margin-bottom:-8px}
+.jk-vr .k{font-size:13px;color:var(--ink-sub)}
+.jk-vr b{font-size:15px;font-weight:700;line-height:1.3}
+.jk-vr .ic{font-size:10px;color:var(--ink-sub)}
+.jk-seg{display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
+.jk-seg i{height:8px;border-radius:9999px;background:var(--line)}
+.jk-seg i.on{background:var(--brand)}
+
+/* 基本情報：淡いマス */
+.jk-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.jk-tiles > div{padding:8px 10px 9px;border-radius:8px;background:var(--chip)}
+.jk-tiles dt{font-size:12px;color:var(--ink-sub)}
+.jk-tiles dd{display:flex;flex-direction:column}
+.jk-tiles dd b{font-size:16px;font-weight:700;line-height:1.4;white-space:nowrap}
+.jk-tiles dd small{font-size:12px;color:var(--ink-sub)}
+
+/* データ概要 */
+.jk-art-lead{font-size:15px;line-height:1.8}
+.jk-art-g{display:grid;gap:12px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.jk-art h3{font-size:15px;font-weight:700}
+.jk-art-g p{margin-top:2px;font-size:14px;line-height:1.8}
+.jk-art b{font-weight:700}
+.jk-art a,.jk-qa a,.jk-about a{color:var(--link)}
+
+/* 推移の図 */
+.jk-chs{display:grid;gap:22px;margin-bottom:14px}
+.jk-ch{min-width:0}
+.jk-ch figcaption{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:2px 12px;min-height:26px}
+.jk-ch figcaption b{font-size:15px;font-weight:700}
+.jk-ch .lg{display:flex;gap:12px;font-size:12px;color:var(--ink-sub)}
+.jk-ch .lg span{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.jk-ch .lg .sq{width:10px;height:10px;border-radius:2px;background:var(--brand)}
+.jk-ch .lg .ln{width:16px;height:3px;border-radius:2px}
+.jk-ch .ln.k{background:var(--jk-k)}.jk-ch .ln.g{background:var(--brand)}.jk-ch .ln.s{background:var(--jk-s)}
+.jk-plot{position:relative;height:168px;margin:36px 40px 0 0}
+.jk-plot .gl i{position:absolute;left:0;right:0;height:0;border-top:1px solid var(--line)}
+.jk-plot .gl i:last-child{border-top-color:#C4C9D0}
+.jk-plot .gl em{position:absolute;left:100%;top:0;transform:translateY(-50%);padding-left:6px;font-style:normal;font-size:11px;color:var(--ink-sub);white-space:nowrap}
+.jk-plot .cl{position:absolute;inset:0;display:flex}
+.jk-plot .cl div{flex:1;display:flex;align-items:flex-end;justify-content:center}
+.jk-plot .cl i{width:min(46%,76px);border-radius:6px 6px 0 0;background:var(--brand);transform-origin:center bottom;transition:transform .7s cubic-bezier(.22,1,.36,1);transition-delay:calc(var(--i,0) * 90ms)}
+.jk-plot .ls{position:absolute;inset:0;width:100%;height:100%;overflow:visible;clip-path:inset(-12px -12px -12px -12px);transition:clip-path .9s cubic-bezier(.4,0,.2,1) .25s}
+.jk-plot polyline{fill:none;stroke-width:3;vector-effect:non-scaling-stroke;stroke-linejoin:round;stroke-linecap:round}
+.jk-plot polyline.k{stroke:var(--jk-k)}.jk-plot polyline.g{stroke:var(--brand)}.jk-plot polyline.s{stroke:var(--jk-s)}
+.jk-plot .pt{position:absolute;width:11px;height:11px;margin:-5.5px 0 0 -5.5px;border-radius:50%;background:#FFFFFF;border:2.5px solid var(--jk-k);transition:opacity .3s,transform .3s cubic-bezier(.22,1,.36,1);transition-delay:calc(.35s + var(--i,0) * .25s)}
+.jk-plot .pt.g{border-color:var(--brand)}.jk-plot .pt.s{border-color:var(--jk-s)}
+.jk-plot .pt b{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);padding:0 3px;border-radius:3px;background:rgba(255,255,255,.88);font-size:12px;font-weight:700;line-height:1.3;white-space:nowrap}
+.jk-plot .pt.tag b{bottom:12px;padding:2px 7px;border-radius:4px;background:var(--jk-k);color:#FFFFFF}
+.jk-ch .xs{display:flex;margin-right:40px;padding-top:6px}
+.jk-ch .xs div{flex:1;display:flex;flex-direction:column;align-items:center;min-width:0}
+.jk-ch .xs div > span{font-size:12px;color:var(--ink-sub)}
+.jk-ch .xs b{font-size:18px;font-weight:700;line-height:1.25}
+.jk-ch .xs b small{font-size:11px;margin-left:1px}
+
+/* 横棒（テーマカラー1色。値が大きいほど濃い。溝・高さはコース詳細と同じ）。出走30未満・集計行・苦手は灰 */
+.jk-b{display:block;height:8px;border-radius:9999px;background:var(--line);overflow:hidden}
+.jk-b i{display:block;height:100%;border-radius:9999px;background:var(--brand);transform-origin:left center;transition:transform .65s cubic-bezier(.22,1,.36,1);transition-delay:calc(var(--i,0) * 45ms)}
+.jk-b.few i{background:#9AA1AB}
+.weak .jk-b i,.jk-b.sum i,.jk-b.ref i{background:#8A919B}
+
+/* 条件別：〜899pxは1件1行（名前｜棒｜数値）。行36px・数値15px・最上位だけ太字 */
+.jk-bl{list-style:none;display:grid;grid-template-columns:max-content minmax(0,1fr) max-content;column-gap:10px;padding-bottom:6px}
+.jk-bl.rkl{grid-template-columns:max-content max-content minmax(0,1fr) max-content}
+.jk-bl.rkl.has-sub{grid-template-columns:max-content max-content minmax(0,1fr) max-content max-content}
+.jk-bl li{display:grid;grid-template-columns:subgrid;grid-column:1 / -1;align-items:center;height:36px}
+.jk-bl .l{display:inline-flex;align-items:center;gap:6px;min-width:64px;font-size:14px;font-weight:500;white-space:nowrap}
+.jk-bl.rkl .l{display:block;min-width:0;max-width:10.5em;overflow:hidden;text-overflow:ellipsis}
+.jk-bl .l small,.jk-t .k small{font-size:12px;font-weight:400;color:var(--ink-sub)}
+.jk-bl .l a,.jk-t a{color:var(--link)}
+/* 名前のリンクは行の高さいっぱいを押せるようにする */
+.jk-bl .l a{display:inline-flex;align-items:center;height:36px}
+.jk-bl.rkl .l a{display:block;line-height:36px;overflow:hidden;text-overflow:ellipsis}
+.jk-bl .v{min-width:52px;text-align:right;font-size:15px;font-weight:500;white-space:nowrap}
+.jk-bl .v.top,.jk-bl.rkl .v{font-weight:700}
+.jk-bl .v small{font-size:11px;font-weight:500;color:var(--ink-sub);margin-left:1px}
+.jk-bl .s{min-width:34px;text-align:right;font-size:12px;color:var(--ink-sub);white-space:nowrap}
+.jk-bl li.more,.jk-t tr.more,.jk-gw .r.more{display:none}
+.open-m .jk-bl li.more{display:grid}
+.open-m .jk-t tr.more{display:table-row}
+/* 順位の丸・枠番・グレード札（寸法はコース詳細と同じ） */
+.jk-rk{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;font-size:13px;color:var(--ink-sub)}
+.jk-rk.m1,.jk-rk.m2,.jk-rk.m3{color:#FFFFFF;font-weight:700}
+.jk-rk.m1{background:#B8860B}.jk-rk.m2{background:#7A828C}.jk-rk.m3{background:#A8642A}
+/* 苦手の順位に金銀銅は付けない */
+.weak .jk-rk.m1,.weak .jk-rk.m2,.weak .jk-rk.m3{background:none;color:var(--ink-sub);font-weight:400}
+.jk-gate{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:6px;font-size:14px;font-weight:700}
+.jk-gate.w{box-shadow:inset 0 0 0 1px #C3C8CF}
+.jk-g{display:inline-flex;align-items:center;justify-content:center;flex:none;min-width:30px;height:20px;padding:0 6px;border-radius:4px;font-family:var(--f-num);font-style:normal;font-size:12px;font-weight:700;line-height:1;color:#FFFFFF}
+.jk-g.g1{background:#1E50B5}.jk-g.g2{background:#C6283C}.jk-g.g3{background:#2E8B3D}
+.jk-st .sf.sm{min-width:44px}
+.jk-st .tc{font-size:14px}
+.jk-st .gr{margin-right:0}
+
+/* 13項目の表：1列目固定の横スクロール。右へ送れるあいだは右端に影、送ると1列目の長い名前が3文字分に縮む。
+   文字・行の高さ・見出し行（淡い灰・2行）・ハイライトはコース詳細と同じ */
+.jk-full{display:none;position:relative}
+.open-t > .jk-full,.jk-st.tbl > .jk-full{display:block}
+.jk-full::after{content:"";position:absolute;top:0;right:calc(-1 * var(--jk-pad));bottom:0;width:14px;box-shadow:inset -12px 0 10px -10px rgba(16,24,40,.3);opacity:0;transition:opacity .2s;pointer-events:none}
+.jk-full.more::after{opacity:1}
+.jk-tw{margin:0 calc(-1 * var(--jk-pad));overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+.jk-t{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;white-space:nowrap}
+.jk-t th,.jk-t td{height:var(--row);padding:0 var(--tp);border-bottom:1px solid var(--line);text-align:right;font-family:var(--f-num);font-variant-numeric:tabular-nums;font-weight:400}
+.jk-t thead th{position:relative;z-index:3;height:40px;background:var(--chip);font-family:var(--f);font-size:12px;font-weight:700;line-height:1.25;color:var(--ink-sub);transform:translateY(var(--ty,0px))}
+.jk-t tbody tr:last-child > *,.jk-st:not(.open-m) .jk-t tbody tr:not(.more):has(+ tr.more) > *{border-bottom:0}
+.jk-t th:last-child,.jk-t td:last-child{padding-right:var(--jk-pad)}
+.jk-t .k{position:sticky;left:0;z-index:1;padding:0 10px 0 var(--jk-pad);text-align:left;font-family:var(--f);font-size:14px;font-weight:500;background:var(--panel);transition:box-shadow .2s}
+.jk-t .n{position:sticky;left:0;z-index:1;box-sizing:border-box;width:44px;min-width:44px;max-width:44px;padding:0 0 0 var(--jk-pad);text-align:left;background:var(--panel)}
+.jk-t thead .k,.jk-t thead .n{z-index:4;background:var(--chip);font-size:12px;font-weight:700}
+.jk-t.rkt .k{left:44px;padding-left:2px}
+.jk-tw.sx .k{box-shadow:6px 0 8px -6px rgba(16,24,40,.28)}
+.jk-t .nm{display:inline-flex;align-items:center;gap:6px;vertical-align:middle}
+.jk-t .k small{margin-left:6px}
+.jk-t th,.jk-t td{line-height:1.3}
+.jk-t .k a{display:inline-block;line-height:calc(var(--row) - 6px);vertical-align:middle}
+/* 名前の列：上限幅を超えたら「…」で省略。横に送ったら先頭3文字分に縮める（コース詳細と同じ） */
+.jk-t .nm.lg{display:inline-block;max-width:10em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:max-width .25s}
+.jk-t .nm.lg a{display:block;overflow:hidden;text-overflow:ellipsis}
+.jk-tw.sx .nm.lg{max-width:3em}
+.jk-tw.sx .nm.lg,.jk-tw.sx .nm.lg a{text-overflow:clip}
+.jk-t .hl{display:inline-block;margin:0 calc(2px - var(--tp));padding:2px calc(var(--tp) - 2px);border-radius:4px;background:var(--jk-hl);color:var(--ink);font-weight:700}
+.jk-t .bc{display:none}
+.jk-t thead .bc{white-space:nowrap;overflow:hidden}
+.jk-t .bcw{display:block}
+.jk-t .bcw b{display:none}
+.jk-t tr.sum1 > *{box-shadow:inset 0 2px 0 #C4C9D0}
+/* ランキング（調教師・種牡馬・馬主）：どの幅でも最初から13項目の表。棒リストと「全項目」は出さない */
+.jk-st:not(.lst):has(> .jk-full .jk-t.rkt) > .jk-bl,.jk-st:not(.lst):has(> .jk-full .jk-t.rkt) .tg-t{display:none}
+.jk-st:not(.lst):has(> .jk-full .jk-t.rkt) > .jk-full{display:block}
+/* 板の先頭が表のときは、見出し行を板の上端に付ける（上に白い隙間を作らない） */
+.jk-pn > .jk-st:first-child:not(.lst):not(:has(> .jk-note)):has(> .jk-full .jk-t.rkt){margin-top:-14px}
+/* 条件別：全項目を開いたら棒リストは隠す（表が遠くならないように） */
+.jk-st.open-t:not(.lst) > .jk-bl{display:none}
+
+/* 板の下端：補足・定義リンクと、開閉のボタン（コース詳細の .cd-m / .rkt-f / .cp-f と同じ作り） */
+.jk-ft{display:flex;flex-direction:column;margin:0 calc(-1 * var(--jk-pad)) calc(-1 * var(--jk-pad));border-top:1px solid var(--line)}
+.jk-hint{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px 16px;padding:8px var(--jk-pad) 0;font-size:12px;line-height:1.5;color:var(--ink-sub)}
+.jk-hint:last-child,.jk-hint:has(+ .jk-bs:empty),.jk-hint:has(a){padding-bottom:10px}
+.jk-hint:has(a){order:2;justify-content:space-between;padding-top:10px}
+.jk-bs:not(:empty) + .jk-hint,.jk-hint:has(a):not(:first-child){border-top:1px solid var(--line)}
+.jk-bs:not(:empty) ~ .jk-hint:has(a),.jk-ft:has(.jk-bs > .jk-btn) > .jk-hint:has(a){border-top:1px solid var(--line)}
+/* 定義リンク：押せる範囲を上下に広げて40px以上にする。途中で改行しない */
+.jk-hint a{display:inline-flex;align-items:center;gap:4px;margin:-12px 0 -12px auto;padding:12px 0;font-size:13px;font-weight:700;color:var(--link);white-space:nowrap}
+.jk-hint a::after{content:"";width:6px;height:6px;border-right:2px solid currentColor;border-top:2px solid currentColor;transform:rotate(45deg)}
+.jk-bs{display:flex}
+.jk-bs:empty{display:none}
+.jk-btn{flex:1;height:46px;font-size:14px;font-weight:700;color:var(--link);white-space:nowrap}
+.jk-btn::after{content:"";display:inline-block;width:7px;height:7px;margin:0 0 3px 8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);transition:transform .2s}
+.jk-btn[aria-expanded="true"]::after{transform:rotate(-135deg);margin-bottom:-2px}
+.jk-btn + .jk-btn{border-left:1px solid var(--line)}
+
+/* 重賞勝ち */
+.jk-gs{list-style:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.jk-gs li{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:74px;padding:6px 2px;border-radius:8px;background:var(--chip)}
+.jk-gs li > span:not(.jk-g){font-size:12px;font-weight:700;line-height:20px}
+.jk-gs .gr{margin-right:0}
+.jk-gs b{font-size:20px;font-weight:700;line-height:1.2}
+.jk-gs b small{font-size:11px;margin-left:1px}
+.jk-gs em{font-style:normal;font-size:11px;color:var(--ink-sub)}
+.jk-gw{margin-top:6px}
+.jk-gw .h{display:none}
+.jk-gw .r{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;grid-template-areas:"rc rc rc pp" "dt hn co co";align-items:center;gap:2px 10px;padding:9px 0;border-top:1px solid var(--line);font-size:13px;color:var(--ink-sub)}
+.jk-gw .r:nth-child(2){border-top:0}
+.open-m .jk-gw .r.more{display:grid}
+.jk-gw .rc{grid-area:rc;display:flex;align-items:center;gap:2px;min-width:0;color:var(--ink)}
+.jk-gw .rc .gr,.jk-gw .rc .jk-g{flex:none}
+.jk-gw .rc b{min-width:0;font-size:15px;font-weight:700;line-height:1.35}
+.jk-gw .dt{grid-area:dt}
+.jk-gw .hn{grid-area:hn;color:var(--ink);font-weight:500}
+.jk-gw .co{grid-area:co}
+.jk-gw .pp{grid-area:pp;white-space:nowrap}
+.jk-gw .pp small{font-size:12px}
+
+/* 特徴：5段階のメーター（つまみ付き）＋根拠の数字。見た目はコース詳細のメーターと同じ */
+.jk-mt{padding:10px 0 12px;border-top:1px solid var(--line)}
+.jk-mt:first-child{padding-top:0;border-top:0}
+.jk-mt .mh{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:0 8px}
+.jk-mt .mh span{font-size:13px;font-weight:700;color:var(--ink-sub)}
+.jk-mt .mh b{font-size:18px;font-weight:700;line-height:24px}
+.jk-seg.big{position:relative;gap:4px;align-items:center;height:20px;margin-top:4px}
+.jk-seg.big i{height:10px}
+.jk-seg.big i.on{background:var(--green)}
+.jk-seg.big::after{content:"";box-sizing:border-box;position:absolute;left:var(--kp,50%);top:50%;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;background:var(--here);border:3px solid #FFFFFF;box-shadow:0 1px 4px rgba(16,24,40,.4)}
+.jk-seg.big:has(i:nth-child(1).on){--kp:10%}.jk-seg.big:has(i:nth-child(2).on){--kp:30%}.jk-seg.big:has(i:nth-child(3).on){--kp:50%}.jk-seg.big:has(i:nth-child(4).on){--kp:70%}.jk-seg.big:has(i:nth-child(5).on){--kp:90%}
+.jk-mt .sc3{display:grid;grid-template-columns:1fr auto 1fr;font-size:12px;line-height:16px;color:var(--ink-sub);white-space:nowrap}
+.jk-mt .sc3 span:last-child{text-align:right}
+.jk-ev{list-style:none;display:grid;grid-template-columns:max-content minmax(0,1fr) max-content;gap:4px 10px;margin-top:6px}
+.jk-ev li{display:grid;grid-template-columns:subgrid;grid-column:1 / -1;align-items:center}
+.jk-ev span:first-child{font-size:12px;line-height:20px;color:var(--ink-sub);white-space:nowrap}
+.jk-ev b{min-width:3.4em;font-size:15px;line-height:20px;font-weight:700;text-align:right}
+.jk-mt .fx{display:flex;flex-wrap:wrap;gap:2px 16px;margin-top:8px;font-size:12px;color:var(--ink-sub)}
+.jk-mt .fx b{color:var(--ink);font-weight:700}
+.jk-mts + .jk-ft .jk-hint{justify-content:space-between}
+
+/* 注目ポイント */
+.jk-two{display:grid;gap:12px;margin:0 var(--pad-r) 0 var(--pad)}
+.jk-two .jk-pn{margin:0}
+
+/* コース別：競馬場ごとに開く */
+.jk-acc,.jk-qa{padding-top:0;padding-bottom:0}
+.jk-acc details,.jk-qa details{border-top:1px solid var(--line)}
+.jk-acc details:first-child,.jk-qa details:first-child{border-top:0}
+.jk-acc summary,.jk-qa summary{list-style:none;cursor:pointer;display:grid;align-items:center;gap:10px;min-height:50px}
+.jk-acc summary::-webkit-details-marker,.jk-qa summary::-webkit-details-marker{display:none}
+.jk-acc summary{grid-template-columns:minmax(0,1fr) auto 52px 14px}
+.jk-acc summary b{font-size:16px;font-weight:700}
+.jk-acc .ac-c{display:flex;gap:4px}
+.jk-acc .ac-n{text-align:right;font-size:12px;color:var(--ink-sub)}
+.jk-acc summary .ic,.jk-qa summary .ic{font-size:12px;color:var(--ink-sub);transition:transform .16s}
+.jk-acc details[open] summary .ic,.jk-qa details[open] summary .ic{transform:rotate(180deg)}
+.jk-acc .jk-ft{margin-bottom:0}
+
+/* Q&A・出典 */
+.jk-qa summary{grid-template-columns:minmax(0,1fr) 14px;min-height:48px;padding:8px 0}
+.jk-qa summary b{font-size:15px;font-weight:700;line-height:1.4}
+.jk-qa .qa-a{padding:0 0 14px;font-size:14px;line-height:1.75}
+.jk-qa .qa-a b{font-weight:700}
+.jk-qa .qa-a .lead{font-weight:700}
+.jk-qa .qa-a .note{font-size:12px;color:var(--ink-sub)}
+.jk-about{margin:28px var(--pad-r) 0 var(--pad);font-size:13px;line-height:1.7;color:var(--ink-sub)}
+.jk-about h2{font-size:14px;font-weight:700;color:var(--ink)}
+
+/* マウスを載せたとき（指で押す端末では下線や色が残らないようにする） */
+@media (hover:hover){
+  .jk-crumb a:hover,.jk-art a:hover,.jk-qa a:hover,.jk-about a:hover,.jk-hint a:hover,.jk-bl .l a:hover,.jk-t a:hover,.jk-btn:hover,.jk-vr:hover b{text-decoration:underline}
+  .jk-t tbody tr:hover > *{background:#F7F8FA}
+}
+
+/* 動き：画面に入ったら1回だけ（見本の js-anim の代わりに、動きを減らす設定でないときだけ最初の状態を当てる。.in は EntityEffects が付ける） */
+@media (prefers-reduced-motion:no-preference){
+  .root [data-anim]:not(.in) .jk-b i{transform:scaleX(0)}
+  .root .jk-ch:not(.in) .cl i{transform:scaleY(0)}
+  .root .jk-ch:not(.in) .ls{clip-path:inset(-12px 100% -12px -12px)}
+  .root .jk-ch:not(.in) .pt{opacity:0;transform:scale(.4)}
+  .root .jk-seg.big::after{transition:left .9s cubic-bezier(.34,1.35,.64,1) .15s}
+  .root .jk-seg.big i.on{transition:background-color .35s .75s}
+  .root .jk-mt:not(.in) .jk-seg.big::after{left:0}
+  .root .jk-mt:not(.in) .jk-seg.big i.on{background:var(--line)}
+}
+
+@media (max-width:379.98px){
+  .jk-tiles > div{padding:8px 8px 9px}
+  .jk-tiles dd b{font-size:15px}
+  .jk-hero h1{font-size:20px}
+  .jk-hero h1 small{font-size:13px}
+  .jk-t .nm.lg{max-width:8em}
+  .jk-bl{column-gap:8px}
+}
+
+/* ---------- タブレット以上 ---------- */
+@media (min-width:700px){
+  .root{--jk-pad:20px}
+  .jk-pn{padding-top:16px;border-radius:16px}
+  .jk-pn > .jk-st:first-child:not(.lst):not(:has(> .jk-note)):has(> .jk-full .jk-t.rkt){margin-top:-16px}
+  .jk-b{height:10px}
+  .jk-t .n{width:50px;min-width:50px;max-width:50px}
+  .jk-t.rkt .k{left:50px}
+  .jk-pn{padding-bottom:20px}
+  .jk-t .nm.lg{max-width:14em}
+  /* 板の下端：補足は左、ボタンは右（コース詳細の .rkt-f と同じ）。定義リンクがある板はスマホと同じ並び（ボタンの行→リンクの行） */
+  .jk-ft{flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0 16px;padding:0 var(--jk-pad)}
+  .jk-hint,.jk-hint:last-child,.jk-hint:has(+ .jk-bs:empty){flex:1 1 auto;justify-content:flex-start;min-height:48px;padding:0}
+  .jk-bs{margin-left:auto}
+  .jk-btn{flex:none;height:48px}
+  .jk-btn + .jk-btn{border-left:0;margin-left:24px}
+  .jk-ft:has(.jk-hint a){flex-direction:column;flex-wrap:nowrap;align-items:stretch;padding:0}
+  .jk-ft:has(.jk-hint a) .jk-hint{flex:none;justify-content:space-between;min-height:44px;padding:0 var(--jk-pad)}
+  .jk-ft:has(.jk-hint a) .jk-bs{justify-content:center;margin:0;padding:0}
+  .jk-ft:has(.jk-hint a) .jk-btn{flex:1;height:46px}
+  .jk-st.lst .jk-bs{margin:0 auto}
+  .jk-acc .jk-ft{margin-bottom:0}
+  .jk-hero h1{font-size:28px}
+  .jk-hero h1 small{font-size:16px}
+  .jk-lead{font-size:14px}
+  .jk-kpi b{font-size:22px}
+  .jk-kpi li > span{font-size:12px}
+  .jk-kpi li{min-height:64px}
+  /* 傾向の4行：幅があるあいだは2列×2行（横に間延びさせない） */
+  .jk-vrs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:32px}
+  .jk-vr:nth-child(2){border-top:0}
+  .jk-vr{grid-template-columns:76px 70px minmax(0,1fr) 10px}
+  .jk-vr:nth-last-child(2){margin-bottom:-8px}
+  .jk-tiles{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .jk-chs{grid-template-columns:repeat(2,minmax(0,1fr));gap:28px}
+  .jk-plot{height:190px}
+  .jk-two{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+  /* 得意・苦手の「全項目」を開いたら、板を全幅にして表を横に送らずに見せる */
+  .jk-two:has(.open-t){grid-template-columns:minmax(0,1fr)}
+  .jk-mts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:40px}
+  .jk-mt{padding:14px 0 16px}
+  .jk-mt:nth-child(2){padding-top:0;border-top:0}
+  .jk-mt .mh b{font-size:20px;line-height:28px}
+  .jk-seg.big{height:24px;margin-top:6px}
+  .jk-seg.big i{height:12px}
+  .jk-seg.big::after{width:24px;height:24px;margin:-12px 0 0 -12px;border-width:4px}
+  .jk-mt .sc3{line-height:18px}
+  .jk-ev{margin-top:10px}
+  .jk-ev b{font-size:16px}
+  .jk-art-g{display:block;columns:2;column-gap:32px}
+  .jk-art-g > div{break-inside:avoid;padding-bottom:12px}
+  .jk-gs li{flex-direction:row;gap:10px;min-height:52px}
+  .jk-gs b{font-size:22px}
+  .jk-gs em{font-size:12px}
+  /* 重賞勝ち：表にする。列は幅を分け合い、レース名と日付の間を空けすぎない */
+  .jk-gw{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,2fr) minmax(0,3fr) minmax(0,2.4fr) 64px;margin:10px calc(-1 * var(--jk-pad)) 0}
+  .jk-gw .h,.jk-gw .r,.open-m .jk-gw .r.more{display:grid;grid-template-columns:subgrid;grid-template-areas:none;grid-column:1 / -1;align-items:center;column-gap:16px;min-height:var(--row);padding:0 var(--jk-pad);font-size:14px}
+  .jk-gw .r.more{display:none}
+  .jk-gw .h{min-height:40px;background:var(--chip);font-size:12px;font-weight:700;color:var(--ink-sub)}
+  .jk-gw .h span:last-child,.jk-gw .pp{text-align:right}
+  .jk-gw .r,.jk-gw .r:nth-child(2){border-top:1px solid var(--line)}
+  .jk-gw .r:nth-child(2){border-top:0}
+  .jk-gw .r{color:var(--ink)}
+  .jk-gw .rc,.jk-gw .dt,.jk-gw .hn,.jk-gw .co,.jk-gw .pp{grid-area:auto;min-width:0}
+  .jk-gw .rc b{font-size:14px;white-space:normal}
+  .jk-gw .pp small{display:none}
+  .jk-acc summary{min-height:52px}
+  .jk-acc .ac-b{padding-bottom:4px}
+}
+
+/* 700〜899：ランキングと年度別の表を横に送らずに収めるため、セルの左右と文字を詰める */
+@media (min-width:700px) and (max-width:899.98px){
+  .root{--tp:3px}
+  .jk-t{font-size:12px}
+  .jk-t thead th{font-size:11px}
+}
+
+/* ---------- 900px以上：条件別は「横棒の列つきの表」を最初から出す（コース詳細と同じ切り替え） ---------- */
+@media (min-width:900px){
+  .root{--tp:5px;--row:42px}
+  .jk-st:not(.lst) > .jk-bl{display:none}
+  .jk-st:not(.lst) > .jk-full{display:block}
+  .jk-st:not(.lst) .tg-t{display:none}
+  .jk-ft.only-t,.jk-bs.only-t{display:none}
+  .jk-ft:has(.jk-bs.only-t) > .jk-hint:has(a){border-top:0}
+  /* 表が横にはみ出さない幅では、名前は全文を出す（横に送ったときだけ3文字に縮める） */
+  .jk-tw:not(.sx) .nm.lg{max-width:none}
+  .jk-pn > .jk-st:first-child:not(.lst):not(:has(> .jk-note)){margin-top:-16px}
+  /* 横棒の列：棒だけ（数値は複勝率の列にある）。幅は固定して表ごとにばらつかせない */
+  .jk-st:not(.lst) .jk-t:not(.rkt) .bc{display:table-cell;box-sizing:content-box;height:calc(var(--row) - 1px);width:72px;min-width:72px;max-width:72px;padding:0 10px 0 4px;text-align:left}
+  .jk-t{font-size:12px}
+  .jk-t .k{font-size:14px}
+  .jk-t thead .k{font-size:12px}
+  .jk-t thead th{height:44px}
+  .jk-gate{width:26px;height:26px}
+}
+
+/* ---------- PC ---------- */
+@media (min-width:1100px){
+  .jk-h3 h2,.jk-h3 h3{font-size:18px}
+  .jk-h3 small{font-size:13px}
+  /* 20項目：1行に入る幅では1行（js が .one を付ける）。入らない幅では10個ずつ2行に割る。チップはコース詳細と同じ40px */
+  .jk-nav > div{display:grid;grid-template-columns:repeat(10,max-content);gap:6px;padding-top:10px;padding-bottom:10px;overflow:visible}
+  .jk-nav > div.one{grid-template-columns:repeat(20,max-content)}
+  .jk-nav a{height:40px;padding:0 10px;font-size:14px;justify-content:center}
+  .jk-crumb{padding-top:14px;font-size:13px}
+  .jk-hero{padding:20px 24px}
+  .jk-vr .k{font-size:14px}
+  .jk-vr b{font-size:16px}
+  .jk-seg i{height:10px}
+  .jk-kpi{gap:8px;margin-top:14px}
+  .jk-kpi b{font-size:26px}
+  .jk-kpi b small{font-size:13px}
+  .jk-kpi li{min-height:72px}
+  .jk-meta{font-size:13px;margin-top:12px}
+  .jk-tiles dd b{font-size:18px}
+  .jk-tiles dt,.jk-tiles dd small{font-size:13px}
+  .jk-tiles > div{padding:10px 12px 11px}
+  .jk-art-lead{font-size:16px}
+  .jk-art-g p{font-size:15px}
+  .jk-art h3{font-size:16px}
+  .jk-art-g{column-gap:40px}
+  .jk-ch figcaption b{font-size:16px}
+  .jk-ch .lg{font-size:13px}
+  .jk-plot{height:220px}
+  .jk-plot .pt b{font-size:13px}
+  .jk-ch .xs div > span{font-size:13px}
+  .jk-ch .xs b{font-size:22px}
+  .jk-bl li{height:40px}
+  .jk-bl .l a{height:40px}
+  .jk-bl.rkl .l a{line-height:40px}
+  .jk-bl .l{font-size:15px}
+  .jk-bl .v{font-size:16px;min-width:60px}
+  .jk-bl .s{font-size:13px;min-width:44px}
+  .jk-bl{column-gap:14px}
+  .jk-hint{font-size:13px}
+  .jk-mt .mh span{font-size:14px}
+  .jk-mt .mh b{font-size:22px;line-height:30px}
+  .jk-ev{margin-top:14px}
+  .jk-mt .fx{font-size:13px}
+  .jk-gw .h,.jk-gw .r,.open-m .jk-gw .r.more{column-gap:24px}
+  .jk-acc summary b{font-size:17px}
+  .jk-qa summary{min-height:52px}
+  .jk-qa summary b{font-size:16px}
+  .jk-qa .qa-a{font-size:15px}
+  .jk-about{margin-top:40px;font-size:14px}
+  .jk-foot{font-size:13px}
+}
+/* 1100〜1199は左メニューが出て本体がいちばん狭い：セルの左右と棒の列を詰めて、全13項目を横に送らずに収める */
+@media (min-width:1100px) and (max-width:1199.98px){
+  .root{--tp:4px}
+  .jk-st:not(.lst) .jk-t:not(.rkt) .bc{width:56px;min-width:56px;max-width:56px;padding-right:8px}
+}
+@media (min-width:1280px){
+  .root{--tp:7px}
+  /* 冒頭：左に名前と数字、右に傾向（1100〜1279は本体が狭いので縦に積む） */
+  .jk-hero{grid-template-columns:minmax(0,1fr) minmax(340px,400px);gap:0 28px}
+  .jk-hv{padding:0 0 0 28px;border-top:0;border-left:1px solid var(--line);display:flex;flex-direction:column}
+  .jk-vrs{flex:1;display:flex;flex-direction:column}
+  .jk-vr{flex:1;grid-template-columns:76px 96px minmax(0,1fr) 10px}
+  .jk-vr:nth-child(2){border-top:1px solid var(--line)}
+  .jk-vr:last-child,.jk-vr:nth-last-child(2){margin-bottom:0}
+  .jk-hero h1{font-size:32px}
+  .jk-t{font-size:13px}
+  .jk-t .k{font-size:15px}
+  .jk-t thead .k{font-size:12px}
+  .jk-st:not(.lst) .jk-t:not(.rkt) .bc{width:104px;min-width:104px;max-width:104px;padding-right:14px}
+  .jk-rk{width:26px;height:26px;font-size:14px}
+}
+@media (min-width:1400px){
+  .root{--tp:10px}
+  .jk-t{font-size:14px}
+  .jk-st:not(.lst) .jk-t:not(.rkt) .bc{width:160px;min-width:160px;max-width:160px}
+  .jk-b{height:12px}
+  .jk-mt .mh b{font-size:24px}
+  .jk-seg.big{height:28px;margin-top:10px}
+  .jk-seg.big i{height:14px}
+  .jk-seg.big::after{width:28px;height:28px;margin:-14px 0 0 -14px}
+  .jk-mt .sc3{font-size:13px}
+  .jk-ev{margin-top:16px;gap:8px 12px}
+  .jk-ev span:first-child{font-size:13px}
+  .jk-ev b{font-size:18px}
+}
+@media (min-width:1440px){
+  .jk-tiles{grid-template-columns:repeat(6,minmax(0,1fr))}
+}
+@media (prefers-reduced-motion:reduce){.jk-b i,.jk-plot .cl i,.jk-plot .ls,.jk-plot .pt,.jk-seg.big::after,.jk-seg i.on,.jk-t .nm.lg,.jk-full::after,.jk-btn::after{transition:none!important}}
+
+/* ==================== 見本 css/entity-st.css ==================== */
+/* ===== 種牡馬詳細（v6-sire）・調教師詳細（v6-trainer）だけの部品 =====
+   板・表・横棒・メーター・ページ内ナビは騎手詳細（css/jockey.css）をそのまま使う（pages/_entity-st.mjs が先に読み込む）。
+   ここには、騎手詳細にない部品だけを書く（es- で始まるクラス）：
+   図と説明の左右の枠、成長曲線のラベルの振り分け、芝・ダートの棒、馬の一覧、表の小見出し。
+   芝・ダートの棒は札と同じ色で、濃淡は付けない（長さだけで比べる） */
+.root{--es-tf:#3F8425;--es-dt:#8A5418}
+
+/* 冒頭：小さい方の題がかっこで始まるとき、かっこの左の空きを打ち消す（2行になっても左がへこまない） */
+.jk-hero h1 small.es-par{margin-left:-.5em;padding-left:0}
+/* 傾向の行：「ダートの馬場」は768px以上で出す。狭い幅は「ダの馬場」 */
+.es-lg{display:none}
+/* 基本情報のマス：父の名前（最長9文字）が1行に収まる大きさにする */
+.es-tl dd b{font-size:15px}
+@media (max-width:379.98px){.jk-tiles.es-tl dd b{font-size:14px}}
+@media (min-width:700px){.es-tl dd b{font-size:16px}}
+@media (min-width:1100px){.jk-tiles.es-tl dd b{font-size:17px}}
+@media (min-width:1440px) and (max-width:1699.98px){.jk-tiles.es-tl dd b{font-size:16px}}
+/* コース別：障害の札も並ぶので、狭い画面では札を詰めて競馬場名を1行に保つ */
+.jk-acc summary b{white-space:nowrap}
+@media (max-width:379.98px){.jk-acc summary{gap:6px}.jk-acc .ac-c{gap:3px}.jk-acc .ac-c .sf{padding:0 4px}.jk-acc summary b{font-size:15px}}
+
+/* 図と説明：スマホは図→説明の順に積む。1100px以上は左に図（最大640px）、右に説明 */
+.es-fx{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.es-ex{font-size:14px;line-height:1.75}
+.es-ex b{font-weight:700}
+.es-ex .note{font-size:12px;color:var(--ink-sub)}
+.es-fn{margin-top:8px;font-size:12px;line-height:1.6;color:var(--ink-sub)}
+.es-sub{display:flex;align-items:flex-start;gap:10px;margin:0 0 4px;padding-top:12px;border-top:1px solid var(--line);font-size:13px;line-height:22px;color:var(--ink-sub)}
+.es-sub .sf{flex:none;min-width:44px}
+.es-sub b{font-weight:700;color:var(--ink)}
+.jk-st + .es-sub{margin-top:var(--jk-pad)}
+/* 上の図と同じ数字なので、棒の一覧は出さない（〜899pxは「全項目を見る」の中の表だけ） */
+.jk-st.es-nol > .jk-bl{display:none}
+.jk-st.es-nol:not(:last-child) > .jk-ft{margin-bottom:0;border-bottom:1px solid var(--line)}
+
+/* 成長曲線：値が低い方の線のラベルを点の下に出す */
+.es-lc .jk-plot{margin-bottom:8px}
+.es-lc .pt.dn b{bottom:auto;top:10px}
+.es-lc .xs div > small{font-size:11px;color:var(--ink-sub)}
+
+/* 芝とダートの距離帯別。スマホ：距離帯1行に、芝・ダートの棒を上下2本（幅いっぱい） */
+.es-bf .lg .sq.tf{background:var(--es-tf)}
+.es-bf .lg .sq.dt{background:var(--es-dt)}
+.es-bf-h{display:none}
+.es-bf-row{display:grid;grid-template-columns:86px minmax(0,1fr);grid-template-areas:"k l" "k r";align-items:center;gap:3px 8px;padding:7px 0;border-top:1px solid var(--line)}
+.es-bf figcaption + .es-bf-h + .es-bf-row{border-top:0}
+.es-bf figcaption{margin-bottom:4px}
+.es-bf-k{grid-area:k;font-size:13px;white-space:nowrap}
+.es-bf-s{display:grid;grid-template-columns:minmax(0,1fr) 46px 44px;grid-template-areas:"b v n";align-items:center;column-gap:6px;min-width:0}
+.es-bf-s.l{grid-area:l}
+.es-bf-s.r{grid-area:r}
+.es-bf-s .tg{display:none}
+.es-bf-s b{grid-area:v;font-size:14px;font-weight:500;text-align:right;white-space:nowrap}
+.es-bf-s.win b{font-weight:700}
+.es-bf-s small{grid-area:n;font-size:11px;text-align:right;color:var(--ink-sub);white-space:nowrap}
+.es-bf-s .jk-b{grid-area:b}
+.es-bf-s.l .jk-b i,.es-cb .tf .jk-b i{background:var(--es-tf)}
+.es-bf-s.r .jk-b i,.es-cb .dt .jk-b i{background:var(--es-dt)}
+
+/* 良馬場と道悪の横棒（芝2行・ダート2行） */
+.es-cb-l{list-style:none;display:grid;grid-template-columns:max-content max-content minmax(0,1fr) max-content max-content;column-gap:10px;margin-top:4px}
+.es-cb-l li{display:grid;grid-template-columns:subgrid;grid-column:1 / -1;align-items:center;height:36px}
+.es-cb-l li.g1:not(:first-child){border-top:1px solid var(--line)}
+.es-cb-l .t .sf{min-width:44px}
+.es-cb-l .l{font-size:14px;font-weight:500;white-space:nowrap}
+.es-cb-l b{min-width:48px;text-align:right;font-size:15px;font-weight:700}
+.es-cb-l small{min-width:44px;text-align:right;font-size:12px;color:var(--ink-sub);white-space:nowrap}
+
+/* 馬の一覧（代表産駒・主な管理馬）。〜899px：1頭2〜3行（名前・性齢・成績／勝ち鞍／補足） */
+.es-lt{margin:0 calc(-1 * var(--jk-pad))}
+.es-lt table{width:100%;border-collapse:separate;border-spacing:0;font-size:14px}
+.es-lt tr.more{display:none}
+.es-lt b{font-weight:700}
+.es-lt .none{color:var(--ink-sub)}
+.es-lt .tt{display:inline-block;margin:1px 12px 1px 0}
+.es-lt .tt .gr{margin-right:5px}
+.es-lt thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.es-lt table,.es-lt tbody{display:block}
+.es-lt tr{display:flex;flex-wrap:wrap;align-items:baseline;gap:3px 8px;padding:10px var(--jk-pad);border-top:1px solid var(--line)}
+.es-lt tbody tr:first-child{border-top:0;padding-top:0}
+.open-m .es-lt tr.more{display:flex}
+.es-lt td{display:block}
+.es-lt td.m1{font-size:15px}
+.es-lt td.m1b{font-size:13px;color:var(--ink-sub)}
+.es-lt td.m2{margin-left:auto;font-size:14px;font-weight:700;white-space:nowrap}
+.es-lt td.m3{flex:0 0 100%;font-size:13px}
+.es-lt td.m3:has(.none){display:none}
+.es-lt td.m4{font-size:13px;color:var(--ink-sub)}
+.es-lt td.m4[data-l]::before{content:attr(data-l) " "}
+
+@media (min-width:700px){
+  /* 芝とダートの距離帯別：左右に伸びる棒（左が芝、右がダート。値は外側、棒は中央から伸びる） */
+  .es-bf .lg{display:none}
+  .es-bf-h,.es-bf-row{display:grid;grid-template-columns:minmax(0,1fr) 104px minmax(0,1fr);grid-template-areas:"l k r";align-items:center;gap:0 12px}
+  .es-bf-h{margin-top:6px;padding-bottom:6px;font-size:12px;color:var(--ink-sub)}
+  .es-bf-h span:nth-child(2){text-align:center}
+  .es-bf-h span:last-child{text-align:right}
+  .es-bf-h .sf{min-width:44px}
+  .es-bf-row{min-height:38px;padding:0}
+  .es-bf figcaption + .es-bf-h + .es-bf-row{border-top:1px solid var(--line)}
+  .es-bf-k{text-align:center;font-size:14px}
+  .es-bf-s.l{grid-template-columns:54px 48px minmax(0,1fr);grid-template-areas:"v n b"}
+  .es-bf-s.r{grid-template-columns:minmax(0,1fr) 48px 54px;grid-template-areas:"b n v"}
+  .es-bf-s b{font-size:15px}
+  .es-bf-s.l b,.es-bf-s.l small{text-align:left}
+  .es-bf-s small{font-size:12px}
+  .es-bf-s.l .jk-b{display:flex;justify-content:flex-end}
+  .es-bf-s.l .jk-b i{transform-origin:right center}
+  .es-ex{font-size:14px}
+}
+@media (min-width:768px){
+  .es-s{display:none}
+  .es-lg{display:inline}
+  .jk-vr{grid-template-columns:88px 70px minmax(0,1fr) 10px}
+}
+@media (min-width:900px){
+  /* 馬の一覧：表にする（見出しの地・行の高さは13項目の表と同じ）。勝ち鞍は折り返して、横に送らず全列を見せる */
+  .es-lt thead{position:static;width:auto;height:auto;overflow:visible;clip-path:none;display:table-header-group}
+  .es-lt table{display:table}
+  .es-lt tbody{display:table-row-group}
+  .es-lt tr,.es-lt tbody tr:first-child{display:table-row;padding:0}
+  .es-lt tr.more{display:none}
+  .open-m .es-lt tr.more{display:table-row}
+  .es-lt th,.es-lt td,.es-lt td.m1,.es-lt td.m1b,.es-lt td.m2,.es-lt td.m3,.es-lt td.m4{display:table-cell;height:var(--row);padding:4px 8px;border-top:0;border-bottom:1px solid var(--line);text-align:left;font-size:14px;font-weight:400;color:var(--ink);vertical-align:middle}
+  .es-lt thead th{height:40px;background:var(--chip);font-size:12px;font-weight:700;color:var(--ink-sub);white-space:nowrap}
+  .es-lt th:first-child,.es-lt td:first-child{padding-left:var(--jk-pad)}
+  .es-lt th:last-child,.es-lt td:last-child{padding-right:var(--jk-pad)}
+  .es-lt .r,.es-lt td.m2{text-align:right}
+  .es-lt td.m1,.es-lt td.m1b,.es-lt td.m2,.es-lt td.m4{white-space:nowrap}
+  .es-lt td.m2{font-weight:500}
+  .es-lt td.m3:has(.none){display:table-cell}
+  .es-lt td.m4[data-l]::before{content:none}
+  /* 板の先頭が表のとき、見出し行を板の上端に付ける（騎手詳細の同じ指定 .jk-pn > .jk-st:first-child と同じ値） */
+  .jk-pn > .es-lt:first-child{margin-top:-16px}
+  .jk-st.es-nol:not(:last-child) > .jk-ft{border-bottom:0}
+  /* 図と説明を左右に置く（図が横に間延びしないように） */
+  .es-fx{grid-template-columns:minmax(0,min(640px,56%)) minmax(0,1fr);align-items:center;gap:28px}
+}
+@media (hover:hover){.es-lt tbody tr:hover > td{background:#F7F8FA}}
+@media (min-width:1100px){
+  .es-fx{gap:40px;margin-bottom:16px;padding-bottom:16px}
+  .es-ex{font-size:15px}
+  .es-ex .note{font-size:13px}
+  .es-fn{font-size:13px}
+  .es-sub{font-size:14px}
+  .es-bf-row{min-height:42px}
+  .es-bf-s b{font-size:16px}
+  .es-cb-l li{height:40px}
+  .es-cb-l .l{font-size:15px}
+  .es-cb-l b{font-size:16px;min-width:56px}
+  .es-cb-l small{font-size:13px;min-width:56px}
+  .es-lt th,.es-lt td,.es-lt td.m1,.es-lt td.m1b,.es-lt td.m2,.es-lt td.m3,.es-lt td.m4{padding:4px 10px}
+}
+@media (min-width:1280px){
+  .jk-vr{grid-template-columns:88px 96px minmax(0,1fr) 10px}
+  .es-lt th,.es-lt td,.es-lt td.m1,.es-lt td.m1b,.es-lt td.m2,.es-lt td.m3,.es-lt td.m4{font-size:15px;padding:4px 14px}
+  .es-lt thead th{font-size:12px}
+}
+
+/* ===== 仕上げ ===== */
+/* 種牡馬のページ内ナビ（21項目）：PCは1段11個の2段に収める（3段目に1個だけ残さない） */
+@media (min-width:1100px){
+  .jk-nav.es-n11 > div{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));gap:6px}
+  .jk-nav.es-n11 a{justify-content:center;padding:0;white-space:nowrap}
+}
+@media (min-width:1100px) and (max-width:1279.98px){
+  .jk-nav.es-n11 > div{gap:4px}
+  .jk-nav.es-n11 a{font-size:13px}
+}
+/* 順位つきの表（母父・騎手・馬主）：幅が狭い帯ではセルの左右を詰めて、横に送らずに13項目を見せる */
+@media (min-width:700px) and (max-width:899.98px){.jk-t.rkt{--tp:2px}.jk-t.rkt .nm.lg{max-width:10em}}
+@media (min-width:1100px) and (max-width:1199.98px){.jk-t.rkt{--tp:2px}}
+/* 良馬場と道悪の横棒（スマホ）：出走数は数値の下に回して、棒を長く取る */
+@media (max-width:699.98px){
+  .es-cb-l{grid-template-columns:max-content max-content minmax(0,1fr) max-content}
+  .es-cb-l li{grid-template-rows:auto auto;align-content:center;height:42px}
+  .es-cb-l li > .t,.es-cb-l li > .l,.es-cb-l li > .jk-b{grid-row:1 / 3}
+  .es-cb-l li > b{grid-column:4;grid-row:1;line-height:1.2}
+  .es-cb-l li > small{grid-column:4;grid-row:2;min-width:0;font-size:11px;line-height:1.2}
+}
+/* 〜899px：表を閉じた板の下端の線と重なるので、次の小見出しの上の線は引かない */
+@media (max-width:899.98px){.jk-st + .es-sub{border-top:0;padding-top:0}}
+/* 基本情報の補足（着度数の下の「勝率／複勝」）：360pxでも1行に収める */
+@media (max-width:379.98px){.jk-tiles.es-tl dd small{font-size:11px;letter-spacing:-.02em}}
+
+/* ==================== 本番だけの追加 ==================== */
+/* 対象レース数が少ないページの注意（現行の ThinDataNotice と同じ文） */
+.jk-thin{font-size:14px;line-height:1.75}
+.jk-thin b{display:block;font-weight:700}
+@media (min-width:1100px){.jk-thin{font-size:15px}}
+/* globals.css の id 指定（旧デザインの #characteristics・#owner-stats の余白）を打ち消す */
+.root :global(#characteristics),.root :global(#owner-stats){margin-bottom:0;padding-bottom:0}
