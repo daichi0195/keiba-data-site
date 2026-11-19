@@ -10,7 +10,7 @@ type Open = { m: boolean; t: boolean };
 type Ctx = { open: Open; set: (k: keyof Open, v: boolean) => void };
 const SyncCtx = createContext<Ctx | null>(null);
 
-/** 横に並ぶ板（得意・苦手）を一緒に開閉する */
+/** 横に並ぶ板（得意・苦手）：700px以上の「さらに表示」を一緒に開閉する */
 export function SyncGroup({ className, children }: { className: string; children: ReactNode }) {
   const [open, setOpen] = useState<Open>({ m: false, t: false });
   const set = (k: keyof Open, v: boolean) => setOpen((o) => ({ ...o, [k]: v }));
@@ -50,7 +50,9 @@ export default function Box({
 }) {
   const sync = useContext(SyncCtx);
   const [own, setOwn] = useState<Open>({ m: false, t: false });
-  const open = sync ? sync.open : own;
+  // 得意・苦手を一緒に開閉するのは、横に並ぶ幅（700px以上）の「さらに表示」だけ（下端を揃えるため）。
+  // 縦に並ぶ幅と「全項目を見る」は板ごとに開閉する
+  const open: Open = { m: own.m || Boolean(sync?.open.m), t: own.t };
   const ref = useRef<HTMLDivElement>(null);
   const first = useRef(true);
 
@@ -65,8 +67,10 @@ export default function Box({
   const toggle = (k: keyof Open) => {
     const next = !open[k];
     if (next) onOpen?.(k);
-    if (sync) sync.set(k, next);
-    else setOwn((o) => ({ ...o, [k]: next }));
+    if (sync && k === 'm' && (matchMedia('(min-width:700px)').matches || !next)) {
+      sync.set('m', next);
+      setOwn((o) => ({ ...o, m: false }));
+    } else setOwn((o) => ({ ...o, [k]: next }));
     // 閉じたときに板の上端がヘッダーとナビの下に隠れていたら、節の見出しまで戻す
     if (!next && ref.current) {
       const box = ref.current;
