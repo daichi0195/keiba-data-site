@@ -6,7 +6,7 @@ import { TocInline, type Heading } from '../Toc';
 import { ChevronRight } from '../icons';
 import { DataTable, StatsTable, GateTable, ClassTable, GenderTable, HorseWeightTable, PreviousFinishTable, RunningStyleTable, ComparisonTable, PopularityTable } from './tables';
 import { SeasonDualChart, DiffTable, BarCompareChart } from './charts';
-import { AverageMaturityChart, MaturityChart } from './lines';
+import { AverageMaturityChart, MaturityChart } from './linesLazy';
 
 /** 見出しのID（lib/articles.ts の extractHeadings と同じ作り方） */
 export function headingId(text: string): string {
