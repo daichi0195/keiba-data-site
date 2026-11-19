@@ -69,7 +69,7 @@ function KeyCell({ k }: { k: Key }) {
     );
   }
   if (k.kind === 'grade' && /^G[123]$/.test(k.text)) return <span className={cx('gr', k.text.toLowerCase())}>{k.text}</span>;
-  if (k.kind === 'text' && k.link) return <Link href={k.link} title={k.text}>{k.text}</Link>;
+  if (k.kind === 'text' && k.link) return <Link prefetch={false} href={k.link} title={k.text}>{k.text}</Link>;
   return <span title={k.text}>{k.text}</span>;
 }
 

@@ -53,7 +53,7 @@ export function Head({ title, sub }: { title: React.ReactNode; sub?: string }) {
 /** 判定基準・用語の定義へのリンク（/about/data に1か所でまとめた説明へ） */
 export function More({ anchor, label }: { anchor: string; label: string }) {
   return (
-    <Link className={s['c-def']} href={`/about/data#${anchor}`}>
+    <Link prefetch={false} className={s['c-def']} href={`/about/data#${anchor}`}>
       {label}
       <FrameIcon icon={faChevronRight} className={s.ic} />
     </Link>
@@ -212,7 +212,7 @@ function linkify(text: string, links: NameLink[], key: string): React.ReactNode[
     if (link && !used.has(link.name)) {
       used.add(link.name);
       return (
-        <Link key={`${key}-${i}`} href={link.href}>
+        <Link prefetch={false} key={`${key}-${i}`} href={link.href}>
           {part}
         </Link>
       );
@@ -260,7 +260,7 @@ function faqLine(text: string, links: FaqLink[] | undefined, key: string): React
       if (idx === -1) return;
       if (idx > 0) out.push(rest.slice(0, idx));
       out.push(
-        <Link key={`${key}-l${i}-${j}`} href={link.href}>
+        <Link prefetch={false} key={`${key}-l${i}-${j}`} href={link.href}>
           {link.text}
         </Link>
       );

@@ -6,7 +6,7 @@ export default function AIBanner({ bookmarkOnly = false, bannerOnly = false }: {
     <>
       {!bookmarkOnly && (
         // AdSense 審査を考え、成績を強調する表現（旧画像の「回収率130%達成」）は使わず内容の説明にとどめる
-        <Link href="/ai" className={`${styles.banner} ${styles.textBanner}`}>
+        <Link prefetch={false} href="/ai" className={`${styles.banner} ${styles.textBanner}`}>
           <span className={styles.bannerLabel}>AI勝率予測</span>
           <span className={styles.bannerTitle}>出走馬ごとの勝率をAIで予測</span>
           <span className={styles.bannerText}>独自のモデルで出走馬の勝率を算出し、対象レースの約5分前に無料で公開しています。</span>

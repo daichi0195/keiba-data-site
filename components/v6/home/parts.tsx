@@ -45,7 +45,7 @@ export function Head({ title, sub, more }: { title: string; sub?: string; more?:
         {sub && <small>{sub}</small>}
       </h2>
       {more && (
-        <Link className={cx('pill')} href={more.href}>
+        <Link prefetch={false} className={cx('pill')} href={more.href}>
           {more.label}
         </Link>
       )}
@@ -64,7 +64,7 @@ export function Dists({ venue }: { venue: VenueRow }) {
           </span>
           <div className={cx('ds-c')}>
             {of(venue, sf).map((c) => (
-              <Link key={getCourseUrl(c)} href={getCourseUrl(c)} className={cx(variantOf(c) && 'v') || undefined} aria-label={`${venue.name}${ja}${dl(c)}`}>
+              <Link prefetch={false} key={getCourseUrl(c)} href={getCourseUrl(c)} className={cx(variantOf(c) && 'v') || undefined} aria-label={`${venue.name}${ja}${dl(c)}`}>
                 {c.distance}
                 <span className={cx('u')}>m</span>
                 {vLabel(c)}
@@ -87,7 +87,7 @@ export function WeekVenues({ venues }: { venues: VenueRow[] }) {
         {venues.map((v) => (
           <div key={v.id} className={cx('pn')}>
             <h3>
-              <Link href={venueHref(v.id)}>
+              <Link prefetch={false} href={venueHref(v.id)}>
                 {v.name}競馬場
                 <ChevR />
               </Link>
@@ -100,7 +100,7 @@ export function WeekVenues({ venues }: { venues: VenueRow[] }) {
         {venues.map((v) => (
           <div key={v.id} className={cx('wkt-r')}>
             <h3>
-              <Link href={venueHref(v.id)}>
+              <Link prefetch={false} href={venueHref(v.id)}>
                 {v.name}競馬場
                 <ChevR />
               </Link>
@@ -111,7 +111,7 @@ export function WeekVenues({ venues }: { venues: VenueRow[] }) {
                   <span className={cx(`sf ${sf}`)}>{ja}</span>
                   <div className={cx('ds-c')}>
                     {of(v, sf).map((c) => (
-                      <Link key={getCourseUrl(c)} href={getCourseUrl(c)} aria-label={`${v.name}${ja}${dl(c)}`}>
+                      <Link prefetch={false} key={getCourseUrl(c)} href={getCourseUrl(c)} aria-label={`${v.name}${ja}${dl(c)}`}>
                         {dl(c)}
                       </Link>
                     ))}
@@ -219,7 +219,7 @@ export function AiCards({ races }: { races: RaceSummary[] }) {
         const g = getRaceGrade(e.raceName);
         const turf = e.surface === '芝';
         return (
-          <Link key={e.slug} className={cx('ac')} href={`/ai/races/${e.slug}`} style={{ ['--i' as string]: i }}>
+          <Link prefetch={false} key={e.slug} className={cx('ac')} href={`/ai/races/${e.slug}`} style={{ ['--i' as string]: i }}>
             <p className={cx('ac-h')}>
               <span className={cx('ac-v')}>
                 {e.venueLabel}
@@ -255,7 +255,7 @@ export function FeatArticles({ articles }: { articles: Article[] }) {
   return (
     <div className={cx('vg car')}>
       {articles.map((a, i) => (
-        <Link key={a.slug} className={cx('vc')} href={articleHref(a)}>
+        <Link prefetch={false} key={a.slug} className={cx('vc')} href={articleHref(a)}>
           {a.frontmatter.thumbnail && (
             <Image
               src={a.frontmatter.thumbnail}
@@ -279,7 +279,7 @@ export function ColumnList({ articles }: { articles: Article[] }) {
   return (
     <div className={cx('vg lst')}>
       {articles.map((a) => (
-        <Link key={a.slug} className={cx('vc')} href={articleHref(a)}>
+        <Link prefetch={false} key={a.slug} className={cx('vc')} href={articleHref(a)}>
           {a.frontmatter.thumbnail && (
             <Image src={a.frontmatter.thumbnail} alt="" width={960} height={540} sizes="(min-width: 1100px) 30vw, (min-width: 700px) 33vw, 50vw" />
           )}

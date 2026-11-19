@@ -19,7 +19,7 @@ export default function ColumnIndex({ title, lead, newest, popular }: { title: s
     <>
       <div className={cx('pg')}>
         <nav className={cx('bc')} aria-label="パンくず">
-          <Link href="/">HOME</Link>
+          <Link prefetch={false} href="/">HOME</Link>
           <i aria-hidden="true">/</i>
           <span>コラム</span>
         </nav>

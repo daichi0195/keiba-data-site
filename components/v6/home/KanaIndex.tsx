@@ -39,7 +39,7 @@ export default function KanaIndex({ groups, unit, label, hrefPrefix }: { groups:
             </summary>
             <div className={cx('kn-a')}>
               {g.items.map((x) => (
-                <Link key={x.id} href={`${hrefPrefix}${x.id}`} className={cx(x.name.length >= 11 ? 'w8 w11' : x.name.length >= 8 && 'w8') || undefined}>
+                <Link prefetch={false} key={x.id} href={`${hrefPrefix}${x.id}`} className={cx(x.name.length >= 11 ? 'w8 w11' : x.name.length >= 8 && 'w8') || undefined}>
                   {x.name}
                 </Link>
               ))}
@@ -50,7 +50,7 @@ export default function KanaIndex({ groups, unit, label, hrefPrefix }: { groups:
       {groups.map((g, i) => (
         <div key={g.slug} className={cx('kn-p', all[i] && 'all')} hidden={sel !== i}>
           {g.items.map((x) => (
-            <Link key={x.id} href={`${hrefPrefix}${x.id}`}>
+            <Link prefetch={false} key={x.id} href={`${hrefPrefix}${x.id}`}>
               {x.name}
             </Link>
           ))}

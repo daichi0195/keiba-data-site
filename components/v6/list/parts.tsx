@@ -19,7 +19,7 @@ export function Hero({ title, lead, count }: { title: string; lead: string; coun
   return (
     <div className={cx('lh')}>
       <nav className={cx('lh-c')} aria-label="パンくず">
-        <Link href="/">HOME</Link>
+        <Link prefetch={false} href="/">HOME</Link>
         <span aria-hidden="true">/</span>
         <span>{title}</span>
       </nav>
@@ -60,7 +60,7 @@ export function Tail({ current }: { current: ListKey }) {
         <Head title="ほかのデータ一覧" />
         <div className={cx('lp lo')}>
           {LISTS.filter(([k]) => k !== current).map(([k, href, label, n]) => (
-            <Link key={k} href={href}>
+            <Link prefetch={false} key={k} href={href}>
               <FrameIcon icon={FRAME_ICONS[k]} className={cx('ic')} />
               <b>{label}</b>
               <span>{n}</span>
@@ -74,7 +74,7 @@ export function Tail({ current }: { current: ListKey }) {
             <h2>出走馬ごとの勝率をAIで予測</h2>
             <p className={cx('la-p')}>独自のモデルで出走馬の勝率を算出し、対象レースの約5分前に無料で公開しています。</p>
           </div>
-          <Link className={cx('la-b')} href="/ai">
+          <Link prefetch={false} className={cx('la-b')} href="/ai">
             予測を見る
           </Link>
         </div>

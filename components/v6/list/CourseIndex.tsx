@@ -96,7 +96,7 @@ export default function CourseIndex({ venues, children }: { venues: VenueData[];
                 </span>
                 <div className={cx('ds-c')}>
                   {r.cells.map((c) => (
-                    <Link key={c.href} href={c.href} className={cx(c.v && 'v') || undefined} aria-label={`${v.name}${LABEL[r.sf]}${c.d}m${c.v}`} hidden={!hit(r, c)}>
+                    <Link prefetch={false} key={c.href} href={c.href} className={cx(c.v && 'v') || undefined} aria-label={`${v.name}${LABEL[r.sf]}${c.d}m${c.v}`} hidden={!hit(r, c)}>
                       {c.d}
                       <span className={cx('u')}>m</span>
                       {c.v}

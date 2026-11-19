@@ -51,11 +51,11 @@ export const gateRows = (stats: { gate: number | string }[] | undefined): Row[] 
   [1, 2, 3, 4, 5, 6, 7, 8].map((n) => R((stats ?? []).find((x) => Number(x.gate) === n) as Partial<Stat> | undefined, <GateTag n={n} />, `${n}枠`));
 
 /** 詳細ページへのリンク（ページがなければ文字だけ） */
-export const MaybeLink = ({ href, children }: { href?: string; children: ReactNode }) => (href ? <Link href={href}>{children}</Link> : <>{children}</>);
+export const MaybeLink = ({ href, children }: { href?: string; children: ReactNode }) => (href ? <Link prefetch={false} href={href}>{children}</Link> : <>{children}</>);
 
 /** 判定基準・用語の定義へのリンク（/about/data） */
 const DEF_LABEL = { criteria: '判定の基準', 'running-style': '脚質の定義', distance: '距離の定義' } as const;
-export const DefLink = ({ anchor }: { anchor: keyof typeof DEF_LABEL }) => <Link href={`/about/data#${anchor}`}>{DEF_LABEL[anchor]}を見る</Link>;
+export const DefLink = ({ anchor }: { anchor: keyof typeof DEF_LABEL }) => <Link prefetch={false} href={`/about/data#${anchor}`}>{DEF_LABEL[anchor]}を見る</Link>;
 
 /* ---------- ページの土台・節 ---------- */
 /** ページの土台：共通の CSS 変数と、動き・表の横スクロールなどのクライアント処理 */
@@ -178,9 +178,9 @@ export function Hero({
   return (
     <>
       <nav className={cx('jk-crumb')} aria-label="パンくず">
-        <Link href="/">HOME</Link>
+        <Link prefetch={false} href="/">HOME</Link>
         <span aria-hidden="true">/</span>
-        <Link href={crumb.href}>{crumb.label}</Link>
+        <Link prefetch={false} href={crumb.href}>{crumb.label}</Link>
         <span aria-hidden="true">/</span>
         <span>{name}</span>
       </nav>
@@ -285,7 +285,7 @@ function linkify(text: string, links: NameLink[], kp: string): ReactNode[] {
     if (l && !used.has(l.name)) {
       used.add(l.name);
       return (
-        <Link key={`${kp}${i}`} href={l.href}>
+        <Link prefetch={false} key={`${kp}${i}`} href={l.href}>
           {part}
         </Link>
       );
@@ -360,7 +360,7 @@ export const About = ({ period, updated }: { period?: string; updated?: string }
       中央競馬（JRA）のレース結果をもとに当サイトのデータベースで集計しています
       {period ? `（集計期間：${period}` : '（集計期間：直近3年間'}
       {updated ? `、${updated}時点）。` : '、毎週更新）。'}
-      指標の定義と集計方法は<Link href="/about/data">データの出典と集計方法</Link>をご覧ください。
+      指標の定義と集計方法は<Link prefetch={false} href="/about/data">データの出典と集計方法</Link>をご覧ください。
     </p>
   </aside>
 );

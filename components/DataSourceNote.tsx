@@ -20,7 +20,7 @@ export default function DataSourceNote({ periodText, lastUpdated, className }: P
         中央競馬（JRA）のレース結果をもとに当サイトのデータベースで集計しています
         {periodText ? `（集計期間：${periodText}` : '（集計期間：直近3年間'}
         {lastUpdated ? `、${lastUpdated}時点）。` : '、毎週更新）。'}
-        指標の定義と集計方法は<Link href="/about/data">データの出典と集計方法</Link>をご覧ください。
+        指標の定義と集計方法は<Link prefetch={false} href="/about/data">データの出典と集計方法</Link>をご覧ください。
       </p>
     </aside>
   );

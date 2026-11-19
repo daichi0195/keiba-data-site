@@ -1031,9 +1031,9 @@ export default async function CoursePage({ params }: Props) {
         {/* 冒頭 */}
         <div className={s.hero}>
           <nav className={s.crumb} aria-label="パンくず">
-            <Link href="/">HOME</Link>
+            <Link prefetch={false} href="/">HOME</Link>
             <span aria-hidden="true">/</span>
-            <Link href="/courses">コース一覧</Link>
+            <Link prefetch={false} href="/courses">コース一覧</Link>
             <span aria-hidden="true">/</span>
             <span>{racecourseJa}競馬場 {surfaceJa}{distanceDisplay}m{trackVariantLabel}</span>
           </nav>
@@ -1188,7 +1188,7 @@ export default async function CoursePage({ params }: Props) {
                         <span className={`${s.tg} ${s[g.kind]}`} aria-label={g.label}>{g.tag}</span>
                         {g.names.length > 0 ? (
                           <div className={s['pk-n']}>
-                            {g.names.map((n) => (n.link ? <Link key={n.name} href={n.link}>{n.name}</Link> : <span key={n.name}>{n.name}</span>))}
+                            {g.names.map((n) => (n.link ? <Link prefetch={false} key={n.name} href={n.link}>{n.name}</Link> : <span key={n.name}>{n.name}</span>))}
                           </div>
                         ) : (
                           <span className={s['pk-0']}>該当なし</span>
@@ -1270,7 +1270,7 @@ export default async function CoursePage({ params }: Props) {
                     const current = url === currentCourseUrl;
                     const label = distLabel(c as { distance: number; variant?: string });
                     return (
-                      <Link
+                      <Link prefetch={false}
                         key={url}
                         href={url}
                         className={current ? s.on : undefined}

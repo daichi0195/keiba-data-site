@@ -122,7 +122,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const components = articleMdxComponents(headings);
 
   const navItem = (a: NonNullable<typeof prev>, label: string) => (
-    <Link className={cx('an-i')} href={`/articles/${a.slug}`}>
+    <Link prefetch={false} className={cx('an-i')} href={`/articles/${a.slug}`}>
       <span className={cx('an-p')}>
         {a.frontmatter.thumbnail && <Image src={a.frontmatter.thumbnail} alt="" width={1200} height={630} sizes="160px" />}
       </span>
@@ -139,9 +139,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         <div className={cx('ar')}>
           <div className={cx('ar-in')}>
             <nav className={cx('bc')} aria-label="パンくず">
-              <Link href="/">HOME</Link>
+              <Link prefetch={false} href="/">HOME</Link>
               <i aria-hidden="true">/</i>
-              <Link href="/articles">コラム</Link>
+              <Link prefetch={false} href="/articles">コラム</Link>
               <i aria-hidden="true">/</i>
               <span>{title}</span>
             </nav>

@@ -36,7 +36,7 @@ export default async function PredictionListPage({
         <h1 className={s['p-h1']}>予測一覧</h1>
         <p className={s['p-lead']}>
           直近{RECENT_DAYS}日間に公開した予測を掲載しています。予測は対象レースの約5分前に公開しています。予測の仕組みと印の意味は
-          <Link href="/ai#marks">AI勝率予測のページ</Link>
+          <Link prefetch={false} href="/ai#marks">AI勝率予測のページ</Link>
           をご覧ください。
         </p>
       </div>

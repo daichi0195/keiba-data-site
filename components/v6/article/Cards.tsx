@@ -18,7 +18,7 @@ export function toCard(a: Article): ColumnCard {
 
 export function Card({ a, withDesc, i }: { a: ColumnCard; withDesc: boolean; i: number }) {
   return (
-    <Link className={cx('cl-i')} href={`/articles/${a.slug}`} title={a.title} style={{ '--i': i } as React.CSSProperties}>
+    <Link prefetch={false} className={cx('cl-i')} href={`/articles/${a.slug}`} title={a.title} style={{ '--i': i } as React.CSSProperties}>
       <span className={cx('cl-p')}>
         {a.thumbnail && <Image src={a.thumbnail} alt="" width={1200} height={630} sizes="(max-width: 699px) 50vw, (max-width: 1099px) 33vw, 420px" />}
       </span>

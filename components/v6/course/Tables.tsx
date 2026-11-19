@@ -137,7 +137,7 @@ export function RankView({ rows, nameLabel, note }: { rows: RankV[]; nameLabel: 
                   <span className={`${s.rno} ${s.num}${i < 3 ? ` ${s.t3} ${s[`m${i + 1}`]}` : ''}`}>{i + 1}</span>
                   <span className={s.nm}>
                     {r.u ? (
-                      <Link href={r.u} title={r.n}>
+                      <Link prefetch={false} href={r.u} title={r.n}>
                         {r.n}
                       </Link>
                     ) : (

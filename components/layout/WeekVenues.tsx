@@ -23,7 +23,7 @@ export default function WeekVenues() {
       <h2>今週開催</h2>
       <nav className={s.nav} aria-label="今週開催の競馬場">
         {venues.map((v) => (
-          <Link key={v.id} href={`/courses#rc-${v.id}`}>
+          <Link prefetch={false} key={v.id} href={`/courses#rc-${v.id}`}>
             <i className={s.vd} aria-hidden="true" />
             <span>{v.name}競馬場</span>
           </Link>

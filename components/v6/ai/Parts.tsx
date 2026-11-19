@@ -24,12 +24,12 @@ export function Grade({ raceName }: { raceName: string }) {
 export function Crumb({ items }: { items: { label: string; href?: string }[] }) {
   return (
     <nav className={s['p-crumb']} aria-label="パンくず">
-      <Link href="/">HOME</Link>
+      <Link prefetch={false} href="/">HOME</Link>
       {items.map((it, i) =>
         it.href ? (
           <Fragment key={i}>
             <i aria-hidden="true">/</i>
-            <Link href={it.href}>{it.label}</Link>
+            <Link prefetch={false} href={it.href}>{it.label}</Link>
           </Fragment>
         ) : (
           <span key={i} className={s.cur}>
@@ -107,7 +107,7 @@ export function Foot({ back }: { back: { label: string; href: string }[] }) {
       </div>
       <div className={`${s['p-w']} ${s['p-back']}`}>
         {back.map((b) => (
-          <Link key={b.href} className={s.pill} href={b.href}>
+          <Link prefetch={false} key={b.href} className={s.pill} href={b.href}>
             {b.label}
           </Link>
         ))}

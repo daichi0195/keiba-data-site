@@ -80,7 +80,7 @@ export default async function AIPage() {
       <section className={s.sc} id="latest">
         <div className={s.hd}>
           <h2>最新のレース予測</h2>
-          <Link className={s.pill} href="/ai/races">
+          <Link prefetch={false} className={s.pill} href="/ai/races">
             予測一覧をみる
           </Link>
         </div>

@@ -100,7 +100,7 @@ export function MainNav() {
       {MAIN_NAV.map((it) => {
         const on = isCurrent(pathname, it.href);
         return (
-          <Link key={it.key} href={it.href} className={on ? s.on : undefined} aria-current={on ? 'page' : undefined}>
+          <Link prefetch={false} key={it.key} href={it.href} className={on ? s.on : undefined} aria-current={on ? 'page' : undefined}>
             <FrameIcon icon={FRAME_ICONS[it.key]} className={s.ic} />
             <span>{it.label}</span>
           </Link>
@@ -118,7 +118,7 @@ export function TabBar() {
       {TAB_NAV.map((it) => {
         const on = isCurrent(pathname, it.href);
         return (
-          <Link key={it.key} href={it.href} className={on ? s.on : undefined} aria-current={on ? 'page' : undefined}>
+          <Link prefetch={false} key={it.key} href={it.href} className={on ? s.on : undefined} aria-current={on ? 'page' : undefined}>
             <FrameIcon icon={FRAME_ICONS[it.key]} className={s.ic} />
             <span>{it.label}</span>
           </Link>

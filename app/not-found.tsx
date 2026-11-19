@@ -41,7 +41,7 @@ export default function NotFound() {
           <ul className={cx('nf-g')}>
             {LINKS.map((l) => (
               <li key={l.href}>
-                <Link href={l.href}>
+                <Link prefetch={false} href={l.href}>
                   <FrameIcon icon={FRAME_ICONS[l.icon]} className={cx('ic')} />
                   <span>{l.label}</span>
                   <ChevR />

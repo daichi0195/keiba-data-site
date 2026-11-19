@@ -34,7 +34,7 @@ export default function ArticlesPage() {
             <h2>出走馬ごとの勝率をAIで予測</h2>
             <p>独自のモデルで出走馬の勝率を算出し、対象レースの約5分前に無料で公開しています。</p>
           </div>
-          <Link className={cx('cta')} href="/ai">
+          <Link prefetch={false} className={cx('cta')} href="/ai">
             予測を見る
           </Link>
         </div>

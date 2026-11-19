@@ -180,7 +180,7 @@ export default async function RacePredictionPage(
               <li>予測は対象レースの約5分前に公開しています。</li>
               <li>予測は参考情報であり、的中や回収率を保証するものではありません。</li>
               <li>
-                予測の仕組みと印の意味は<Link href="/ai#marks">AI勝率予測のページ</Link>をご覧ください。
+                予測の仕組みと印の意味は<Link prefetch={false} href="/ai#marks">AI勝率予測のページ</Link>をご覧ください。
               </li>
             </ul>
           </div>

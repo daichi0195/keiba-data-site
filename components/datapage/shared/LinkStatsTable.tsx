@@ -44,7 +44,7 @@ export default function LinkStatsTable({
               <tr key={`${row.label}-${i}`} className={firstSummary ? t.sumFirst : undefined}>
                 <td className={s.key}>
                   {row.link ? (
-                    <Link href={row.link} className={`${s.textLink} ${keyInClass(row.label)}`}>
+                    <Link prefetch={false} href={row.link} className={`${s.textLink} ${keyInClass(row.label)}`}>
                       {row.label}
                     </Link>
                   ) : row.summary ? (

@@ -18,7 +18,7 @@ function CourseChips({ items, kind }: { items: HighlightCourseRow[]; kind: 'good
       {items.map((c, i) =>
         c.link ? (
           // key に URL を入れない：「/courses/…/1400-4」のような文字列がページ内のデータに残り、Googlebot が存在しない URL としてクロールしてしまうため
-          <Link key={`${c.shortName}-${i}`} href={c.link} className={`${s.nm} ${s[kind]}`}>
+          <Link prefetch={false} key={`${c.shortName}-${i}`} href={c.link} className={`${s.nm} ${s[kind]}`}>
             {c.shortName}
           </Link>
         ) : (

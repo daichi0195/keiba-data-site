@@ -36,7 +36,7 @@ export default function SiteFrame({ children }: { children: React.ReactNode }) {
       <header className={s.hdr}>
         <div className={s.hdrL}>
           <MenuButton />
-          <Link href="/" className={s.logo}>
+          <Link prefetch={false} href="/" className={s.logo}>
             <Image src="/logo.png" alt="" width={30} height={30} priority />
             競馬データ.com
           </Link>
@@ -50,7 +50,7 @@ export default function SiteFrame({ children }: { children: React.ReactNode }) {
           <h2>競馬場</h2>
           <nav className={`${s.nav} ${s.navCols}`} aria-label="競馬場">
             {VENUES.map((v) => (
-              <Link key={v.id} href={venueHref(v.id)}>
+              <Link prefetch={false} key={v.id} href={venueHref(v.id)}>
                 <span>{v.name}</span>
               </Link>
             ))}
@@ -66,7 +66,7 @@ export default function SiteFrame({ children }: { children: React.ReactNode }) {
                   <p className={s.railK}>AI勝率予測</p>
                   <h2>出走馬ごとの勝率をAIで予測</h2>
                   <p className={s.railP}>独自のモデルで出走馬の勝率を算出し、対象レースの約5分前に無料で公開しています。</p>
-                  <Link className={s.cta} href="/ai">
+                  <Link prefetch={false} className={s.cta} href="/ai">
                     予測を見る
                   </Link>
                 </div>
@@ -79,7 +79,7 @@ export default function SiteFrame({ children }: { children: React.ReactNode }) {
             <p className={s.fLogo}>競馬データ.com</p>
             <nav aria-label="サイト情報">
               {FOOTER_LINKS.map((l) => (
-                <Link key={l.href} href={l.href}>
+                <Link prefetch={false} key={l.href} href={l.href}>
                   {l.label}
                 </Link>
               ))}

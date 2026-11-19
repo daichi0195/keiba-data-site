@@ -72,7 +72,7 @@ export function Df({ rows, mode = '', tw }: { rows: [React.ReactNode, React.Reac
 
 /** サイト内のリンク（本文中） */
 export function In({ href, children }: { href: string; children: React.ReactNode }) {
-  return <Link href={href}>{children}</Link>;
+  return <Link prefetch={false} href={href}>{children}</Link>;
 }
 /** 外部サイトへのリンク（別タブ） */
 export function Ext({ href, children }: { href: string; children: React.ReactNode }) {
@@ -90,14 +90,14 @@ export function StaticCrumb({ crumbs }: { crumbs: Crumb[] }) {
   return (
     <nav className={cx('st-crumb')} aria-label="パンくず">
       <span className={cx('st-c')}>
-        <Link href="/">HOME</Link>
+        <Link prefetch={false} href="/">HOME</Link>
       </span>
       {crumbs.map((c, i) => (
         <Fragment key={i}>
           <wbr />
           <span className={cx('st-c')}>
             <i aria-hidden="true">/</i>
-            {c.href ? <Link href={c.href}>{c.label}</Link> : <span aria-current="page">{c.label}</span>}
+            {c.href ? <Link prefetch={false} href={c.href}>{c.label}</Link> : <span aria-current="page">{c.label}</span>}
           </span>
         </Fragment>
       ))}
@@ -184,7 +184,7 @@ export default function StaticPage({
             <ul>
               {SITE_NAV.map((l) => (
                 <li key={l.key}>
-                  <Link href={l.href} className={l.key === pageKey ? cx('on') : undefined} aria-current={l.key === pageKey ? 'page' : undefined}>
+                  <Link prefetch={false} href={l.href} className={l.key === pageKey ? cx('on') : undefined} aria-current={l.key === pageKey ? 'page' : undefined}>
                     <span>{l.label}</span>
                     <ChevR />
                   </Link>

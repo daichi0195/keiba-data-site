@@ -74,7 +74,7 @@ export default function LeadingRank({ rows, unit, hrefPrefix }: { rows: RankRow[
       <ol ref={olRef} className={cx('rk', open && 'open', anim && 'anim', seen && 'in')}>
         {top.map((x, i) => (
           <li key={x.id} data-more={i >= 5 ? '' : undefined} style={{ ['--i' as string]: i }}>
-            <Link href={`${hrefPrefix}${x.id}`}>
+            <Link prefetch={false} href={`${hrefPrefix}${x.id}`}>
               <span className={cx('rk-n num', i < 3 && `t3 m${i + 1}`)}>{i + 1}</span>
               <span className={cx('rk-t')}>
                 <b>{x.name}</b>

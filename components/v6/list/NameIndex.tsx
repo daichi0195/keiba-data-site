@@ -85,7 +85,7 @@ export default function NameIndex({
   );
 
   const cell = (x: NameCell, hidden: boolean) => (
-    <Link key={x.id} href={`${hrefPrefix}${x.id}`} className={cx(x.cls) || undefined} hidden={hidden}>
+    <Link prefetch={false} key={x.id} href={`${hrefPrefix}${x.id}`} className={cx(x.cls) || undefined} hidden={hidden}>
       {x.name}
     </Link>
   );
