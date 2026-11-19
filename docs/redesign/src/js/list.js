@@ -10,7 +10,7 @@
     return String(s).normalize('NFKC').toLowerCase().replace(/[ァ-ヶ]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0x60); }).replace(/[\s.・]/g, '');
   }
   function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
-  function setNote(html, warn) { note.innerHTML = html; note.hidden = !html; note.classList.toggle('warn', !!warn); }
+  function setNote(html) { note.innerHTML = html; note.hidden = !html; }
 
   /* ---------- ページ内の移動と現在地 ----------
      共通の top.js には任せず、ここで受け持つ（チップの href は実在しない id にしてある）。
@@ -26,9 +26,14 @@
   function shown(el) { return el.getClientRects().length > 0; }
   function setChip(c) {
     chips.forEach(function (x) { x.a.classList.toggle('on', x === c); if (x === c) x.a.setAttribute('aria-current', 'true'); else x.a.removeAttribute('aria-current'); });
-    if (c === cur) return;
+    var changed = c !== cur;
     cur = c;
-    bar.scrollTo({ left: c ? c.a.offsetLeft - (bar.clientWidth - c.a.offsetWidth) / 2 : 0, behavior: calm ? 'auto' : 'smooth' });
+    // 帯はすぐに送る（なめらかに送ると本文の移動に打ち消される）。共通の top.js がページ先頭付近で帯を左端へ戻すので、
+    // 現在地のチップが帯からはみ出していたら毎回寄せ直す
+    if (c) {
+      var l = c.a.offsetLeft - bar.offsetLeft, out = l < bar.scrollLeft || l + c.a.offsetWidth > bar.scrollLeft + bar.clientWidth;
+      if (changed || out) bar.scrollTo({ left: c.a.offsetLeft - (bar.clientWidth - c.a.offsetWidth) / 2, behavior: 'auto' });
+    } else if (changed) bar.scrollTo({ left: 0, behavior: 'auto' });
   }
   function spy() {
     if (Date.now() < lock) { setChip(lockTo); return; }
@@ -71,7 +76,6 @@
   function setMode(on) {
     extras.forEach(function (e) { e.hidden = on; });
     document.body.classList.toggle('lf-on', on);
-    if (on && !filtering) dock();
     filtering = on;
     onScroll();
   }
@@ -93,7 +97,8 @@
   function bind(run) {
     q.addEventListener('compositionstart', function () { composing = true; });
     q.addEventListener('compositionend', function () { composing = false; run(); });
-    q.addEventListener('input', function (e) { if (e.isComposing) composing = true; run(); });
+    // 入力欄をヘッダー直下へ寄せるのは文字を打ったときだけ（馬場のボタンを押しただけでは動かさない）
+    q.addEventListener('input', function (e) { if (e.isComposing) composing = true; var was = filtering; run(); if (filtering && !was) dock(); });
     clear.addEventListener('click', function () { q.value = ''; composing = false; run(); q.focus(); });
   }
 
@@ -135,7 +140,7 @@
       if (v) groups.forEach(function (g) { g.a.forEach(function (a) { if (!a.hidden) flat.appendChild(a.cloneNode(true)); }); });
       none.hidden = !v || total > 0;
       setMode(!!v);
-      setNote(v ? '「' + esc(raw) + '」に一致：<b>' + total + '</b>' + unit : '');
+      setNote(v ? '<span>「' + esc(raw) + '」に一致：<b>' + total + '</b>' + unit + '</span>' : '');
     };
     bind(run);
     // 押して開閉した状態は、絞り込みを解いたあとも保つ
@@ -187,8 +192,8 @@
       layout();
       none2.hidden = total > 0;
       setMode(on);
-      if (bad) setNote('距離は数字で入力してください（例：1600）', true);
-      else setNote(on ? (sf ? LABEL[sf] : '') + (d ? '「' + d + '」で始まる距離' : '') + '：<b>' + total + '</b>コース（' + vn + '競馬場）' : '');
+      // 数字以外が混じっているときは、件数の横に案内を並べて出す
+      setNote((on ? '<span>' + (sf ? LABEL[sf] : '') + (d ? '「' + d + '」で始まる距離' : '') + '：<b>' + total + '</b>コース（' + vn + '競馬場）</span>' : '') + (bad ? '<span class="warn">距離は数字で入力してください（例：1600）</span>' : ''));
     };
     bind(runC);
     segs.forEach(function (b) {

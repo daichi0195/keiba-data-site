@@ -84,7 +84,7 @@ export const pn = (inner, cls = '', attr = '') => `<div class="jk-pn${cls ? ' ' 
 export const subs = (sub, note) => `${sub ? `<span class="jk-sb">${sub}</span>` : ''}${note ? `<span class="jk-nt">${note}</span>` : ''}`;
 
 /* ---------- ページ内の移動（騎手詳細と同じ） ---------- */
-export const nav = (list) => `<nav class="chips jk-nav" aria-label="ページ内"><div>${list.map(([id, l]) => `<a href="#${id}">${l}</a>`).join('')}</div></nav>`;
+export const nav = (list, cls = '') => `<nav class="chips jk-nav${cls ? ' ' + cls : ''}" aria-label="ページ内"><div>${list.map(([id, l]) => `<a href="#${id}">${l}</a>`).join('')}</div></nav>`;
 
 /* ---------- 冒頭：名前・主要な数字・傾向（5段階） ---------- */
 const seg = (v) => `<span class="jk-seg" aria-hidden="true">${[1, 2, 3, 4, 5].map((n) => `<i${n === v ? ' class="on"' : ''}></i>`).join('')}</span>`;

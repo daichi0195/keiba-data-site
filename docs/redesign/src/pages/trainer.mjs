@@ -58,7 +58,7 @@ ${sec('profile-section', Hno(ST, '基本情報'), E.tiles([
   ['開業', t.debut_year ? `${t.debut_year}年` : '', d.profile.career ? `${d.profile.career}年目` : ''],
   [`${d.thisYear.year}年の勝利数`, `${E.cnt(d.thisYear.wins)}勝`, d.thisYear.ranking > 0 ? `リーディング${d.thisYear.ranking}位` : ''],
   // 冒頭のマスと大きな数字が重ならないよう、着度数を主に見せて勝率・複勝率は補足行に残す（騎手詳細と同じ）
-  ['着度数（直近3年間）', `<span class="num">${t.total_stats.wins}-${t.total_stats.places_2}-${t.total_stats.places_3}-${t.total_stats.races - t.total_stats.wins - t.total_stats.places_2 - t.total_stats.places_3}</span>`, E.nb([`勝率${t.total_stats.win_rate.toFixed(1)}%・`, `複勝率${t.total_stats.place_rate.toFixed(1)}%`])],
+  ['着度数（直近3年間）', `<span class="num">${t.total_stats.wins}-${t.total_stats.places_2}-${t.total_stats.places_3}-${t.total_stats.races - t.total_stats.wins - t.total_stats.places_2 - t.total_stats.places_3}</span>`, `<span class="nb">勝率${t.total_stats.win_rate.toFixed(1)}%／複勝${t.total_stats.place_rate.toFixed(1)}%</span>`],
   ['重賞勝ち（平地）', `${E.cnt(g.wins)}勝`, `直近3年間・G1 ${g.g1}勝`],
 ]))}
 ${sec('summary-section', Hno(W, 'データ概要'), E.summary(d.summary, { jockey: Object.keys(d.jockeyUrl), racecourse: courses.filter((c) => d.courseUrl[c.name]).map((c) => c.name) }))}

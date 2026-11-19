@@ -150,6 +150,7 @@
 /* ---------- PC（1100px〜）：コースは板1枚の表（競馬場｜芝・ダート・障害の行｜距離のマス） ---------- */
 @media (min-width:1100px){
   .lh{padding-top:16px}
+  .lj a{padding:0 10px}
   .lh h1{font-size:28px}
   .sc,.lc-v,.ln-g{scroll-margin-top:calc(var(--hdr-h) + 76px)}
   .sc.l1{padding-top:0}
@@ -202,7 +203,8 @@ body.lf-on .lc-n{display:none}
   body.lf-on .lc-h{display:flex;align-items:center;gap:8px}
   body.lf-on .lw{margin:0;font-size:0;gap:0}
 }
-.lf-n.warn{color:#B3261E;font-weight:700}
+.lf-n{display:flex;flex-wrap:wrap;gap:0 12px}
+.lf-n .warn{color:#B3261E;font-weight:700}
 @media (max-width:699.98px){
   /* 名前：行で分けず、一致した名前のマスだけを1つの並びに詰める（.ln-f は list.js が入れる） */
   body.lf-on .ln-g{display:none}

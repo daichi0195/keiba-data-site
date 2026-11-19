@@ -5,7 +5,7 @@ const { I, ad, dists, all, VENUES, SURF, WEEK_RC } = L;
 
 const nOf = (sf) => all.filter((c) => c.sf === sf).length;
 const venue = ([rc, ja]) => `<section class="lc-v" id="rc-${rc}" aria-label="${ja}競馬場">
-  <div class="lc-h"><h2>${ja}<span>競馬場</span></h2>${WEEK_RC.includes(rc) ? '<span class="lw"><i class="lw-d"></i>今週開催</span>' : ''}<span class="lc-n"><b class="num">${all.filter((c) => c.rc === rc).length}</b>コース</span></div>
+  <div class="lc-h"><h2>${ja}<span>競馬場</span></h2>${WEEK_RC.includes(rc) ? '<span class="lw" title="今週開催"><i class="lw-d"></i>今週開催</span>' : ''}<span class="lc-n"><b class="num">${all.filter((c) => c.rc === rc).length}</b>コース</span></div>
   ${dists(rc)}
 </section>`;
 const half = Math.ceil(VENUES.length / 2);

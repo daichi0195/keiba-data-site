@@ -76,7 +76,7 @@ const NAVS = [['profile-section', '基本情報'], ['summary-section', '概要']
   ['racecourse-stats', '競馬場別'], ['course-stats', 'コース別'], ['dam-sire-stats', '母父別'], ['faq-section', 'Q&amp;A']];
 const dl = '<span class="es-s">ダ</span><span class="es-lg">ダート</span>の馬場';
 const body = `
-${E.nav(NAVS)}
+${E.nav(NAVS, 'es-n11')}
 ${E.hero({
   crumb: '種牡馬一覧', name: n, h1: W, h1s: 'の特徴・傾向',
   lead: `${W}の成績・データをまとめたページです。独自のデータベースで直近3年間・${int(s.total_races)}レースのデータを集計し、毎週更新しています。`,

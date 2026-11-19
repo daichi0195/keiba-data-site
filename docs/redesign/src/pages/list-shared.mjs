@@ -41,9 +41,9 @@ ${ad}`;
  */
 export function namePage({ current, out, pageTitle, title, lead, unit, noun, groups, leadTitle, rows, ridesLabel, placeholder, wide }) {
   const total = groups.reduce((s, g) => s + g.items.length, 0);
-  // 長い名前は2マスぶん使って切らない（トップ見本の kana() と同じ w8／w11。文字の大きさは変えない）。p2 は700px以上でも1マスに収まらない名前（種牡馬の12文字以上。騎手・調教師は700px以上では全員1マスに収まる幅にしてある）
+  // 長い名前は2マスぶん使って切らない（トップ見本と同じ w8／w11 の作り。文字の大きさは変えない。判定は文字数ではなく幅の目安 em()＝英字は0.55字ぶん、で行う）。p2 は700px以上でも1マスに収まらない名前（種牡馬の12文字以上。騎手・調教師は700px以上では全員1マスに収まる幅にしてある）
   const em = (n) => [...n].reduce((w, c) => w + (/[\x20-\x7e]/.test(c) ? 0.55 : 1), 0);
-  const cls = (n) => [n.length >= 8 ? 'w8' : '', n.length >= 11 ? 'w11' : '', wide && em(n) >= 12 ? 'p2' : ''].filter(Boolean).join(' ');
+  const cls = (n) => [em(n) > 6.7 ? 'w8' : '', em(n) > 10.7 ? 'w11' : '', wide && em(n) >= 12 ? 'p2' : ''].filter(Boolean).join(' ');
   const cell = (x) => `<a href="#" data-inert data-k="${esc(yomi(x.kana || x.name))}"${cls(x.name) ? ` class="${cls(x.name)}"` : ''}>${esc(x.name)}</a>`;
   const body = `
 ${hero({ title, lead, count: `${total.toLocaleString('ja-JP')}${unit}` })}

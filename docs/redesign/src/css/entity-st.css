@@ -156,3 +156,29 @@
   .es-lt th,.es-lt td,.es-lt td.m1,.es-lt td.m1b,.es-lt td.m2,.es-lt td.m3,.es-lt td.m4{font-size:15px;padding:4px 14px}
   .es-lt thead th{font-size:12px}
 }
+
+/* ===== 仕上げ ===== */
+/* 種牡馬のページ内ナビ（21項目）：PCは1段11個の2段に収める（3段目に1個だけ残さない） */
+@media (min-width:1100px){
+  .jk-nav.es-n11 > div{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));gap:6px}
+  .jk-nav.es-n11 a{justify-content:center;padding:0;white-space:nowrap}
+}
+@media (min-width:1100px) and (max-width:1279.98px){
+  .jk-nav.es-n11 > div{gap:4px}
+  .jk-nav.es-n11 a{font-size:13px}
+}
+/* 順位つきの表（母父・騎手・馬主）：幅が狭い帯ではセルの左右を詰めて、横に送らずに13項目を見せる */
+@media (min-width:700px) and (max-width:899.98px){.jk-t.rkt{--tp:2px}.jk-t.rkt .nm.lg{max-width:10em}}
+@media (min-width:1100px) and (max-width:1199.98px){.jk-t.rkt{--tp:2px}}
+/* 良馬場と道悪の横棒（スマホ）：出走数は数値の下に回して、棒を長く取る */
+@media (max-width:699.98px){
+  .es-cb-l{grid-template-columns:max-content max-content minmax(0,1fr) max-content}
+  .es-cb-l li{grid-template-rows:auto auto;align-content:center;height:42px}
+  .es-cb-l li > .t,.es-cb-l li > .l,.es-cb-l li > .jk-b{grid-row:1 / 3}
+  .es-cb-l li > b{grid-column:4;grid-row:1;line-height:1.2}
+  .es-cb-l li > small{grid-column:4;grid-row:2;min-width:0;font-size:11px;line-height:1.2}
+}
+/* 〜899px：表を閉じた板の下端の線と重なるので、次の小見出しの上の線は引かない */
+@media (max-width:899.98px){.jk-st + .es-sub{border-top:0;padding-top:0}}
+/* 基本情報の補足（着度数の下の「勝率／複勝」）：360pxでも1行に収める */
+@media (max-width:379.98px){.jk-tiles.es-tl dd small{font-size:11px;letter-spacing:-.02em}}

@@ -212,7 +212,7 @@ const highlights = `<section class="sc" id="highlights-section">${Hno('注目ポ
 
 /* ---------- 条件別 ---------- */
 // 補足文（「出走30以上で…」）は板の外、見出しの下に置く
-const cond = (id, title, rows, opt, sub = '') => `<section class="sc" id="${id}">${H(title, `${sub ? `<span class="jk-sb">${sub}</span>` : ''}<span class="jk-nt">${bestNote(rows)}</span>`)}<div class="jk-pn">${stats({ rows, ...opt })}</div></section>`;
+const cond = (id, title, rows, opt, sub = '', note = true) => `<section class="sc" id="${id}">${H(title, `${sub ? `<span class="jk-sb">${sub}</span>` : ''}${note ? `<span class="jk-nt">${bestNote(rows)}</span>` : ''}`)}<div class="jk-pn">${stats({ rows, ...opt })}</div></section>`;
 const classRows = ['G1', 'G2', 'G3', 'オープン', '3勝', '2勝', '1勝', '未勝利', '新馬'].map((n) => R(j.class_stats.find((x) => x.class_name === n) ?? ZERO, /^G\d$/.test(n) ? L.gradeBadge(n) : n, n));
 const popRows = [['fav1', '1番人気'], ['fav2', '2番人気'], ['fav3', '3番人気'], ['fav4', '4番人気'], ['fav5', '5番人気'], ['fav6to9', '6〜9番人気'], ['fav10plus', '10番人気〜']].map(([k, l]) => R(j.popularity_stats[k] ?? ZERO, l));
 const styleRows = [['escape', '逃げ'], ['lead', '先行'], ['pursue', '差し'], ['close', '追込']].map(([k, l]) => R(j.running_style_stats.find((x) => x.style === k) ?? ZERO, l));
@@ -258,7 +258,7 @@ ${gradedSec}
 ${characteristics}
 ${highlights}
 ${cond('class-stats', 'クラス別データ', classRows, { keyLabel: 'クラス' })}
-${cond('popularity-stats', '人気別データ', popRows, { keyLabel: '人気' })}
+${cond('popularity-stats', '人気別データ', popRows, { keyLabel: '人気' }, '', false)}
 ${cond('running-style-stats', '脚質別データ', styleRows, { keyLabel: '脚質', hint: deflink('脚質の定義') })}
 ${cond('gate-stats', '枠順別データ', gateRows, { keyLabel: '枠番' })}
 ${ad}

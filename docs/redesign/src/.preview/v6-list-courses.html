@@ -1360,6 +1360,7 @@ body::before{background:var(--green)}
 /* ---------- PC（1100px〜）：コースは板1枚の表（競馬場｜芝・ダート・障害の行｜距離のマス） ---------- */
 @media (min-width:1100px){
   .lh{padding-top:16px}
+  .lj a{padding:0 10px}
   .lh h1{font-size:28px}
   .sc,.lc-v,.ln-g{scroll-margin-top:calc(var(--hdr-h) + 76px)}
   .sc.l1{padding-top:0}
@@ -1412,7 +1413,8 @@ body.lf-on .lc-n{display:none}
   body.lf-on .lc-h{display:flex;align-items:center;gap:8px}
   body.lf-on .lw{margin:0;font-size:0;gap:0}
 }
-.lf-n.warn{color:#B3261E;font-weight:700}
+.lf-n{display:flex;flex-wrap:wrap;gap:0 12px}
+.lf-n .warn{color:#B3261E;font-weight:700}
 @media (max-width:699.98px){
   /* 名前：行で分けず、一致した名前のマスだけを1つの並びに詰める（.ln-f は list.js が入れる） */
   body.lf-on .ln-g{display:none}
@@ -1467,13 +1469,13 @@ body.lf-on .lc-n{display:none}
   <div class="lc-h"><h2>函館<span>競馬場</span></h2><span class="lc-n"><b class="num">8</b>コース</span></div>
   <div class="ds"><div class="ds-r"><span class="sf turf" data-short="芝"><span>芝</span></span><div class="ds-c"><a href="#" data-inert aria-label="函館芝1000m">1000<span class="u">m</span></a><a href="#" data-inert aria-label="函館芝1200m">1200<span class="u">m</span></a><a href="#" data-inert aria-label="函館芝1800m">1800<span class="u">m</span></a><a href="#" data-inert aria-label="函館芝2000m">2000<span class="u">m</span></a><a href="#" data-inert aria-label="函館芝2600m">2600<span class="u">m</span></a></div></div><div class="ds-r"><span class="sf dirt" data-short="ダ"><span>ダート</span></span><div class="ds-c"><a href="#" data-inert aria-label="函館ダート1000m">1000<span class="u">m</span></a><a href="#" data-inert aria-label="函館ダート1700m">1700<span class="u">m</span></a><a href="#" data-inert aria-label="函館ダート2400m">2400<span class="u">m</span></a></div></div></div>
 </section><section class="lc-v" id="rc-fukushima" aria-label="福島競馬場">
-  <div class="lc-h"><h2>福島<span>競馬場</span></h2><span class="lw"><i class="lw-d"></i>今週開催</span><span class="lc-n"><b class="num">10</b>コース</span></div>
+  <div class="lc-h"><h2>福島<span>競馬場</span></h2><span class="lw" title="今週開催"><i class="lw-d"></i>今週開催</span><span class="lc-n"><b class="num">10</b>コース</span></div>
   <div class="ds"><div class="ds-r"><span class="sf turf" data-short="芝"><span>芝</span></span><div class="ds-c"><a href="#" data-inert aria-label="福島芝1200m">1200<span class="u">m</span></a><a href="#" data-inert aria-label="福島芝1800m">1800<span class="u">m</span></a><a href="#" data-inert aria-label="福島芝2000m">2000<span class="u">m</span></a><a href="#" data-inert aria-label="福島芝2600m">2600<span class="u">m</span></a></div></div><div class="ds-r"><span class="sf dirt" data-short="ダ"><span>ダート</span></span><div class="ds-c"><a href="#" data-inert aria-label="福島ダート1150m">1150<span class="u">m</span></a><a href="#" data-inert aria-label="福島ダート1700m">1700<span class="u">m</span></a><a href="#" data-inert aria-label="福島ダート2400m">2400<span class="u">m</span></a></div></div><div class="ds-r"><span class="sf steeplechase" data-short="障"><span>障害</span></span><div class="ds-c"><a href="#" data-inert aria-label="福島障害2750m">2750<span class="u">m</span></a><a href="#" data-inert aria-label="福島障害2770m">2770<span class="u">m</span></a><a href="#" data-inert aria-label="福島障害3380m">3380<span class="u">m</span></a></div></div></div>
 </section><section class="lc-v" id="rc-niigata" aria-label="新潟競馬場">
   <div class="lc-h"><h2>新潟<span>競馬場</span></h2><span class="lc-n"><b class="num">16</b>コース</span></div>
   <div class="ds"><div class="ds-r"><span class="sf turf" data-short="芝"><span>芝</span></span><div class="ds-c"><a href="#" data-inert aria-label="新潟芝1000m">1000<span class="u">m</span></a><a href="#" data-inert aria-label="新潟芝1200m">1200<span class="u">m</span></a><a href="#" data-inert aria-label="新潟芝1400m">1400<span class="u">m</span></a><a href="#" data-inert aria-label="新潟芝1600m">1600<span class="u">m</span></a><a href="#" data-inert aria-label="新潟芝1800m">1800<span class="u">m</span></a><a href="#" data-inert class="v" aria-label="新潟芝2000m内">2000<span class="u">m</span>内</a><a href="#" data-inert class="v" aria-label="新潟芝2000m外">2000<span class="u">m</span>外</a><a href="#" data-inert aria-label="新潟芝2200m">2200<span class="u">m</span></a><a href="#" data-inert aria-label="新潟芝2400m">2400<span class="u">m</span></a></div></div><div class="ds-r"><span class="sf dirt" data-short="ダ"><span>ダート</span></span><div class="ds-c"><a href="#" data-inert aria-label="新潟ダート1200m">1200<span class="u">m</span></a><a href="#" data-inert aria-label="新潟ダート1800m">1800<span class="u">m</span></a><a href="#" data-inert aria-label="新潟ダート2500m">2500<span class="u">m</span></a></div></div><div class="ds-r"><span class="sf steeplechase" data-short="障"><span>障害</span></span><div class="ds-c"><a href="#" data-inert aria-label="新潟障害2850m">2850<span class="u">m</span></a><a href="#" data-inert aria-label="新潟障害2890m">2890<span class="u">m</span></a><a href="#" data-inert aria-label="新潟障害3250m">3250<span class="u">m</span></a><a href="#" data-inert aria-label="新潟障害3290m">3290<span class="u">m</span></a></div></div></div>
 </section><section class="lc-v" id="rc-tokyo" aria-label="東京競馬場">
-  <div class="lc-h"><h2>東京<span>競馬場</span></h2><span class="lw"><i class="lw-d"></i>今週開催</span><span class="lc-n"><b class="num">15</b>コース</span></div>
+  <div class="lc-h"><h2>東京<span>競馬場</span></h2><span class="lw" title="今週開催"><i class="lw-d"></i>今週開催</span><span class="lc-n"><b class="num">15</b>コース</span></div>
   <div class="ds"><div class="ds-r"><span class="sf turf" data-short="芝"><span>芝</span></span><div class="ds-c"><a href="#" data-inert aria-label="東京芝1400m">1400<span class="u">m</span></a><a href="#" data-inert aria-label="東京芝1600m">1600<span class="u">m</span></a><a href="#" data-inert aria-label="東京芝1800m">1800<span class="u">m</span></a><a href="#" data-inert aria-label="東京芝2000m">2000<span class="u">m</span></a><a href="#" data-inert aria-label="東京芝2300m">2300<span class="u">m</span></a><a href="#" data-inert aria-label="東京芝2400m">2400<span class="u">m</span></a><a href="#" data-inert aria-label="東京芝2500m">2500<span class="u">m</span></a><a href="#" data-inert aria-label="東京芝3400m">3400<span class="u">m</span></a></div></div><div class="ds-r"><span class="sf dirt" data-short="ダ"><span>ダート</span></span><div class="ds-c"><a href="#" data-inert aria-label="東京ダート1300m">1300<span class="u">m</span></a><a href="#" data-inert aria-label="東京ダート1400m">1400<span class="u">m</span></a><a href="#" data-inert aria-label="東京ダート1600m">1600<span class="u">m</span></a><a href="#" data-inert aria-label="東京ダート2100m">2100<span class="u">m</span></a></div></div><div class="ds-r"><span class="sf steeplechase" data-short="障"><span>障害</span></span><div class="ds-c"><a href="#" data-inert aria-label="東京障害3000m">3000<span class="u">m</span></a><a href="#" data-inert aria-label="東京障害3100m">3100<span class="u">m</span></a><a href="#" data-inert aria-label="東京障害3110m">3110<span class="u">m</span></a></div></div></div>
 </section></div>
   <div class="lx lc-ad"><div class="ad" role="note" aria-label="広告枠"><span>スポンサーリンク</span><div>広告枠</div></div></div>
@@ -1484,7 +1486,7 @@ body.lf-on .lc-n{display:none}
   <div class="lc-h"><h2>中京<span>競馬場</span></h2><span class="lc-n"><b class="num">13</b>コース</span></div>
   <div class="ds"><div class="ds-r"><span class="sf turf" data-short="芝"><span>芝</span></span><div class="ds-c"><a href="#" data-inert aria-label="中京芝1200m">1200<span class="u">m</span></a><a href="#" data-inert aria-label="中京芝1400m">1400<span class="u">m</span></a><a href="#" data-inert aria-label="中京芝1600m">1600<span class="u">m</span></a><a href="#" data-inert aria-label="中京芝2000m">2000<span class="u">m</span></a><a href="#" data-inert aria-label="中京芝2200m">2200<span class="u">m</span></a><a href="#" data-inert aria-label="中京芝3000m">3000<span class="u">m</span></a></div></div><div class="ds-r"><span class="sf dirt" data-short="ダ"><span>ダート</span></span><div class="ds-c"><a href="#" data-inert aria-label="中京ダート1200m">1200<span class="u">m</span></a><a href="#" data-inert aria-label="中京ダート1400m">1400<span class="u">m</span></a><a href="#" data-inert aria-label="中京ダート1800m">1800<span class="u">m</span></a><a href="#" data-inert aria-label="中京ダート1900m">1900<span class="u">m</span></a></div></div><div class="ds-r"><span class="sf steeplechase" data-short="障"><span>障害</span></span><div class="ds-c"><a href="#" data-inert aria-label="中京障害3000m">3000<span class="u">m</span></a><a href="#" data-inert aria-label="中京障害3300m">3300<span class="u">m</span></a><a href="#" data-inert aria-label="中京障害3330m">3330<span class="u">m</span></a></div></div></div>
 </section><section class="lc-v" id="rc-kyoto" aria-label="京都競馬場">
-  <div class="lc-h"><h2>京都<span>競馬場</span></h2><span class="lw"><i class="lw-d"></i>今週開催</span><span class="lc-n"><b class="num">18</b>コース</span></div>
+  <div class="lc-h"><h2>京都<span>競馬場</span></h2><span class="lw" title="今週開催"><i class="lw-d"></i>今週開催</span><span class="lc-n"><b class="num">18</b>コース</span></div>
   <div class="ds"><div class="ds-r"><span class="sf turf" data-short="芝"><span>芝</span></span><div class="ds-c"><a href="#" data-inert aria-label="京都芝1200m">1200<span class="u">m</span></a><a href="#" data-inert class="v" aria-label="京都芝1400m内">1400<span class="u">m</span>内</a><a href="#" data-inert class="v" aria-label="京都芝1400m外">1400<span class="u">m</span>外</a><a href="#" data-inert class="v" aria-label="京都芝1600m内">1600<span class="u">m</span>内</a><a href="#" data-inert class="v" aria-label="京都芝1600m外">1600<span class="u">m</span>外</a><a href="#" data-inert aria-label="京都芝1800m">1800<span class="u">m</span></a><a href="#" data-inert aria-label="京都芝2000m">2000<span class="u">m</span></a><a href="#" data-inert aria-label="京都芝2200m">2200<span class="u">m</span></a><a href="#" data-inert aria-label="京都芝2400m">2400<span class="u">m</span></a><a href="#" data-inert aria-label="京都芝3000m">3000<span class="u">m</span></a><a href="#" data-inert aria-label="京都芝3200m">3200<span class="u">m</span></a></div></div><div class="ds-r"><span class="sf dirt" data-short="ダ"><span>ダート</span></span><div class="ds-c"><a href="#" data-inert aria-label="京都ダート1200m">1200<span class="u">m</span></a><a href="#" data-inert aria-label="京都ダート1400m">1400<span class="u">m</span></a><a href="#" data-inert aria-label="京都ダート1800m">1800<span class="u">m</span></a><a href="#" data-inert aria-label="京都ダート1900m">1900<span class="u">m</span></a></div></div><div class="ds-r"><span class="sf steeplechase" data-short="障"><span>障害</span></span><div class="ds-c"><a href="#" data-inert aria-label="京都障害2910m">2910<span class="u">m</span></a><a href="#" data-inert aria-label="京都障害3170m">3170<span class="u">m</span></a><a href="#" data-inert aria-label="京都障害3930m">3930<span class="u">m</span></a></div></div></div>
 </section><section class="lc-v" id="rc-hanshin" aria-label="阪神競馬場">
   <div class="lc-h"><h2>阪神<span>競馬場</span></h2><span class="lc-n"><b class="num">17</b>コース</span></div>
@@ -1712,7 +1714,7 @@ body.lf-on .lc-n{display:none}
     return String(s).normalize('NFKC').toLowerCase().replace(/[ァ-ヶ]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0x60); }).replace(/[\s.・]/g, '');
   }
   function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
-  function setNote(html, warn) { note.innerHTML = html; note.hidden = !html; note.classList.toggle('warn', !!warn); }
+  function setNote(html) { note.innerHTML = html; note.hidden = !html; }
 
   /* ---------- ページ内の移動と現在地 ----------
      共通の top.js には任せず、ここで受け持つ（チップの href は実在しない id にしてある）。
@@ -1728,9 +1730,14 @@ body.lf-on .lc-n{display:none}
   function shown(el) { return el.getClientRects().length > 0; }
   function setChip(c) {
     chips.forEach(function (x) { x.a.classList.toggle('on', x === c); if (x === c) x.a.setAttribute('aria-current', 'true'); else x.a.removeAttribute('aria-current'); });
-    if (c === cur) return;
+    var changed = c !== cur;
     cur = c;
-    bar.scrollTo({ left: c ? c.a.offsetLeft - (bar.clientWidth - c.a.offsetWidth) / 2 : 0, behavior: calm ? 'auto' : 'smooth' });
+    // 帯はすぐに送る（なめらかに送ると本文の移動に打ち消される）。共通の top.js がページ先頭付近で帯を左端へ戻すので、
+    // 現在地のチップが帯からはみ出していたら毎回寄せ直す
+    if (c) {
+      var l = c.a.offsetLeft - bar.offsetLeft, out = l < bar.scrollLeft || l + c.a.offsetWidth > bar.scrollLeft + bar.clientWidth;
+      if (changed || out) bar.scrollTo({ left: c.a.offsetLeft - (bar.clientWidth - c.a.offsetWidth) / 2, behavior: 'auto' });
+    } else if (changed) bar.scrollTo({ left: 0, behavior: 'auto' });
   }
   function spy() {
     if (Date.now() < lock) { setChip(lockTo); return; }
@@ -1773,7 +1780,6 @@ body.lf-on .lc-n{display:none}
   function setMode(on) {
     extras.forEach(function (e) { e.hidden = on; });
     document.body.classList.toggle('lf-on', on);
-    if (on && !filtering) dock();
     filtering = on;
     onScroll();
   }
@@ -1795,7 +1801,8 @@ body.lf-on .lc-n{display:none}
   function bind(run) {
     q.addEventListener('compositionstart', function () { composing = true; });
     q.addEventListener('compositionend', function () { composing = false; run(); });
-    q.addEventListener('input', function (e) { if (e.isComposing) composing = true; run(); });
+    // 入力欄をヘッダー直下へ寄せるのは文字を打ったときだけ（馬場のボタンを押しただけでは動かさない）
+    q.addEventListener('input', function (e) { if (e.isComposing) composing = true; var was = filtering; run(); if (filtering && !was) dock(); });
     clear.addEventListener('click', function () { q.value = ''; composing = false; run(); q.focus(); });
   }
 
@@ -1837,7 +1844,7 @@ body.lf-on .lc-n{display:none}
       if (v) groups.forEach(function (g) { g.a.forEach(function (a) { if (!a.hidden) flat.appendChild(a.cloneNode(true)); }); });
       none.hidden = !v || total > 0;
       setMode(!!v);
-      setNote(v ? '「' + esc(raw) + '」に一致：<b>' + total + '</b>' + unit : '');
+      setNote(v ? '<span>「' + esc(raw) + '」に一致：<b>' + total + '</b>' + unit + '</span>' : '');
     };
     bind(run);
     // 押して開閉した状態は、絞り込みを解いたあとも保つ
@@ -1889,8 +1896,8 @@ body.lf-on .lc-n{display:none}
       layout();
       none2.hidden = total > 0;
       setMode(on);
-      if (bad) setNote('距離は数字で入力してください（例：1600）', true);
-      else setNote(on ? (sf ? LABEL[sf] : '') + (d ? '「' + d + '」で始まる距離' : '') + '：<b>' + total + '</b>コース（' + vn + '競馬場）' : '');
+      // 数字以外が混じっているときは、件数の横に案内を並べて出す
+      setNote((on ? '<span>' + (sf ? LABEL[sf] : '') + (d ? '「' + d + '」で始まる距離' : '') + '：<b>' + total + '</b>コース（' + vn + '競馬場）</span>' : '') + (bad ? '<span class="warn">距離は数字で入力してください（例：1600）</span>' : ''));
     };
     bind(runC);
     segs.forEach(function (b) {
