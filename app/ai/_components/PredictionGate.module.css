@@ -1,4 +1,5 @@
-/* AI予測の表を、オファーウォールで広告を見終わるまで隠す（PredictionGate） */
+/* AI予測の表を、オファーウォールで広告を見終わるまで隠す（PredictionGate）。
+   見た目はリデザイン v6 の見本（docs/redesign/src/css/ai.css の .p-gate）：表の位置に、表の高さを保ったまま出す */
 .gate {
   position: relative;
 }
@@ -17,39 +18,50 @@
   justify-content: flex-start;
   gap: 12px;
   padding: 64px 16px 0;
-  color: var(--ink-sub, #666);
-  font-size: 0.9rem;
+  text-align: center;
+  color: var(--c-text-sub);
+  font-size: 15px;
+  line-height: 1.7;
 }
 
 .overlay p {
   margin: 0;
   max-width: 28em;
-  text-align: center;
-  line-height: 1.7;
 }
 
-.blockedTitle {
+/* 親の要素リセット（.root :where(p) など）に負けないよう .overlay の中として指定する */
+.overlay .blockedTitle {
+  font-size: 17px;
   font-weight: 700;
-  color: var(--ink, #2d3748);
+  color: var(--c-text);
 }
 
-.reload {
+.overlay .reload {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
   margin-top: 4px;
-  padding: 8px 20px;
+  padding: 0 24px;
   border: none;
-  border-radius: 999px;
-  background: var(--brand, #52af77);
+  border-radius: 9999px;
+  background: var(--c-theme);
   color: #fff;
-  font-size: 0.9rem;
-  font-weight: 600;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
   cursor: pointer;
 }
 
+.overlay .reload:hover {
+  background: var(--c-theme-hover);
+}
+
 .spinner {
-  width: 28px;
-  height: 28px;
-  border: 3px solid #e2e8f0;
-  border-top-color: var(--brand, #52af77);
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e3e6ea;
+  border-top-color: var(--c-theme);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -57,5 +69,18 @@
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+  }
+}
+
+@media (max-width: 699.98px) {
+  .overlay {
+    padding-top: 48px;
+    font-size: 14px;
   }
 }

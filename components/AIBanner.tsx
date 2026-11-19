@@ -9,7 +9,7 @@ export default function AIBanner({ bookmarkOnly = false, bannerOnly = false }: {
         <Link href="/ai" className={`${styles.banner} ${styles.textBanner}`}>
           <span className={styles.bannerLabel}>AI勝率予測</span>
           <span className={styles.bannerTitle}>出走馬ごとの勝率をAIで予測</span>
-          <span className={styles.bannerText}>独自のモデルで出走馬の勝率を算出し、対象レースの約10分前に無料で公開しています。</span>
+          <span className={styles.bannerText}>独自のモデルで出走馬の勝率を算出し、対象レースの約5分前に無料で公開しています。</span>
           <span className={styles.bannerMore}>予測を見る</span>
         </Link>
       )}
