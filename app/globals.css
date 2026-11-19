@@ -91,7 +91,7 @@
 }
 @media (min-width: 1100px) {
   :root {
-    --hdr-h: 56px;
+    --hdr-h: 64px;
     --pad: 24px;
     --pad-r: 24px;
     --sp-section: 40px;

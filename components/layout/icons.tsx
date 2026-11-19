@@ -8,6 +8,7 @@ import {
   faUser,
   faPenToSquare,
   faBars,
+  faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 
 /** 共通の枠で使うアイコン（見本 lib.mjs の I と同じ Font Awesome solid） */
@@ -20,6 +21,7 @@ export const FRAME_ICONS = {
   trainer: faUser,
   col: faPenToSquare,
   menu: faBars,
+  close: faXmark,
 } as const;
 
 export type FrameIconKey = keyof typeof FRAME_ICONS;

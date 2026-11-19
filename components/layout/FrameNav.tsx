@@ -81,13 +81,13 @@ export function MenuButton() {
     <button
       type="button"
       className={s.hbtn}
-      aria-label="メニュー"
+      aria-label={open ? "メニューを閉じる" : "メニューを開く"}
       aria-expanded={open}
       aria-controls={MENU_ID}
       data-menu-button=""
       onClick={() => set(!open)}
     >
-      <FrameIcon icon={FRAME_ICONS.menu} className={s.ic} />
+      <FrameIcon icon={open ? FRAME_ICONS.close : FRAME_ICONS.menu} className={s.ic} />
     </button>
   );
 }

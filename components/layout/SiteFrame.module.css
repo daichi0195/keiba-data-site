@@ -149,6 +149,8 @@
     padding: 12px 12px 80px;
     background: var(--c-panel);
     box-shadow: 0 0 0 100vmax rgba(0, 0, 0, .45);
+    /* 暗幕はヘッダーの下だけにかける（ヘッダーは暗くしない） */
+    clip-path: inset(0 -100vmax -100vmax 0);
   }
 }
 
@@ -378,4 +380,12 @@
   .nav a {
     transition: none;
   }
+}
+
+/* 2026-11-19 オーナー指示：PCはメニューボタンを出さない（左メニューが常に出ているため）。PCのヘッダーは少し高く */
+@media (min-width: 1100px) {
+  .hbtn { display: none; }
+  .hdr { padding-left: max(24px, calc((100vw - 2076px) / 2 + 36px)); }
+  .logo { font-size: 21px; gap: 10px; }
+  .logo img { width: 34px; height: 34px; }
 }
