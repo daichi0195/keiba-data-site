@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <!-- 競馬データ.com のインデックス登録の促進：毎日 9:00 JST に scripts/indexing/daily-index.mjs を実行。
+       Mac がスリープ中なら復帰時に実行される。ログ：~/keibadata-indexing/logs/YYYY-MM-DD.log
+       登録: cp scripts/indexing/com.keibadata.indexing.plist ~/Library/LaunchAgents/ && launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.keibadata.indexing.plist
+       解除: launchctl bootout gui/$(id -u)/com.keibadata.indexing -->
+  <key>Label</key><string>com.keibadata.indexing</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Users/kubotataichi/.nvm/versions/node/v22.19.0/bin/node</string>
+    <string>/Users/kubotataichi/keiba-data-site/scripts/indexing/daily-index.mjs</string>
+  </array>
+  <key>WorkingDirectory</key><string>/Users/kubotataichi/keiba-data-site</string>
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Hour</key><integer>9</integer>
+    <key>Minute</key><integer>0</integer>
+  </dict>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key><string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/Users/kubotataichi/google-cloud-sdk/bin</string>
+    <key>HOME</key><string>/Users/kubotataichi</string>
+    <key>LANG</key><string>ja_JP.UTF-8</string>
+  </dict>
+  <key>StandardOutPath</key><string>/Users/kubotataichi/keibadata-indexing/launchd.log</string>
+  <key>StandardErrorPath</key><string>/Users/kubotataichi/keibadata-indexing/launchd.log</string>
+  <key>RunAtLoad</key><false/>
+</dict>
+</plist>
