@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import RailAiOff from '@/components/layout/RailAiOff';
+import { RailAdOff } from '@/components/layout/RailAd';
 import { FRAME_ICONS, FrameIcon, type FrameIconKey } from '@/components/layout/icons';
 import { P, In, ChevR, StaticCrumb } from '@/components/v6/static/StaticPage';
 import { cx } from '@/components/v6/static/cx';
@@ -25,6 +26,7 @@ export default function NotFound() {
   return (
     <main className={cx('root')}>
       <RailAiOff />
+      <RailAdOff />
       <div className={cx('st st-solo')} id="st-top">
         <header className={cx('st-h')}>
           <StaticCrumb crumbs={[{ label: 'ページが見つかりません' }]} />

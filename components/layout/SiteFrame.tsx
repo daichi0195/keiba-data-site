@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import AdSlot from '@/components/AdSlot';
+import RailAd from './RailAd';
+import WeekVenues from './WeekVenues';
 import { getCoursesByRacecourse } from '@/lib/courses';
 import { MainNav, MenuButton, TabBar, MENU_ID } from './FrameNav';
 import s from './SiteFrame.module.css';
@@ -29,7 +30,7 @@ export type WeekVenue = { id: string; name: string };
  * - スマホ・タブレット：下部メニュー、メニューボタンで左メニューを引き出す
  * 右列の AI 案内は、ページ側に <RailAiOff /> を置くと出なくなる（見本の railAi: false）。
  */
-export default function SiteFrame({ weekVenues, children }: { weekVenues: WeekVenue[]; children: React.ReactNode }) {
+export default function SiteFrame({ children }: { children: React.ReactNode }) {
   return (
     <>
       <header className={s.hdr}>
@@ -45,19 +46,7 @@ export default function SiteFrame({ weekVenues, children }: { weekVenues: WeekVe
       <div className={s.shell}>
         <aside id={MENU_ID} className={s.side} aria-label="メニュー">
           <MainNav />
-          {weekVenues.length > 0 && (
-            <>
-              <h2>今週開催</h2>
-              <nav className={s.nav} aria-label="今週開催の競馬場">
-                {weekVenues.map((v) => (
-                  <Link key={v.id} href={venueHref(v.id)}>
-                    <i className={s.vd} aria-hidden="true" />
-                    <span>{v.name}競馬場</span>
-                  </Link>
-                ))}
-              </nav>
-            </>
-          )}
+          <WeekVenues />
           <h2>競馬場</h2>
           <nav className={`${s.nav} ${s.navCols}`} aria-label="競馬場">
             {VENUES.map((v) => (
@@ -81,7 +70,7 @@ export default function SiteFrame({ weekVenues, children }: { weekVenues: WeekVe
                     予測を見る
                   </Link>
                 </div>
-                <AdSlot unit="sidebar" variant="rail" />
+                <RailAd />
               </div>
             </aside>
           </div>

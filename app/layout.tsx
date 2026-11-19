@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import SiteFrame from "@/components/layout/SiteFrame";
 import GaugeAnimationObserver from "@/components/GaugeAnimationObserver";
-import { getThisWeekVenues } from "@/lib/thisWeekVenues";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -22,13 +21,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   // 左メニューの「今週開催」：トップページと同じ AI予測インデックスから算出（lib/thisWeekVenues）
-  const weekVenues = (await getThisWeekVenues()).map((v) => ({ id: v.id, name: v.shortName }));
 
   return (
     <html lang="ja">
@@ -82,7 +80,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         </noscript>
         {/* End Google Tag Manager (noscript) */}
 
-        <SiteFrame weekVenues={weekVenues}>{children}</SiteFrame>
+        <SiteFrame>{children}</SiteFrame>
         <GaugeAnimationObserver />
       </body>
     </html>

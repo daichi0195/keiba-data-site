@@ -80,7 +80,7 @@ export default function EntityEffects() {
       if (i === navOn) return;
       if (navOn >= 0) navLinks[navOn]?.classList.remove(s.on);
       navOn = i;
-      if (i < 0) return;
+      if (i < 0) { navBox.scrollTo({ left: 0, behavior: 'auto' }); return; }
       const a = navLinks[i];
       a.classList.add(s.on);
       const l = a.offsetLeft - navBox.offsetLeft, r = l + a.offsetWidth;
