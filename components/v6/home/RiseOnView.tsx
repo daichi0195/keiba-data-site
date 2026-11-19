@@ -15,6 +15,9 @@ export default function RiseOnView({ children }: { children: React.ReactNode }) 
   useEffect(() => {
     const el = ref.current;
     if (!el || !('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    // 読み込んだ時点で画面に入っているものは動かさない（完成形が一瞬出てから0に戻るちらつきを防ぐ）
+    const r0 = el.getBoundingClientRect();
+    if (r0.top < innerHeight && r0.bottom > 0) return;
     setAnim(true);
     const io = new IntersectionObserver(
       (es) => {

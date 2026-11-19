@@ -31,6 +31,9 @@ export default function LeadingRank({ rows, unit, hrefPrefix }: { rows: RankRow[
   useEffect(() => {
     const ol = olRef.current;
     if (!ol || !('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    // 読み込んだ時点で画面に入っているものは動かさない（完成形が一瞬出てから0に戻るちらつきを防ぐ）
+    const r0 = ol.getBoundingClientRect();
+    if (r0.top < innerHeight && r0.bottom > 0) return;
     setAnim(true);
     let raf = 0;
     const io = new IntersectionObserver(
