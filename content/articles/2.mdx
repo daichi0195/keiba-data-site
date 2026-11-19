@@ -280,132 +280,25 @@ priority: 2
 定説として「**初仔は馬体重が軽いから**」がありますが、実際はどうでしょうか。<br />
 デビュー時の馬体重分布を比較してみましょう。
 
-<style>{`
-  .histogram-x-label-mobile { display: inline; }
-  .histogram-x-label-pc { display: none; }
-  @media (min-width: 768px) {
-    .histogram-x-label-mobile { display: none; }
-    .histogram-x-label-pc { display: inline; }
-  }
-`}</style>
-
-<div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
-  <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', fontWeight: '600' }}>デビュー時の馬体重分布</h3>
-
-  {/* グラフエリア */}
-  <div style={{ position: 'relative', marginLeft: '35px' }}>
-    {/* Y軸数値ラベル */}
-    <div style={{ position: 'absolute', left: '-32px', width: '28px', height: '250px', fontSize: '0.7rem', color: '#666', textAlign: 'right', paddingRight: '4px' }}>
-      <div style={{ position: 'absolute', top: '-8px', right: '4px' }}>30%</div>
-      <div style={{ position: 'absolute', top: '75px', right: '4px' }}>20%</div>
-      <div style={{ position: 'absolute', top: '158px', right: '4px' }}>10%</div>
-      <div style={{ position: 'absolute', bottom: '-8px', right: '4px' }}>0%</div>
-    </div>
-
-    {/* グリッドライン */}
-    <div style={{ position: 'relative', height: '250px', borderLeft: '1px solid #e2e8f0', borderBottom: '1px solid #e2e8f0' }}>
-      {/* 凡例（右上） */}
-      <div style={{ position: 'absolute', top: '10px', right: '10px', display: 'flex', gap: '0.75rem', fontSize: '0.8rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-          <div style={{ width: '16px', height: '10px', backgroundColor: 'rgba(251, 146, 60, 0.6)' }}></div>
-          <span>初仔</span>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-          <div style={{ width: '16px', height: '10px', backgroundColor: 'rgba(134, 239, 172, 0.6)' }}></div>
-          <span>初仔以外</span>
-        </div>
-      </div>
-      <div style={{ position: 'absolute', width: '100%', height: '1px', backgroundColor: '#f0f0f0', top: '0' }}></div>
-      <div style={{ position: 'absolute', width: '100%', height: '1px', backgroundColor: '#f0f0f0', top: '83px' }}></div>
-      <div style={{ position: 'absolute', width: '100%', height: '1px', backgroundColor: '#f0f0f0', top: '166px' }}></div>
-
-      {/* データバー（ヒストグラム） */}
-      <div style={{ display: 'flex', height: '100%', alignItems: 'flex-end' }}>
-        {/* 400kg未満 */}
-        <div style={{ flex: 1, position: 'relative', height: '100%', display: 'flex', alignItems: 'flex-end' }}>
-          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(251, 146, 60, 0.6)', height: `${3.1 * 8}px` }} title="初仔: 3.1%"></div>
-          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(134, 239, 172, 0.6)', height: `${1.9 * 8}px` }} title="初仔以外: 1.9%"></div>
-        </div>
-        {/* 400-419kg */}
-        <div style={{ flex: 1, position: 'relative', height: '100%', display: 'flex', alignItems: 'flex-end' }}>
-          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(251, 146, 60, 0.6)', height: `${9.4 * 8}px` }} title="初仔: 9.4%"></div>
-          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(134, 239, 172, 0.6)', height: `${5.7 * 8}px` }} title="初仔以外: 5.7%"></div>
-        </div>
-        {/* 420-439kg */}
-        <div style={{ flex: 1, position: 'relative', height: '100%', display: 'flex', alignItems: 'flex-end' }}>
-          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(251, 146, 60, 0.6)', height: `${17.2 * 8}px` }} title="初仔: 17.2%"></div>
-          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(134, 239, 172, 0.6)', height: `${14.0 * 8}px` }} title="初仔以外: 14.0%"></div>
-        </div>
-        {/* 440-459kg */}
-        <div style={{ flex: 1, position: 'relative', height: '100%', display: 'flex', alignItems: 'flex-end' }}>
-          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(251, 146, 60, 0.6)', height: `${25.7 * 8}px` }} title="初仔: 25.7%"></div>
-          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(134, 239, 172, 0.6)', height: `${22.0 * 8}px` }} title="初仔以外: 22.0%"></div>
-        </div>
-        {/* 460-479kg */}
-        <div style={{ flex: 1, position: 'relative', height: '100%', display: 'flex', alignItems: 'flex-end' }}>
-          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(251, 146, 60, 0.6)', height: `${20.6 * 8}px` }} title="初仔: 20.6%"></div>
-          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(134, 239, 172, 0.6)', height: `${24.3 * 8}px` }} title="初仔以外: 24.3%"></div>
-        </div>
-        {/* 480-499kg */}
-        <div style={{ flex: 1, position: 'relative', height: '100%', display: 'flex', alignItems: 'flex-end' }}>
-          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(251, 146, 60, 0.6)', height: `${14.3 * 8}px` }} title="初仔: 14.3%"></div>
-          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(134, 239, 172, 0.6)', height: `${17.5 * 8}px` }} title="初仔以外: 17.5%"></div>
-        </div>
-        {/* 500-519kg */}
-        <div style={{ flex: 1, position: 'relative', height: '100%', display: 'flex', alignItems: 'flex-end' }}>
-          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(251, 146, 60, 0.6)', height: `${6.2 * 8}px` }} title="初仔: 6.2%"></div>
-          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(134, 239, 172, 0.6)', height: `${9.3 * 8}px` }} title="初仔以外: 9.3%"></div>
-        </div>
-        {/* 520kg以上 */}
-        <div style={{ flex: 1, position: 'relative', height: '100%', display: 'flex', alignItems: 'flex-end' }}>
-          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(251, 146, 60, 0.6)', height: `${3.5 * 8}px` }} title="初仔: 3.5%"></div>
-          <div style={{ position: 'absolute', bottom: 0, width: '100%', backgroundColor: 'rgba(134, 239, 172, 0.6)', height: `${5.2 * 8}px` }} title="初仔以外: 5.2%"></div>
-        </div>
-      </div>
-    </div>
-
-    {/* X軸ラベル */}
-    <div style={{ display: 'flex', marginTop: '6px', fontSize: '0.65rem', color: '#666' }}>
-      <div style={{ flex: 1, textAlign: 'center' }}>
-        <span className="histogram-x-label-mobile">400<br/>未満</span>
-        <span className="histogram-x-label-pc">400未満</span>
-      </div>
-      <div style={{ flex: 1, textAlign: 'center' }}>
-        <span className="histogram-x-label-mobile">400-<br/>419</span>
-        <span className="histogram-x-label-pc">400-419</span>
-      </div>
-      <div style={{ flex: 1, textAlign: 'center' }}>
-        <span className="histogram-x-label-mobile">420-<br/>439</span>
-        <span className="histogram-x-label-pc">420-439</span>
-      </div>
-      <div style={{ flex: 1, textAlign: 'center' }}>
-        <span className="histogram-x-label-mobile">440-<br/>459</span>
-        <span className="histogram-x-label-pc">440-459</span>
-      </div>
-      <div style={{ flex: 1, textAlign: 'center' }}>
-        <span className="histogram-x-label-mobile">460-<br/>479</span>
-        <span className="histogram-x-label-pc">460-479</span>
-      </div>
-      <div style={{ flex: 1, textAlign: 'center' }}>
-        <span className="histogram-x-label-mobile">480-<br/>499</span>
-        <span className="histogram-x-label-pc">480-499</span>
-      </div>
-      <div style={{ flex: 1, textAlign: 'center' }}>
-        <span className="histogram-x-label-mobile">500-<br/>519</span>
-        <span className="histogram-x-label-pc">500-519</span>
-      </div>
-      <div style={{ flex: 1, textAlign: 'center' }}>
-        <span className="histogram-x-label-mobile">520<br/>以上</span>
-        <span className="histogram-x-label-pc">520以上</span>
-      </div>
-    </div>
-  </div>
-
-  {/* キャプション */}
-  <div style={{ fontSize: '0.85rem', color: '#666', textAlign: 'center', lineHeight: '1.5' }}>
-    縦軸：割合（%） 横軸：馬体重（kg）
-  </div>
-</div>
+<SeasonDualChart
+  title="デビュー時の馬体重分布"
+  label1="初仔"
+  label2="初仔以外"
+  accent={1}
+  yMax={30}
+  unit="%"
+  note="縦軸：割合（%） 横軸：馬体重（kg）"
+  data={[
+    { label: '400未満', male: 3.1, female: 1.9 },
+    { label: '400-419', male: 9.4, female: 5.7 },
+    { label: '420-439', male: 17.2, female: 14.0 },
+    { label: '440-459', male: 25.7, female: 22.0 },
+    { label: '460-479', male: 20.6, female: 24.3 },
+    { label: '480-499', male: 14.3, female: 17.5 },
+    { label: '500-519', male: 6.2, female: 9.3 },
+    { label: '520以上', male: 3.5, female: 5.2 },
+  ]}
+/>
 
 初仔は440-459kg、初仔以外は460-479kgに分布のピークがあることが分かります。
 

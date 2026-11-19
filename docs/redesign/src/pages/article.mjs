@@ -50,8 +50,10 @@ function chart(src) {
 
 // 本文に直接書かれた表（体重帯ごとの複勝率差分）。数値の右に、0を中心に左右へ伸びる棒を添える
 function diffTable(src) {
-  const ths = [...src.matchAll(/<th[^>]*>([^<]+)<\/th>/g)].map((m) => m[1]);
-  const rows = [...src.matchAll(/\['([^']+)', '([^']+)', '([^']+)'\]/g)].map((m) => m.slice(1, 4));
+  // 本番の MDX は <DiffTable head={[...]} rows={[...]} />（2026-11-19 に生の HTML の表から置き換え。値は同じ）
+  const hd = src.match(/head=\{\[(.*?)\]\}/);
+  const ths = hd ? [...hd[1].matchAll(/'([^']+)'/g)].map((m) => m[1]) : [...src.matchAll(/<th[^>]*>([^<]+)<\/th>/g)].map((m) => m[1]);
+  const rows = [...src.slice(Math.max(0, src.indexOf('rows={'))).matchAll(/\['([^']+)', '([^']+)', '([^']+)'\]/g)].map((m) => m.slice(1, 4));
   const num = (s) => parseFloat(s.replace('−', '-'));
   const span = Math.ceil(Math.max(...rows.flatMap((r) => [r[1], r[2]].map((x) => Math.abs(num(x))))));
   const cell = (s, bold) => { const v = num(s); const m = s.match(/^([+−][\d.]+)(.*)$/); return `<td class="${v < 0 ? 'neg' : 'pos'}"><span class="df"><span class="df-v"><b class="num${bold ? '' : ' reg'}">${m[1]}</b><small>${m[2]}</small></span><span class="df-b" aria-hidden="true"><i style="--w:${(Math.abs(v) / span * 50).toFixed(1)}%"></i></span></span></td>`; };
@@ -68,6 +70,7 @@ function build(src) {
     if (!ln.trim()) { i++; continue; }
     if (ln.startsWith('<SeasonDualChart')) { out.push(chart(take((l) => l.trim() === '/>'))); continue; }
     if (ln.startsWith('<div style={{ overflowX')) { out.push(diffTable(take((l) => l === '</div>'))); continue; }
+    if (ln.startsWith('<DiffTable')) { out.push(diffTable(take((l) => l.trim() === '/>'))); continue; }
     if (ln.startsWith('<div style={{ fontSize')) { const t = take((l) => l === '</div>').split('\n').slice(1, -1).join('\n'); out.push(`<p class="note">${inline(t.trim())}</p>`); continue; }
     if (ln.trim() === '---') { i++; continue; } // 区切り線：次のH2が罫を持つので重ねない
     let m;
@@ -88,7 +91,7 @@ function build(src) {
       continue;
     }
     // 段落（空行まで。途中でグラフが始まったらそこで切る）
-    const buf = []; for (; i < lines.length && lines[i].trim() && !/^(<SeasonDualChart|<div style|#{2,3} |- )/.test(lines[i]); i++) buf.push(lines[i]);
+    const buf = []; for (; i < lines.length && lines[i].trim() && !/^(<SeasonDualChart|<DiffTable|<div style|#{2,3} |- )/.test(lines[i]); i++) buf.push(lines[i]);
     out.push(`<p>${inline(buf.join('\n'))}</p>`);
   }
   return out.join('\n');

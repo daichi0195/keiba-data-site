@@ -13,36 +13,13 @@ import {
   getPopularArticles,
 } from '@/lib/articles';
 import { getAuthorById, getAuthorByName } from '@/lib/authors';
-import FixedShareButton from '@/components/FixedShareButton';
-import AdSlot from '@/components/AdSlot';
-import TableOfContents from '@/components/TableOfContents';
-import MobileTableOfContents from '@/components/MobileTableOfContents';
-import PopularArticles from '@/components/PopularArticles';
-import DataTable from '@/components/DataTable';
-import GateTable from '@/components/GateTable';
-import HorseWeightTable from '@/components/HorseWeightTable';
-import RunningStyleTable from '@/components/RunningStyleTable';
-import PopularityTable from '@/components/PopularityTable';
-import StatsTable from '@/components/StatsTable';
-import ClassTable from '@/components/ClassTable';
-import ComparisonTable from '@/components/ComparisonTable';
-import GenderTable from '@/components/GenderTable';
-import PreviousFinishTable from '@/components/PreviousFinishTable';
-import MaturityChart from '@/components/MaturityChart';
-import AverageMaturityChart from '@/components/AverageMaturityChart';
-import BarCompareChart from '@/components/BarCompareChart';
-import SeasonDualChart from '@/components/SeasonDualChart';
-import styles from './page.module.css';
-import pageStyles from '@/app/static-page.module.css';
-import s from '@/components/course/course.module.css';
-
-// 見出しのIDを生成する関数
-function generateId(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/[^\w\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF\s-]/g, '')
-    .replace(/\s+/g, '-');
-}
+import { articleMdxComponents } from '@/components/v6/article/mdx';
+import { TocSide } from '@/components/v6/article/Toc';
+import { Card, dateJa, toCard } from '@/components/v6/article/Cards';
+import RiseGrid from '@/components/v6/article/RiseGrid';
+import ArticleEffects from '@/components/v6/article/ArticleEffects';
+import { XLogo, RssLogo } from '@/components/v6/article/icons';
+import { cx } from '@/components/v6/article/cx';
 
 interface ArticlePageProps {
   params: Promise<{
@@ -113,8 +90,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     notFound();
   }
 
-  const { title, description, date, category, tags, author, thumbnail } =
-    article.frontmatter;
+  const { title, description, date, category, author, thumbnail } = article.frontmatter;
   const { prev, next } = getAdjacentArticles(slug);
 
   // 人気記事を取得（最大10件）
@@ -129,245 +105,154 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const authorRss = authorData?.rss;
   const authorAboutUrl = authorData?.aboutUrl;
 
-  // 日付をフォーマット
-  const formattedDate = new Date(date).toLocaleDateString('ja-JP', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
+  const formattedDate = dateJa(date);
 
-  // 記事のフルURLを生成
+  // 記事のフルURL（Xでシェアするときに使う）
   const articleUrl = `https://keibadata.com/articles/${slug}`;
+  const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(articleUrl)}`;
+  const share = (size: 'sm' | 'lg', label: string) => (
+    <a className={cx('sh', size)} href={shareUrl} target="_blank" rel="noopener noreferrer" aria-label="Xでシェア">
+      <XLogo />
+      <span>{label}</span>
+    </a>
+  );
 
-  // 見出しを抽出（SP用目次）
+  // 見出し（H2・H3）を抽出：本文の中の目次と、PC の右の目次
   const headings = extractHeadings(article.content);
+  const components = articleMdxComponents(headings);
 
-  // 最初のH2かどうかを追跡する変数
-  let isFirstH2 = true;
-  // 記事内広告は2つ目と4つ目のH2の直前に入れる（冒頭と中盤）
-  let h2Count = 0;
-
-  const components = {
-    DataTable,
-    GateTable,
-    HorseWeightTable,
-    RunningStyleTable,
-    PopularityTable,
-    StatsTable,
-    ClassTable,
-    ComparisonTable,
-    GenderTable,
-    PreviousFinishTable,
-    MaturityChart,
-    AverageMaturityChart,
-    BarCompareChart,
-    SeasonDualChart,
-    // 見出しにIDを付与し、最初のH2の前に目次を挿入
-    h2: ({ children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => {
-      const text = String(children);
-      const id = generateId(text);
-      const showToc = isFirstH2;
-      isFirstH2 = false;
-      h2Count += 1;
-      const showAd = h2Count === 2 || h2Count === 4;
-
-      return (
-        <>
-          {showToc && <MobileTableOfContents headings={headings} initialShow={5} />}
-          {showAd && <AdSlot unit="articleIn" variant="article" />}
-          <h2 id={id} {...props}>{children}</h2>
-        </>
-      );
-    },
-    h3: ({ children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => {
-      const text = String(children);
-      const id = generateId(text);
-      return <h3 id={id} {...props}>{children}</h3>;
-    },
-  };
+  const navItem = (a: NonNullable<typeof prev>, label: string) => (
+    <Link className={cx('an-i')} href={`/articles/${a.slug}`}>
+      <span className={cx('an-p')}>
+        {a.frontmatter.thumbnail && <Image src={a.frontmatter.thumbnail} alt="" width={1200} height={630} sizes="160px" />}
+      </span>
+      <span className={cx('an-t')}>
+        <small>{label}</small>
+        <b>{a.frontmatter.title}</b>
+      </span>
+    </Link>
+  );
 
   return (
     <>
-      <div className={s.canvas}>
-      <div className={pageStyles.staticPageContainer}>
-        <div className={pageStyles.staticPageColumns}>
-          <div className={styles.mainContent}>
+      <main className={cx('root')}>
+        <div className={cx('ar')}>
+          <div className={cx('ar-in')}>
+            <nav className={cx('bc')} aria-label="パンくず">
+              <Link href="/">HOME</Link>
+              <i aria-hidden="true">/</i>
+              <Link href="/articles">コラム</Link>
+              <i aria-hidden="true">/</i>
+              <span>{title}</span>
+            </nav>
 
-            <article className={styles.article}>
-              {/* パンくずリスト */}
-              <nav className={s.crumb} aria-label="パンくず">
-                <Link href="/">HOME</Link>
-                <span aria-hidden="true">/</span>
-                <Link href="/articles">記事一覧</Link>
-                <span aria-hidden="true">/</span>
-                <span>{title}</span>
-              </nav>
-
-              {/* 記事タイトルと日付 */}
-              <div className={s.hero}>
-                <h1 className={s.title}>{title}</h1>
-                <div className={s.meta}>
-                  <time dateTime={date}>{formattedDate}</time>
-                </div>
-              </div>
-
-              <div className={styles.bodyCard}>
-                {/* サムネイル画像 */}
-                {thumbnail && (
-                  <div className={styles.thumbnailWrapper}>
-                    <Image
-                      src={thumbnail}
-                      alt={title}
-                      width={1200}
-                      height={630}
-                      className={styles.thumbnail}
-                      sizes="(max-width: 768px) 100vw, 800px"
-                      priority={true}
-                    />
+            <div className={cx('ar-cols')}>
+              <article className={cx('ar-main')}>
+                <header className={cx('ar-hd')}>
+                  <div className={cx('ar-ht')}>
+                    <div>
+                      {category && <p className={cx('ar-k')}>{category}</p>}
+                      <h1 className={cx(/^[『「【（]/.test(title) && 'hang')}>{title}</h1>
+                    </div>
+                    <div className={cx('ar-meta')}>
+                      <p className={cx('ar-by')}>
+                        {authorImage && <Image src={authorImage} alt="" width={32} height={32} />}
+                        <b>{authorName}</b>
+                        <time dateTime={date}>{formattedDate}</time>
+                      </p>
+                      {share('sm', 'シェア')}
+                    </div>
                   </div>
-                )}
-
-              {/* 記事本文（最初のH2の前に目次が挿入される） */}
-              <div className={styles.content}>
-                {article.isMDX ? (
-                  <MDXRemote
-                    source={article.content}
-                    components={components}
-                    options={{
-                      mdxOptions: {
-                        // 本文中の種牡馬・騎手・調教師名を各データページへリンクする
-                        remarkPlugins: [remarkGfm, remarkEntityLinks],
-                      },
-                      blockJS: false,
-                      blockDangerousJS: false,
-                    }}
-                  />
-                ) : (
-                  <div dangerouslySetInnerHTML={{ __html: article.contentHtml }} />
-                )}
-              </div>
-
-              {/* 記事フッター - 執筆者情報 */}
-              <footer className={styles.footer}>
-                <div className={styles.authorCard}>
-                  {authorImage && (
-                    <div className={styles.authorImageWrapper}>
-                      <Image
-                        src={authorImage}
-                        alt={authorName}
-                        width={120}
-                        height={120}
-                        className={styles.authorImage}
-                        priority={false}
-                      />
+                  {thumbnail && (
+                    <div className={cx('ar-hero')}>
+                      <Image src={thumbnail} alt={title} width={1200} height={630} sizes="(max-width: 699px) 100vw, (max-width: 1099px) 300px, 360px" priority />
                     </div>
                   )}
-                  <div className={styles.authorInfo}>
-                    <p className={styles.authorName}>{authorName}</p>
-                    {authorBio && (
-                      <p
-                        className={styles.authorBio}
-                        dangerouslySetInnerHTML={{ __html: authorBio }}
+                </header>
+
+                <div className={cx('ar-sheet')}>
+                  {/* 記事本文（最初のH2の前に目次、2つ目と4つ目のH2の前に記事内広告が入る） */}
+                  <div className={cx('ar-body')}>
+                    {article.isMDX ? (
+                      <MDXRemote
+                        source={article.content}
+                        components={components}
+                        options={{
+                          mdxOptions: {
+                            // 本文中の種牡馬・騎手・調教師名を各データページへリンクする
+                            remarkPlugins: [remarkGfm, remarkEntityLinks],
+                          },
+                          blockJS: false,
+                          blockDangerousJS: false,
+                        }}
                       />
+                    ) : (
+                      <div dangerouslySetInnerHTML={{ __html: article.contentHtml }} />
                     )}
-                    {(authorTwitter || authorRss || authorAboutUrl) && (
-                      <div className={styles.socialLinks}>
-                        <div className={styles.socialIcons}>
+                  </div>
+
+                  <div className={cx('ar-share')}>
+                    <p>この記事をシェア</p>
+                    {share('lg', 'Xでシェア')}
+                  </div>
+
+                  {/* 執筆者 */}
+                  <footer className={cx('au')}>
+                    {authorImage && <Image src={authorImage} alt={authorName} width={72} height={72} />}
+                    <div>
+                      <p className={cx('au-k')}>この記事を書いた人</p>
+                      <p className={cx('au-n')}>{authorName}</p>
+                      {authorBio && <p className={cx('au-b')} dangerouslySetInnerHTML={{ __html: authorBio }} />}
+                      {(authorTwitter || authorRss || authorAboutUrl) && (
+                        <p className={cx('au-l')}>
                           {authorTwitter && (
-                            <a
-                              href={authorTwitter}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className={styles.socialIcon}
-                              aria-label="X (Twitter)"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="20"
-                                height="20"
-                                viewBox="0 0 24 24"
-                                fill="currentColor"
-                              >
-                                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                              </svg>
+                            <a className={cx('au-ic')} href={authorTwitter} target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)">
+                              <XLogo />
                             </a>
                           )}
                           {authorRss && (
-                            <a
-                              href={authorRss}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className={styles.socialIcon}
-                              aria-label="RSS"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="20"
-                                height="20"
-                                viewBox="0 0 24 24"
-                                fill="currentColor"
-                              >
-                                <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1Z" />
-                              </svg>
+                            <a className={cx('au-ic')} href={authorRss} target="_blank" rel="noopener noreferrer" aria-label="RSS">
+                              <RssLogo />
                             </a>
                           )}
-                        </div>
-                        {authorAboutUrl && (
-                          <a
-                            href={authorAboutUrl}
-                            className={styles.aboutLink}
-                          >
-                            サイト情報・運営者情報
-                          </a>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </footer>
-              </div>
-            </article>
-
-            {/* 前後の記事ナビゲーション */}
-            {(prev || next) && (
-              <nav className={styles.articleNav}>
-                {prev && (
-                  <>
-                    <div className={styles.articleNavItem}>
-                      <Link
-                        href={`/articles/${prev.slug}`}
-                        className={styles.articleNavLink}
-                      >
-                        <span className={styles.articleNavLabel}>前の記事</span>
-                        <span className={styles.articleNavTitle}>{prev.frontmatter.title}</span>
-                      </Link>
+                          {authorAboutUrl && (
+                            <a className={cx('au-a')} href={authorAboutUrl}>
+                              サイト情報・運営者情報
+                            </a>
+                          )}
+                        </p>
+                      )}
                     </div>
-                    {next && <div className={styles.articleNavDivider}></div>}
-                  </>
+                  </footer>
+                </div>
+
+                {/* 前後の記事（前＝ひとつ古い記事、次＝ひとつ新しい記事） */}
+                {(prev || next) && (
+                  <nav className={cx('an', prev && next && 'two')} aria-label="前後の記事">
+                    {prev && navItem(prev, '前の記事')}
+                    {next && navItem(next, '次の記事')}
+                  </nav>
                 )}
-                {next && (
-                  <div className={styles.articleNavItem}>
-                    <Link
-                      href={`/articles/${next.slug}`}
-                      className={`${styles.articleNavLink} ${styles.articleNavNext}`}
-                    >
-                      <span className={styles.articleNavLabel}>次の記事</span>
-                      <span className={styles.articleNavTitle}>{next.frontmatter.title}</span>
-                    </Link>
-                  </div>
-                )}
-              </nav>
-            )}
+              </article>
+
+              <TocSide headings={headings} />
+            </div>
 
             {/* 人気記事 */}
-            <PopularArticles articles={popularArticles} />
+            {popularArticles.length > 0 && (
+              <section className={cx('ar-pop')} aria-labelledby="pop-h">
+                <h2 id="pop-h">人気記事</h2>
+                <RiseGrid className="cl nodesc">
+                  {popularArticles.map((a, i) => (
+                    <Card key={a.slug} a={toCard(a)} withDesc={false} i={i} />
+                  ))}
+                </RiseGrid>
+              </section>
+            )}
           </div>
-
-          {/* 右サイドバー：目次・広告エリア */}
-          <TableOfContents />
         </div>
-      </div>
-      </div>
+        <ArticleEffects />
+      </main>
 
       {/* 構造化データ */}
       <script
@@ -392,9 +277,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           }),
         }}
       />
-
-      {/* SP専用固定シェアボタン */}
-      <FixedShareButton title={title} url={articleUrl} />
     </>
   );
 }
