@@ -3,7 +3,8 @@
 // 条件別・ランキングの表の描画（Stats.tsx がサーバーで詰めた数値の配列から、見本 stats() と同じ HTML を描く）。
 // 13項目のセルをクライアント部品の中で作るので、RSC ペイロードには数値の配列だけが載る（要素の JSON にならない）。
 // 開閉は Box（同じくクライアント）。動き・横スクロールの合図は EntityEffects が DOM にクラスを足す。
-import type { CSSProperties, ReactNode } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { flushSync } from 'react-dom';
 import Box from './Box';
 import { cx } from './cx';
 import { COLS, fmt } from './format';
@@ -14,6 +15,10 @@ export type VRow = { k: ReactNode; v: (number | null)[]; h?: number; w?: string;
 type Opt = {
   rank: boolean; medal: boolean; initial: number; bar: 'place_rate' | 'wins'; barLabel: string; tone: string; hint?: ReactNode;
   list: boolean; listAlways: boolean; sub: boolean; extra: string; lm: boolean; bcCol: boolean;
+  /** 「さらに表示」で出る行（initial 件目以降）の13項目は、開くまで描かない（名前とリンクは描く） */
+  deferMore?: boolean;
+  /** 閉じた開閉（details）の中の表：開くまで13項目と棒を描かない（名前とリンクは描く） */
+  closed?: boolean;
 };
 
 export const br = (text: string): ReactNode =>
@@ -23,7 +28,26 @@ const BI = COLS.findIndex((c) => c[0] === 'wins');
 const RI = COLS.findIndex((c) => c[0] === 'races');
 
 export default function StatsView({ rows, sums = [], keyLabel, o }: { rows: VRow[]; sums?: VRow[]; keyLabel: string; o: Opt }) {
-  const { rank, medal, initial, bar, barLabel, tone, hint, list, listAlways, sub, extra, lm, bcCol } = o;
+  const { rank, medal, initial, bar, barLabel, tone, hint, list, listAlways, sub, extra, lm, bcCol, deferMore, closed } = o;
+  // 隠れている行のセルは、見せる直前（さらに表示を押した・開閉を開いた）に描く。最初の HTML には名前とリンクだけを載せる
+  const [full, setFull] = useState(false);
+  const ref = useRef<HTMLTableElement>(null);
+  useEffect(() => {
+    if (!closed || full) return;
+    const d = ref.current?.closest('details');
+    if (!d) return;
+    const show = () => flushSync(() => setFull(true));
+    // summary を押したとき（開く前）に描いておく。ページ内検索などで開いたときは toggle で描く
+    const sm = d.querySelector('summary');
+    sm?.addEventListener('click', show, { capture: true, once: true });
+    d.addEventListener('toggle', show, { once: true });
+    if (d.open) show();
+    return () => {
+      sm?.removeEventListener('click', show, { capture: true });
+      d.removeEventListener('toggle', show);
+    };
+  }, [closed, full]);
+  const part = (i: number) => !full && (closed || (deferMore && i >= initial));
   const vi = COLS.findIndex((c) => c[0] === bar);
   const barEl = (r: VRow, sum: boolean) => (
     <span className={cx('jk-b', sum && 'sum', !sum && r.f !== undefined && 'few')}>
@@ -61,7 +85,9 @@ export default function StatsView({ rows, sums = [], keyLabel, o }: { rows: VRow
     </ul>
   ) : null;
 
-  const tr = (r: VRow, i: number, sum: boolean) => (
+  const tr = (r: VRow, i: number, sum: boolean) => {
+    const p = !sum && part(i);
+    return (
     <tr key={`${sum ? 's' : 'r'}${i}`} className={cx(initial && i >= initial && !sum && 'more', sum && 'sum', sum && i === 0 && 'sum1') || undefined} style={iv(ii(i))}>
       {rank ? <td className={cx('n')}>{rk(i)}</td> : null}
       <td className={cx('k')}>
@@ -75,8 +101,8 @@ export default function StatsView({ rows, sums = [], keyLabel, o }: { rows: VRow
         {lm && r.ls ? <small className={cx('num', 'lsub')}>{r.ls}</small> : null}
         {sum ? null : few(r)}
       </td>
-      {bcCol ? <td className={cx('bc')}>{barEl(r, sum)}</td> : null}
-      {COLS.map(([k, , f], j) => {
+      {bcCol && !p ? <td className={cx('bc')}>{barEl(r, sum)}</td> : null}
+      {p ? null : COLS.map(([k, , f], j) => {
         const t = fmt(r.v[j], f);
         const c = r.h && r.h & (1 << j) ? <span className={cx('hl')}>{t}</span> : t;
         // 横棒の行の数値（.v。「最も高い」は太字の .top）。棒の一覧と同じく文字の書体の箱に数字の書体の span を入れる（行の中の高さを揃える）
@@ -84,11 +110,12 @@ export default function StatsView({ rows, sums = [], keyLabel, o }: { rows: VRow
         return <td key={k} className={vc}>{vc ? <span className={cx('num')}>{c}</span> : c}</td>;
       })}
     </tr>
-  );
+    );
+  };
 
   const table = (
     <div className={cx('jk-tw')}>
-      <table className={cx('jk-t', rank && 'rkt', tone)} data-anim="">
+      <table ref={ref} className={cx('jk-t', rank && 'rkt', tone)} data-anim="">
         <thead>
           <tr>
             {rank ? <th scope="col" className={cx('n')}>順位</th> : null}
@@ -118,6 +145,7 @@ export default function StatsView({ rows, sums = [], keyLabel, o }: { rows: VRow
       hint={hint ? <span key="hint" className={cx('jk-hint')}>{hint}</span> : undefined}
       more={rest > 0 ? { rest, initial } : undefined}
       table={list}
+      onOpen={deferMore || closed ? () => setFull(true) : undefined}
     >
       <>
         {listEl}

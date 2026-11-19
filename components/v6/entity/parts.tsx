@@ -509,7 +509,7 @@ export function CourseAcc({ courses, urlOf, labelOf }: { courses: CourseRow[]; u
             <ChevD />
           </summary>
           <div className={cx('ac-b')}>
-            <Stats rows={g.rows.map(row)} keyLabel="コース" mark={false} />
+            <Stats rows={g.rows.map(row)} keyLabel="コース" mark={false} closed={g !== busiest} />
           </div>
         </details>
       ))}

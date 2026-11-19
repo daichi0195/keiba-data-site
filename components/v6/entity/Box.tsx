@@ -33,6 +33,7 @@ export default function Box({
   more,
   table = false,
   foot = true,
+  onOpen,
 }: {
   className: string;
   children: ReactNode;
@@ -44,6 +45,8 @@ export default function Box({
   /** 全項目を見る（13項目） */
   table?: boolean;
   foot?: boolean;
+  /** 開く直前に呼ぶ（StatsView が隠していた行のセルをこのときに描く） */
+  onOpen?: (k: keyof Open) => void;
 }) {
   const sync = useContext(SyncCtx);
   const [own, setOwn] = useState<Open>({ m: false, t: false });
@@ -61,6 +64,7 @@ export default function Box({
 
   const toggle = (k: keyof Open) => {
     const next = !open[k];
+    if (next) onOpen?.(k);
     if (sync) sync.set(k, next);
     else setOwn((o) => ({ ...o, [k]: next }));
     // 閉じたときに板の上端がヘッダーとナビの下に隠れていたら、節の見出しまで戻す

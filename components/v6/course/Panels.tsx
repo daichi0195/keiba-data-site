@@ -26,11 +26,12 @@ export function CondPanel({ lead, bars, table, extra }: { lead: React.ReactNode;
 }
 
 /** 騎手・種牡馬・母父・調教師のランキングの板：最初は10件、「さらに表示」で全件（最大50件） */
-export function RankPanel({ rest, note, children }: { rest: number; note: string; children: React.ReactNode }) {
+export function RankPanel({ rest, note, children, onOpen }: { rest: number; note: string; children: React.ReactNode; onOpen?: () => void }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const toggle = () => {
     const next = !open;
+    if (next) onOpen?.();
     setOpen(next);
     // 閉じたときに表の先頭が画面の上へ出ていたら、見出しまで戻す
     const box = ref.current;

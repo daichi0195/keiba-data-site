@@ -34,6 +34,8 @@ export type StatsProps = {
   abs?: boolean;
   /** jk-st に足すクラス（es-nol など） */
   extra?: string;
+  /** 閉じた開閉（details）の中に置く表：開くまで13項目と棒を描かない */
+  closed?: boolean;
 };
 
 export default function Stats({
@@ -56,6 +58,7 @@ export default function Stats({
   shrink = false,
   abs = false,
   extra = '',
+  closed = false,
 }: StatsProps) {
   const max: Record<string, number> = Object.fromEntries(
     COLS.filter((c) => c[3]).map(([k]) => [k, Math.max(...rows.map((r) => num(r[k])).filter((v): v is number => v !== undefined), -Infinity)]),
@@ -98,7 +101,7 @@ export default function Stats({
       rows={rows.map((r) => pack(r, false))}
       sums={summaryRows.length ? summaryRows.map((r) => pack(r, true)) : undefined}
       keyLabel={keyLabel}
-      o={{ rank, medal, initial, bar, barLabel, tone, hint, list, listAlways, sub, extra, lm, bcCol }}
+      o={{ rank, medal, initial, bar, barLabel, tone, hint, list, listAlways, sub, extra, lm, bcCol, deferMore: rank && !listAlways && initial > 0, closed }}
     />
   );
 }

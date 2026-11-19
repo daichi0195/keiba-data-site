@@ -4,6 +4,7 @@
 // 13項目のセルをクライアント部品の中で作るので、RSC ペイロードには数値の配列だけが載る（セルごとの要素の JSON にならない）。
 // 描く HTML は従来のサーバー描画と同じ。
 import Link from 'next/link';
+import { useState } from 'react';
 import s from './course.module.css';
 import { COLS, fmt } from './stats';
 import TableScroll from './TableScroll';
@@ -117,8 +118,10 @@ export function CondView({ rows, keyLabel, lead, extra }: { rows: CondV[]; keyLa
 export type RankV = { n: string; u?: string; v: (number | null)[]; h?: number };
 
 export function RankView({ rows, nameLabel, note }: { rows: RankV[]; nameLabel: string; note: string }) {
+  // 11件目以降の13項目は「さらに表示」を押したときに描く（最初の HTML には順位・名前・リンクだけを載せる）
+  const [full, setFull] = useState(false);
   return (
-    <RankPanel rest={Math.max(0, rows.length - 10)} note={note}>
+    <RankPanel rest={Math.max(0, rows.length - 10)} note={note} onOpen={() => setFull(true)}>
       <TableScroll>
         <table className={s.st}>
           <thead>
@@ -145,7 +148,7 @@ export function RankView({ rows, nameLabel, note }: { rows: RankV[]; nameLabel: 
                     )}
                   </span>
                 </th>
-                <StatCells v={r.v} h={r.h} />
+                {full || i < 10 ? <StatCells v={r.v} h={r.h} /> : null}
               </tr>
             ))}
           </tbody>
