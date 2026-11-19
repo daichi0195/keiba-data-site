@@ -209,8 +209,9 @@
 
 /* 13項目の表：1列目固定の横スクロール。右へ送れるあいだは右端に影、送ると1列目の長い名前が3文字分に縮む。
    文字・行の高さ・見出し行（淡い灰・2行）・ハイライトはコース詳細と同じ */
-.jk-full{display:none;position:relative}
-.open-t > .jk-full,.jk-st.tbl > .jk-full{display:block}
+.jk-full{position:relative}
+/* 得意・苦手（.lst）は「全項目を見る」を開いたときだけ表を出す */
+.lst:not(.open-t) > .jk-full{display:none}
 .jk-full::after{content:"";position:absolute;top:0;right:calc(-1 * var(--jk-pad));bottom:0;width:14px;box-shadow:inset -12px 0 10px -10px rgba(16,24,40,.3);opacity:0;transition:opacity .2s;pointer-events:none}
 .jk-full.more::after{opacity:1}
 .jk-tw{margin:0 calc(-1 * var(--jk-pad));overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
@@ -234,18 +235,38 @@
 .jk-tw.sx .nm.lg{max-width:3em}
 .jk-tw.sx .nm.lg,.jk-tw.sx .nm.lg a{text-overflow:clip}
 .jk-t .hl{display:inline-block;margin:0 calc(2px - var(--tp));padding:2px calc(var(--tp) - 2px);border-radius:4px;background:var(--jk-hl);color:var(--ink);font-weight:700}
-.jk-t .bc{display:none}
+.jk-t .bc,.jk-t .lsub{display:none}
 .jk-t thead .bc{white-space:nowrap;overflow:hidden}
 .jk-t .bcw{display:block}
 .jk-t .bcw b{display:none}
 .jk-t tr.sum1 > *{box-shadow:inset 0 2px 0 #C4C9D0}
-/* ランキング（調教師・種牡馬・馬主）：どの幅でも最初から13項目の表。棒リストと「全項目」は出さない */
-.jk-st:not(.lst):has(> .jk-full .jk-t.rkt) > .jk-bl,.jk-st:not(.lst):has(> .jk-full .jk-t.rkt) .tg-t{display:none}
-.jk-st:not(.lst):has(> .jk-full .jk-t.rkt) > .jk-full{display:block}
+/* ランキング（調教師・種牡馬・馬主）：どの幅でも最初から13項目の表。「全項目」は出さない（棒リストは描かない） */
+.jk-st:not(.lst):has(> .jk-full .jk-t.rkt) .tg-t{display:none}
 /* 板の先頭が表のときは、見出し行を板の上端に付ける（上に白い隙間を作らない） */
 .jk-pn > .jk-st:first-child:not(.lst):not(:has(> .jk-note)):has(> .jk-full .jk-t.rkt){margin-top:-14px}
-/* 条件別：全項目を開いたら棒リストは隠す（表が遠くならないように） */
-.jk-st.open-t:not(.lst) > .jk-bl{display:none}
+/* 条件別（.lm）：〜899pxで閉じているあいだは、同じ表を「名前｜棒｜複勝率」の1件1行に並べて見せる（見た目は .jk-bl と同じ）。
+   棒の一覧と表を別々に描かないため（HTML・RSC・DOM を軽くする）。「全項目を見る」を開くと表に戻る */
+@media (max-width:899.98px){
+  .lm:not(.open-t) > .jk-full::after{content:none}
+  .lm:not(.open-t) .jk-tw{margin:0;overflow:visible}
+  .lm:not(.open-t) .jk-t{display:grid;grid-template-columns:max-content minmax(0,1fr) max-content;column-gap:10px;width:auto;padding-bottom:6px;font-size:inherit;white-space:normal}
+  .lm:not(.open-t) .jk-t thead,.lm:not(.open-t) .jk-t tr.sum,.lm:not(.open-t) .jk-t tr.more{display:none}
+  .lm:not(.open-t) .jk-t tbody{display:contents}
+  .lm:not(.open-t) .jk-t tr,.lm.open-m:not(.open-t) .jk-t tr.more{display:grid;grid-template-columns:subgrid;grid-column:1 / -1;align-items:center;height:36px}
+  .lm:not(.open-t) .jk-t td{all:unset;display:none}
+  .lm:not(.open-t) .jk-t td.bc{display:contents}
+  .lm:not(.open-t) .jk-t td.k{display:flex;align-items:center;gap:6px;min-width:64px;font-size:14px;font-weight:500;white-space:nowrap}
+  .lm:not(.open-t) .jk-t td.k .nm{display:contents}
+  .lm:not(.open-t) .jk-t td.k small{margin-left:0}
+  .lm:not(.open-t) .jk-t td.k .lsub{display:inline}
+  .lm:not(.open-t) .jk-t td.k a{display:inline-flex;align-items:center;height:36px;line-height:inherit;vertical-align:baseline}
+  .lm:not(.open-t) .jk-t td.v{display:block;min-width:52px;text-align:right;font-size:15px;font-weight:500;white-space:nowrap}
+  .lm:not(.open-t) .jk-t td.v.top{font-weight:700}
+  .lm:not(.open-t) .jk-t td.v .hl{all:unset}
+  /* 上の図と同じ数字の表（es-nol）：〜899pxは「全項目を見る」を開いたときだけ */
+  .es-nol:not(.open-t) > .jk-full{display:none}
+}
+@media (max-width:379.98px){.lm:not(.open-t) .jk-t{column-gap:8px}}
 
 /* 板の下端：補足・定義リンクと、開閉のボタン（コース詳細の .cd-m / .rkt-f / .cp-f と同じ作り） */
 .jk-ft{display:flex;flex-direction:column;margin:0 calc(-1 * var(--jk-pad)) calc(-1 * var(--jk-pad));border-top:1px solid var(--line)}
@@ -442,8 +463,6 @@
 /* ---------- 900px以上：条件別は「横棒の列つきの表」を最初から出す（コース詳細と同じ切り替え） ---------- */
 @media (min-width:900px){
   .root{--tp:5px;--row:42px}
-  .jk-st:not(.lst) > .jk-bl{display:none}
-  .jk-st:not(.lst) > .jk-full{display:block}
   .jk-st:not(.lst) .tg-t{display:none}
   .jk-ft.only-t,.jk-bs.only-t{display:none}
   .jk-ft:has(.jk-bs.only-t) > .jk-hint:has(a){border-top:0}
@@ -582,8 +601,7 @@
 .es-sub .sf{flex:none;min-width:44px}
 .es-sub b{font-weight:700;color:var(--ink)}
 .jk-st + .es-sub{margin-top:var(--jk-pad)}
-/* 上の図と同じ数字なので、棒の一覧は出さない（〜899pxは「全項目を見る」の中の表だけ） */
-.jk-st.es-nol > .jk-bl{display:none}
+/* 上の図と同じ数字なので、棒の一覧は出さない（〜899pxは「全項目を見る」の中の表だけ。棒の一覧は描かない） */
 .jk-st.es-nol:not(:last-child) > .jk-ft{margin-bottom:0;border-bottom:1px solid var(--line)}
 
 /* 成長曲線：値が低い方の線のラベルを点の下に出す */
