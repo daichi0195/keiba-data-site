@@ -66,6 +66,30 @@ export default function EntityEffects() {
         if (ty !== x.ty) { x.ty = ty; x.h.style.setProperty('--ty', `${ty}px`); }
       });
     };
+    // ページ内ナビの現在地（読んでいる節のチップを塗り、帯の中で見える位置へ寄せる）
+    const navBox = nav?.querySelector('div') as HTMLElement | null;
+    const navLinks = navBox ? (Array.from(navBox.querySelectorAll('a')) as HTMLAnchorElement[]) : [];
+    const navTargets = navLinks.map((a) => document.getElementById(decodeURIComponent(a.hash.slice(1))));
+    let navOn = -1;
+    const markNav = () => {
+      if (!navBox || !navLinks.length) return;
+      const line = topH() + 24;
+      let i = -1;
+      navTargets.forEach((t, k) => { if (t && t.getBoundingClientRect().top <= line) i = k; });
+      if (innerHeight + scrollY >= document.documentElement.scrollHeight - 4) i = navLinks.length - 1;
+      if (i === navOn) return;
+      if (navOn >= 0) navLinks[navOn]?.classList.remove(s.on);
+      navOn = i;
+      if (i < 0) return;
+      const a = navLinks[i];
+      a.classList.add(s.on);
+      const l = a.offsetLeft - navBox.offsetLeft, r = l + a.offsetWidth;
+      if (l < navBox.scrollLeft || r > navBox.scrollLeft + navBox.clientWidth) navBox.scrollTo({ left: l - (navBox.clientWidth - a.offsetWidth) / 2, behavior: 'auto' });
+    };
+    let navTick = false;
+    const onNavScroll = () => { if (!navTick) { navTick = true; requestAnimationFrame(() => { navTick = false; markNav(); }); } };
+    addEventListener('scroll', onNavScroll, { passive: true });
+    markNav();
     const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(stick); } };
     const onResize = () => { navRows(); margin(); tws.forEach(edge); onScroll(); };
     const onRefresh = () => { tws.forEach(edge); onScroll(); };
@@ -120,6 +144,7 @@ export default function EntityEffects() {
     return () => {
       tws.forEach((w) => w.removeEventListener('scroll', onTw));
       removeEventListener('scroll', onScroll);
+      removeEventListener('scroll', onNavScroll);
       removeEventListener('resize', onResize);
       removeEventListener('jk:refresh', onRefresh);
       root.removeEventListener('toggle', onToggle, true);
