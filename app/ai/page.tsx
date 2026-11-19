@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { fetchPredictionIndex, monthLabel } from '@/components/v6/ai/data';
+import { fetchPredictionIndex } from '@/components/v6/ai/data';
 import Mark, { MARK_DESC, MARK_KEYS } from '@/components/v6/ai/Mark';
 import { Crumb, RaceCard, XBanner } from '@/components/v6/ai/Parts';
 import Reveal from '@/components/v6/ai/Reveal';
@@ -68,8 +68,6 @@ export default async function AIPage() {
   const allRaces = await fetchPredictionIndex();
   // index.json の並び順に依存せず、開催日の新しい順に並べる（同日内はデータの順）
   const latestRaces = [...allRaces].sort((x, y) => y.date.localeCompare(x.date)).slice(0, 10);
-  // 公開した予測の数と、最初の予測の月
-  const first = allRaces.reduce((m, e) => (e.date && e.date < m ? e.date : m), '9999');
 
   return (
     <div className={s.root}>
@@ -79,36 +77,6 @@ export default async function AIPage() {
         <h1 className={s['p-h1']}>競馬AI 勝率予測</h1>
         <p className={s['p-lead']}>過去の中央競馬レースデータを機械学習で分析し、各馬の勝率を予測するAIです。</p>
       </div>
-      <div className={`${s['p-w']} ${s['p-facts-w']}`}>
-        <Reveal as="dl" className={`${s['p-pn']} ${s['p-facts']}`}>
-          {allRaces.length > 0 && (
-            <div>
-              <dt>
-                公開した予測<small>{monthLabel(first)}〜</small>
-              </dt>
-              <dd>
-                <b className={s.num} data-to={allRaces.length}>
-                  {allRaces.length.toLocaleString('ja-JP')}
-                </b>
-                レース
-              </dd>
-            </div>
-          )}
-          <div>
-            <dt>学習に使う要素</dt>
-            <dd>
-              <b className={s.num}>100</b>以上
-            </dd>
-          </div>
-          <div className={s.t}>
-            <dt>公開</dt>
-            <dd>
-              レース約5分前に<wbr />無料で公開
-            </dd>
-          </div>
-        </Reveal>
-      </div>
-
       <section className={s.sc} id="latest">
         <div className={s.hd}>
           <h2>最新のレース予測</h2>
@@ -149,9 +117,8 @@ export default async function AIPage() {
             <h2>予測モデルについて</h2>
             <div className={s['p-prose']}>
               <p>
-                過去成績・レーティング・騎手/調教師/血統スタッツ・コース適性・馬場適性など、<strong>100以上の要素</strong>から学習し予測しています。
+                過去成績・レーティング・騎手/調教師/血統スタッツ・コース適性・馬場適性など、<strong>数百の要素</strong>から学習し予測しています。
               </p>
-              <p>オッズは学習させていません。</p>
             </div>
           </section>
         </div>
