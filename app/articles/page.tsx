@@ -4,7 +4,6 @@ import { getAllArticles } from '@/lib/articles';
 import ColumnIndex from '@/components/v6/article/ColumnIndex';
 import { toCard } from '@/components/v6/article/Cards';
 import { cx } from '@/components/v6/article/cx';
-import { RailAdOff } from '@/components/layout/RailAd';
 
 export const metadata: Metadata = {
   title: 'コラム | 競馬データ.com',
@@ -21,7 +20,6 @@ export default function ArticlesPage() {
 
   return (
     <main className={cx('root')}>
-      <RailAdOff />
       <ColumnIndex
         title="コラム"
         lead="データを活用した分析記事や一口馬主のコラムなどを掲載しています。"

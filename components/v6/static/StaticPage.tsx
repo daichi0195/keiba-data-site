@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { FrameIcon } from '@/components/layout/icons';
 import RailAiOff from '@/components/layout/RailAiOff';
-import { RailAdOff } from '@/components/layout/RailAd';
 import StaticToc from './StaticToc';
 import { cx } from './cx';
 
@@ -153,7 +152,6 @@ export default function StaticPage({
   return (
     <main className={cx('root')}>
       <RailAiOff />
-      <RailAdOff />
       <div className={cx('st', toc && 'has-toc')} id="st-top">
         <header className={cx('st-h')}>
           <StaticCrumb crumbs={crumbs} />
