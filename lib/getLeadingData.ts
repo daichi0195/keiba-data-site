@@ -29,6 +29,13 @@ function getLeadingDataFromFile(): LeadingJsonData {
 }
 
 /**
+ * リーディングの集計年（例 2026）
+ */
+export async function getLeadingYear(): Promise<number> {
+  return getLeadingDataFromFile().year;
+}
+
+/**
  * 騎手リーディングデータを取得
  */
 export async function getJockeyLeading(): Promise<LeadingData[]> {

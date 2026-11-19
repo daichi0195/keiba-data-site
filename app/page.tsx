@@ -1,19 +1,15 @@
 import { Metadata } from 'next';
-import Link from 'next/link';
-import ArticleCarousel from '@/components/ArticleCarousel';
-import AIBanner from '@/components/AIBanner';
 import AdSlot from '@/components/AdSlot';
-import HomeAIPredictions from '@/components/datapage/list/HomeAIPredictions';
-import HomeThisWeekVenues from '@/components/datapage/list/HomeThisWeekVenues';
-import HomeAllVenues from '@/components/datapage/list/HomeAllVenues';
-import HomeLeadingSection from '@/components/datapage/list/HomeLeadingSection';
-import HomeColumnList from '@/components/datapage/list/HomeColumnList';
+import TopChips from '@/components/v6/home/TopChips';
+import { AiCards, ColumnList, COURSE_TOTAL, FeatArticles, Head, People, VENUES, VenueList, WeekVenues, type RaceSummary } from '@/components/v6/home/parts';
+import { cx } from '@/components/v6/home/cx';
 import { JOCKEY_GROUPS, SIRE_GROUPS, TRAINER_GROUPS } from '@/components/datapage/list/kana';
-import { getJockeyLeading, getTrainerLeading, getSireLeading } from '@/lib/getLeadingData';
+import { getJockeyLeading, getTrainerLeading, getSireLeading, getLeadingYear } from '@/lib/getLeadingData';
 import { getAllArticles } from '@/lib/articles';
 import { getThisWeekVenues } from '@/lib/thisWeekVenues';
-import s from '@/components/course/course.module.css';
-import h from '@/components/datapage/list/home.module.css';
+import { ALL_JOCKEYS } from '@/lib/jockeys';
+import { ALL_SIRES } from '@/lib/sires';
+import { ALL_TRAINERS } from '@/lib/trainers';
 
 // AI予測（index.json）を反映するため60秒ごとに再生成。no-store だと毎リクエスト SSR になり表示が遅くなる
 export const revalidate = 60;
@@ -34,7 +30,7 @@ export const metadata: Metadata = {
   },
 };
 
-async function fetchPredictions() {
+async function fetchPredictions(): Promise<RaceSummary[]> {
   try {
     const url = `https://storage.googleapis.com/umadata/predictions/index.json?t=${Date.now()}`;
     const res = await fetch(url, { next: { revalidate: 60 } });
@@ -48,15 +44,19 @@ async function fetchPredictions() {
 
 export default async function HomePage() {
   // サーバー側でリーディングデータ・記事・予測を読み込む
-  const [jockeyLeading, trainerLeading, sireLeading, predictions, thisWeekVenues] = await Promise.all([
+  const [jockeyLeading, trainerLeading, sireLeading, year, predictions, thisWeekVenues] = await Promise.all([
     getJockeyLeading(),
     getTrainerLeading(),
     getSireLeading(),
+    getLeadingYear(),
     fetchPredictions(),
     getThisWeekVenues(),
   ]);
-  // 本文はトップでは使わない。クライアントコンポーネントに渡すと HTML に丸ごと埋め込まれるため空にする
-  const articles = getAllArticles().map((article) => ({ ...article, content: '' }));
+  // コラムは新着順（冒頭と下の一覧の両方）
+  const articles = getAllArticles().sort((a, b) => new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime());
+  const columns = articles.filter((a) => !a.frontmatter.link);
+  const weekVenues = thisWeekVenues.map((v) => VENUES.find((x) => x.id === v.id)).filter((v): v is (typeof VENUES)[number] => Boolean(v));
+
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
@@ -70,89 +70,106 @@ export default async function HomePage() {
     },
   };
 
+  // 見出しのチップ（見本 top.mjs の CHIPS）。節が出ないときはチップも出さない
+  const chips = [
+    predictions.length > 0 && { id: 'ai', label: 'AI勝率予測' },
+    weekVenues.length > 0 && { id: 'week', label: '今週開催' },
+    { id: 'courses', label: 'コース' },
+    { id: 'jockeys', label: '騎手' },
+    { id: 'sires', label: '血統' },
+    { id: 'trainers', label: '調教師' },
+    { id: 'columns', label: 'コラム' },
+  ].filter((x): x is { id: string; label: string } => Boolean(x));
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
-      <div className={s.canvas}>
-        <main className={h.main}>
-          <h1 className="visually-hidden">競馬データ.com｜コース・騎手・血統の競馬データ分析</h1>
-          {/* 記事カルーセル - 全幅 */}
-          <section className={h.carousel} aria-label="おすすめ記事">
-            <ArticleCarousel articles={articles} />
+      <main className={cx('root')}>
+        <h1 className={cx('vh')}>競馬データ.com｜コース・騎手・血統の競馬データ分析</h1>
+        <TopChips items={chips} />
+
+        <section className={cx('feat')} id="top" aria-label="おすすめ記事">
+          <FeatArticles articles={articles} />
+        </section>
+
+        {predictions.length > 0 && (
+          <section className={cx('sc band')} id="ai">
+            <Head title="AI勝率予測" sub="対象レースの約5分前に公開" more={{ href: '/ai', label: 'もっとみる' }} />
+            <AiCards races={predictions} />
           </section>
+        )}
 
-          <div className={h.wrap}>
-            {/* AI予測セクション */}
-            <HomeAIPredictions races={predictions} />
+        {weekVenues.length > 0 && (
+          <section className={cx('sc')} id="week">
+            <Head title="今週開催の競馬場" />
+            <WeekVenues venues={weekVenues} />
+          </section>
+        )}
 
-            {/* 2カラムレイアウト部分（PC：右にAIバナー） */}
-            <div className={h.columns}>
-              <div>
-                <HomeThisWeekVenues venues={thisWeekVenues} />
+        <div className={cx('ad')}>
+          <AdSlot unit="list" />
+        </div>
 
-                <AdSlot unit="list" />
+        <section className={cx('sc')} id="courses">
+          <Head title="コース別データ" sub={`${VENUES.length}競馬場・${COURSE_TOTAL}コース`} more={{ href: '/courses', label: 'コース一覧' }} />
+          <VenueList />
+        </section>
 
-                <HomeAllVenues />
+        <People
+          id="jockeys"
+          title="騎手別データ"
+          leadTitle="騎手リーディング"
+          year={year}
+          rows={jockeyLeading}
+          ridesLabel="騎乗"
+          groups={JOCKEY_GROUPS}
+          unit="名"
+          total={ALL_JOCKEYS.length}
+          desc="過去3年間に30レース以上出走している現役中央騎手のデータを集計しています。"
+          list={{ href: '/jockeys', label: '騎手一覧' }}
+          hrefPrefix="/jockeys/"
+        />
+        <People
+          id="sires"
+          title="血統（種牡馬）別データ"
+          leadTitle="種牡馬リーディング"
+          year={year}
+          rows={sireLeading}
+          ridesLabel="出走"
+          groups={SIRE_GROUPS}
+          unit="頭"
+          total={ALL_SIRES.length}
+          desc="過去3年間に産駒が50レース以上出走し、かつ産駒が10頭以上いる種牡馬のデータを集計しています。"
+          list={{ href: '/sires', label: '種牡馬一覧' }}
+          hrefPrefix="/sires/"
+        />
+        <People
+          id="trainers"
+          title="調教師別データ"
+          leadTitle="調教師リーディング"
+          year={year}
+          rows={trainerLeading}
+          ridesLabel="出走"
+          groups={TRAINER_GROUPS}
+          unit="名"
+          total={ALL_TRAINERS.length}
+          desc="過去3年間に30レース以上出走している現役中央調教師のデータを集計しています。"
+          list={{ href: '/trainers', label: '調教師一覧' }}
+          hrefPrefix="/trainers/"
+        />
 
-                <HomeLeadingSection
-                  title="騎手別データ"
-                  leadingTitle="騎手リーディング（勝ち数順）"
-                  leading={jockeyLeading}
-                  allTitle="全騎手データ"
-                  allDescription="過去3年間に30レース以上出走している現役中央騎手のデータを集計しています。"
-                  groups={JOCKEY_GROUPS}
-                  hrefPrefix="/jockeys/"
-                  unit="名"
-                />
+        <div className={cx('ad')}>
+          <AdSlot unit="list" />
+        </div>
 
-                <HomeLeadingSection
-                  title="血統（種牡馬）別データ"
-                  leadingTitle="種牡馬リーディング（勝ち数順）"
-                  leading={sireLeading}
-                  allTitle="全血統（種牡馬）データ"
-                  allDescription="過去3年間に産駒が50レース以上出走し、かつ産駒が10頭以上いる種牡馬のデータを集計しています。"
-                  groups={SIRE_GROUPS}
-                  hrefPrefix="/sires/"
-                  unit="頭"
-                />
-
-                <HomeLeadingSection
-                  title="調教師別データ"
-                  leadingTitle="調教師リーディング（勝ち数順）"
-                  leading={trainerLeading}
-                  allTitle="全調教師データ"
-                  allDescription="過去3年間に30レース以上出走している現役中央調教師のデータを集計しています。"
-                  groups={TRAINER_GROUPS}
-                  hrefPrefix="/trainers/"
-                  unit="名"
-                />
-
-                <AdSlot unit="list" />
-
-                {/* コラム */}
-                <section className={s.section} aria-label="コラム">
-                  <div className={s.sh}>
-                    <h2 className={s.h2}>コラム</h2>
-                  </div>
-                  <HomeColumnList articles={articles} />
-                  <Link href="/articles" className={h.moreBtn}>
-                    もっとみる
-                  </Link>
-                </section>
-              </div>
-
-              {/* バナーエリア */}
-              <aside className={h.aside}>
-                <AIBanner />
-                <AdSlot unit="sidebar" variant="sidebar" />
-              </aside>
-            </div>
-          </div>
-        </main>
-      </div>
+        <section className={cx('sc')} id="columns">
+          <Head title="コラム" more={{ href: '/articles', label: 'もっとみる' }} />
+          <ColumnList articles={columns} />
+        </section>
+      </main>
     </>
   );
 }
