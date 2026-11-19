@@ -743,3 +743,7 @@
 @media (min-width:1100px){.jk-thin{font-size:15px}}
 /* globals.css の id 指定（旧デザインの #characteristics・#owner-stats の余白）を打ち消す */
 .root :global(#characteristics),.root :global(#owner-stats){margin-bottom:0;padding-bottom:0}
+
+/* 2026-11-19 オーナー指示：表の見出し行は地と同化しない濃さにし、数値の列の見出しは中央寄せ */
+.jk-t thead th,.jk-t thead .k,.jk-t thead .n{background:var(--c-th);color:var(--c-th-text)}
+.jk-t thead th:not(.k):not(.n){text-align:center}

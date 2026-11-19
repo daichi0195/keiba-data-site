@@ -589,3 +589,6 @@
 }
 
 /* 「レース番号×開催日」の表（4列）はいつも2行マス */
+/* 2026-11-19 オーナー指示：表の見出し行は地と同化しない濃さにし、数値の列の見出しは中央寄せ */
+.p-tb thead th{background:var(--c-th);color:var(--c-th-text)}
+.p-tb thead .c-p{text-align:center}

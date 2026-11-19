@@ -39,6 +39,8 @@
   --c-panel: #FFFFFF;          /* 板 */
   --c-cell: #EEF0F2;           /* 板の中の淡いマス */
   --c-cell-hover: #E0E3E7;
+  --c-th: #DCE0E5;             /* 表の見出し行（地 #F4F5F7・淡いマスと区別がつく濃さ） */
+  --c-th-text: #2E3238;
   --c-text: #222222;           /* 文字 */
   --c-text-sub: #5E5E5E;       /* 補足の文字 */
   --c-rule: #E3E6EA;           /* 罫 */

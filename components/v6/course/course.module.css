@@ -418,3 +418,7 @@ thead .rno{font-size:12px;font-family:inherit}
 @media (prefers-reduced-motion:reduce){
   .nm,.ct .k > span.lg,.tbw::after{transition:none}
 }
+
+/* 2026-11-19 オーナー指示：表の見出し行は地と同化しない濃さにし、数値の列の見出しは中央寄せ */
+.st thead th,.st thead .k{background:var(--c-th);color:var(--c-th-text)}
+.st thead th:not(.k){text-align:center}
