@@ -1,6 +1,10 @@
 import { Metadata } from 'next';
-import NameIndexPage from '@/components/datapage/list/NameIndexPage';
+import NameIndex from '@/components/v6/list/NameIndex';
+import { Hero, Tail, toNameGroups } from '@/components/v6/list/parts';
+import { ROOT } from '@/components/v6/list/cx';
 import { TRAINER_GROUPS } from '@/components/datapage/list/kana';
+import { ALL_TRAINERS } from '@/lib/trainers';
+import { getTrainerLeading, getLeadingYear } from '@/lib/getLeadingData';
 
 export const metadata: Metadata = {
   title: '調教師（厩舎）別データ一覧｜成績・特徴を比較【毎週更新】',
@@ -10,16 +14,25 @@ export const metadata: Metadata = {
   },
 };
 
-export default function TrainersPage() {
-  // 現行仕様どおり、調教師一覧にはリーディングを載せない（五十音順の一覧のみ）
+const GROUPS = toNameGroups(TRAINER_GROUPS, new Map(ALL_TRAINERS.map((x) => [x.id, x.kana])), false);
+
+export default async function Page() {
+  const [rows, year] = await Promise.all([getTrainerLeading(), getLeadingYear()]);
+  const total = GROUPS.reduce((s, g) => s + g.items.length, 0);
+
   return (
-    <NameIndexPage
-      crumb="調教師データ一覧"
-      title="調教師データ一覧"
-      lead="過去3年間に30レース以上出走している現役中央調教師のデータを集計しています。"
-      unit="名"
-      groups={TRAINER_GROUPS}
-      hrefPrefix="/trainers/"
-    />
+    <main className={ROOT}>
+      <Hero title="調教師データ一覧" lead="過去3年間に30レース以上出走している現役中央調教師のデータを集計しています。" count={`${total.toLocaleString('ja-JP')}名`} />
+      <NameIndex
+        groups={GROUPS}
+        unit="名"
+        noun="調教師"
+        placeholder="調教師名・よみで絞り込む（例：やはぎ）"
+        hrefPrefix="/trainers/"
+        leading={{ title: '調教師リーディング（勝ち数順）', year, rows: rows.slice(0, 10), ridesLabel: '出走' }}
+      >
+        <Tail current="trainer" />
+      </NameIndex>
+    </main>
   );
 }
