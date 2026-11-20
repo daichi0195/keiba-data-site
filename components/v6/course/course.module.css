@@ -290,14 +290,13 @@ thead .rno{font-size:12px;font-family:inherit}
   .mt-b{height:10px}
   .mt-p b{font-size:16px}
 
-  /* 罫はマスの影で引く（項目数が4の倍数でないコースでも、空いたマスが灰色にならないように） */
-  .ov-g{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--c-panel);border-bottom:1px solid var(--c-rule)}
-  .ov-g > div{display:block;min-height:0;padding:12px 14px 14px;border:0;background:var(--c-panel);box-shadow:0 0 0 1px var(--c-rule)}
-  .ov-g .w{grid-column:span 2;order:1}
-  .ov-g dd{margin-top:2px;text-align:left}
-  .ov-g dd b{font-size:20px}
-  .ov-g dd small{display:block;margin:2px 0 0;font-size:12px}
-  .ov-g .w dd b{font-size:14px;line-height:1.5}
+  /* コース概要は表（2列・上から下へ読む順。オーナーの好み：カードより表 2026-11-20） */
+  .ov-g{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(var(--rows),auto);grid-auto-flow:column;column-gap:32px;padding:0 var(--c-pad);border-bottom:1px solid var(--c-rule)}
+  .ov-g > div{display:grid;grid-template-columns:9em minmax(0,1fr);align-items:baseline;gap:8px;min-height:0;padding:9px 0;border-bottom:0;border-top:1px solid var(--c-rule)}
+  .ov-g > div:first-child,.ov-g > div.c2{border-top:0}
+  .ov-g dd{text-align:left}
+  .ov-g dd b{font-size:16px}
+  .ov-g .w dd b{font-size:14px}
 
   .pk-n{grid-template-columns:repeat(auto-fill,minmax(128px,1fr))}
   .oc-r{grid-template-columns:60px minmax(0,1fr)}
@@ -315,9 +314,6 @@ thead .rno{font-size:12px;font-family:inherit}
   .pg{--tp:5px;--row:42px}
   .mt-c{padding:16px 18px 18px}
   .mt-s .lf{display:inline}.mt-s .sh{display:none}
-  .ov-g > div{padding:14px var(--c-pad) 16px}
-  .ov-g dd b{font-size:24px}
-  .ov-g .w dd b{font-size:15px}
   .cd-b{padding:12px var(--c-pad);font-size:14px}
   .cb,.cd-m{display:none}
   .cd .tbw{display:block}
@@ -405,8 +401,6 @@ thead .rno{font-size:12px;font-family:inherit}
   .mt-p dt{font-size:13px}
   .mt-b{height:12px}
   .mt-p b{font-size:18px}
-  .ov-g dd b{font-size:26px}
-  .ov-g .w dd b{font-size:16px}
   .pk-n{grid-template-columns:repeat(auto-fill,minmax(156px,1fr))}
   .st{font-size:14px}
   .ct .bc{width:17%;min-width:140px}
@@ -422,3 +416,32 @@ thead .rno{font-size:12px;font-family:inherit}
 /* 2026-11-19 オーナー指示：表の見出し行は地と同化しない濃さにし、数値の列の見出しは中央寄せ */
 .st thead th,.st thead .k{background:var(--c-th);color:var(--c-th-text)}
 .st thead th:not(.k){text-align:center}
+
+/* ----- 一覧の表（2026-11 追加：標準タイム・馬場状態別・重賞の勝ち馬・狙い目） ----- */
+.lt-w{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.lt table{width:100%;border-collapse:collapse;font-size:14px}
+.lt th{height:36px;padding:4px 8px;background:var(--c-cell);font-size:12px;font-weight:700;color:var(--c-text-sub);text-align:left;white-space:nowrap}
+.lt td{height:var(--row);padding:6px 8px;border-top:1px solid var(--c-rule);white-space:nowrap}
+.lt th:first-child,.lt td:first-child{padding-left:var(--c-pad)}
+.lt th:last-child,.lt td:last-child{padding-right:var(--c-pad)}
+.lt .r{text-align:right;font-family:var(--f-num);font-variant-numeric:tabular-nums}
+.lt .k{font-weight:700}
+.lt tbody tr:first-child td{border-top:0}
+.lt .lt-tg{display:inline-block;margin-right:8px;padding:0 6px;border-radius:4px;background:var(--c-hl);color:#26292D;font-size:11px;font-weight:700;line-height:18px;vertical-align:1px}
+.lt .lt-tg.x{background:var(--c-cell);color:var(--c-text-sub)}
+.lt .lt-s{display:block;font-size:12px;font-weight:400;color:var(--c-text-sub)}
+.lt-b{padding:10px var(--c-pad) 0;font-size:14px;line-height:1.6}
+.lt-b b{font-weight:700}
+.lt > .cp-n{padding-top:10px;border-top:1px solid var(--c-rule)}
+/* スマホ：1行目＝名前＋主な数値、2行目＝残りの数値（ラベル付き）。横にはみ出さない */
+@media (max-width:699.98px){
+  .lt thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+  .lt table,.lt tbody{display:block}
+  .lt tr{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;padding:9px var(--c-pad);border-top:1px solid var(--c-rule)}
+  .lt tbody tr:first-child{border-top:0}
+  .lt td,.lt th:first-child,.lt td:first-child,.lt td:last-child{display:block;height:auto;padding:0;border:0}
+  .lt td:first-child{flex:0 0 calc(100% - 7em - 10px);min-width:0;white-space:normal}
+  .lt td:nth-child(2){flex:0 0 7em;font-weight:700;text-align:right}
+  .lt td:nth-child(n+3){font-size:12px;color:var(--c-text-sub)}
+  .lt td:nth-child(n+3)[data-l]::before{content:attr(data-l) " "}
+}

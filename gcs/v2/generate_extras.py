@@ -909,6 +909,90 @@ def course_extras(con, data, venue_en, surface_en, dist_key, as_of):
         """, params)
     data['gate_stats_by_condition'] = gates
 
+    # --- 2026-11 追加（docs/seo/course_serp_2026-11.md）---
+    # クラス別の標準タイム（良馬場の勝ち馬）
+    data['class_time_stats'] = rows(con, f"""
+      WITH w AS (
+        SELECT CASE WHEN rm.grade IN ('G1','G2','G3') THEN '重賞'
+                    WHEN rm.race_class = 'オープン' THEN 'オープン'
+                    WHEN rm.race_class = '３勝クラス' THEN '3勝クラス'
+                    WHEN rm.race_class = '２勝クラス' THEN '2勝クラス'
+                    WHEN rm.race_class = '１勝クラス' THEN '1勝クラス'
+                    ELSE rm.race_class END AS class_name,
+               rr.final_time, rr.last_3f_time
+        FROM race_master rm JOIN race_result rr USING (race_id)
+        WHERE {cond} AND rm.track_condition = '良' AND rr.finish_position = 1 AND rr.final_time > 0
+      )
+      SELECT class_name, COUNT(*) AS races, ROUND(AVG(final_time), 1) AS avg_time, ROUND(MIN(final_time), 1) AS best_time,
+             ROUND(AVG(last_3f_time), 1) AS avg_last3f
+      FROM w GROUP BY class_name
+      ORDER BY CASE class_name WHEN '新馬' THEN 1 WHEN '未勝利' THEN 2 WHEN '1勝クラス' THEN 3 WHEN '2勝クラス' THEN 4
+                               WHEN '3勝クラス' THEN 5 WHEN 'オープン' THEN 6 ELSE 7 END
+    """, params)
+    # 2019年以降の最速勝ちタイム（公式レコードではない）
+    best = rows(con, f"""
+      SELECT rm.race_date AS date, rm.race_name, rm.track_condition, rr.horse_name, rr.jockey_name, rr.final_time
+      FROM race_master rm JOIN race_result rr USING (race_id)
+      WHERE {cond} AND rr.finish_position = 1 AND rr.final_time > 0
+      ORDER BY rr.final_time, rm.race_date LIMIT 1
+    """, [venue, surface, distance, PROGENY_SINCE])
+    data['fastest_time'] = best[0] if best else None
+    data['fastest_time_since'] = PROGENY_SINCE
+
+    # 馬場状態別：平均勝ちタイム・逃げ先行／差し追込の複勝率・1番人気の複勝率。
+    # 脚質の分け方は generate_courses.py と同じ（逃げ＝1〜3番目のコーナーを先頭、先行＝最終コーナーが頭数の1/3以内、
+    # 差し・追込＝それより後ろで上がり5位以内。どれにも当たらない馬は数えない）
+    data['track_condition_stats'] = rows(con, f"""
+      WITH r AS (
+        SELECT rm.race_id, rm.track_condition, rm.entry_count, rr.finish_position, rr.popularity, rr.final_time,
+               string_split(rr.corner_positions, '-') AS cs,
+               RANK() OVER (PARTITION BY rm.race_id ORDER BY rr.last_3f_time ASC) AS l3r
+        FROM race_master rm JOIN race_result rr USING (race_id)
+        WHERE {cond} AND rr.finish_position > 0
+      ), s AS (
+        SELECT *,
+          CASE WHEN cs IS NULL OR len(cs) = 0 OR cs[1] = '' THEN NULL
+               WHEN list_contains(list_transform(cs[1:least(3, len(cs))], x -> TRY_CAST(x AS INT)), 1) THEN 'front'
+               WHEN TRY_CAST(cs[len(cs)] AS INT) <= CEIL(entry_count / 3.0) THEN 'front'
+               WHEN l3r <= 5 THEN 'back' END AS style
+        FROM r
+      )
+      SELECT CASE track_condition WHEN '良' THEN '良' WHEN '稍' THEN '稍重' WHEN '重' THEN '重' ELSE '不良' END AS condition,
+             COUNT(DISTINCT race_id) AS races,
+             ROUND(AVG(CASE WHEN finish_position = 1 THEN final_time END), 1) AS avg_time,
+             ROUND(AVG(CASE WHEN style = 'front' THEN (finish_position <= 3)::INT END) * 100, 1) AS front_place_rate,
+             ROUND(AVG(CASE WHEN style = 'back' THEN (finish_position <= 3)::INT END) * 100, 1) AS back_place_rate,
+             ROUND(AVG(CASE WHEN popularity = 1 THEN (finish_position <= 3)::INT END) * 100, 1) AS fav1_place_rate,
+             ROUND(AVG(CASE WHEN popularity = 1 THEN (finish_position = 1)::INT END) * 100, 1) AS fav1_win_rate
+      FROM s GROUP BY 1
+      ORDER BY CASE condition WHEN '良' THEN 1 WHEN '稍重' THEN 2 WHEN '重' THEN 3 ELSE 4 END
+    """, params)
+
+    # 前走からの距離変更（前走・今走とも平地）
+    data['distance_change_stats'] = rows(con, f"""
+      WITH h AS (
+        SELECT rr.*, rm.race_id AS rid, rm.race_date, rm.surface AS sf, rm.distance AS dist, rm.venue_name, rm.track_variant,
+               LAG(rm.distance) OVER (PARTITION BY rr.horse_id ORDER BY rm.race_date, rm.race_id) AS prev_distance,
+               LAG(rm.surface) OVER (PARTITION BY rr.horse_id ORDER BY rm.race_date, rm.race_id) AS prev_surface
+        FROM race_master rm JOIN race_result rr USING (race_id)
+      )
+      SELECT CASE WHEN rr.dist < rr.prev_distance THEN '距離短縮' WHEN rr.dist = rr.prev_distance THEN '同距離' ELSE '距離延長' END AS category,
+             {STAT_COLS}
+      FROM h rr JOIN race_master rm ON rm.race_id = rr.rid
+      WHERE {cond} AND rr.finish_position > 0 AND rr.prev_surface IN ('芝', 'ダート')
+      GROUP BY 1
+      ORDER BY CASE category WHEN '距離短縮' THEN 1 WHEN '同距離' THEN 2 ELSE 3 END
+    """, params)
+
+    # 重賞の勝ち馬（集計期間・新しい順）
+    data['graded_winners'] = rows(con, f"""
+      SELECT rm.race_date AS date, rm.race_name, rm.grade, rm.track_condition, rr.horse_id, rr.horse_name, rr.jockey_name, rr.trainer_name,
+             rr.popularity, rr.final_time
+      FROM race_master rm JOIN race_result rr USING (race_id)
+      WHERE {cond} AND rm.grade IN ('G1','G2','G3') AND rr.finish_position = 1
+      ORDER BY rm.race_date DESC
+    """, params)
+
 
 def main():
     if '--fetch' in sys.argv:

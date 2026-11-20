@@ -13,11 +13,16 @@ import { buildCourseSummaryBlocks } from '@/lib/dataPageText';
 import { getDataUpdatedAt, formatJaDate, toIsoDate, buildWebPageJsonLd } from '@/lib/dataDate';
 import { evaluateHighlights } from '@/lib/courseHighlights';
 import { courseDescription } from '@/lib/metaDescriptions';
-import { buildCourseOverview, buildCourseLeadText, buildCourseShapeAnswer, buildBadGateAnswer, type CourseProfile, type FinishStats } from '@/lib/courseOverview';
+import {
+  buildCourseOverview, buildCourseLeadText, buildCourseShapeAnswer, buildBadGateAnswer, buildClassTimeAnswer, buildCourseDistanceChangeAnswer,
+  buildGradedWinnersAnswer, buildTrackConditionAnswer, formatRaceTime, jaYmd,
+  type ClassTime, type CourseProfile, type DistanceChangeRow, type FastestTime, type FinishStats, type GradedWinner, type TrackConditionRow,
+} from '@/lib/courseOverview';
+import { buildAimAnswer, pickAim, type AimRow } from '@/lib/entityExtras';
 import s from '@/components/v6/course/course.module.css';
 import CourseChips from '@/components/v6/course/CourseChips';
 import { CourseMotion } from '@/components/v6/course/motion';
-import { Cond, Faq, Head, Meter, More, Nb, Ranking, RichText, type CondRow, type NameLink } from '@/components/v6/course/parts';
+import { Cond, Faq, Head, ListTable, Meter, More, Nb, Ranking, RichText, type CondRow, type NameLink } from '@/components/v6/course/parts';
 
 // ISR: 週1回（604800秒）再生成
 export const revalidate = 604800;
@@ -401,7 +406,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const courseLabel = `${racecourse}${surface}${distanceDisplay}m${trackVariant}`;
   // 検索語（「東京芝1600m 傾向」「〜 血統」「〜 騎手」）に合わせ、省略されても意味が通るよう重要語を前半に置く
-  const title = `${courseLabel}の傾向と特徴｜枠順・脚質・血統・騎手データ【毎週更新】`;
+  // 「他の人はこちらも検索」に多い「有利な枠」「平均タイム」も入れる（docs/seo/course_serp_2026-11.md）
+  const title = `${courseLabel}の傾向と特徴｜有利な枠・脚質・血統・騎手・平均タイム【毎週更新】`;
   const url = `https://www.keibadata.com/courses/${resolvedParams.racecourse}/${resolvedParams.surface}/${resolvedParams.distance}`;
 
   // 対象レース数が少ないコースは検索エンジンにインデックスさせない
@@ -506,6 +512,12 @@ export default async function CoursePage({ params }: Props) {
   let courseProfile: CourseProfile | null = null;
   let finishStats: FinishStats | null = null;
   let gateStatsByCondition: { good?: any[]; bad?: any[] } | null = null;
+  let classTimes: ClassTime[] = [];
+  let fastestTime: FastestTime | null = null;
+  let fastestSince = '2019-01-01';
+  let trackCondRows: TrackConditionRow[] = [];
+  let distChange: DistanceChangeRow[] = [];
+  let gradedWinners: GradedWinner[] = [];
 
   try {
     // distanceが "-inner" または "-outer" を含む場合は文字列のまま、そうでない場合は数値化
@@ -533,6 +545,12 @@ export default async function CoursePage({ params }: Props) {
     courseProfile = gcsData.course_profile ?? null;
     finishStats = gcsData.finish_stats ?? null;
     gateStatsByCondition = gcsData.gate_stats_by_condition ?? null;
+    classTimes = gcsData.class_time_stats ?? [];
+    fastestTime = gcsData.fastest_time ?? null;
+    fastestSince = gcsData.fastest_time_since ?? fastestSince;
+    trackCondRows = gcsData.track_condition_stats ?? [];
+    distChange = gcsData.distance_change_stats ?? [];
+    gradedWinners = gcsData.graded_winners ?? [];
     if (gcsData.characteristics) {
       if (!data.course_info) {
         data.course_info = {};
@@ -825,6 +843,12 @@ export default async function CoursePage({ params }: Props) {
   const badGateRaces = (gateStatsByCondition?.bad ?? []).reduce((a: number, r: any) => a + (r.races ?? 0), 0);
   const showBadGate = enoughRaces && resolvedParams.surface !== 'steeplechase' && badGateRaces > 0;
   const shapeAnswer = buildCourseShapeAnswer(seoPrefix, overview);
+  const fastestYear = Number(fastestSince.slice(0, 4));
+  const classTimeAnswer = buildClassTimeAnswer(seoPrefix, classTimes, fastestTime, fastestYear);
+  const trackCondAnswer = buildTrackConditionAnswer(seoPrefix, trackCondRows);
+  const distChangeAnswer = buildCourseDistanceChangeAnswer(seoPrefix, distChange);
+  const gradedWinnersAnswer = buildGradedWinnersAnswer(seoPrefix, gradedWinners, periodYears);
+  const tcHasStyle = trackCondRows.some((r) => r.front_place_rate !== null);
   const badGateAnswer = buildBadGateAnswer(seoPrefix, gateStatsByCondition?.bad);
 
   // 構造化データ - FAQPage
@@ -834,10 +858,14 @@ export default async function CoursePage({ params }: Props) {
     '@type': 'FAQPage',
     mainEntity: [
       ...(shapeAnswer ? [{ question: `${seoPrefix}はどんなコース？`, answer: shapeAnswer }] : []),
+      ...(classTimeAnswer ? [{ question: `${seoPrefix}の平均タイム（標準タイム）は？`, answer: classTimeAnswer }] : []),
       { question: `${seoPrefix}は荒れやすい？`, answer: volatilityAnswer },
       { question: `${seoPrefix}で有利な枠順は？`, answer: gateAnswer },
       ...(badGateAnswer ? [{ question: `${seoPrefix}の道悪（重馬場）で有利な枠は？`, answer: badGateAnswer }] : []),
       { question: `${seoPrefix}で有利な脚質は？`, answer: runningStyleAnswer },
+      ...(trackCondAnswer ? [{ question: `${seoPrefix}は道悪（重馬場）でどう変わる？`, answer: trackCondAnswer }] : []),
+      ...(distChangeAnswer ? [{ question: `${seoPrefix}は距離短縮と延長どちらが有利？`, answer: distChangeAnswer }] : []),
+      ...(gradedWinnersAnswer ? [{ question: `${seoPrefix}の重賞の勝ち馬は？`, answer: gradedWinnersAnswer }] : []),
       { question: `${seoPrefix}が得意な騎手は？`, answer: jockeyAnswer },
       { question: `${seoPrefix}が得意な調教師は？`, answer: trainerAnswer },
       { question: `${seoPrefix}が得意な種牡馬・血統は？`, answer: sireAnswer },
@@ -906,6 +934,26 @@ export default async function CoursePage({ params }: Props) {
     label: String(r.weight_category ?? r.name ?? '').replace(/kg/g, '').replace('-', '〜'),
     keep: true,
   }));
+
+  // 距離短縮・延長、狙い目・消し条件（出走前に分かる条件から、複勝回収率が高い／低いもの）
+  const distRows: CondRow[] = ['距離短縮', '同距離', '距離延長']
+    .map((c) => distChange.find((r) => r.category === c))
+    .filter(Boolean)
+    .map((r: any) => ({ ...r, label: r.category, keep: true }));
+  const aimCands: AimRow[] = [
+    ...gateRows, ...popularityRows, ...genderRows, ...distRows,
+    ...weightRows.map((r) => ({ ...r, label: `馬体重${r.label}kg` })),
+    ...jockey_stats.map((r: any) => ({ ...r, label: `${r.name}騎手` })),
+    ...trainer_stats.map((r: any) => ({ ...r, label: `${r.name}厩舎` })),
+    ...pedigree_stats.map((r: any) => ({ ...r, label: `${r.name}産駒` })),
+    ...dam_sire_stats.map((r: any) => ({ ...r, label: `母父${r.name}` })),
+  ].filter((r: any) => r.races && typeof r.place_payback === 'number') as AimRow[];
+  const AIM_MIN = 30;
+  const aim = pickAim(aimCands, AIM_MIN);
+  const aimAnswer = buildAimAnswer(seoPrefix, aim, AIM_MIN, '出走した条件（枠・人気・性別・馬体重・前走比・騎手・調教師・種牡馬・母父）');
+  if (aimAnswer) {
+    faqJsonLd.mainEntity.push({ '@type': 'Question', name: `${seoPrefix}の狙い目の条件は？`, acceptedAnswer: { '@type': 'Answer', text: stripBold(aimAnswer) } });
+  }
 
   // データ概要（見出し付きのブロック、名前は詳細ページへリンク）
   const summaryBlocks = buildCourseSummaryBlocks({
@@ -984,14 +1032,19 @@ export default async function CoursePage({ params }: Props) {
   const chipItems = [
     ...(enoughRaces ? [{ id: 'course-trend', label: '特徴' }] : []),
     ...(hasOverview ? [{ id: 'course-overview', label: 'コース' }] : []),
+    ...(classTimes.length ? [{ id: 'course-time', label: 'タイム' }] : []),
+    ...(gradedWinners.length ? [{ id: 'graded-winners', label: '重賞' }] : []),
     { id: 'summary', label: '概要' },
     ...(enoughRaces ? [{ id: 'highlights', label: '注目' }] : []),
+    ...(enoughRaces && aim.hi.length ? [{ id: 'aim', label: '狙い目' }] : []),
     { id: 'popularity', label: '人気別' },
     { id: 'gate', label: '枠順別' },
     ...(showBadGate ? [{ id: 'gate-bad', label: '道悪の枠' }] : []),
     { id: 'running-style', label: '脚質別' },
+    ...(trackCondRows.length ? [{ id: 'track-condition', label: '馬場状態' }] : []),
     { id: 'gender', label: '性別' },
     { id: 'horse-weight', label: '馬体重別' },
+    ...(distRows.length ? [{ id: 'distance-change', label: '短縮・延長' }] : []),
     { id: 'jockey', label: '騎手' },
     { id: 'bloodline', label: '種牡馬' },
     { id: 'dam-sire', label: '母父' },
@@ -1117,9 +1170,9 @@ export default async function CoursePage({ params }: Props) {
           <section id="course-overview" className={s.sc} aria-label="コース概要">
             <Head title={<Nb parts={[`${NAME}の`, 'コース概要']} />} sub="コースの形状と、勝ち馬の決め手" />
             <div className={`${s.cp} ${s.ov}`}>
-              <dl className={s['ov-g']}>
-                {overview.items.map((it) => (
-                  <div key={it.label} className={it.value.length > 12 ? s.w : undefined}>
+              <dl className={s['ov-g']} style={{ '--rows': Math.ceil(overview.items.length / 2) } as React.CSSProperties}>
+                {overview.items.map((it, i) => (
+                  <div key={it.label} className={[it.value.length > 12 ? s.w : '', i === Math.ceil(overview.items.length / 2) ? s.c2 : ''].filter(Boolean).join(' ') || undefined}>
                     <dt>{it.label}</dt>
                     <dd>
                       <b className={/^[\d,.:]+/.test(it.value) ? s.num : undefined}>{it.value}</b>
@@ -1143,6 +1196,36 @@ export default async function CoursePage({ params }: Props) {
               )}
               <p className={s['cp-n']}>※形状は JRA 公式サイト「コース紹介」の記載値（芝はAコース使用時）。上がり3F・勝ちタイムは直近{periodYears}年間のレースから集計</p>
             </div>
+          </section>
+        )}
+
+        {/* 標準タイム（クラス別・良馬場）と重賞の勝ち馬 */}
+        {classTimes.length > 0 && (
+          <section id="course-time" className={s.sc} aria-label="クラス別の標準タイム">
+            <Head title={<Nb parts={[`${NAME}の`, '平均タイム（クラス別）']} />} sub={`良馬場の勝ち馬の平均タイム・最速タイム・上がり3F（直近${periodYears}年間）`} />
+            <ListTable
+              label={`${NAME}のクラス別の平均タイム`}
+              cols={[{ label: 'クラス', key: true }, { label: '平均タイム', num: true }, { label: '最速', num: true }, { label: '上がり3F', num: true }, { label: 'レース数', num: true, ml: 'レース' }]}
+              rows={classTimes.map((r) => [r.class_name, formatRaceTime(r.avg_time) ?? '—', formatRaceTime(r.best_time) ?? '—', r.avg_last3f ? `${r.avg_last3f.toFixed(1)}秒` : '—', `${r.races}`])}
+              note={fastestTime ? <>{fastestYear}年以降の最速勝ちタイムは <b>{formatRaceTime(fastestTime.final_time)}</b>（{jaYmd(fastestTime.date)}・{fastestTime.race_name}・{fastestTime.horse_name}・{fastestTime.track_condition === '稍' ? '稍重' : fastestTime.track_condition === '不' ? '不良' : fastestTime.track_condition}）。当サイトのデータからの値で、JRA公式のコースレコードとは異なる場合があります</> : undefined}
+            />
+          </section>
+        )}
+        {gradedWinners.length > 0 && (
+          <section id="graded-winners" className={s.sc} aria-label="重賞の勝ち馬">
+            <Head title={<Nb parts={[`${NAME}の`, '重賞の勝ち馬']} />} sub={`直近${periodYears}年間・新しい順`} />
+            <ListTable
+              label={`${NAME}の重賞の勝ち馬`}
+              cols={[{ label: 'レース', key: true }, { label: '日付', num: true }, { label: '勝ち馬' }, { label: '騎手' }, { label: '人気', num: true }, { label: 'タイム', num: true }]}
+              rows={gradedWinners.map((w) => [
+                <><i className={`${s.gr} ${s[w.grade.toLowerCase()] ?? s.gx}`}>{w.grade}</i>{w.race_name}</>,
+                w.date.slice(0, 10).replace(/-/g, '/'),
+                <b key="h">{w.horse_name}</b>,
+                w.jockey_name,
+                w.popularity ? `${w.popularity}` : '—',
+                <>{formatRaceTime(w.final_time) ?? '—'}{w.track_condition !== '良' ? <span className={s['lt-s']}>{w.track_condition === '稍' ? '稍重' : w.track_condition === '不' ? '不良' : w.track_condition}</span> : null}</>,
+              ])}
+            />
           </section>
         )}
 
@@ -1205,6 +1288,25 @@ export default async function CoursePage({ params }: Props) {
           </section>
         )}
 
+        {/* 狙い目・消し条件 */}
+        {enoughRaces && aim.hi.length > 0 && (
+          <section id="aim" className={s.sc} aria-label="狙い目・消し条件">
+            <Head title={<Nb parts={[`${NAME}の`, '狙い目・消し条件']} />} sub={`${AIM_MIN}走以上の条件のうち、複勝回収率が高い条件・低い条件`} />
+            <ListTable
+              label={`${NAME}の狙い目・消し条件`}
+              cols={[{ label: '条件', key: true }, { label: '複勝回収率', num: true }, { label: '単勝回収率', num: true, ml: '単回' }, { label: '複勝率', num: true }, { label: '出走数', num: true, ml: '出走' }]}
+              rows={[...aim.hi.map((r) => ['狙い目', r] as const), ...aim.lo.map((r) => ['消し', r] as const)].map(([k, r]) => [
+                <><i className={`${s['lt-tg']} ${k === '消し' ? s.x : ''}`}>{k}</i>{r.label}</>,
+                `${r.place_payback.toFixed(0)}%`,
+                `${r.win_payback.toFixed(0)}%`,
+                `${r.place_rate.toFixed(1)}%`,
+                `${r.races.toLocaleString('ja-JP')}`,
+              ])}
+              note="条件：枠・人気・性別・馬体重・前走比（距離短縮・延長）・騎手・調教師・種牡馬・母父"
+            />
+          </section>
+        )}
+
         {/* 条件別 */}
         <section id="popularity" className={s.sc} aria-label="人気別データ">
           <Head title={<Nb parts={[NAME, '人気別データ']} sep=" " />} />
@@ -1228,6 +1330,30 @@ export default async function CoursePage({ params }: Props) {
           <Cond rows={styleRows} keyLabel="脚質" extra={<p className={s['cp-f']}><More anchor="running-style" label="脚質の定義を見る" /></p>} />
         </section>
 
+        {trackCondRows.length > 0 && (
+          <section id="track-condition" className={s.sc} aria-label="馬場状態別の傾向">
+            <Head title={<Nb parts={[`${NAME}の`, '馬場状態別の傾向']} />} sub={tcHasStyle ? '良・稍重・重・不良での勝ちタイムと脚質・1番人気の複勝率' : '良・稍重・重・不良での勝ちタイムと1番人気の複勝率'} />
+            <ListTable
+              label={`${NAME}の馬場状態別の傾向`}
+              cols={[
+                { label: '馬場', key: true }, { label: '平均勝ちタイム', num: true },
+                // 直線コース（コーナーがない）は脚質を分けられないので列ごと出さない
+                ...(tcHasStyle ? [{ label: '逃げ・先行', num: true }, { label: '差し・追込', num: true }] : []),
+                { label: '1番人気', num: true }, { label: 'レース数', num: true, ml: 'レース' },
+              ]}
+              rows={trackCondRows.map((r) => [
+                r.condition, formatRaceTime(r.avg_time) ?? '—',
+                ...(tcHasStyle ? [
+                  r.front_place_rate !== null ? `${r.front_place_rate.toFixed(1)}%` : '—',
+                  r.back_place_rate !== null ? `${r.back_place_rate.toFixed(1)}%` : '—',
+                ] : []),
+                r.fav1_place_rate !== null ? `${r.fav1_place_rate.toFixed(1)}%` : '—',
+                `${r.races}`,
+              ])}
+              note={tcHasStyle ? '逃げ・先行、差し・追込、1番人気は複勝率。脚質の分け方は脚質別データと同じ。レース数が少ない馬場は数値のぶれが大きくなります' : '1番人気は複勝率。レース数が少ない馬場は数値のぶれが大きくなります'}
+            />
+          </section>
+        )}
         {ad('dataMid')}
 
         <section id="gender" className={s.sc} aria-label="性別データ">
@@ -1238,6 +1364,13 @@ export default async function CoursePage({ params }: Props) {
           <Head title={<Nb parts={[NAME, '馬体重別データ']} sep=" " />} sub="馬体重（kg）別" />
           <Cond rows={weightRows} keyLabel="馬体重" />
         </section>
+
+        {distRows.length > 0 && (
+          <section id="distance-change" className={s.sc} aria-label="距離短縮・延長データ">
+            <Head title={<Nb parts={[NAME, '距離短縮・延長データ']} sep=" " />} sub="前走（平地）からの距離の変化" />
+            <Cond rows={distRows} keyLabel="前走比" />
+          </section>
+        )}
 
         {/* 騎手・血統・調教師（現行仕様：10件＋さらに表示で最大50件） */}
         <section id="jockey" className={s.sc} aria-label="騎手別データ">
@@ -1295,10 +1428,15 @@ export default async function CoursePage({ params }: Props) {
             <Head title="データQ&A" />
             <Faq items={[
               ...(shapeAnswer ? [{ question: `${seoPrefix}はどんなコース？`, answer: shapeAnswer }] : []),
+              ...(classTimeAnswer ? [{ question: `${seoPrefix}の平均タイム（標準タイム）は？`, answer: classTimeAnswer }] : []),
               { question: `${seoPrefix}は荒れやすい？`, answer: volatilityAnswer, boldFirstLine: true },
               { question: `${seoPrefix}で有利な枠順は？`, answer: gateAnswer, boldFirstLine: true },
               ...(badGateAnswer ? [{ question: `${seoPrefix}の道悪（重馬場）で有利な枠は？`, answer: badGateAnswer, boldFirstLine: true }] : []),
               { question: `${seoPrefix}で有利な脚質は？`, answer: runningStyleAnswer, boldFirstLine: true },
+              ...(trackCondAnswer ? [{ question: `${seoPrefix}は道悪（重馬場）でどう変わる？`, answer: trackCondAnswer, boldFirstLine: true }] : []),
+              ...(distChangeAnswer ? [{ question: `${seoPrefix}は距離短縮と延長どちらが有利？`, answer: distChangeAnswer, boldFirstLine: true }] : []),
+              ...(aimAnswer ? [{ question: `${seoPrefix}の狙い目の条件は？`, answer: aimAnswer }] : []),
+              ...(gradedWinnersAnswer ? [{ question: `${seoPrefix}の重賞の勝ち馬は？`, answer: gradedWinnersAnswer }] : []),
               { question: `${seoPrefix}が得意な騎手は？`, answer: jockeyAnswer, links: jockeyLinks },
               { question: `${seoPrefix}が得意な調教師は？`, answer: trainerAnswer, links: trainerLinks },
               { question: `${seoPrefix}が得意な種牡馬・血統は？`, answer: sireAnswer, links: sireLinks },

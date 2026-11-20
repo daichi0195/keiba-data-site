@@ -298,3 +298,39 @@ export function Faq({ items }: { items: FaqItem[] }) {
     </div>
   );
 }
+
+/* ---------- 一覧の表（標準タイム・馬場状態別・重賞の勝ち馬・狙い目） ---------- */
+export function ListTable({ cols, rows, label, note, className = '' }: {
+  /** ml＝スマホで数値の前に付ける短いラベル（2列目より後ろの列） */
+  cols: { label: string; num?: boolean; key?: boolean; ml?: string }[];
+  rows: React.ReactNode[][];
+  label: string;
+  note?: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={`${s.cp} ${s.lt} ${className}`}>
+      <div className={s['lt-w']} role="region" aria-label={label} tabIndex={0}>
+        <table>
+          <thead>
+            <tr>
+              {cols.map((c) => (
+                <th key={c.label} scope="col" className={c.num ? s.r : undefined}>{c.label}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((cells, i) => (
+              <tr key={i}>
+                {cells.map((cell, j) => (
+                  <td key={j} data-l={j >= 2 ? (cols[j].ml ?? cols[j].label) : undefined} className={[cols[j].num ? s.r : '', cols[j].key ? s.k : ''].filter(Boolean).join(' ') || undefined}>{cell}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {note ? <p className={s['cp-n']}>{note}</p> : null}
+    </div>
+  );
+}
