@@ -808,3 +808,7 @@
 }
 .jk-it > .em{display:none}
 @media (min-width:700px){.jk-it > .em{display:block}}
+/* 騎手：狙い目・消し条件（タグは条件名の前） */
+.es-aim .es-cp{margin:0 8px 0 0;background:var(--jk-hl);color:var(--jk-k)}
+.es-aim .es-cp.es-cpx{background:var(--chip);color:var(--ink-sub)}
+@media (max-width:899.98px){.es-aim .es-lt td.m1{flex:0 0 calc(100% - 64px);min-width:0}.es-aim .es-lt td.m2{flex:0 0 56px;margin-left:0;text-align:right}}

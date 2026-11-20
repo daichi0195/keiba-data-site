@@ -64,7 +64,7 @@ export function sireDescription(name: string, d: any): string {
 
 export function jockeyDescription(d: any): string {
   const name = d?.name ?? '';
-  const fallback = `${name}騎手の特徴を直近3年のデータで分析。勝率・複勝率・回収率、得意な競馬場・コース・距離、人気別成績、相性の良い調教師まで。毎週更新。`;
+  const fallback = `${name}騎手の特徴を直近3年のデータで分析。勝率・複勝率・回収率、得意な競馬場・コース・距離、乗り替わり・道悪・人気別の成績、お手馬まで。毎週更新。`;
   const total = d?.total_stats;
   if (!d || !hasEnoughRaces(d.total_races) || !total) return fallback;
 
@@ -74,7 +74,7 @@ export function jockeyDescription(d: any): string {
   ];
   const course = bestByPlaceRate(d.racecourse_stats);
   if (course) parts.push(`得意な競馬場は${course.name}（複勝率${pct(course.place_rate)}）。`);
-  parts.push('コース・距離・人気別の成績と回収率を毎週更新。');
+  parts.push('コース・距離・乗り替わり・道悪の成績と回収率、狙い目の条件を毎週更新。');
   return parts.join('');
 }
 

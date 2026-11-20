@@ -378,3 +378,142 @@ export function thisYearOf(leading: { year: number; wins: number; ranking: numbe
   if (!leading || leading.length === 0) return null;
   return [...leading].sort((a, b) => b.year - a.year)[0];
 }
+
+// ---------------------------------------------------------------------------
+// 騎手：道悪・人気薄・ローカル・乗り替わりの判定（gcs/v2/generate_extras.py jockey_trends）
+// ---------------------------------------------------------------------------
+export type JockeyTrend = {
+  pos: number;
+  label: string;
+  index: number;
+  /** 実績÷見込み（%）。乗り替わり等は条件A÷条件B */
+  ratio: number;
+  races_a: number;
+  races_b: number | null;
+  rate_a: number | null;
+  rate_b: number | null;
+  /** 乗った馬の単勝オッズから見込まれる複勝率（判定の基準） */
+  exp_a?: number | null;
+  exp_b?: number | null;
+  all_rate_a: number | null;
+  all_rate_b: number | null;
+  payback?: number | null;
+};
+export type JockeyTrends = Partial<Record<'wet' | 'longshot' | 'local' | 'change', JockeyTrend>>;
+export type RideChangeRow = StatLike & { category: string };
+
+/** 判定方法の説明（他サイトとの違い。オーナー指示で本文にも明記） */
+export const JOCKEY_TREND_METHOD =
+  '騎手の成績は、どんな馬に乗ったかで大きく変わります。たとえば継続騎乗は人気馬が多いため、複勝率をそのまま比べると、ほとんどの騎手で「継続騎乗の方が得意」に見えてしまいます。当サイトではこの偏りを補正するため、単勝オッズから見込まれる複勝数に対して実際に何回3着以内に入ったかを、条件ごとに比べて判定しています。';
+
+const isNeutral = (label: string) => /差分なし|標準/.test(label);
+const p1 = (v: number | null | undefined) => (typeof v === 'number' ? `${v.toFixed(1)}%` : '—');
+
+/** データ概要の冒頭：騎乗スタイルの要約（騎手のみ。調教師は buildPersonLead のまま） */
+export function buildJockeyLead(args: {
+  name: string;
+  region?: string | null;
+  debutYear?: number | string | null;
+  traits: string[];
+  graded?: { wins: number; g1: number } | null;
+  recentWin?: GradedWin | null;
+}): string {
+  const { name, region, debutYear, traits, graded, recentWin } = args;
+  const head = [region ? `${region}所属` : null, debutYear ? `${debutYear}年デビュー` : null].filter(Boolean).join('・');
+  const lines: string[] = [];
+  const t = traits.filter((x) => x && !isNeutral(x)).slice(0, 4);
+  lines.push(
+    t.length > 0
+      ? `${name}騎手${head ? `（${head}）` : ''}は、データ上${t.map((x) => `「**${x}**」`).join('')}という特徴がある騎手です。`
+      : `${name}騎手${head ? `（${head}）` : ''}は、条件による成績の偏りが小さい騎手です。`
+  );
+  if (graded && graded.wins > 0) {
+    lines.push(`直近3年間の平地重賞は${graded.wins}勝${graded.g1 > 0 ? `（うちG1 ${graded.g1}勝）` : ''}${recentWin ? `で、最近では${recentWin.race_name}（${recentWin.horse_name}）を勝っています。` : 'です。'}`);
+  }
+  return lines.join('');
+}
+
+/** Q&A「乗り替わりの成績は？」 */
+export function buildRideChangeAnswer(name: string, rows: RideChangeRow[] | undefined, trend?: JockeyTrend | null): string | null {
+  const by = (c: string) => (rows ?? []).find((r) => r.category === c && r.races >= 30);
+  const keep = by('継続騎乗');
+  const first = by('乗り替わり（初騎乗）');
+  const again = by('乗り替わり（再騎乗）');
+  if (!keep || (!first && !again)) return null;
+  const parts = [
+    `${name}騎手の複勝率は、継続騎乗で**${keep.place_rate.toFixed(1)}%**`,
+    first ? `、乗り替わり（初めて乗る馬）で**${first.place_rate.toFixed(1)}%**` : '',
+    again ? `、乗り替わり（以前に乗った馬）で${again.place_rate.toFixed(1)}%` : '',
+    'です。',
+  ].join('');
+  const exp = trend && trend.exp_a != null && trend.exp_b != null
+    ? `乗った馬の人気（単勝オッズ）から見込まれる複勝率は、継続騎乗${p1(trend.exp_b)}、乗り替わり${p1(trend.exp_a)}です。`
+    : '';
+  const verdict = trend
+    ? exp + (isNeutral(trend.label)
+      ? 'この見込みとの差で比べると、継続騎乗と乗り替わりで**差はありません**。'
+      : `この見込みとの差で比べた判定は**${trend.label}**です。`)
+    : null;
+  return [parts, verdict, trend ? JOCKEY_TREND_METHOD : null, '※平地（芝・ダート）。継続騎乗＝前走と同じ騎手、乗り替わり＝前走と違う騎手。'].filter(Boolean).join('\n');
+}
+
+/** Q&A「道悪は得意？」 */
+export function buildWetAnswer(name: string, trend?: JockeyTrend | null): string | null {
+  if (!trend) return null;
+  return [
+    `${name}騎手の判定は**${trend.label}**です。`,
+    `芝・ダートの稍重〜不良での複勝率は**${p1(trend.rate_a)}**、良馬場では${p1(trend.rate_b)}です。`,
+    `乗った馬の人気（単勝オッズ）から見込まれる複勝率は、稍重〜不良${p1(trend.exp_a)}、良${p1(trend.exp_b)}で、判定はこの見込みとの差を比べています。`,
+  ].join('\n');
+}
+
+/** Q&A「人気薄でも走る？」 */
+export function buildLongshotAnswer(name: string, trend?: JockeyTrend | null): string | null {
+  if (!trend) return null;
+  return [
+    `${name}騎手の判定は**${trend.label}**です。`,
+    `6番人気以下での複勝率は**${p1(trend.rate_a)}**（全騎手${p1(trend.all_rate_a)}）、複勝回収率は${p1(trend.payback)}です。乗った馬の単勝オッズから見込まれる複勝率は${p1(trend.exp_a)}で、実績は見込みの${trend.ratio.toFixed(0)}%でした。`,
+    `※平地の6番人気以下（${trend.races_a.toLocaleString('ja-JP')}回騎乗）が対象です。`,
+  ].join('\n');
+}
+
+/** Q&A「中央とローカルどちらが得意？」 */
+export function buildLocalAnswer(name: string, trend?: JockeyTrend | null): string | null {
+  if (!trend) return null;
+  return [
+    `${name}騎手の判定は**${trend.label}**です。`,
+    `ローカル（札幌・函館・福島・新潟・中京・小倉）の複勝率は**${p1(trend.rate_a)}**、中央4場（東京・中山・京都・阪神）は**${p1(trend.rate_b)}**です。`,
+    `乗った馬の人気（単勝オッズ）から見込まれる複勝率は、ローカル${p1(trend.exp_a)}、中央4場${p1(trend.exp_b)}で、判定はこの見込みとの差を比べています。`,
+  ].join('\n');
+}
+
+/** 狙い目・消し条件の候補 */
+export type AimRow = { label: string; races: number; place_rate: number; place_payback: number; win_payback: number };
+export function pickAim(cands: AimRow[], minRaces = 30, n = 5) {
+  const ok = cands.filter((r) => r.races >= minRaces && typeof r.place_payback === 'number');
+  const hi = [...ok].sort((a, b) => b.place_payback - a.place_payback).slice(0, n);
+  const used = new Set(hi.map((r) => r.label));
+  const lo = [...ok].sort((a, b) => a.place_payback - b.place_payback).filter((r) => !used.has(r.label)).slice(0, n);
+  return { hi, lo };
+}
+
+/** Q&A「狙い目の条件は？」 */
+export function buildAimAnswer(name: string, aim: { hi: AimRow[]; lo: AimRow[] }, minRaces = 30): string | null {
+  if (aim.hi.length === 0) return null;
+  const f = (r: AimRow) => `${r.label}（複勝回収率**${r.place_payback.toFixed(0)}%**・複勝率${r.place_rate.toFixed(1)}%）`;
+  return [
+    `${name}騎手で複勝回収率が高い条件は、${aim.hi.slice(0, 3).map(f).join('、')}です。`,
+    aim.lo.length ? `反対に低いのは、${aim.lo.slice(0, 3).map(f).join('、')}です。` : '',
+    `※直近3年間で${minRaces}回以上騎乗した条件（競馬場・コース・距離・クラス・人気・枠・馬場・性別・調教師・種牡馬）が対象です。`,
+  ].filter(Boolean).join('\n');
+}
+
+/** Q&A「G1の勝ち鞍は？」 */
+export type G1Win = { date: string; race_name: string; horse_name: string; horse_id?: number; popularity?: number | null };
+export function buildG1Answer(name: string, wins: G1Win[] | undefined, since: string | undefined): string | null {
+  const list = wins ?? [];
+  const y = since ? since.slice(0, 4) : '2019';
+  if (list.length === 0) return `${name}騎手は${y}年以降、JRAのG1を勝っていません。`;
+  const recent = list.slice(0, 5).map((w) => `${w.date.slice(0, 4)}年${w.race_name}（${w.horse_name}）`).join('、');
+  return `${name}騎手は${y}年以降、JRAのG1を**${list.length}勝**しています。最近の勝ち鞍は${recent}です。`;
+}

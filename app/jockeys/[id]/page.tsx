@@ -10,10 +10,15 @@ import { jaDateToIso, periodFromDataPeriod, buildWebPageJsonLd } from '@/lib/dat
 import { MIN_RACES_FOR_TRENDS, hasEnoughRaces, THIN_PAGE_ROBOTS } from '@/lib/dataPageRules';
 import { buildJockeySummaryBlocks } from '@/lib/jockeySummaryBlocks';
 import { jockeyDescription } from '@/lib/metaDescriptions';
-import { ageAt, buildGradedAnswer, buildPersonLead, gradedTotals, jaDate, thisYearOf, type GradedWin, type PersonProfile } from '@/lib/entityExtras';
 import {
-  About, Ad, Head, BestNote, Cnt, CourseAcc, DefLink, Faq, GTag, GradedWins, H, Highlights, Hero, Hno, MaybeLink, Meters, Nb, PageNav,
-  Pn, Sec, SfTag, Stats, Subs, Summary, ThinNote, Tiles, EntityRoot, gateRows as toGateRows, sfKey,
+  ageAt, buildAimAnswer, buildG1Answer, buildGradedAnswer, buildJockeyLead, buildLocalAnswer, buildLongshotAnswer, buildRideChangeAnswer, buildWetAnswer,
+  formatTitles, gradedTotals, jaDate, pickAim, thisYearOf,
+  type AimRow, type G1Win, type GradedWin, type JockeyTrend, type JockeyTrends, type PersonProfile, type RideChangeRow,
+} from '@/lib/entityExtras';
+import {
+  About, Ad, Head, BestNote, Cnt, CourseAcc, DefLink, Faq, GTag, GradedWins, H, Highlights, Hero, Hno, HorseList, InfoTable, MaybeLink, Meters, Nb, PageNav,
+  Pn, Sec, SfTag, Stats, Subs, Summary, ThinNote, Titles, EntityRoot, gateRows as toGateRows, sfKey,
+  type MeterItem,
   type CourseRow, type NameLink,
 } from '@/components/v6/entity/parts';
 import { YearCharts } from '@/components/v6/entity/charts';
@@ -273,8 +278,8 @@ export async function generateMetadata({
     };
   }
 
-  // 検索語「〇〇騎手 傾向」「〇〇 騎手 データ」「〇〇 特徴」に合わせて前半に置く
-  const title = `${jockey.name}騎手の傾向・データ｜特徴・得意コース・距離と回収率【毎週更新】`;
+  // 検索語「〇〇騎手 傾向」「〇〇 騎手 特徴」「〇〇 騎手 データ」に合わせて前半に置く。AI 概要で必ず出る「乗り替わり」も入れる（docs/seo/jockey_serp_2026-11.md）
+  const title = `${jockey.name}騎手の傾向・特徴・データ｜得意コース・距離・乗り替わりと回収率【毎週更新】`;
   // 検索結果で他の騎手と見分けられるよう、所属・デビュー年と固有の数値を入れる
   const description = jockeyDescription(jockey);
   const url = `https://www.keibadata.com/jockeys/${id}`;
@@ -942,6 +947,40 @@ export default async function JockeyPage({
     { label: '重賞勝ち（平地）', value: `${jockeyGraded.wins}勝`, sub: `直近3年間・G1 ${jockeyGraded.g1}勝` },
   ];
 
+  // 道悪・人気薄・ローカル・乗り替わり（人気の偏りを補正した判定）、乗り替わり別・お手馬・G1（gcs/v2/generate_extras.py）
+  const jt: JockeyTrends = (jockey as any).jockey_trends ?? {};
+  const rideChange: RideChangeRow[] = (jockey as any).ride_change_stats ?? [];
+  const notableHorses: any[] = (jockey as any).notable_horses ?? [];
+  const g1Wins: G1Win[] = (jockey as any).g1_wins ?? [];
+  const g1Since: string | undefined = (jockey as any).g1_wins_since;
+  // 2列の並びを崩さないよう、判定は2つ1組で出す（道悪＋乗り替わり／人気薄＋ローカル）
+  const trendPairs = ([['wet', 'change'], ['longshot', 'local']] as const).filter(([a, b]) => jt[a] && jt[b]);
+  const shownTrends = trendPairs.flat() as (keyof JockeyTrends)[];
+  const rideChangeAnswer = buildRideChangeAnswer(jockey.name, rideChange, shownTrends.includes('change') ? jt.change : null);
+  const wetAnswer = shownTrends.includes('wet') ? buildWetAnswer(jockey.name, jt.wet) : null;
+  const longshotAnswer = shownTrends.includes('longshot') ? buildLongshotAnswer(jockey.name, jt.longshot) : null;
+  const localAnswer = shownTrends.includes('local') ? buildLocalAnswer(jockey.name, jt.local) : null;
+  const g1Answer = buildG1Answer(jockey.name, g1Wins, g1Since);
+
+  // 狙い目・消し条件：騎乗前に分かる条件から、複勝回収率が高い／低いもの
+  const CLASS_LABEL: Record<string, string> = { 新馬: '新馬戦', 未勝利: '未勝利戦', '1勝': '1勝クラス', '2勝': '2勝クラス', '3勝': '3勝クラス' };
+  const POP_LABEL: Record<string, string> = { fav1: '1番人気', fav2: '2番人気', fav3: '3番人気', fav4: '4番人気', fav5: '5番人気', fav6to9: '6〜9番人気', fav10plus: '10番人気以下' };
+  const aimCands: AimRow[] = [
+    ...(jockey.racecourse_stats ?? []).filter((r) => r.name !== '中央' && r.name !== 'ローカル').map((r) => ({ ...r, label: `${r.name.replace('競馬場', '')}競馬場` })),
+    ...(jockey.course_stats ?? []).filter((c) => c.surface_en !== 'obstacle').map((c) => ({ ...c, label: formatCourseName(c) })),
+    ...jockey.distance_stats.map((r) => ({ ...r, label: r.category })),
+    ...jockey.class_stats.map((r) => ({ ...r, label: CLASS_LABEL[r.class_name] ?? r.class_name })),
+    ...Object.entries(jockey.popularity_stats ?? {}).map(([k, r]: [string, any]) => ({ ...r, label: POP_LABEL[k] ?? k })),
+    ...(jockey.gate_stats as any[]).map((r) => ({ ...r, label: `${r.gate}枠` })),
+    ...jockey.track_condition_stats.filter((r) => r.surface !== '障').map((r) => ({ ...r, label: `${r.surface === 'ダ' ? 'ダート' : r.surface}・${r.condition === '稍' ? '稍重' : r.condition === '不' ? '不良' : r.condition}` })),
+    ...jockey.gender_stats.map((r) => ({ ...r, label: r.name })),
+    ...jockey.trainer_stats.map((r) => ({ ...r, label: `${r.name}厩舎` })),
+    ...((jockey as any).sire_stats ?? []).map((r: any) => ({ ...r, label: `${r.name}産駒` })),
+  ] as AimRow[];
+  const AIM_MIN = 30;
+  const aim = pickAim(aimCands, AIM_MIN);
+  const aimAnswer = buildAimAnswer(jockey.name, aim, AIM_MIN);
+
   // FAQ構造化データ
   const faqJockeyJsonLd = {
     '@context': 'https://schema.org',
@@ -953,7 +992,13 @@ export default async function JockeyPage({
       { question: `${jockey.name}騎手の得意な距離は？`, answer: distanceFaqAnswer },
       { question: `${jockey.name}騎手の得意な脚質は？`, answer: runningStyleFaqAnswer },
       { question: `${jockey.name}騎手の人気時の信頼度は？`, answer: popularityFaqAnswer },
+      ...(rideChangeAnswer ? [{ question: `${jockey.name}騎手の乗り替わりの成績は？`, answer: rideChangeAnswer }] : []),
+      ...(wetAnswer ? [{ question: `${jockey.name}騎手は道悪（重馬場）が得意？`, answer: wetAnswer }] : []),
+      ...(longshotAnswer ? [{ question: `${jockey.name}騎手は人気薄でも走る？`, answer: longshotAnswer }] : []),
+      ...(localAnswer ? [{ question: `${jockey.name}騎手は中央とローカルどちらが得意？`, answer: localAnswer }] : []),
+      ...(aimAnswer ? [{ question: `${jockey.name}騎手の狙い目の条件は？`, answer: aimAnswer }] : []),
       { question: `${jockey.name}騎手の重賞成績は？`, answer: gradedAnswer },
+      ...(g1Answer ? [{ question: `${jockey.name}騎手のG1の勝ち鞍は？`, answer: g1Answer }] : []),
       ...(sireAnswer ? [{ question: `${jockey.name}騎手と相性の良い種牡馬は？`, answer: sireAnswer }] : []),
       { question: `${jockey.name}騎手の苦手な競馬場は？`, answer: badRacecourseAnswer },
       { question: `${jockey.name}騎手の苦手なコースは？`, answer: badCourseAnswer },
@@ -1047,12 +1092,11 @@ export default async function JockeyPage({
   if (enoughRaces) {
     summaryBlocks.unshift({
       key: 'lead',
-      text: buildPersonLead({
-        kind: '騎手',
+      text: buildJockeyLead({
         name: jockey.name,
         region: (jockey as any).affiliation,
         debutYear: jockey.debut_year,
-        traits: [POS.rel !== 3 ? `人気時の信頼度が${lbl('rel')}` : '', lbl('sf'), lbl('st'), lbl('ds')].filter((x) => x && !/差分なし|互角|標準/.test(x)),
+        traits: [lbl('st'), POS.rel !== 3 ? `人気時の信頼度が${lbl('rel')}` : '', lbl('sf'), lbl('ds'), ...shownTrends.map((k) => jt[k]!.label)].filter((x) => x && !/差分なし|互角|標準/.test(x)),
         graded: jockeyGraded,
         recentWin: gradedWins[0] ?? null,
       }),
@@ -1082,7 +1126,40 @@ export default async function JockeyPage({
       : []),
     ['着度数（直近3年間）', <span className={cx('num')}>{`${t.wins}-${t.places_2}-${t.places_3}-${lostCount}`}</span>, <><Nb>勝率{t.win_rate.toFixed(1)}%・</Nb><Nb>複勝率{t.place_rate.toFixed(1)}%</Nb></>],
     ['重賞勝ち（平地）', <><Cnt v={jockeyGraded.wins} />勝</>, `直近3年間・G1 ${jockeyGraded.g1}勝`],
+    [`G1勝ち（${(g1Since ?? "2019").slice(0, 4)}年〜）`, <><Cnt v={g1Wins.length} />勝</>, g1Wins[0] ? `最近：${g1Wins[0].race_name}` : ''],
   ];
+
+  // 道悪・乗り替わり・人気薄・ローカルの判定（人気の偏りを補正）
+  const pct1 = (v: number | null | undefined) => (typeof v === 'number' ? `${v.toFixed(1)}%` : '—');
+  // 判定の基準：乗った馬の単勝オッズから見込まれる複勝率（左の目盛り側 b → 右 a の順）
+  const allFx = (tr: JockeyTrend, a: string, b?: string) => (
+    <p className={cx('fx')}>
+      <span>人気からの見込み{b ? ` ${b}` : ''} <b className={cx('num')}>{pct1(b ? tr.exp_b : tr.exp_a)}</b></span>
+      {b ? <span>{a} <b className={cx('num')}>{pct1(tr.exp_a)}</b></span> : null}
+    </p>
+  );
+  const TREND_VIEW: Record<keyof JockeyTrends, { verdict: string; meter: (tr: JockeyTrend) => MeterItem }> = {
+    wet: {
+      verdict: '道悪',
+      meter: (tr) => ({ label: '道悪（稍重〜不良）', pos: tr.pos, result: tr.label, scale: ['苦手', '標準', '得意'], ev: [['良 複勝率', tr.rate_b ?? undefined], ['稍重〜不良 複勝率', tr.rate_a ?? undefined]], facts: allFx(tr, '稍重〜不良', '良') }),
+    },
+    change: {
+      verdict: '乗り替わり',
+      meter: (tr) => ({ label: '継続騎乗・乗り替わり', pos: tr.pos, result: tr.label, scale: ['継続騎乗が得意', '差分なし', '乗り替わりが得意'], ev: [['継続騎乗 複勝率', tr.rate_b ?? undefined], ['乗り替わり 複勝率', tr.rate_a ?? undefined]], facts: allFx(tr, '乗り替わり', '継続騎乗') }),
+    },
+    longshot: {
+      verdict: '人気薄',
+      meter: (tr) => ({
+        label: '人気薄（6番人気以下）', pos: tr.pos, result: tr.label, scale: ['走らない', '標準', '走る'],
+        ev: [['6番人気以下 複勝率', tr.rate_a ?? undefined], ['人気からの見込み', tr.exp_a ?? undefined, true]],
+        facts: <p className={cx('fx')}><span>複勝回収率 <b className={cx('num')}>{pct1(tr.payback)}</b></span><span>騎乗数 <b className={cx('num')}>{tr.races_a.toLocaleString('ja-JP')}回</b></span></p>,
+      }),
+    },
+    local: {
+      verdict: 'ローカル',
+      meter: (tr) => ({ label: '中央4場・ローカル', pos: tr.pos, result: tr.label, scale: ['中央4場が得意', '差分なし', 'ローカルが得意'], ev: [['中央4場 複勝率', tr.rate_b ?? undefined], ['ローカル 複勝率', tr.rate_a ?? undefined]], facts: allFx(tr, 'ローカル', '中央4場') }),
+    },
+  };
 
   // 年度別（図は古い順、表は新しい順）
   const leadYears = years.map((y) => jockey.yearly_leading.find((x) => x.year === y) ?? { year: y, wins: 0, ranking: 0 });
@@ -1103,6 +1180,7 @@ export default async function JockeyPage({
     R(jockey.class_stats.find((x) => x.class_name === n), /^G\d$/.test(n) ? <GTag g={n} /> : n, n));
   const popRows = ([['fav1', '1番人気'], ['fav2', '2番人気'], ['fav3', '3番人気'], ['fav4', '4番人気'], ['fav5', '5番人気'], ['fav6to9', '6〜9番人気'], ['fav10plus', '10番人気〜']] as const).map(([k, l]) =>
     R(jockey.popularity_stats?.[k], l));
+  const rideRows = rideChange.length ? ['継続騎乗', '乗り替わり（初騎乗）', '乗り替わり（再騎乗）', '初出走'].map((n) => R(rideChange.find((x) => x.category === n) as any, n, n)) : [];
   const styleRows = ([['escape', '逃げ'], ['lead', '先行'], ['pursue', '差し'], ['close', '追込']] as const).map(([k, l]) => R(sOf(k), l));
   const gRows = toGateRows(jockey.gate_stats);
   const distRows = ['短距離', 'マイル', '中距離', '長距離'].map((n) => R(dOf(n), n));
@@ -1137,10 +1215,12 @@ export default async function JockeyPage({
   );
 
   // ページ内の移動（対象レース数が少ないページは「特徴」「注目」「Q&A」を外す）
-  const thinHidden = new Set(['characteristics', 'highlights-section', 'faq-section']);
+  const thinHidden = new Set(['characteristics', 'highlights-section', 'aim-section', 'faq-section']);
   const navItems = [
     ['profile-section', '基本情報'], ['summary-section', '概要'], ['leading', '年度別'], ...(gradedWins.length ? [['graded-wins-section', '重賞勝ち']] : []),
-    ['characteristics', '特徴'], ['highlights-section', '注目'], ['class-stats', 'クラス別'], ['popularity-stats', '人気別'], ['running-style-stats', '脚質別'],
+    ...(notableHorses.length ? [['horses-section', 'お手馬']] : []),
+    ['characteristics', '特徴'], ['highlights-section', '注目'], ...(aim.hi.length ? [['aim-section', '狙い目']] : []), ['class-stats', 'クラス別'], ['popularity-stats', '人気別'],
+    ...(rideChange.length ? [['ride-change-stats', '乗り替わり']] : []), ['running-style-stats', '脚質別'],
     ['gate-stats', '枠順別'], ['distance-stats', '距離別'], ['gender-stats', '性別'], ['surface-stats', '芝・ダート'], ['track-condition-stats', '馬場状態'],
     ['racecourse-stats', '競馬場別'], ['course-stats', 'コース別'], ['trainer-stats', '調教師'], ...(sireRows.length ? [['sire-stats', '種牡馬']] : []),
     ['owner-stats', '馬主'], ['faq-section', 'Q&A'],
@@ -1154,7 +1234,13 @@ export default async function JockeyPage({
     { q: `${jockey.name}騎手の得意な距離は？`, a: distanceFaqAnswer, lead: true },
     { q: `${jockey.name}騎手の得意な脚質は？`, a: runningStyleFaqAnswer, lead: true },
     { q: `${jockey.name}騎手の人気時の信頼度は？`, a: popularityFaqAnswer },
+    ...(rideChangeAnswer ? [{ q: `${jockey.name}騎手の乗り替わりの成績は？`, a: rideChangeAnswer, lead: true }] : []),
+    ...(wetAnswer ? [{ q: `${jockey.name}騎手は道悪（重馬場）が得意？`, a: wetAnswer, lead: true }] : []),
+    ...(longshotAnswer ? [{ q: `${jockey.name}騎手は人気薄でも走る？`, a: longshotAnswer, lead: true }] : []),
+    ...(localAnswer ? [{ q: `${jockey.name}騎手は中央とローカルどちらが得意？`, a: localAnswer, lead: true }] : []),
+    ...(aimAnswer ? [{ q: `${jockey.name}騎手の狙い目の条件は？`, a: aimAnswer }] : []),
     { q: `${jockey.name}騎手の重賞成績は？`, a: gradedAnswer },
+    ...(g1Answer ? [{ q: `${jockey.name}騎手のG1の勝ち鞍は？`, a: g1Answer }] : []),
     ...(sireAnswer ? [{ q: `${jockey.name}騎手と相性の良い種牡馬は？`, a: sireAnswer, links: topSires.filter((r: any) => r.link).map((r: any) => ({ name: r.name, href: r.link })) }] : []),
     { q: `${jockey.name}騎手の苦手な競馬場は？`, a: badRacecourseAnswer },
     { q: `${jockey.name}騎手の苦手なコースは？`, a: badCourseAnswer },
@@ -1174,6 +1260,7 @@ export default async function JockeyPage({
           h1s="の傾向・成績データ"
           lead={`${WHO}${affiliation || jockey.debut_year ? `（${[affiliation ? `${affiliation}所属` : '', jockey.debut_year ? `${jockey.debut_year}年デビュー` : ''].filter(Boolean).join('・')}）` : ''}の成績・データをまとめたページです。独自のデータベースで直近3年間・${jockey.total_races.toLocaleString('ja-JP')}レースのデータを集計し、毎週更新しています。`}
           kpi={kpi}
+          kpiTable
           races={jockey.total_races}
           period={periodText}
           updated={jockey.last_updated}
@@ -1184,13 +1271,14 @@ export default async function JockeyPage({
             { label: '芝・ダート', pos: POS.sf, text: lbl('sf') },
             { label: '脚質', pos: POS.st, text: lbl('st') },
             { label: '距離', pos: POS.ds, text: lbl('ds') },
+            ...shownTrends.map((k) => ({ label: TREND_VIEW[k].verdict, pos: jt[k]!.pos, text: jt[k]!.label })),
           ] : null}
         />
         {!enoughRaces && <ThinNote totalRaces={jockey.total_races} minRaces={MIN_RACES_FOR_TRENDS} hiddenItems="「騎手の傾向」「騎手の特徴」「注目ポイント」「データQ&A」" />}
         <Ad unit="dataTop" />
 
         <Sec id="profile-section" head={<Hno w={WHO} title="基本情報" />}>
-          <Tiles items={tiles.filter((x) => x[1])} />
+          <InfoTable label={`${WHO}の基本情報`} items={tiles.filter((x) => x[1])} />
         </Sec>
         <Sec id="summary-section" head={<Hno w={WHO} title="データ概要" />}>
           <Summary blocks={summaryBlocks} links={summaryLinks} />
@@ -1207,10 +1295,21 @@ export default async function JockeyPage({
             />
           </Sec>
         )}
+        {notableHorses.length > 0 && (
+          <Sec id="horses-section" head={<Hno w={WHO} title="主なお手馬" sub="直近3年間に勝たせた馬。G1の勝利数→重賞の勝利数→勝利数の順" />}>
+            <HorseList
+              label={`${WHO}の主なお手馬`}
+              initial={10}
+              note="成績はこの騎手が乗ったレースのみ（直近3年間・JRA）"
+              cols={[{ label: '馬名', m: 'm1' }, { label: '性・生年', m: 'm1b' }, { label: '騎乗成績', m: 'm2', num: true }, { label: '主な勝ち鞍', m: 'm3' }, { label: '父', m: 'm4', ml: '父' }]}
+              rows={notableHorses.map((h: any) => [<b key="n">{h.horse_name}</b>, `${h.sex}・${h.birth_year ? `${h.birth_year}年生` : ''}`, `${h.races}戦${h.wins}勝`, <Titles key="t" list={formatTitles(h.titles)} />, h.father ?? '—'])}
+            />
+          </Sec>
+        )}
         {enoughRaces && (
           <Sec id="characteristics" head={<Hno w={WHO} title="特徴" sub="判定と、その根拠になった数字" />}>
             <Meters
-              note="※複勝率ランキングは1番人気が10走以上の騎手を対象"
+              note={shownTrends.length ? '※複勝率ランキングは1番人気が10走以上の騎手を対象　※道悪・乗り替わり・人気薄・ローカルは、乗った馬の人気（単勝オッズ）の偏りを補正して判定' : '※複勝率ランキングは1番人気が10走以上の騎手を対象'}
               items={[
                 {
                   label: '人気時の信頼度', pos: POS.rel, result: lbl('rel'), scale: ['低い', '標準', '高い'],
@@ -1231,6 +1330,7 @@ export default async function JockeyPage({
                   label: '得意な距離傾向', pos: POS.ds, result: lbl('ds'), scale: ['短距離が得意', '差分なし', '長距離が得意'],
                   ev: [['短距離〜マイル 複勝率', mergeRate(dOf('短距離'), dOf('マイル'))], ['中距離〜長距離 複勝率', mergeRate(dOf('中距離'), dOf('長距離'))]],
                 },
+                ...shownTrends.map((k) => TREND_VIEW[k].meter(jt[k]!)),
               ]}
             />
           </Sec>
@@ -1240,8 +1340,27 @@ export default async function JockeyPage({
             <Highlights courses={courseRows} urlOf={(c) => resolveCourseUrl(c)} shortOf={(c) => courseLabel(c, { withRacecourse: true, shortDirt: true })} />
           </Sec>
         )}
+        {enoughRaces && aim.hi.length > 0 && (
+          <Sec id="aim-section" head={<Hno w={WHO} title="狙い目・消し条件" sub={`直近3年間で${AIM_MIN}回以上騎乗した条件のうち、複勝回収率が高い条件・低い条件`} />}>
+            <HorseList
+              label={`${WHO}の狙い目・消し条件`}
+              className="es-aim"
+              initial={aim.hi.length + aim.lo.length}
+              note="条件：競馬場・コース・距離・クラス・人気・枠・馬場・性別・調教師・種牡馬"
+              cols={[{ label: '条件', m: 'm1' }, { label: '複勝回収率', m: 'm2', num: true }, { label: '単勝回収率', m: 'm4', ml: '単回', num: true }, { label: '複勝率', m: 'm4', ml: '複勝率', num: true }, { label: '騎乗数', m: 'm4', ml: '騎乗', num: true }]}
+              rows={[...aim.hi.map((r) => ['狙い目', r] as const), ...aim.lo.map((r) => ['消し', r] as const)].map(([k, r]) => [
+                <b key="c"><small className={cx('es-cp', k === '消し' && 'es-cpx')}>{k}</small>{r.label}</b>,
+                `${r.place_payback.toFixed(0)}%`,
+                `${r.win_payback.toFixed(0)}%`,
+                `${r.place_rate.toFixed(1)}%`,
+                `${r.races.toLocaleString('ja-JP')}回`,
+              ])}
+            />
+          </Sec>
+        )}
         {cond('class-stats', 'クラス別データ', classRows, { keyLabel: 'クラス' })}
         {cond('popularity-stats', '人気別データ', popRows, { keyLabel: '人気' }, '', false)}
+        {rideRows.length > 0 && cond('ride-change-stats', '継続騎乗・乗り替わり別データ', rideRows, { keyLabel: '騎乗' }, '前走と同じ騎手か（平地のみ）。初騎乗＝この騎手が初めて乗る馬、再騎乗＝以前に乗ったことがある馬')}
         {cond('running-style-stats', '脚質別データ', styleRows, { keyLabel: '脚質', hint: <DefLink anchor="running-style" /> })}
         {cond('gate-stats', '枠順別データ', gRows, { keyLabel: '枠番' })}
         <Ad unit="dataMid" />

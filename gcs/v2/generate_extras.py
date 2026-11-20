@@ -433,6 +433,151 @@ def sire_extras(con, data, since, as_of):
 # ---------------------------------------------------------------------------
 # 騎手
 # ---------------------------------------------------------------------------
+CENTRAL_VENUES = ('東京', '中山', '阪神', '京都')
+OTEUMA_LIMIT = 20
+G1_SINCE = dt.date(2019, 1, 1)
+
+# 騎手の追加判定（道悪・人気薄・ローカル・乗り替わり）。
+# 騎手の成績は「どんな馬に乗ったか」で大きく変わる（道悪の日に有力馬の騎乗が多い、ローカルでは人気馬が集まる等）。
+# そこで条件ごとに「単勝オッズから見込まれる複勝数」に対する実際の複勝数（実績÷見込み）を出し、条件どうしで比べる。
+# 指数は log(実績÷見込み) の比。cuts で5段階。件数が少ないと偶然の差が大きいので最低騎乗数を高めに置く
+JOCKEY_TRENDS = {
+    # key: (ラベル5段階, cuts, 最低騎乗数)
+    'wet': (['道悪が苦手', 'やや道悪が苦手', '標準', 'やや道悪が得意', '道悪が得意'], (-0.20, -0.10, 0.10, 0.20), 150),
+    'longshot': (['人気薄は走らない', '人気薄はやや走らない', '標準', '人気薄でもやや走る', '人気薄でも走る'], (-0.20, -0.10, 0.10, 0.20), 200),
+    'local': (['中央4場が得意', 'やや中央4場が得意', '差分なし', 'ややローカルが得意', 'ローカルが得意'], (-0.20, -0.10, 0.10, 0.20), 150),
+    'change': (['継続騎乗が得意', 'やや継続騎乗が得意', '差分なし', 'やや乗り替わりが得意', '乗り替わりが得意'], (-0.20, -0.10, 0.10, 0.20), 150),
+}
+_JOCKEY_MODEL = {}
+
+
+def jockey_runs_sql(since_param=True):
+    """平地の騎乗（前走の騎手つき）。prev_jockey は同じ馬の前走（障害も含む全レース）の騎手、
+    rode_before はその騎手が以前にこの馬に乗ったことがあるか"""
+    return """
+      WITH allr AS (
+        SELECT rr.*, rm.race_date, rm.surface, rm.venue_name, rm.track_condition,
+               LAG(rr.jockey_id) OVER (PARTITION BY rr.horse_id ORDER BY rm.race_date, rm.race_id) AS prev_jockey,
+               COUNT(*) OVER (PARTITION BY rr.horse_id, rr.jockey_id ORDER BY rm.race_date, rm.race_id
+                              ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING) AS rode_before
+        FROM race_master rm JOIN race_result rr USING (race_id)
+      )
+      SELECT *, CASE WHEN prev_jockey IS NULL THEN '初出走'
+                     WHEN prev_jockey = jockey_id THEN '継続騎乗'
+                     WHEN rode_before > 0 THEN '乗り替わり（再騎乗）'
+                     ELSE '乗り替わり（初騎乗）' END AS ride_kind
+      FROM allr
+      WHERE race_date >= ? AND surface IN ('芝', 'ダート') AND finish_position > 0
+    """
+
+
+def jockey_model(con, since):
+    """全騎手の 実績÷見込み を条件別に集計（1回だけ計算してキャッシュ）"""
+    if since in _JOCKEY_MODEL:
+        return _JOCKEY_MODEL[since]
+    con.execute(f"CREATE OR REPLACE TEMP TABLE jk_runs AS {jockey_runs_sql()}", [since])
+    con.execute("""
+      CREATE OR REPLACE TEMP TABLE jk_runs_e AS
+      WITH b AS (SELECT *, LEAST(ROUND(LN(odds) * 8), 60) AS ob FROM jk_runs WHERE odds > 0),
+           e AS (SELECT ob, AVG(CASE WHEN finish_position <= 3 THEN 1 ELSE 0 END) AS ep FROM b GROUP BY ob)
+      SELECT b.*, e.ep, CASE WHEN finish_position <= 3 THEN 1 ELSE 0 END AS p FROM b JOIN e USING (ob)
+    """)
+    cv = "('" + "','".join(CENTRAL_VENUES) + "')"
+    r = rows(con, f"""
+      SELECT jockey_id,
+        SUM(CASE WHEN track_condition <> '良' THEN 1 ELSE 0 END) AS n_wet,
+        SUM(CASE WHEN track_condition = '良' THEN 1 ELSE 0 END) AS n_good,
+        SUM(CASE WHEN track_condition <> '良' THEN p END) / SUM(CASE WHEN track_condition <> '良' THEN ep END) AS ae_wet,
+        SUM(CASE WHEN track_condition = '良' THEN p END) / SUM(CASE WHEN track_condition = '良' THEN ep END) AS ae_good,
+        SUM(CASE WHEN popularity >= 6 THEN 1 ELSE 0 END) AS n_longshot,
+        SUM(CASE WHEN popularity >= 6 THEN p END) / SUM(CASE WHEN popularity >= 6 THEN ep END) AS ae_longshot,
+        SUM(CASE WHEN venue_name NOT IN {cv} THEN 1 ELSE 0 END) AS n_local,
+        SUM(CASE WHEN venue_name IN {cv} THEN 1 ELSE 0 END) AS n_central,
+        SUM(CASE WHEN venue_name NOT IN {cv} THEN p END) / SUM(CASE WHEN venue_name NOT IN {cv} THEN ep END) AS ae_local,
+        SUM(CASE WHEN venue_name IN {cv} THEN p END) / SUM(CASE WHEN venue_name IN {cv} THEN ep END) AS ae_central,
+        SUM(CASE WHEN ride_kind LIKE '乗り替わり%' THEN 1 ELSE 0 END) AS n_change,
+        SUM(CASE WHEN ride_kind = '継続騎乗' THEN 1 ELSE 0 END) AS n_keep,
+        SUM(CASE WHEN ride_kind LIKE '乗り替わり%' THEN p END) / SUM(CASE WHEN ride_kind LIKE '乗り替わり%' THEN ep END) AS ae_change,
+        SUM(CASE WHEN ride_kind = '継続騎乗' THEN p END) / SUM(CASE WHEN ride_kind = '継続騎乗' THEN ep END) AS ae_keep
+      FROM jk_runs_e GROUP BY jockey_id
+    """)
+    base = rows(con, f"""
+      SELECT ROUND(AVG(CASE WHEN track_condition <> '良' THEN p END) * 100, 1) AS wet,
+             ROUND(AVG(CASE WHEN track_condition = '良' THEN p END) * 100, 1) AS good,
+             ROUND(AVG(CASE WHEN popularity >= 6 THEN p END) * 100, 1) AS longshot,
+             ROUND(AVG(CASE WHEN venue_name NOT IN {cv} THEN p END) * 100, 1) AS local,
+             ROUND(AVG(CASE WHEN venue_name IN {cv} THEN p END) * 100, 1) AS central,
+             ROUND(AVG(CASE WHEN ride_kind LIKE '乗り替わり%' THEN p END) * 100, 1) AS change,
+             ROUND(AVG(CASE WHEN ride_kind = '継続騎乗' THEN p END) * 100, 1) AS keep
+      FROM jk_runs_e
+    """)[0]
+    _JOCKEY_MODEL[since] = ({x['jockey_id']: x for x in r}, base)
+    return _JOCKEY_MODEL[since]
+
+
+def jockey_trends(con, jid, since):
+    """道悪・人気薄・ローカル・乗り替わりの判定。各条件の複勝率と、実績÷見込みの比（ratio）を返す"""
+    import math
+    by, base = jockey_model(con, since)
+    m = by.get(jid)
+    if not m:
+        return {}
+    rates = rows(con, f"""
+      SELECT ROUND(AVG(CASE WHEN track_condition <> '良' THEN p END) * 100, 1) AS wet,
+             ROUND(AVG(CASE WHEN track_condition = '良' THEN p END) * 100, 1) AS good,
+             ROUND(AVG(CASE WHEN popularity >= 6 THEN p END) * 100, 1) AS longshot,
+             ROUND(SUM(CASE WHEN popularity >= 6 AND finish_position <= 3 THEN place ELSE 0 END) / NULLIF(SUM(CASE WHEN popularity >= 6 THEN 1 ELSE 0 END), 0), 1) AS longshot_payback,
+             ROUND(AVG(CASE WHEN venue_name NOT IN ('{"','".join(CENTRAL_VENUES)}') THEN p END) * 100, 1) AS local,
+             ROUND(AVG(CASE WHEN venue_name IN ('{"','".join(CENTRAL_VENUES)}') THEN p END) * 100, 1) AS central,
+             ROUND(AVG(CASE WHEN ride_kind LIKE '乗り替わり%' THEN p END) * 100, 1) AS change,
+             ROUND(AVG(CASE WHEN ride_kind = '継続騎乗' THEN p END) * 100, 1) AS keep,
+             -- 乗った馬の単勝オッズから見込まれる複勝率（判定の基準）
+             ROUND(AVG(CASE WHEN track_condition <> '良' THEN ep END) * 100, 1) AS exp_wet,
+             ROUND(AVG(CASE WHEN track_condition = '良' THEN ep END) * 100, 1) AS exp_good,
+             ROUND(AVG(CASE WHEN popularity >= 6 THEN ep END) * 100, 1) AS exp_longshot,
+             ROUND(AVG(CASE WHEN venue_name NOT IN ('{"','".join(CENTRAL_VENUES)}') THEN ep END) * 100, 1) AS exp_local,
+             ROUND(AVG(CASE WHEN venue_name IN ('{"','".join(CENTRAL_VENUES)}') THEN ep END) * 100, 1) AS exp_central,
+             ROUND(AVG(CASE WHEN ride_kind LIKE '乗り替わり%' THEN ep END) * 100, 1) AS exp_change,
+             ROUND(AVG(CASE WHEN ride_kind = '継続騎乗' THEN ep END) * 100, 1) AS exp_keep
+      FROM jk_runs_e WHERE jockey_id = ?
+    """, [jid])[0]
+    spec = {
+        # key: (ae_a, ae_b(None=1), n_a, n_b, 表示の rate_a, rate_b)
+        'wet': ('ae_wet', 'ae_good', 'n_wet', 'n_good', 'wet', 'good'),
+        'longshot': ('ae_longshot', None, 'n_longshot', None, 'longshot', None),
+        'local': ('ae_local', 'ae_central', 'n_local', 'n_central', 'local', 'central'),
+        'change': ('ae_change', 'ae_keep', 'n_change', 'n_keep', 'change', 'keep'),
+    }
+    out = {}
+    for k, (a, b, na, nb, ra, rb) in spec.items():
+        labels, cuts, min_n = JOCKEY_TRENDS[k]
+        if (m[na] or 0) < min_n or (nb and (m[nb] or 0) < min_n) or not m[a] or (b and not m[b]):
+            continue
+        idx = math.log(m[a] / (m[b] if b else 1.0))
+        pos = pos_of(idx, cuts)
+        out[k] = {
+            'pos': pos, 'label': labels[pos - 1], 'index': round(idx, 3),
+            'ratio': round(m[a] / (m[b] if b else 1.0) * 100, 1),
+            'races_a': m[na], 'races_b': m[nb] if nb else None,
+            'rate_a': rates[ra], 'rate_b': rates[rb] if rb else None,
+            'exp_a': rates['exp_' + ra], 'exp_b': rates['exp_' + rb] if rb else None,
+            'all_rate_a': base[ra], 'all_rate_b': base[rb] if rb else None,
+        }
+        if k == 'longshot':
+            out[k]['payback'] = rates['longshot_payback']
+    return out
+
+
+def ride_change_stats(con, jid, since):
+    jockey_model(con, since)
+    return rows(con, f"""
+      SELECT ride_kind AS category, {STAT_COLS}
+      FROM jk_runs rr WHERE jockey_id = ?
+      GROUP BY 1
+      ORDER BY CASE category WHEN '継続騎乗' THEN 1 WHEN '乗り替わり（初騎乗）' THEN 2 WHEN '乗り替わり（再騎乗）' THEN 3 ELSE 4 END
+    """, [jid])
+
+
 def jockey_extras(con, data, since, as_of):
     jid = int(data['id'])
     data['profile'] = profile_of(con, 'jockey', 'jockey_id', jid)
@@ -447,6 +592,44 @@ def jockey_extras(con, data, since, as_of):
     """, [jid, since])
     for i, r in enumerate(data['sire_stats'], 1):
         r['rank'] = i
+    data['jockey_trends'] = jockey_trends(con, jid, since)
+    data['ride_change_stats'] = ride_change_stats(con, jid, since)
+
+    # お手馬：直近3年間にこの騎手で勝った馬。G1 → 重賞 → 勝利数 → 騎乗数の順
+    horses = rows(con, f"""
+      WITH r AS (
+        SELECT rr.horse_id, rr.horse_name, h.sex, h.birth_date, h.father, rr.trainer_name, rr.finish_position, rm.grade, rm.race_name, rm.race_date
+        FROM race_master rm JOIN race_result rr USING (race_id) JOIN horse h ON h.horse_id = rr.horse_id
+        WHERE rr.jockey_id = ? AND rm.race_date >= ?
+      )
+      SELECT horse_id, any_value(horse_name) AS horse_name, any_value(sex) AS sex, any_value(birth_date) AS birth_date,
+             any_value(father) AS father, arg_max(trainer_name, race_date) AS trainer,
+             COUNT(*) AS races,
+             SUM(CASE WHEN finish_position = 1 THEN 1 ELSE 0 END) AS wins,
+             SUM(CASE WHEN finish_position = 1 AND grade = 'G1' THEN 1 ELSE 0 END) AS g1_wins,
+             SUM(CASE WHEN finish_position = 1 AND grade IN ('G1','G2','G3') THEN 1 ELSE 0 END) AS graded_wins,
+             list(CASE WHEN finish_position = 1 AND grade IN ('G1','G2','G3') THEN grade || ' ' || race_name END ORDER BY grade, race_date DESC) AS titles,
+             MAX(race_date) AS last_date
+      FROM r GROUP BY horse_id
+      HAVING SUM(CASE WHEN finish_position = 1 THEN 1 ELSE 0 END) > 0
+      ORDER BY g1_wins DESC, graded_wins DESC, wins DESC, races DESC
+      LIMIT {OTEUMA_LIMIT}
+    """, [jid, since])
+    for h in horses:
+        h['titles'] = [t for t in (h['titles'] or []) if t][:3]
+        h['sex'] = SEX_LABEL.get(h['sex'], '')
+        h['birth_year'] = h['birth_date'].year if h['birth_date'] else None
+        del h['birth_date']
+    data['notable_horses'] = horses
+
+    # 2019年以降の G1 勝ち（新しい順）
+    data['g1_wins'] = rows(con, """
+      SELECT rm.race_date AS date, rm.race_name, rm.venue_name AS venue, rm.surface, rm.distance, rr.horse_id, rr.horse_name, rr.popularity
+      FROM race_master rm JOIN race_result rr USING (race_id)
+      WHERE rr.jockey_id = ? AND rr.finish_position = 1 AND rm.grade = 'G1' AND rm.race_date >= ?
+      ORDER BY rm.race_date DESC
+    """, [jid, G1_SINCE])
+    data['g1_wins_since'] = G1_SINCE
 
 
 # ---------------------------------------------------------------------------
