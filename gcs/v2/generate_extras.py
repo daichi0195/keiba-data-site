@@ -456,7 +456,7 @@ def jockey_runs_sql(since_param=True):
     rode_before はその騎手が以前にこの馬に乗ったことがあるか"""
     return """
       WITH allr AS (
-        SELECT rr.*, rm.race_date, rm.surface, rm.venue_name, rm.track_condition,
+        SELECT rr.*, rm.race_date, rm.surface, rm.venue_name, rm.track_condition, rm.race_class,
                LAG(rr.jockey_id) OVER (PARTITION BY rr.horse_id ORDER BY rm.race_date, rm.race_id) AS prev_jockey,
                COUNT(*) OVER (PARTITION BY rr.horse_id, rr.jockey_id ORDER BY rm.race_date, rm.race_id
                               ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING) AS rode_before
@@ -635,6 +635,124 @@ def jockey_extras(con, data, since, as_of):
 # ---------------------------------------------------------------------------
 # 調教師
 # ---------------------------------------------------------------------------
+EAST_VENUES = ('東京', '中山', '福島', '新潟')
+WEST_VENUES = ('京都', '阪神', '中京', '小倉')
+# 調教師の追加判定。騎手と同じく「単勝オッズから見込まれる複勝数」に対する実績の比で比べ、管理馬の人気の偏りを補正する
+TRAINER_TRENDS = {
+    'early': (['2歳戦は割引', '2歳戦はやや割引', '標準', '2歳戦からやや走る', '2歳戦から走る'], (-0.24, -0.12, 0.12, 0.24), 100),
+    'away': (['遠征は割引', '遠征はやや割引', '差分なし', '遠征でもやや走る', '遠征でも走る'], (-0.20, -0.10, 0.10, 0.20), 100),
+    'change': (['継続騎乗で走る', '継続騎乗でやや走る', '差分なし', '乗り替わりでやや走る', '乗り替わりで走る'], (-0.20, -0.10, 0.10, 0.20), 150),
+    'longshot': (['人気薄は走らない', '人気薄はやや走らない', '標準', '人気薄でもやや走る', '人気薄でも走る'], (-0.20, -0.10, 0.10, 0.20), 200),
+}
+_TRAINER_MODEL = {}
+
+
+def trainer_trends(con, tid, since):
+    """2歳戦（仕上がりの早さ）・遠征・乗り替わり・人気薄の判定（管理馬の 実績÷見込み を条件どうしで比べる）"""
+    import math
+    jockey_model(con, since)
+    if since not in _TRAINER_MODEL:
+        east = "('" + "','".join(EAST_VENUES) + "')"
+        west = "('" + "','".join(WEST_VENUES) + "')"
+        con.execute(f"""
+          CREATE OR REPLACE TEMP TABLE tr_runs AS
+          SELECT *,
+            CASE WHEN (stable_region = '美浦' AND venue_name IN {west}) OR (stable_region = '栗東' AND venue_name IN {east}) THEN 'away'
+                 WHEN (stable_region = '美浦' AND venue_name IN {east}) OR (stable_region = '栗東' AND venue_name IN {west}) THEN 'home' END AS trip
+          FROM jk_runs_e
+        """)
+        conds = {
+            'early': ("age = 2", "age >= 3"),
+            'away': ("trip = 'away'", "trip = 'home'"),
+            'change': ("ride_kind LIKE '乗り替わり%'", "ride_kind = '継続騎乗'"),
+            'longshot': ("popularity >= 6", None),
+        }
+        cols = []
+        for k, (ca, cb) in conds.items():
+            for side, c in (('a', ca), ('b', cb)):
+                if not c:
+                    continue
+                cols += [f"SUM(CASE WHEN {c} THEN 1 ELSE 0 END) AS n_{k}_{side}",
+                         f"SUM(CASE WHEN {c} THEN p END) AS p_{k}_{side}",
+                         f"SUM(CASE WHEN {c} THEN ep END) AS e_{k}_{side}",
+                         f"SUM(CASE WHEN {c} AND finish_position <= 3 THEN place ELSE 0 END) AS pay_{k}_{side}"]
+        r = rows(con, f"SELECT trainer_id, {', '.join(cols)} FROM tr_runs GROUP BY trainer_id")
+        allr = rows(con, f"SELECT {', '.join(cols)} FROM tr_runs")[0]
+        _TRAINER_MODEL[since] = ({x['trainer_id']: x for x in r}, allr, conds)
+    by, allr, conds = _TRAINER_MODEL[since]
+    m = by.get(tid)
+    if not m:
+        return {}
+    out = {}
+    pct = lambda num, den: round(num / den * 100, 1) if den else None
+    for k, (ca, cb) in conds.items():
+        labels, cuts, min_n = TRAINER_TRENDS[k]
+        na, nb = m[f'n_{k}_a'], (m[f'n_{k}_b'] if cb else None)
+        if (na or 0) < min_n or (cb and (nb or 0) < min_n) or not m[f'e_{k}_a'] or not m[f'p_{k}_a']:
+            continue
+        ae_a = m[f'p_{k}_a'] / m[f'e_{k}_a']
+        ae_b = (m[f'p_{k}_b'] / m[f'e_{k}_b']) if cb else 1.0
+        if not ae_b:
+            continue
+        # 全厩舎でも同じ向きの差がある（2歳戦はオッズより走りやすい等）ので、全体の比を差し引いて判定する
+        all_a = allr[f'p_{k}_a'] / allr[f'e_{k}_a']
+        all_b = (allr[f'p_{k}_b'] / allr[f'e_{k}_b']) if cb else 1.0
+        idx = math.log(ae_a / ae_b) - math.log(all_a / all_b)
+        pos = pos_of(idx, cuts)
+        out[k] = {
+            'pos': pos, 'label': labels[pos - 1], 'index': round(idx, 3), 'ratio': round(ae_a / ae_b * 100, 1),
+            'races_a': na, 'races_b': nb,
+            'rate_a': pct(m[f'p_{k}_a'], na), 'rate_b': pct(m[f'p_{k}_b'], nb) if cb else None,
+            'exp_a': pct(m[f'e_{k}_a'], na), 'exp_b': pct(m[f'e_{k}_b'], nb) if cb else None,
+            'all_rate_a': pct(allr[f'p_{k}_a'], allr[f'n_{k}_a']), 'all_rate_b': pct(allr[f'p_{k}_b'], allr[f'n_{k}_b']) if cb else None,
+            'payback': pct(m[f'pay_{k}_a'] / 100, na),
+        }
+    return out
+
+
+def trainer_ride_change_stats(con, tid, since):
+    jockey_model(con, since)
+    return rows(con, f"""
+      SELECT ride_kind AS category, {STAT_COLS}
+      FROM jk_runs rr WHERE trainer_id = ?
+      GROUP BY 1
+      ORDER BY CASE category WHEN '継続騎乗' THEN 1 WHEN '乗り替わり（初騎乗）' THEN 2 WHEN '乗り替わり（再騎乗）' THEN 3 ELSE 4 END
+    """, [tid])
+
+
+_TRAINER_CROP = {}
+
+
+def trainer_crop_stats(con, tid, as_of):
+    """世代別の勝ち上がり率（デビュー時の厩舎で集計）。JRA で出走した馬のうち JRA で1勝以上した割合"""
+    if as_of not in _TRAINER_CROP:
+        first, last = PROGENY_SINCE.year - 2, as_of.year - 2
+        per = rows(con, """
+          WITH h AS (
+            SELECT rr.horse_id, arg_min(rr.trainer_id, rm.race_date) AS trainer_id, year(any_value(h.birth_date)) AS crop,
+                   MAX((rr.finish_position = 1)::INT) AS won,
+                   MAX((rr.finish_position = 1 AND rm.grade IN ('G1','G2','G3'))::INT) AS graded
+            FROM race_master rm JOIN race_result rr USING (race_id) JOIN horse h ON h.horse_id = rr.horse_id
+            GROUP BY rr.horse_id
+          )
+          SELECT trainer_id, crop, COUNT(*) AS starters, SUM(won) AS winners, SUM(graded) AS graded_winners
+          FROM h WHERE crop BETWEEN ? AND ? GROUP BY ROLLUP (crop, trainer_id)
+        """, [first, last])
+        base = {r['crop']: r for r in per if r['trainer_id'] is None and r['crop'] is not None}
+        by = {}
+        for r in per:
+            if r['trainer_id'] is not None and r['crop'] is not None:
+                b = base[r['crop']]
+                by.setdefault(r['trainer_id'], []).append({
+                    'crop': r['crop'], 'starters': r['starters'], 'winners': r['winners'], 'graded_winners': r['graded_winners'],
+                    'rate': round(r['winners'] / r['starters'] * 100, 1),
+                    'all_rate': round(b['winners'] / b['starters'] * 100, 1),
+                    'complete': r['crop'] + 3 < as_of.year,
+                })
+        _TRAINER_CROP[as_of] = by
+    return sorted(_TRAINER_CROP[as_of].get(tid, []), key=lambda r: -r['crop'])
+
+
 def trainer_extras(con, data, since, as_of):
     tid = int(data['id'])
     data['profile'] = profile_of(con, 'trainer', 'trainer_id', tid)
@@ -679,6 +797,45 @@ def trainer_extras(con, data, since, as_of):
         h['age'] = as_of.year - h['birth_date'].year if h['birth_date'] else None
         del h['birth_date']
     data['active_horses'] = horses
+
+    data['trainer_trends'] = trainer_trends(con, tid, since)
+    data['ride_change_stats'] = trainer_ride_change_stats(con, tid, since)
+    data['crop_stats'] = trainer_crop_stats(con, tid, as_of)
+
+    # 主な管理馬：2019年以降にこの厩舎で勝った馬。G1 → 重賞 → 勝利数の順
+    notable = rows(con, f"""
+      WITH r AS (
+        SELECT rr.horse_id, rr.horse_name, h.sex, h.birth_date, h.father, rr.jockey_name, rr.finish_position, rm.grade, rm.race_name, rm.race_date
+        FROM race_master rm JOIN race_result rr USING (race_id) JOIN horse h ON h.horse_id = rr.horse_id
+        WHERE rr.trainer_id = ? AND rm.race_date >= ?
+      )
+      SELECT horse_id, any_value(horse_name) AS horse_name, any_value(sex) AS sex, any_value(birth_date) AS birth_date,
+             any_value(father) AS father,
+             COUNT(*) AS races,
+             SUM(CASE WHEN finish_position = 1 THEN 1 ELSE 0 END) AS wins,
+             SUM(CASE WHEN finish_position = 1 AND grade = 'G1' THEN 1 ELSE 0 END) AS g1_wins,
+             SUM(CASE WHEN finish_position = 1 AND grade IN ('G1','G2','G3') THEN 1 ELSE 0 END) AS graded_wins,
+             list(CASE WHEN finish_position = 1 AND grade IN ('G1','G2','G3') THEN grade || ' ' || race_name END ORDER BY grade, race_date DESC) AS titles,
+             MAX(race_date) AS last_date
+      FROM r GROUP BY horse_id
+      HAVING SUM(CASE WHEN finish_position = 1 THEN 1 ELSE 0 END) > 0
+      ORDER BY g1_wins DESC, graded_wins DESC, wins DESC, races ASC
+      LIMIT {OTEUMA_LIMIT}
+    """, [tid, G1_SINCE])
+    for h in notable:
+        h['titles'] = [t for t in (h['titles'] or []) if t][:3]
+        h['sex'] = SEX_LABEL.get(h['sex'], '')
+        h['birth_year'] = h['birth_date'].year if h['birth_date'] else None
+        del h['birth_date']
+    data['notable_horses'] = notable
+    data['notable_horses_since'] = G1_SINCE
+    data['g1_wins'] = rows(con, """
+      SELECT rm.race_date AS date, rm.race_name, rm.venue_name AS venue, rm.surface, rm.distance, rr.horse_id, rr.horse_name, rr.jockey_name, rr.popularity
+      FROM race_master rm JOIN race_result rr USING (race_id)
+      WHERE rr.trainer_id = ? AND rr.finish_position = 1 AND rm.grade = 'G1' AND rm.race_date >= ?
+      ORDER BY rm.race_date DESC
+    """, [tid, G1_SINCE])
+    data['g1_wins_since'] = G1_SINCE
 
 
 # ---------------------------------------------------------------------------

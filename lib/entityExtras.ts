@@ -498,22 +498,113 @@ export function pickAim(cands: AimRow[], minRaces = 30, n = 5) {
 }
 
 /** Q&A「狙い目の条件は？」 */
-export function buildAimAnswer(name: string, aim: { hi: AimRow[]; lo: AimRow[] }, minRaces = 30): string | null {
+export function buildAimAnswer(who: string, aim: { hi: AimRow[]; lo: AimRow[] }, minRaces = 30, scope = '騎乗した条件（競馬場・コース・距離・クラス・人気・枠・馬場・性別・調教師・種牡馬）'): string | null {
   if (aim.hi.length === 0) return null;
   const f = (r: AimRow) => `${r.label}（複勝回収率**${r.place_payback.toFixed(0)}%**・複勝率${r.place_rate.toFixed(1)}%）`;
   return [
-    `${name}騎手で複勝回収率が高い条件は、${aim.hi.slice(0, 3).map(f).join('、')}です。`,
+    `${who}で複勝回収率が高い条件は、${aim.hi.slice(0, 3).map(f).join('、')}です。`,
     aim.lo.length ? `反対に低いのは、${aim.lo.slice(0, 3).map(f).join('、')}です。` : '',
-    `※直近3年間で${minRaces}回以上騎乗した条件（競馬場・コース・距離・クラス・人気・枠・馬場・性別・調教師・種牡馬）が対象です。`,
+    `※直近3年間で${minRaces}回以上${scope}が対象です。`,
   ].filter(Boolean).join('\n');
 }
 
 /** Q&A「G1の勝ち鞍は？」 */
 export type G1Win = { date: string; race_name: string; horse_name: string; horse_id?: number; popularity?: number | null };
-export function buildG1Answer(name: string, wins: G1Win[] | undefined, since: string | undefined): string | null {
+export function buildG1Answer(who: string, wins: G1Win[] | undefined, since: string | undefined): string | null {
   const list = wins ?? [];
   const y = since ? since.slice(0, 4) : '2019';
-  if (list.length === 0) return `${name}騎手は${y}年以降、JRAのG1を勝っていません。`;
+  if (list.length === 0) return `${who}は${y}年以降、JRAのG1を勝っていません。`;
   const recent = list.slice(0, 5).map((w) => `${w.date.slice(0, 4)}年${w.race_name}（${w.horse_name}）`).join('、');
-  return `${name}騎手は${y}年以降、JRAのG1を**${list.length}勝**しています。最近の勝ち鞍は${recent}です。`;
+  return `${who}は${y}年以降、JRAのG1を**${list.length}勝**しています。最近の勝ち鞍は${recent}です。`;
+}
+
+// ---------------------------------------------------------------------------
+// 調教師：2歳戦・遠征・乗り替わり・人気薄の判定（gcs/v2/generate_extras.py trainer_trends）
+// ---------------------------------------------------------------------------
+export type TrainerTrends = Partial<Record<'early' | 'away' | 'change' | 'longshot', JockeyTrend>>;
+
+export const TRAINER_TREND_METHOD =
+  '厩舎の成績は、どんな馬を管理しているかで大きく変わります。たとえば素質馬の多い厩舎ほど2歳戦の数値は高く出ますし、継続騎乗は人気馬が多いため、複勝率をそのまま比べるとほとんどの厩舎で「継続騎乗の方が走る」に見えてしまいます。当サイトではこの偏りを補正するため、管理馬の単勝オッズから見込まれる複勝数に対して実際に何回3着以内に入ったかを条件ごとに比べ、さらに全厩舎に共通する差（2歳戦はオッズより走りやすい等）を差し引いて判定しています。';
+
+/** データ概要の冒頭：厩舎の特徴の要約 */
+export function buildTrainerLead(args: {
+  name: string;
+  region?: string | null;
+  debutYear?: number | string | null;
+  traits: string[];
+  graded?: { wins: number; g1: number } | null;
+  recentWin?: GradedWin | null;
+}): string {
+  const { name, region, debutYear, traits, graded, recentWin } = args;
+  const head = [region ? `${region}所属` : null, debutYear ? `${debutYear}年開業` : null].filter(Boolean).join('・');
+  const t = traits.filter((x) => x && !isNeutral(x)).slice(0, 4);
+  const lines = [
+    t.length > 0
+      ? `${name}厩舎${head ? `（${head}）` : ''}は、データ上${t.map((x) => `「**${x}**」`).join('')}という特徴がある厩舎です。`
+      : `${name}厩舎${head ? `（${head}）` : ''}は、条件による成績の偏りが小さい厩舎です。`,
+  ];
+  if (graded && graded.wins > 0) {
+    lines.push(`直近3年間の平地重賞は${graded.wins}勝${graded.g1 > 0 ? `（うちG1 ${graded.g1}勝）` : ''}${recentWin ? `で、最近では${recentWin.race_name}（${recentWin.horse_name}）を勝っています。` : 'です。'}`);
+  }
+  return lines.join('');
+}
+
+/** Q&A「乗り替わりの成績は？」（厩舎の管理馬） */
+export function buildTrainerRideChangeAnswer(name: string, rows: RideChangeRow[] | undefined, trend?: JockeyTrend | null): string | null {
+  const by = (c: string) => (rows ?? []).find((r) => r.category === c && r.races >= 30);
+  const keep = by('継続騎乗');
+  const first = by('乗り替わり（初騎乗）');
+  const again = by('乗り替わり（再騎乗）');
+  if (!keep || (!first && !again)) return null;
+  const parts = [
+    `${name}厩舎の管理馬の複勝率は、前走と同じ騎手（継続騎乗）で**${keep.place_rate.toFixed(1)}%**`,
+    first ? `、初めて乗る騎手への乗り替わりで**${first.place_rate.toFixed(1)}%**` : '',
+    again ? `、以前に乗った騎手への乗り替わりで${again.place_rate.toFixed(1)}%` : '',
+    'です。',
+  ].join('');
+  const verdict = trend
+    ? `管理馬の人気（単勝オッズ）から見込まれる複勝率は、継続騎乗${p1(trend.exp_b)}、乗り替わり${p1(trend.exp_a)}です。` +
+      (isNeutral(trend.label) ? 'この見込みとの差で比べると、継続騎乗と乗り替わりで**差はありません**。' : `この見込みとの差で比べた判定は**${trend.label}**です。`)
+    : null;
+  return [parts, verdict, trend ? TRAINER_TREND_METHOD : null, '※平地（芝・ダート）。'].filter(Boolean).join('\n');
+}
+
+/** Q&A「2歳戦から走る？（仕上がりの早さ）」 */
+export function buildEarlyAnswer(name: string, trend?: JockeyTrend | null): string | null {
+  if (!trend) return null;
+  return [
+    `${name}厩舎の判定は**${trend.label}**です。`,
+    `2歳戦の複勝率は**${p1(trend.rate_a)}**、3歳以上は${p1(trend.rate_b)}です。管理馬の人気（単勝オッズ）から見込まれる複勝率は、2歳戦${p1(trend.exp_a)}、3歳以上${p1(trend.exp_b)}です。`,
+    '素質馬の多い厩舎ほど2歳戦の数値は高く出るため、見込みとの差を2歳戦と3歳以上で比べ、全厩舎に共通する差を差し引いて判定しています。',
+  ].join('\n');
+}
+
+/** Q&A「遠征は得意？」 */
+export function buildAwayAnswer(name: string, trend?: JockeyTrend | null, region?: string | null): string | null {
+  if (!trend) return null;
+  const away = region === '美浦' ? '関西（京都・阪神・中京・小倉）' : region === '栗東' ? '関東（東京・中山・福島・新潟）' : '遠征先';
+  const home = region === '美浦' ? '関東' : region === '栗東' ? '関西' : '地元';
+  return [
+    `${name}厩舎の判定は**${trend.label}**です。`,
+    `${away}での複勝率は**${p1(trend.rate_a)}**、${home}の4場では${p1(trend.rate_b)}です。管理馬の人気（単勝オッズ）から見込まれる複勝率は、遠征${p1(trend.exp_a)}、${home}${p1(trend.exp_b)}で、判定はこの見込みとの差を比べています。`,
+    '※北海道（札幌・函館）は除きます。',
+  ].join('\n');
+}
+
+/** Q&A「人気薄でも走る？」（厩舎） */
+export function buildTrainerLongshotAnswer(name: string, trend?: JockeyTrend | null): string | null {
+  if (!trend) return null;
+  return [
+    `${name}厩舎の判定は**${trend.label}**です。`,
+    `6番人気以下での複勝率は**${p1(trend.rate_a)}**（全厩舎${p1(trend.all_rate_a)}）、複勝回収率は${p1(trend.payback)}です。管理馬の単勝オッズから見込まれる複勝率は${p1(trend.exp_a)}です。`,
+    `※平地の6番人気以下（${trend.races_a.toLocaleString('ja-JP')}回出走）が対象です。`,
+  ].join('\n');
+}
+
+/** Q&A「勝ち上がり率は？」（厩舎。デビュー時の厩舎で集計） */
+export function buildTrainerCropAnswer(name: string, crops: CropStat[] | undefined): string | null {
+  const t = cropTotals(crops);
+  if (!t) return null;
+  const cmp = t.allRate === null ? '' : `（全出走馬の平均${t.allRate.toFixed(1)}%）`;
+  return `${t.from}〜${t.to}年生まれで${name}厩舎からデビューした${t.starters.toLocaleString()}頭のうち${t.winners.toLocaleString()}頭が勝ち上がり、勝ち上がり率は**${t.rate.toFixed(1)}%**${cmp}です。\n※JRAで1勝以上した割合。3歳の年が終わった世代が対象です。`;
 }

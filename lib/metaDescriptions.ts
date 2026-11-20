@@ -80,7 +80,7 @@ export function jockeyDescription(d: any): string {
 
 export function trainerDescription(d: any): string {
   const name = d?.name ?? '';
-  const fallback = `${name}調教師${d?.stable ? `（${d.stable}）` : ''}の成績を直近3年のデータで分析。勝率・回収率、得意な距離・コース、主戦騎手、レース間隔別の成績まで。毎週更新。`;
+  const fallback = `${name}調教師${d?.stable ? `（${d.stable}）` : ''}の成績を直近3年のデータで分析。勝率・回収率、得意な距離・コース、主戦騎手、乗り替わり・遠征・2歳戦の成績、代表馬まで。毎週更新。`;
   const total = d?.total_stats;
   if (!d || !hasEnoughRaces(d.total_races) || !total) return fallback;
 
@@ -89,7 +89,7 @@ export function trainerDescription(d: any): string {
   ];
   const course = bestByPlaceRate(d.racecourse_stats);
   if (course) parts.push(`得意な競馬場は${course.name}（複勝率${pct(course.place_rate)}）。`);
-  parts.push('主戦騎手やレース間隔別の成績まで毎週更新。');
+  parts.push('主戦騎手・乗り替わり・遠征・2歳戦の成績と狙い目の条件を毎週更新。');
   return parts.join('');
 }
 

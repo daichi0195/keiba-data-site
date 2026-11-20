@@ -960,7 +960,7 @@ export default async function JockeyPage({
   const wetAnswer = shownTrends.includes('wet') ? buildWetAnswer(jockey.name, jt.wet) : null;
   const longshotAnswer = shownTrends.includes('longshot') ? buildLongshotAnswer(jockey.name, jt.longshot) : null;
   const localAnswer = shownTrends.includes('local') ? buildLocalAnswer(jockey.name, jt.local) : null;
-  const g1Answer = buildG1Answer(jockey.name, g1Wins, g1Since);
+  const g1Answer = buildG1Answer(`${jockey.name}騎手`, g1Wins, g1Since);
 
   // 狙い目・消し条件：騎乗前に分かる条件から、複勝回収率が高い／低いもの
   const CLASS_LABEL: Record<string, string> = { 新馬: '新馬戦', 未勝利: '未勝利戦', '1勝': '1勝クラス', '2勝': '2勝クラス', '3勝': '3勝クラス' };
@@ -979,7 +979,7 @@ export default async function JockeyPage({
   ] as AimRow[];
   const AIM_MIN = 30;
   const aim = pickAim(aimCands, AIM_MIN);
-  const aimAnswer = buildAimAnswer(jockey.name, aim, AIM_MIN);
+  const aimAnswer = buildAimAnswer(`${jockey.name}騎手`, aim, AIM_MIN);
 
   // FAQ構造化データ
   const faqJockeyJsonLd = {
@@ -1138,17 +1138,21 @@ export default async function JockeyPage({
       {b ? <span>{a} <b className={cx('num')}>{pct1(tr.exp_a)}</b></span> : null}
     </p>
   );
-  const TREND_VIEW: Record<keyof JockeyTrends, { verdict: string; meter: (tr: JockeyTrend) => MeterItem }> = {
+  // 冒頭の判定は列が狭いので短い言い方（8文字まで）にする
+  const TREND_VIEW: Record<keyof JockeyTrends, { verdict: string; short: string[]; meter: (tr: JockeyTrend) => MeterItem }> = {
     wet: {
       verdict: '道悪',
+      short: ['苦手', 'やや苦手', '標準', 'やや得意', '得意'],
       meter: (tr) => ({ label: '道悪（稍重〜不良）', pos: tr.pos, result: tr.label, scale: ['苦手', '標準', '得意'], ev: [['良 複勝率', tr.rate_b ?? undefined], ['稍重〜不良 複勝率', tr.rate_a ?? undefined]], facts: allFx(tr, '稍重〜不良', '良') }),
     },
     change: {
-      verdict: '乗り替わり',
+      verdict: '乗替',
+      short: ['継続が得意', 'やや継続が得意', '差分なし', 'やや替わりが得意', '替わりが得意'],
       meter: (tr) => ({ label: '継続騎乗・乗り替わり', pos: tr.pos, result: tr.label, scale: ['継続騎乗が得意', '差分なし', '乗り替わりが得意'], ev: [['継続騎乗 複勝率', tr.rate_b ?? undefined], ['乗り替わり 複勝率', tr.rate_a ?? undefined]], facts: allFx(tr, '乗り替わり', '継続騎乗') }),
     },
     longshot: {
       verdict: '人気薄',
+      short: ['走らない', 'やや走らない', '標準', 'やや走る', '走る'],
       meter: (tr) => ({
         label: '人気薄（6番人気以下）', pos: tr.pos, result: tr.label, scale: ['走らない', '標準', '走る'],
         ev: [['6番人気以下 複勝率', tr.rate_a ?? undefined], ['人気からの見込み', tr.exp_a ?? undefined, true]],
@@ -1157,6 +1161,7 @@ export default async function JockeyPage({
     },
     local: {
       verdict: 'ローカル',
+      short: ['中央が得意', 'やや中央が得意', '差分なし', 'ややローカル得意', 'ローカルが得意'],
       meter: (tr) => ({ label: '中央4場・ローカル', pos: tr.pos, result: tr.label, scale: ['中央4場が得意', '差分なし', 'ローカルが得意'], ev: [['中央4場 複勝率', tr.rate_b ?? undefined], ['ローカル 複勝率', tr.rate_a ?? undefined]], facts: allFx(tr, 'ローカル', '中央4場') }),
     },
   };
@@ -1271,7 +1276,7 @@ export default async function JockeyPage({
             { label: '芝・ダート', pos: POS.sf, text: lbl('sf') },
             { label: '脚質', pos: POS.st, text: lbl('st') },
             { label: '距離', pos: POS.ds, text: lbl('ds') },
-            ...shownTrends.map((k) => ({ label: TREND_VIEW[k].verdict, pos: jt[k]!.pos, text: jt[k]!.label })),
+            ...shownTrends.map((k) => ({ label: TREND_VIEW[k].verdict, pos: jt[k]!.pos, text: TREND_VIEW[k].short[jt[k]!.pos - 1] })),
           ] : null}
         />
         {!enoughRaces && <ThinNote totalRaces={jockey.total_races} minRaces={MIN_RACES_FOR_TRENDS} hiddenItems="「騎手の傾向」「騎手の特徴」「注目ポイント」「データQ&A」" />}

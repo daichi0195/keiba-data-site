@@ -10,11 +10,15 @@ import { toTrainerSummaryBlocks } from '@/lib/trainerPageData';
 import { resolveCourseUrl, courseLabel } from '@/lib/courseLinks';
 import { MIN_RACES_FOR_TRENDS, hasEnoughRaces, THIN_PAGE_ROBOTS } from '@/lib/dataPageRules';
 import { trainerDescription } from '@/lib/metaDescriptions';
-import { ageAt, buildGradedAnswer, formatTitles, buildPersonLead, gradedTotals, jaDate, thisYearOf, type GradedWin, type NotableHorse, type PersonProfile } from '@/lib/entityExtras';
 import {
-  About, Ad, BestNote, Cnt, CourseAcc, DefLink, EntityRoot, Faq, GTag, GradedWins, H, Head, Highlights, Hero, Hno, HorseList, MaybeLink, Meters,
-  Nb, PageNav, Pn, Sec, SfTag, Stats, Subs, Summary, ThinNote, Tiles, Titles, sfKey,
-  type CourseRow, type NameLink,
+  ageAt, buildAimAnswer, buildAwayAnswer, buildEarlyAnswer, buildG1Answer, buildGradedAnswer, buildTrainerCropAnswer, buildTrainerLead, buildTrainerLongshotAnswer,
+  buildTrainerRideChangeAnswer, cropTotals, formatTitles, gradedTotals, jaDate, pickAim, thisYearOf,
+  type AimRow, type CropStat, type G1Win, type GradedWin, type JockeyTrend, type NotableHorse, type PersonProfile, type RideChangeRow, type TrainerTrends,
+} from '@/lib/entityExtras';
+import {
+  About, Ad, BestNote, Cnt, CourseAcc, DefLink, EntityRoot, Faq, GTag, GradedWins, H, Head, Highlights, Hero, Hno, HorseList, InfoTable, MaybeLink, Meters,
+  Nb, PageNav, Pn, Sec, SfTag, Stats, Subs, Summary, ThinNote, Titles, sfKey,
+  type CourseRow, type MeterItem, type NameLink,
 } from '@/components/v6/entity/parts';
 import { YearCharts } from '@/components/v6/entity/charts';
 import { R, ZERO, fill, int, pct, slashDate, type Row } from '@/components/v6/entity/format';
@@ -579,7 +583,8 @@ export async function generateMetadata({
 
   // 「〇〇厩舎」「〇〇厩舎 評判」でも検索されるため、厩舎の語を入れる
   // 検索語「〇〇厩舎 傾向」「〇〇厩舎 データ」に合わせて前半に置く
-  const title = `${trainer.name}厩舎（調教師）の傾向・データ｜成績・得意条件と騎手相性【毎週更新】`;
+  // 「〇〇厩舎 傾向」「〇〇厩舎 特徴」に合わせる（docs/seo/trainer_serp_2026-11.md）
+  const title = `${trainer.name}厩舎（調教師）の傾向・特徴・データ｜得意条件・騎手・ローテと回収率【毎週更新】`;
   // 検索結果で他の調教師と見分けられるよう、固有の数値を入れる
   const description = trainerDescription(trainer);
   const url = `https://www.keibadata.com/trainers/${id}`;
@@ -959,6 +964,44 @@ export default async function TrainerPage({
     { label: '重賞勝ち（平地）', value: `${trainerGraded.wins}勝`, sub: `直近3年間・G1 ${trainerGraded.g1}勝` },
   ];
 
+  // 2歳戦・遠征・乗り替わり・人気薄（人気の偏りを補正した判定）、乗り替わり別・代表的な管理馬・世代別・G1（gcs/v2/generate_extras.py）
+  const tt: TrainerTrends = (trainer as any).trainer_trends ?? {};
+  const rideChange: RideChangeRow[] = (trainer as any).ride_change_stats ?? [];
+  const notableHorses: NotableHorse[] = (trainer as any).notable_horses ?? [];
+  const crops: CropStat[] = (trainer as any).crop_stats ?? [];
+  const g1Wins: G1Win[] = (trainer as any).g1_wins ?? [];
+  const g1Since: string | undefined = (trainer as any).g1_wins_since;
+  const stableRegion = (trainer as any).stable as string | undefined;
+  // 2列の並びを崩さないよう、判定は2つ1組で出す（2歳戦＋遠征／乗り替わり＋人気薄）
+  const trendPairs = ([['early', 'away'], ['change', 'longshot']] as const).filter(([a, b]) => tt[a] && tt[b]);
+  const shownTrends = trendPairs.flat() as (keyof TrainerTrends)[];
+  const rideChangeAnswer = buildTrainerRideChangeAnswer(trainer.name, rideChange, shownTrends.includes('change') ? tt.change : null);
+  const earlyAnswer = shownTrends.includes('early') ? buildEarlyAnswer(trainer.name, tt.early) : null;
+  const awayAnswer = shownTrends.includes('away') ? buildAwayAnswer(trainer.name, tt.away, stableRegion) : null;
+  const longshotAnswer = shownTrends.includes('longshot') ? buildTrainerLongshotAnswer(trainer.name, tt.longshot) : null;
+  const cropAnswer = buildTrainerCropAnswer(trainer.name, crops);
+  const cropSum = cropTotals(crops);
+  const g1Answer = buildG1Answer(`${trainer.name}厩舎`, g1Wins, g1Since);
+
+  // 狙い目・消し条件：出走前に分かる条件から、複勝回収率が高い／低いもの
+  const T_CLASS: Record<string, string> = { 新馬: '新馬戦', 未勝利: '未勝利戦', '1勝': '1勝クラス', '2勝': '2勝クラス', '3勝': '3勝クラス' };
+  const T_POP: Record<string, string> = { fav1: '1番人気', fav2: '2番人気', fav3: '3番人気', fav4: '4番人気', fav5: '5番人気', fav6to9: '6〜9番人気', fav10plus: '10番人気以下' };
+  const aimCands: AimRow[] = [
+    ...(trainer.racecourse_stats ?? []).filter((r: any) => r.name !== '中央' && r.name !== 'ローカル').map((r: any) => ({ ...r, label: `${String(r.name).replace('競馬場', '')}競馬場` })),
+    ...trainer.course_stats.filter((c) => c.surface_en !== 'obstacle').map((c) => ({ ...c, label: formatTrainerCourseName(c as any) })),
+    ...trainer.distance_stats.map((r: any) => ({ ...r, label: r.category })),
+    ...trainer.class_stats.map((r: any) => ({ ...r, label: T_CLASS[r.class_name] ?? r.class_name })),
+    ...Object.entries(trainer.popularity_stats ?? {}).map(([k, r]: [string, any]) => ({ ...r, label: T_POP[k] ?? k })),
+    ...((trainer as any).gate_stats ?? []).map((r: any) => ({ ...r, label: `${r.gate}枠` })),
+    ...trainer.gender_stats.map((r: any) => ({ ...r, label: r.name })),
+    ...((trainer as any).age_stats ?? []).map((r: any) => ({ ...r, label: r.age })),
+    ...(trainer.interval_stats ?? []).map((r: any) => ({ ...r, label: r.interval === '連闘' ? '連闘' : `レース間隔${r.interval}` })),
+    ...trainer.jockey_stats.map((r: any) => ({ ...r, label: `${r.name}騎手` })),
+  ] as AimRow[];
+  const AIM_MIN = 30;
+  const aim = pickAim(aimCands, AIM_MIN);
+  const aimAnswer = buildAimAnswer(`${trainer.name}厩舎`, aim, AIM_MIN, '出走した条件（競馬場・コース・距離・クラス・人気・枠・性別・馬齢・レース間隔・騎手）');
+
   // FAQ構造化データ
   const faqTrainerJsonLd = {
     '@context': 'https://schema.org',
@@ -970,7 +1013,13 @@ export default async function TrainerPage({
       { question: `${trainer.name}調教師の得意な距離は？`, answer: trainerDistanceFaqAnswer },
       { question: `${trainer.name}調教師の重賞成績は？`, answer: trainerGradedAnswer },
       ...(activeHorsesAnswer ? [{ question: `${trainer.name}厩舎の主な管理馬は？`, answer: activeHorsesAnswer }] : []),
-      ...(twoYoAnswer ? [{ question: `${trainer.name}厩舎の2歳戦の成績は？`, answer: twoYoAnswer }] : []),
+      ...(twoYoAnswer ? [{ question: `${trainer.name}厩舎の2歳戦の成績は？`, answer: [twoYoAnswer, earlyAnswer].filter(Boolean).join('\n') }] : []),
+      ...(rideChangeAnswer ? [{ question: `${trainer.name}厩舎の乗り替わりの成績は？`, answer: rideChangeAnswer }] : []),
+      ...(awayAnswer ? [{ question: `${trainer.name}厩舎は遠征でも走る？`, answer: awayAnswer }] : []),
+      ...(longshotAnswer ? [{ question: `${trainer.name}厩舎は人気薄でも走る？`, answer: longshotAnswer }] : []),
+      ...(aimAnswer ? [{ question: `${trainer.name}厩舎の狙い目の条件は？`, answer: aimAnswer }] : []),
+      ...(cropAnswer ? [{ question: `${trainer.name}厩舎の勝ち上がり率は？`, answer: cropAnswer }] : []),
+      ...(g1Answer ? [{ question: `${trainer.name}厩舎のG1の勝ち鞍は？`, answer: g1Answer }] : []),
       { question: `${trainer.name}調教師の苦手な競馬場は？`, answer: trainerBadRacecourseAnswer },
       { question: `${trainer.name}調教師の苦手なコースは？`, answer: trainerBadCourseAnswer },
     ].map(({ question, answer }) => ({
@@ -1075,12 +1124,11 @@ export default async function TrainerPage({
   if (enoughRaces && summaryBlocks.length > 0) {
     summaryBlocks.unshift({
       key: 'lead',
-      text: buildPersonLead({
-        kind: '調教師',
+      text: buildTrainerLead({
         name: n,
         region: (trainer as any).stable,
         debutYear: trainer.debut_year,
-        traits: [hasS ? sText[surfacePos] : '', hasD ? dText[distancePos] : ''].filter((x) => x && x !== '差分なし'),
+        traits: [hasS ? sText[surfacePos] : '', hasD ? dText[distancePos] : '', ...shownTrends.map((k) => tt[k]!.label)].filter((x) => x && x !== '差分なし'),
         graded: trainerGraded,
         recentWin: trainerGradedWins[0] ?? null,
       }),
@@ -1101,7 +1149,45 @@ export default async function TrainerPage({
     // 冒頭のマスと大きな数字が重ならないよう、着度数を主に見せて勝率・複勝率は補足行に残す（騎手詳細と同じ）
     ['着度数（直近3年間）', <span className={cx('num')}>{`${ts.wins}-${ts.places_2}-${ts.places_3}-${ts.races - ts.wins - ts.places_2 - ts.places_3}`}</span>, <Nb>勝率{ts.win_rate.toFixed(1)}%／複勝{ts.place_rate.toFixed(1)}%</Nb>],
     ['重賞勝ち（平地）', <><Cnt v={trainerGraded.wins} />勝</>, `直近3年間・G1 ${trainerGraded.g1}勝`],
+    [`G1勝ち（${(g1Since ?? '2019').slice(0, 4)}年〜）`, <><Cnt v={g1Wins.length} />勝</>, g1Wins[0] ? `最近：${g1Wins[0].race_name}` : ''],
+    ...(cropSum ? [['勝ち上がり率', `${cropSum.rate.toFixed(1)}%`, cropSum.allRate !== null ? `全出走馬 ${cropSum.allRate.toFixed(1)}%` : ''] as [string, ReactNode, ReactNode]] : []),
   ];
+
+  // 2歳戦・遠征・乗り替わり・人気薄の判定（人気の偏りを補正）
+  const pct1 = (v: number | null | undefined) => (typeof v === 'number' ? `${v.toFixed(1)}%` : '—');
+  const expFx = (tr: JockeyTrend, b: string, a: string) => (
+    <p className={cx('fx')}>
+      <span>人気からの見込み {b} <b className={cx('num')}>{pct1(tr.exp_b)}</b></span>
+      <span>{a} <b className={cx('num')}>{pct1(tr.exp_a)}</b></span>
+    </p>
+  );
+  // 冒頭の判定は列が狭いので短い言い方（8文字まで）にする
+  const TREND_VIEW: Record<keyof TrainerTrends, { verdict: string; short: string[]; meter: (tr: JockeyTrend) => MeterItem }> = {
+    early: {
+      verdict: '2歳戦',
+      short: ['割引', 'やや割引', '標準', 'やや走る', '走る'],
+      meter: (tr) => ({ label: '2歳戦（仕上がりの早さ）', pos: tr.pos, result: tr.label, scale: ['割引', '標準', '走る'], ev: [['3歳以上 複勝率', tr.rate_b ?? undefined], ['2歳戦 複勝率', tr.rate_a ?? undefined]], facts: expFx(tr, '3歳以上', '2歳戦') }),
+    },
+    away: {
+      verdict: '遠征',
+      short: ['割引', 'やや割引', '差分なし', 'やや走る', '走る'],
+      meter: (tr) => ({ label: stableRegion === '美浦' ? '遠征（関西の4場）' : stableRegion === '栗東' ? '遠征（関東の4場）' : '遠征', pos: tr.pos, result: tr.label, scale: ['割引', '差分なし', '走る'], ev: [['地元 複勝率', tr.rate_b ?? undefined], ['遠征 複勝率', tr.rate_a ?? undefined]], facts: expFx(tr, '地元', '遠征') }),
+    },
+    change: {
+      verdict: '乗替',
+      short: ['継続で走る', '継続でやや走る', '差分なし', '替わりでやや走る', '替わりで走る'],
+      meter: (tr) => ({ label: '継続騎乗・乗り替わり', pos: tr.pos, result: tr.label, scale: ['継続騎乗で走る', '差分なし', '乗り替わりで走る'], ev: [['継続騎乗 複勝率', tr.rate_b ?? undefined], ['乗り替わり 複勝率', tr.rate_a ?? undefined]], facts: expFx(tr, '継続騎乗', '乗り替わり') }),
+    },
+    longshot: {
+      verdict: '人気薄',
+      short: ['走らない', 'やや走らない', '標準', 'やや走る', '走る'],
+      meter: (tr) => ({
+        label: '人気薄（6番人気以下）', pos: tr.pos, result: tr.label, scale: ['走らない', '標準', '走る'],
+        ev: [['6番人気以下 複勝率', tr.rate_a ?? undefined], ['人気からの見込み', tr.exp_a ?? undefined, true]],
+        facts: <p className={cx('fx')}><span>複勝回収率 <b className={cx('num')}>{pct1(tr.payback)}</b></span><span>出走数 <b className={cx('num')}>{tr.races_a.toLocaleString('ja-JP')}回</b></span></p>,
+      }),
+    },
+  };
 
   // 年度別（図は古い順、表は新しい順）
   const YEAR = dateIso ? Number(dateIso.slice(0, 4)) : currentYear;
@@ -1116,6 +1202,7 @@ export default async function TrainerPage({
   const popRows = POP.filter(([k]) => (trainer.popularity_stats as any)?.[k]).map(([k, l]) => R((trainer.popularity_stats as any)[k], l));
   const distRows = trainer.distance_stats.map((r: any) => R(r, r.category));
   const genderRows = trainer.gender_stats.map((r: any) => R(r, r.name));
+  const rideRows = rideChange.length ? ['継続騎乗', '乗り替わり（初騎乗）', '乗り替わり（再騎乗）', '初出走'].map((nm) => R(rideChange.find((x) => x.category === nm) as any, nm, nm)) : [];
   const ageRows: Row[] = ((trainer as any).age_stats ?? []).map((r: any) => R(r, r.age));
   // スマホの横棒の行には勝率も添える（表では勝率の列にある）
   const intervalRows = fill(['連闘', '1-3週', '4-7週', '8-10週', '11週-'], trainer.interval_stats ?? [], (r: any) => r.interval).map((r) => ({ ...r, listSub: `勝率${pct(r.win_rate)}` }));
@@ -1150,12 +1237,14 @@ export default async function TrainerPage({
 
   // ページ内の移動（データがない節・対象レース数が少ないページで出さない節は外す）
   const hasHighlights = courses.some((c) => c.races >= 10);
-  const thinHidden = new Set(['characteristics', 'highlights-section', 'faq-section']);
-  const showChars = enoughRaces && Boolean(trainer.characteristics) && (hasS || hasD);
+  const thinHidden = new Set(['characteristics', 'highlights-section', 'aim-section', 'faq-section']);
+  const showChars = enoughRaces && ((Boolean(trainer.characteristics) && (hasS || hasD)) || shownTrends.length > 0);
   const navItems = [
     ['profile-section', '基本情報'], ...(summaryBlocks.length ? [['summary-section', '概要']] : []), ['leading', '年度別'],
-    ...(activeHorses.length ? [['active-horses-section', '管理馬']] : []), ...(trainerGradedWins.length ? [['graded-wins-section', '重賞勝ち']] : []),
-    ...(showChars ? [['characteristics', '特徴']] : []), ...(hasHighlights ? [['highlights-section', '注目']] : []), ['class-stats', 'クラス別'], ['popularity-stats', '人気別'],
+    ...(activeHorses.length ? [['active-horses-section', '管理馬']] : []), ...(notableHorses.length ? [['notable-horses-section', '代表馬']] : []),
+    ...(crops.length ? [['crop-section', '勝ち上がり']] : []), ...(trainerGradedWins.length ? [['graded-wins-section', '重賞勝ち']] : []),
+    ...(showChars ? [['characteristics', '特徴']] : []), ...(hasHighlights ? [['highlights-section', '注目']] : []), ...(aim.hi.length ? [['aim-section', '狙い目']] : []),
+    ['class-stats', 'クラス別'], ['popularity-stats', '人気別'], ...(rideRows.length ? [['ride-change-stats', '乗り替わり']] : []),
     ['distance-stats', '距離別'], ['gender-stats', '性別'], ...(ageRows.length ? [['age-stats', '馬齢別']] : []), ['interval-stats', '間隔別'],
     ['surface-stats', '芝ダート別'], ['racecourse-stats', '競馬場別'], ['course-stats', 'コース別'], ['jockey-stats', '騎手'], ['owner-stats', '馬主'], ['faq-section', 'Q&A'],
   ].filter(([id]) => enoughRaces || !thinHidden.has(id)).map(([id, label]) => ({ id, label }));
@@ -1167,7 +1256,13 @@ export default async function TrainerPage({
     { q: `${n}調教師の得意な距離は？`, a: trainerDistanceFaqAnswer, lead: true },
     { q: `${n}調教師の重賞成績は？`, a: trainerGradedAnswer },
     ...(activeHorsesAnswer ? [{ q: `${n}厩舎の主な管理馬は？`, a: activeHorsesAnswer }] : []),
-    ...(twoYoAnswer ? [{ q: `${n}厩舎の2歳戦の成績は？`, a: twoYoAnswer }] : []),
+    ...(twoYoAnswer ? [{ q: `${n}厩舎の2歳戦の成績は？`, a: [twoYoAnswer, earlyAnswer].filter(Boolean).join('\n'), lead: Boolean(earlyAnswer) }] : []),
+    ...(rideChangeAnswer ? [{ q: `${n}厩舎の乗り替わりの成績は？`, a: rideChangeAnswer, lead: true }] : []),
+    ...(awayAnswer ? [{ q: `${n}厩舎は遠征でも走る？`, a: awayAnswer, lead: true }] : []),
+    ...(longshotAnswer ? [{ q: `${n}厩舎は人気薄でも走る？`, a: longshotAnswer, lead: true }] : []),
+    ...(aimAnswer ? [{ q: `${n}厩舎の狙い目の条件は？`, a: aimAnswer }] : []),
+    ...(cropAnswer ? [{ q: `${n}厩舎の勝ち上がり率は？`, a: cropAnswer }] : []),
+    ...(g1Answer ? [{ q: `${n}厩舎のG1の勝ち鞍は？`, a: g1Answer }] : []),
     { q: `${n}調教師の苦手な競馬場は？`, a: trainerBadRacecourseAnswer },
     { q: `${n}調教師の苦手なコースは？`, a: trainerBadCourseAnswer },
   ];
@@ -1187,6 +1282,7 @@ export default async function TrainerPage({
           h1s="（調教師）の傾向・成績データ"
           lead={`${W}${stable || trainer.debut_year ? `（${[stable, trainer.debut_year ? `${trainer.debut_year}年開業` : ''].filter(Boolean).join('・')}）` : ''}の成績・データをまとめたページです。独自のデータベースで直近3年間・${int(trainer.total_races)}レースのデータを集計し、毎週更新しています。`}
           kpi={[['出走数', ts.races, 0, ''], ['1着', ts.wins, 0, ''], ['勝率', ts.win_rate, 1, '%'], ['連対率', ts.quinella_rate, 1, '%'], ['複勝率', ts.place_rate, 1, '%']]}
+          kpiTable
           races={trainer.total_races}
           period={periodText}
           updated={trainer.last_updated}
@@ -1195,13 +1291,14 @@ export default async function TrainerPage({
           verdict={enoughRaces ? [
             ...(hasS ? [{ label: '芝・ダート', pos: surfacePos, text: sText[surfacePos] }] : []),
             ...(hasD ? [{ label: '距離', pos: distancePos, text: dText[distancePos] }] : []),
+            ...shownTrends.map((k) => ({ label: TREND_VIEW[k].verdict, pos: tt[k]!.pos, text: TREND_VIEW[k].short[tt[k]!.pos - 1] })),
           ] : null}
         />
         {!enoughRaces && <ThinNote totalRaces={trainer.total_races} minRaces={MIN_RACES_FOR_TRENDS} hiddenItems="「調教師の傾向」「調教師の特徴」「注目ポイント」「データQ&A」" />}
         <Ad unit="dataTop" />
 
         <Sec id="profile-section" head={<Hno w={ST} title="基本情報" />}>
-          <Tiles className="es-tl" items={tiles.filter((x) => x[1])} />
+          <InfoTable label={`${ST}の基本情報`} items={tiles.filter((x) => x[1])} />
         </Sec>
         {summaryBlocks.length > 0 && (
           <Sec id="summary-section" head={<Hno w={W} title="データ概要" />}>
@@ -1231,6 +1328,36 @@ export default async function TrainerPage({
             />
           </Sec>
         )}
+        {notableHorses.length > 0 && (
+          <Sec id="notable-horses-section" head={<Hno w={ST} title="代表的な管理馬" sub="2019年以降に勝ち星を挙げた馬。G1の勝利数→重賞の勝利数→勝利数の順" />}>
+            <HorseList
+              label={`${ST}の代表的な管理馬`}
+              initial={10}
+              note="成績は2019年以降・当厩舎での出走分（JRA）"
+              cols={[{ label: '馬名', m: 'm1' }, { label: '性・生年', m: 'm1b' }, { label: '成績', m: 'm2', num: true }, { label: '主な勝ち鞍', m: 'm3' }, { label: '父', m: 'm4', ml: '父' }]}
+              rows={notableHorses.map((h: any) => [<b key="n">{h.horse_name}</b>, `${h.sex}・${h.birth_year ? `${h.birth_year}年生` : ''}`, `${h.races}戦${h.wins}勝`, <Titles key="t" list={formatTitles(h.titles)} />, h.father ?? '—'])}
+            />
+          </Sec>
+        )}
+        {crops.length > 0 && (
+          <Sec id="crop-section" head={<Hno w={ST} title="世代別の勝ち上がり率" sub="この厩舎からJRAでデビューした馬のうち、JRAで1勝以上した割合" />}>
+            <HorseList
+              label={`${ST}の世代別の勝ち上がり率`}
+              className="es-cr"
+              initial={crops.length}
+              note="途中＝3歳の年が終わっていない世代"
+              cols={[{ label: '世代', m: 'm1' }, { label: '勝ち上がり率', m: 'm2', num: true }, { label: '全出走馬', m: 'm4', ml: '全体', num: true }, { label: '出走', m: 'm4', ml: '出走', num: true }, { label: '勝ち上がり', m: 'm4', ml: '勝ち上がり', num: true }, { label: '重賞勝ち馬', m: 'm4', ml: '重賞馬', num: true }]}
+              rows={crops.map((c) => [
+                <b key="c">{c.crop}年生{c.complete ? '' : <small className={cx('es-cp')}>途中</small>}</b>,
+                pct(c.rate),
+                c.all_rate === null ? '—' : pct(c.all_rate),
+                `${int(c.starters)}頭`,
+                `${int(c.winners)}頭`,
+                `${int(c.graded_winners)}頭`,
+              ])}
+            />
+          </Sec>
+        )}
         {trainerGradedWins.length > 0 && (
           <Sec id="graded-wins-section" head={<Hno w={ST} title="重賞勝ち" sub="直近3年間・平地・新しい順" />}>
             <GradedWins wins={trainerGradedWins} classStats={trainer.class_stats} fourth={['騎手', (w) => w.jockey_name ?? '—']} />
@@ -1239,9 +1366,11 @@ export default async function TrainerPage({
         {showChars && (
           <Sec id="characteristics" head={<Hno w={W} title="特徴" sub="判定と、その根拠になった数字" />}>
             <Meters
+              note={shownTrends.length ? '※2歳戦・遠征・乗り替わり・人気薄は、管理馬の人気（単勝オッズ）の偏りを補正して判定' : undefined}
               items={[
                 ...(hasS ? [{ label: '得意なコース傾向', pos: surfacePos, result: sText[surfacePos], scale: ['芝が得意', '差分なし', 'ダートが得意'] as [string, string, string], ev: ev([['芝', turf], ['ダート', dirt]]) }] : []),
                 ...(hasD ? [{ label: '得意な距離傾向', pos: distancePos, result: dText[distancePos], scale: ['短距離が得意', '差分なし', '長距離が得意'] as [string, string, string], ev: ev([['短距離〜マイル', md('短〜マ')], ['中距離〜長距離', md('中〜長')]]) }] : []),
+                ...shownTrends.map((k) => TREND_VIEW[k].meter(tt[k]!)),
               ]}
             />
           </Sec>
@@ -1251,8 +1380,27 @@ export default async function TrainerPage({
             <Highlights courses={courses} urlOf={(c) => resolveCourseUrl(c)} shortOf={(c) => courseLabel(c, { withRacecourse: true, shortDirt: true })} />
           </Sec>
         )}
+        {enoughRaces && aim.hi.length > 0 && (
+          <Sec id="aim-section" head={<Hno w={ST} title="狙い目・消し条件" sub={`直近3年間で${AIM_MIN}回以上出走した条件のうち、複勝回収率が高い条件・低い条件`} />}>
+            <HorseList
+              label={`${ST}の狙い目・消し条件`}
+              className="es-aim"
+              initial={aim.hi.length + aim.lo.length}
+              note="条件：競馬場・コース・距離・クラス・人気・枠・性別・馬齢・レース間隔・騎手"
+              cols={[{ label: '条件', m: 'm1' }, { label: '複勝回収率', m: 'm2', num: true }, { label: '単勝回収率', m: 'm4', ml: '単回', num: true }, { label: '複勝率', m: 'm4', ml: '複勝率', num: true }, { label: '出走数', m: 'm4', ml: '出走', num: true }]}
+              rows={[...aim.hi.map((r) => ['狙い目', r] as const), ...aim.lo.map((r) => ['消し', r] as const)].map(([k, r]) => [
+                <b key="c"><small className={cx('es-cp', k === '消し' && 'es-cpx')}>{k}</small>{r.label}</b>,
+                `${r.place_payback.toFixed(0)}%`,
+                `${r.win_payback.toFixed(0)}%`,
+                `${r.place_rate.toFixed(1)}%`,
+                `${r.races.toLocaleString('ja-JP')}回`,
+              ])}
+            />
+          </Sec>
+        )}
         {cond(W, 'class-stats', 'クラス別データ', classRows, { keyLabel: 'クラス' })}
         {cond(W, 'popularity-stats', '人気別データ', popRows, { keyLabel: '人気' }, { note: false })}
+        {rideRows.length > 0 && cond(ST, 'ride-change-stats', '継続騎乗・乗り替わり別データ', rideRows, { keyLabel: '騎乗' }, { sub: '前走と同じ騎手か（平地のみ）。初騎乗＝その騎手が初めて乗る、再騎乗＝以前に乗ったことがある' })}
         {cond(W, 'distance-stats', '距離別データ', distRows, { keyLabel: '距離', hint: <DefLink anchor="distance" /> })}
         <Ad unit="dataMid" />
         {cond(W, 'gender-stats', '性別データ', genderRows, { keyLabel: '性別' })}
