@@ -1,5 +1,5 @@
 import { Children, Fragment, isValidElement } from 'react';
-import Link from 'next/link';
+import Link from '@/components/HardLink';
 import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { FrameIcon } from '@/components/layout/icons';
 import RailAiOff from '@/components/layout/RailAiOff';

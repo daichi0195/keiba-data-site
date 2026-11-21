@@ -3,7 +3,7 @@
 // コース詳細の条件別・ランキングの表の描画（parts.tsx の Cond / Ranking がサーバーで詰めた数値の配列から描く）。
 // 13項目のセルをクライアント部品の中で作るので、RSC ペイロードには数値の配列だけが載る（セルごとの要素の JSON にならない）。
 // 描く HTML は従来のサーバー描画と同じ。
-import Link from 'next/link';
+import Link from '@/components/HardLink';
 import { useState } from 'react';
 import s from './course.module.css';
 import { COLS, fmt } from './stats';

@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '@/components/HardLink';
 import s from '@/components/course/course.module.css';
 import ScrollTable from '@/components/course/ScrollTable';
 import { keyInClass } from '@/components/course/keyCell';

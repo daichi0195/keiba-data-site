@@ -1,6 +1,6 @@
 // コラムの絵の並び（一覧・記事ページ下の「人気記事」で共用。見本 articles.mjs の card()）
 import Image from 'next/image';
-import Link from 'next/link';
+import Link from '@/components/HardLink';
 import type { Article } from '@/lib/articles';
 import { cx } from './cx';
 

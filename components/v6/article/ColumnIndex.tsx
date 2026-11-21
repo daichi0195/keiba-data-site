@@ -2,7 +2,7 @@
 
 // コラム一覧の頭（パンくず・題・並び替え）と絵の並び（見本 articles.mjs ＋ js/articles.js）
 import { useState } from 'react';
-import Link from 'next/link';
+import Link from '@/components/HardLink';
 import { Card, type ColumnCard } from './Cards';
 import { useRise } from './RiseGrid';
 import { cx } from './cx';

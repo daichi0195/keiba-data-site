@@ -1,6 +1,6 @@
 // AI予測の3ページで共通の小さな部品（サーバーで描く）。見本：docs/redesign/src/pages/ai-shared.mjs
 import { Fragment } from 'react';
-import Link from 'next/link';
+import Link from '@/components/HardLink';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { FrameIcon } from '@/components/layout/icons';
 import { gradeOf, sfJa, sfKey, shortDate, shortName } from './format';

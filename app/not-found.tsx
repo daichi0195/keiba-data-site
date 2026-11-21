@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
+import Link from '@/components/HardLink';
 import RailAiOff from '@/components/layout/RailAiOff';
 import { RailAdOff } from '@/components/layout/RailAd';
 import { FRAME_ICONS, FrameIcon, type FrameIconKey } from '@/components/layout/icons';

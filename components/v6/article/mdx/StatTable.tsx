@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import Link from 'next/link';
+import Link from '@/components/HardLink';
 import { cx } from '../cx';
 
 /** 13項目の成績（記事の MDX に書かれた値をそのまま使う） */

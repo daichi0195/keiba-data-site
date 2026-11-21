@@ -1,6 +1,6 @@
 // 騎手詳細・種牡馬詳細・調教師詳細の共通部品（見本 pages/jockey.mjs・pages/_entity-st.mjs の HTML と同じ形）。
 // サーバーコンポーネント。開閉だけ Box（クライアント）、ページ全体の動きは EntityEffects（クライアント）。
-import Link from 'next/link';
+import Link from '@/components/HardLink';
 import type { CSSProperties, ReactNode } from 'react';
 import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import AdSlot from '@/components/AdSlot';

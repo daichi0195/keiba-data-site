@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '@/components/HardLink';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import AdSlot from '@/components/AdSlot';
 import { FrameIcon, FRAME_ICONS } from '@/components/layout/icons';

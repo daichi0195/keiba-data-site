@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
+import Link from '@/components/HardLink';
 import s from './SiteFrame.module.css';
 
 type WeekVenue = { id: string; name: string };

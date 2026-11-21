@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import Link from 'next/link';
+import Link from '@/components/HardLink';
 import { usePathname } from 'next/navigation';
 import { FRAME_ICONS, FrameIcon, type FrameIconKey } from './icons';
 import s from './SiteFrame.module.css';

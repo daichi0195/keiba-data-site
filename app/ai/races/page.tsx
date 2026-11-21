@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import Link from 'next/link';
+import Link from '@/components/HardLink';
 import { fetchPredictionIndex, VENUE_ORDER } from '@/components/v6/ai/data';
 import { Crumb, Foot } from '@/components/v6/ai/Parts';
 import RaceList from '@/components/v6/ai/RaceList';

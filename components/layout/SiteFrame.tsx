@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '@/components/HardLink';
 import Image from 'next/image';
 import RailAd from './RailAd';
 import WeekVenues from './WeekVenues';

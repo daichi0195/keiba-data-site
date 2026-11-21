@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import Link from 'next/link';
+import Link from '@/components/HardLink';
 import AdSlot from '@/components/AdSlot';
 import { FilterBox, ListChips } from './Nav';
 import { cx } from './cx';

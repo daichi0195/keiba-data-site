@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '@/components/HardLink';
 import s from '@/components/course/course.module.css';
 import r from './shared.module.css';
 import LinkStatsTable, { type LinkStatRow } from './LinkStatsTable';

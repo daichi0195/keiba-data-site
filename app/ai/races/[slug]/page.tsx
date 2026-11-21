@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
+import Link from '@/components/HardLink';
 import PredictionGate from '../../_components/PredictionGate';
 import { dateOf, dateY, fetchPrediction, fetchPredictionIndex, shortDate, VENUE_ORDER } from '@/components/v6/ai/data';
 import Mark, { MARK_DESC, MARK_KEYS, normalizeMark } from '@/components/v6/ai/Mark';

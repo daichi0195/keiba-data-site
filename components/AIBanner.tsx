@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '@/components/HardLink';
 import styles from './AIBanner.module.css';
 
 export default function AIBanner({ bookmarkOnly = false, bannerOnly = false }: { bookmarkOnly?: boolean; bannerOnly?: boolean }) {

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
+import Link from '@/components/HardLink';
 import { FrameIcon } from '@/components/layout/icons';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { cx } from './cx';

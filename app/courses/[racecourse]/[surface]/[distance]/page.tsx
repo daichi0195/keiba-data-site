@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import AdSlot from '@/components/AdSlot';
-import Link from 'next/link';
+import Link from '@/components/HardLink';
 import { notFound } from 'next/navigation';
 import { getCourseDataFromGCS } from '@/lib/getCourseDataFromGCS';
 import { ALL_COURSES, getCourseUrl } from '@/lib/courses';

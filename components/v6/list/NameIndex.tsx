@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useRef, useState } from 'react';
-import Link from 'next/link';
+import Link from '@/components/HardLink';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { FrameIcon } from '@/components/layout/icons';
 import AdSlot from '@/components/AdSlot';

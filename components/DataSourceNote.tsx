@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from '@/components/HardLink';
 import styles from './DataSummary.module.css';
 
 interface Props {

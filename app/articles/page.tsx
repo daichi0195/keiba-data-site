@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import Link from 'next/link';
+import Link from '@/components/HardLink';
 import { getAllArticles } from '@/lib/articles';
 import ColumnIndex from '@/components/v6/article/ColumnIndex';
 import { toCard } from '@/components/v6/article/Cards';
