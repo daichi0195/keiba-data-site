@@ -4,36 +4,18 @@ import { useEffect, useRef, useState } from 'react';
 import styles from './PredictionGate.module.css';
 
 /**
- * オファーウォールのスクリプトが動き出してから、この時間内にダイアログが出なければ予測を見せる（リワード広告の在庫切れ対策）
- * 2026-11-17 の実測（PC・光回線、4 回）：スクリプト起動からダイアログ表示まで 1.5〜3.5 秒。
- * リワード広告の読み込みを待ってから出るためばらつきが大きいので、最大値に余裕を持たせる
- */
-const WAIT_AFTER_SCRIPT_MS = 6000;
-/** スクリプトの合図がいつまでも来ない場合の上限 */
-const MAX_WAIT_MS = 15000;
-
-declare global {
-  interface Window {
-    googlefc?: { callbackQueue?: unknown[] } & Record<string, unknown>;
-  }
-}
-
-/**
- * AI予測の表を、オファーウォール（AdSense）で広告を見終わるまで隠す。
+ * AI予測の表を、オファーウォール（AdSense）が出ている間だけ隠す。
  *
- * AdSense にはリワード広告の視聴完了を知らせる API がないため、
- * オファーウォールのダイアログ（.fc-monetization-dialog-container）が「出て、消えた」ことで判定する。
- * 読み込み直後はオファーウォールのスクリプトより先に本文が描画されるので、最初から隠しておく。
+ * 2026-11-22 からオファーウォールはサイト全体（3ページ目から・広告1本で5ページ）の1本だけになり、
+ * AI予測ページでも出ないことの方が多いので、予測は最初から見せる。
+ * ダイアログ（.fc-monetization-dialog-container）が出たら隠し、消えたら（広告を見終わったら）見せる。
  *
- * ダイアログが出ない場合の扱い:
- * - 広告ブロッカーで adsbygoogle.js が読み込めない → 予測は出さず、広告ブロッカーをオフにするよう案内する
- *   （AdSense の広告ブロック回復メッセージはサイトに1つしか出せず、サイト全体用の「閉じられる」ものを使っているため、ここは自前で止める）
- * - スクリプトは動いた（googlefc の CONSENT_API_READY）のにダイアログが出ない → その数秒後に表示（リワード広告の在庫切れ）
- * - 後からダイアログが出てきた場合は隠し直す
+ * 広告ブロッカーで adsbygoogle.js が読み込めない場合は、予測を出さずに広告ブロッカーをオフにするよう案内する
+ * （AdSense の広告ブロック回復メッセージはサイト全体用の「閉じられる」ものなので、ここは自前で止める）。
  */
 export default function PredictionGate({ children }: { children: React.ReactNode }) {
   const isProd = process.env.NODE_ENV === 'production';
-  const [open, setOpen] = useState(!isProd);
+  const [open, setOpen] = useState(true);
   const [adBlocked, setAdBlocked] = useState(false);
   const seenWall = useRef(false);
   const blockedRef = useRef(false);
@@ -41,9 +23,6 @@ export default function PredictionGate({ children }: { children: React.ReactNode
   useEffect(() => {
     if (!isProd) return;
     const timers: ReturnType<typeof setTimeout>[] = [];
-    const openIfNoWall = () => {
-      if (!seenWall.current && !blockedRef.current) setOpen(true);
-    };
 
     const isWallVisible = () => {
       // オファーウォール、または広告ブロッカー利用者向けの「広告を許可してください」メッセージ
@@ -55,10 +34,9 @@ export default function PredictionGate({ children }: { children: React.ReactNode
 
     const check = () => {
       if (isWallVisible()) {
-        if (!seenWall.current) performance.mark('offerwall-visible');
         seenWall.current = true;
         setOpen(false);
-      } else if (seenWall.current) {
+      } else if (seenWall.current && !blockedRef.current) {
         setOpen(true);
       }
     };
@@ -66,17 +44,6 @@ export default function PredictionGate({ children }: { children: React.ReactNode
     const observer = new MutationObserver(check);
     observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
     check();
-
-    // オファーウォールのスクリプトが動き出したら、そこから待つ
-    window.googlefc = window.googlefc || {};
-    window.googlefc.callbackQueue = window.googlefc.callbackQueue || [];
-    window.googlefc.callbackQueue.push({
-      CONSENT_API_READY: () => {
-        // 待ち時間の調整用（performance.getEntriesByType('mark') で確認できる）
-        performance.mark('offerwall-script-ready');
-        timers.push(setTimeout(openIfNoWall, WAIT_AFTER_SCRIPT_MS));
-      },
-    });
 
     // ページの読み込み完了時点で adsbygoogle.js が動いていなければ広告ブロッカーとみなす
     // （async のスクリプトは load イベントより前に読み込まれる）
@@ -93,8 +60,6 @@ export default function PredictionGate({ children }: { children: React.ReactNode
     } else {
       window.addEventListener('load', () => timers.push(setTimeout(onLoad, 500)), { once: true });
     }
-
-    timers.push(setTimeout(openIfNoWall, MAX_WAIT_MS));
 
     return () => {
       observer.disconnect();
