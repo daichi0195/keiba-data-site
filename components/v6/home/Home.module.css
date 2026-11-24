@@ -454,7 +454,7 @@
   .root .wkt-r{grid-template-columns:130px minmax(0,1fr)}
   .root .wkt .ds-c{grid-template-columns:repeat(auto-fill,76px)}
   .root .wkt .ds-c a{font-size:14px}
-  .root .vg.car .vc:first-child .vc-t{font-size:clamp(20px,1.8vw,26px);text-wrap:balance}
+  .root .vg.car .vc:first-child .vc-t{font-size:clamp(20px,1.8vw,26px)}
 }
 .root.root.root .rk-n.m1{background:#B8860B;color:#FFFFFF}
 .root.root.root .rk-n.m2{background:#7A828C;color:#FFFFFF}

@@ -131,7 +131,7 @@
 
 /* 記事の頭 */
 .ar-k{margin-top:10px;font-size:13px;font-weight:700;color:var(--ink-sub)}
-.ar-hd h1{margin-top:2px;font-size:22px;font-weight:700;line-height:1.42;word-break:auto-phrase;text-wrap:balance}
+.ar-hd h1{margin-top:2px;font-size:22px;font-weight:700;line-height:1.42}
 .ar-hd h1.hang{text-indent:-.42em}
 .ar-meta{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:8px}
 .ar-by{display:flex;align-items:center;gap:8px;min-width:0;font-size:13px;color:var(--ink-sub);white-space:nowrap}
@@ -158,7 +158,7 @@
 /* 文中・箇条書きのリンクは上下に当たり判定を足す（40px以上） */
 .ar-body p a,.ar-body ul:not(.lk) a,.ar-body ol a,.au-a{position:relative}
 .ar-body p a::after,.ar-body ul:not(.lk) a::after,.ar-body ol a::after,.au-a::after{content:"";position:absolute;inset:-13px -2px}
-.ar-body h2,.ar-body h3{scroll-margin-top:calc(var(--hdr-h) + 16px);word-break:auto-phrase}
+.ar-body h2,.ar-body h3{scroll-margin-top:calc(var(--hdr-h) + 16px)}
 .ar-body h2{margin-top:40px;padding-top:28px;border-top:1px solid var(--line);font-size:22px;font-weight:700;line-height:1.45}
 .ar-body h3{margin-top:36px;padding-bottom:8px;border-bottom:1px solid var(--line);font-size:17px;font-weight:700;line-height:1.5}
 .ar-body h2 + h3{margin-top:24px}

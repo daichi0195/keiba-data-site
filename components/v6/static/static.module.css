@@ -218,7 +218,6 @@
   .st-nav h2,.st-toc h2{padding:0 8px 6px;font-size:15px;font-weight:700;line-height:1.5}
   .st-nav ul,.st-toc ol{list-style:none}
   .st-toc li a{display:flex;align-items:baseline;gap:8px;min-height:36px;padding:7px 8px;border-radius:8px;font-size:13px;line-height:1.6;color:var(--ink);transition:background-color .15s,color .15s}
-  .st-toc li a > span:last-child{text-wrap-style:balance}
   .st-toc li a:hover{background:var(--chip)}
   .st-toc .n{flex:none;width:1.3em;text-align:right;color:var(--ink-sub)}
   .st-toc li a.on{background:var(--here);color:var(--on-here);font-weight:700}
