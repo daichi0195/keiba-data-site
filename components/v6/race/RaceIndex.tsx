@@ -19,6 +19,8 @@ export interface RaceRow {
   surf: string;
   distance: number;
   course: string;
+  /** 絞り込み用の読み・別名（lib/raceKana.ts） */
+  k: string;
 }
 
 const GROUPS = [
@@ -43,7 +45,7 @@ export default function RaceIndex({ rows, week, children }: { rows: RaceRow[]; w
   const [open, setOpen] = useState<Record<string, boolean>>({});
   const v = yomi(q);
   const on = !!(v || grade);
-  const hit = (r: RaceRow) => (!grade || r.grade === grade) && (!v || yomi(r.name).includes(v) || yomi(r.venue).includes(v));
+  const hit = (r: RaceRow) => (!grade || r.grade === grade) && (!v || yomi(r.name).includes(v) || yomi(r.venue).includes(v) || yomi(r.k).includes(v));
   const found = rows.filter(hit).length;
 
   const groups = useMemo(() => GROUPS.map((g) => ({ ...g, rows: rows.filter((r) => r.grade === g.grade) })).filter((g) => g.rows.length), [rows]);

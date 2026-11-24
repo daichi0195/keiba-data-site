@@ -207,7 +207,7 @@ export default async function RacePage({ params }: Props) {
         <CourseChips items={chips} />
 
         {/* 冒頭：AI による概要に載る1〜2文 */}
-        <div className={s.hero}>
+        <div className={`${s.hero} ${r.hr}`}>
           <nav className={s.crumb} aria-label="パンくず">
             <Link prefetch={false} href="/">HOME</Link>
             <span aria-hidden="true">/</span>
@@ -337,6 +337,7 @@ export default async function RacePage({ params }: Props) {
         <section id="payout" className={s.sc} aria-label="過去10年の配当">
           <Head title={`${NAME} 過去10年の配当`} sub="100円あたりの払戻" />
           <ListTable
+            className={r.payT}
             label={`${NAME}の過去10年の配当`}
             cols={[{ label: '年', key: true }, { label: '単勝', num: true }, { label: '馬連', num: true }, { label: '3連複', num: true }, { label: '3連単', num: true }]}
             rows={d.editions.filter((e) => e.included).map((e) => [

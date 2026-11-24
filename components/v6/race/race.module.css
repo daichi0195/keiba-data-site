@@ -52,3 +52,12 @@
 @media (max-width:699.98px){
   .yr .w small{display:none}
 }
+
+/* PC：見出し（レース名 過去10年のデータと傾向）は1行目の幅いっぱいに使い、集計欄はリード文の横に置く（長いレース名で2行に割れて横が空くのを防ぐ） */
+@media (min-width:1100px){
+  .hr.hr h1{grid-column:1 / -1}
+  .hr.hr dl{grid-row:4}
+}
+
+/* 配当の表：3連単の列（人気つきで長い）を中身の幅にして、ほかの列の間隔を均等にする */
+.payT.payT th:last-child,.payT.payT td:last-child{width:1%}

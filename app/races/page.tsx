@@ -5,6 +5,7 @@ import { Head } from '@/components/v6/list/Head';
 import RaceIndex, { type RaceRow } from '@/components/v6/race/RaceIndex';
 import { WeekBanners, WeekRaceList } from '@/components/v6/race/WeekRaces';
 import { RACES } from '@/lib/races';
+import { RACE_KANA, VENUE_KANA } from '@/lib/raceKana';
 import { WEEK_RACES, weekSpan } from '@/lib/weekRaces';
 
 const title = 'レースデータ一覧｜G1・重賞・リステッドの過去10年データと傾向【毎週更新】';
@@ -33,6 +34,8 @@ export default function RacesPage() {
       surf: SURF[r.surface] ?? '',
       distance: r.distance,
       course: r.course,
+      // 絞り込み用：レース名・競馬場の読みと別名
+      k: [RACE_KANA[r.name], VENUE_KANA[r.venue]].filter(Boolean).join(' '),
     }));
 
   return (
