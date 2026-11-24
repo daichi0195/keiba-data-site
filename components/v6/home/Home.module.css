@@ -463,7 +463,8 @@
 .root .rk-m{color:var(--link)}
 .root .kn-more{display:none}
 @media (max-width:1099.98px){
-  .root .chips{position:static}
+  /* スマホ・タブレットもスクロールしたらヘッダーの下に固定（2026-11-24 オーナー指示） */
+  .root .chips{position:sticky;top:var(--hdr-h)}
   .root .chips > div{padding-top:12px;padding-bottom:12px;gap:8px}
   .root .sc,.root .band + .sc{padding-top:32px}
   .root.root.root .band{padding-top:32px}

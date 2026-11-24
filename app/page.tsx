@@ -99,11 +99,6 @@ export default async function HomePage() {
           <WeekBanners />
         </section>
 
-        {/* バナーの下に広告を挟んでから、ナビゲーションのチップ */}
-        <div className={cx('ad')}>
-          <AdSlot unit="list" />
-        </div>
-
         <TopChips items={chips} />
 
         {/* ナビのすぐ下の節は上の余白を詰める（ナビの下端から見出しまでを、ほかのページの最初の節と同じくらいに） */}
@@ -127,6 +122,10 @@ export default async function HomePage() {
             <WeekVenues venues={weekVenues} />
           </section>
         )}
+
+        <div className={cx('ad')}>
+          <AdSlot unit="list" />
+        </div>
 
         <section className={cx('sc')} id="courses">
           <Head title="コース別データ" sub={`${VENUES.length}競馬場・${COURSE_TOTAL}コース`} more={{ href: '/courses', label: 'コース一覧' }} />
