@@ -427,7 +427,7 @@ thead .rno{font-size:12px;font-family:inherit}
 .lt .r{text-align:right;font-family:var(--f-num);font-variant-numeric:tabular-nums}
 .lt .k{font-weight:700}
 .lt tbody tr:first-child td{border-top:0}
-.lt .lt-tg{display:inline-block;margin-right:8px;padding:0 6px;border-radius:4px;background:var(--c-hl);color:#26292D;font-size:11px;font-weight:700;line-height:18px;vertical-align:1px}
+.lt .lt-tg{font-style:normal;display:inline-block;margin-right:8px;padding:0 6px;border-radius:4px;background:var(--c-hl);color:#26292D;font-size:11px;font-weight:700;line-height:18px;vertical-align:1px}
 .lt .lt-tg.x{background:var(--c-cell);color:var(--c-text-sub)}
 .lt .lt-s{display:block;font-size:12px;font-weight:400;color:var(--c-text-sub)}
 .lt-b{padding:10px var(--c-pad) 0;font-size:14px;line-height:1.6}

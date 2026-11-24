@@ -2,6 +2,7 @@ import Link from '@/components/HardLink';
 import AdSlot from '@/components/AdSlot';
 import { FrameIcon, FRAME_ICONS } from '@/components/layout/icons';
 import { ALL_COURSES } from '@/lib/courses';
+import { RACES } from '@/lib/races';
 import { ALL_JOCKEYS } from '@/lib/jockeys';
 import { ALL_SIRES } from '@/lib/sires';
 import { ALL_TRAINERS } from '@/lib/trainers';
@@ -43,8 +44,9 @@ export function Hero({ title, lead, count }: { title: string; lead: string; coun
   );
 }
 
-type ListKey = 'course' | 'jockey' | 'sire' | 'trainer';
+type ListKey = 'race' | 'course' | 'jockey' | 'sire' | 'trainer';
 const LISTS: [ListKey, string, string, string][] = [
+  ['race', '/races', 'レースデータ一覧', `${RACES.length}レース`],
   ['course', '/courses', 'コースデータ一覧', `${ALL_COURSES.length}コース`],
   ['jockey', '/jockeys', '騎手データ一覧', `${ALL_JOCKEYS.length}名`],
   ['sire', '/sires', '血統（種牡馬）別データ一覧', `${ALL_SIRES.length}頭`],

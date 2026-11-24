@@ -3,7 +3,7 @@
 """
 レース別ページ（/races/[slug]、「〇〇 過去10年」）のデータを作る（docs/seo/race_serp_2026-11.md）。
 
-- 対象：オープン以上（G1〜G3・L・OP）で、直近10回のうち7回以上が最新回と同じ「競馬場・芝ダ・距離・内外回り」のレース（約200）。
+- 対象：オープン以上（G1〜G3・L・OP）で最新回が ACTIVE_SINCE 以降の全レース（約270）。集計は最新回と同じ「競馬場・芝ダ・距離・内外回り」の回だけ。
   重賞は特別競走番号（冠名が変わっても同じ）、L・OP は略称で同じレースを束ねる。URL は英語名（JRA-VAN の競走名欧字）から冠名を外して作る。
 - 集計する回：最新回と同じ「競馬場・芝ダ・距離」の回だけを新しい順に最大10回（2013年まで遡る）。
   代替開催（京都改修で阪神など）の回は勝ち馬一覧に「集計対象外」として出すだけで、集計には入れない。
@@ -32,7 +32,7 @@ OUT = HERE.parent.parent / 'data' / 'races'
 N_EDITIONS = 10
 MAX_BYTES = 20 * 10**9
 
-MIN_SAME = 7          # 直近10回のうち、最新回と同じ条件の回がこれ以上
+MIN_SAME = 1          # 最新回と同じ条件の回がこれ以上（全レースにページを作る。5回未満はサイト側で noindex）
 ACTIVE_SINCE = '2025-06-01'   # 最新回がこれ以降（廃止・休止したレースを除く）
 RANK_MAX = 30         # 騎手・調教師・種牡馬・母父の一覧の件数（3着以内がある人・馬だけ）
 
@@ -161,8 +161,8 @@ def select_races(client):
     for (kind, k), eds in by_key.items():
         latest = eds[0]
         cond = cond_of(latest)
-        same10 = sum(1 for e in eds[:N_EDITIONS] if cond_of(e) == cond)
-        if same10 < MIN_SAME or not latest['en']:
+        same_all = sum(1 for e in eds if cond_of(e) == cond)
+        if same_all < MIN_SAME or not latest['en']:
             continue
         used = [e for e in eds if cond_of(e) == cond][:N_EDITIONS]
         oldest = used[-1]['race_date']

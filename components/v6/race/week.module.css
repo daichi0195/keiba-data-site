@@ -73,3 +73,24 @@
   .wl-a{gap:8px}
   .wl-a a{height:38px;min-width:200px;justify-content:center;padding:0 18px;font-size:14px}
 }
+
+/* ----- レースデータ一覧（/races）：ほかの一覧の板（.lp）の中に行を並べる ----- */
+.wl-d li[hidden]{display:none}
+/* 格付けの絞り込み：スマホ 3列×2段、700px以上は1段（.L.L .lf-s の4列より強く） */
+.gf.gf.gf.gf{grid-template-columns:repeat(3,minmax(0,1fr))}
+.more{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;min-height:46px;border-top:1px solid var(--c-rule);background:none;font-size:14px;font-weight:700;color:var(--c-link);cursor:pointer}
+.more:hover{background:#F6F7F9}
+.more .ic{color:var(--c-link);transition:transform .16s}
+.more .up{transform:rotate(180deg)}
+/* スマホ：月は省き、距離まで読めるようにする。ボタンは高さ40px */
+.mo{display:none}
+@media (max-width:699.98px){
+  .wl-d li{padding-left:14px;padding-right:14px}
+  .wl-d h3{padding-left:14px;padding-right:14px}
+  .wl-m{padding-left:0}
+  .wl-a a{height:40px;padding:0 10px}
+}
+@media (min-width:700px){
+  .mo{display:inline}
+  .gf.gf.gf.gf{grid-template-columns:repeat(6,minmax(0,1fr))}
+}

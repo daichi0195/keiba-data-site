@@ -175,7 +175,8 @@ export default async function RacePage({ params }: Props) {
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'ホーム', item: BASE },
-      { '@type': 'ListItem', position: 2, name: `${NAME} 過去10年データ`, item: url },
+      { '@type': 'ListItem', position: 2, name: 'レースデータ一覧', item: `${BASE}/races` },
+      { '@type': 'ListItem', position: 3, name: `${NAME} 過去10年データ`, item: url },
     ],
   };
   const webPageJsonLd = buildWebPageJsonLd({
@@ -210,12 +211,17 @@ export default async function RacePage({ params }: Props) {
           <nav className={s.crumb} aria-label="パンくず">
             <Link prefetch={false} href="/">HOME</Link>
             <span aria-hidden="true">/</span>
+            <Link prefetch={false} href="/races">レースデータ一覧</Link>
+            <span aria-hidden="true">/</span>
             <span>{NAME}</span>
           </nav>
           <div className={s['hero-t']}>
             {d.grade && <i className={`${s.gr} ${s[d.grade.toLowerCase()] ?? s.gx}`}>{d.grade}</i>}
             <span className={`${s.sf} ${s[d.surface]}`}>{surf}</span>
-            <span className={s['hero-v']}>{d.venue}競馬場・{d.distance}m{d.weight_type ? `・${d.weight_type}` : ''}</span>
+            <span className={s['hero-v']}>
+              <Link prefetch={false} href={d.course}>{courseLabel(d)}</Link>
+              {d.weight_type ? `・${d.weight_type}` : ''}
+            </span>
           </div>
           <h1>{NAME} 過去10年のデータと傾向</h1>
           <p className={r.lead}><RichText text={sum.lead} /></p>

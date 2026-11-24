@@ -34,7 +34,10 @@ function loadIndex(): RaceDef[] {
   }
 }
 
-export const RACES: RaceDef[] = loadIndex();
+/** 集計した回が5回未満のレースは、内容が薄いので検索に出さない（一覧には出す） */
+export const MIN_INDEX_COUNT = 5;
+
+export const RACES: RaceDef[] = loadIndex().map((r) => (r.count < MIN_INDEX_COUNT ? { ...r, test: true } : r));
 
 export interface RaceStat {
   label?: string;

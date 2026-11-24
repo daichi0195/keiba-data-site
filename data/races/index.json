@@ -319,6 +319,17 @@
 "count": 10
 },
 {
+"slug": "nikkei-shinshun-hai",
+"name": "日経新春杯",
+"grade": "G2",
+"venue": "京都",
+"surface": "turf",
+"distance": 2400,
+"course": "/courses/kyoto/turf/2400",
+"last_date": "2026-01-18",
+"count": 10
+},
+{
 "slug": "kyoto-kinen",
 "name": "京都記念",
 "grade": "G2",
@@ -339,6 +350,17 @@
 "course": "/courses/kyoto/turf/1600-outer",
 "last_date": "2026-04-26",
 "count": 10
+},
+{
+"slug": "naruo-kinen",
+"name": "鳴尾記念",
+"grade": "G3",
+"venue": "阪神",
+"surface": "turf",
+"distance": 1800,
+"course": "/courses/hanshin/turf/1800",
+"last_date": "2025-12-06",
+"count": 1
 },
 {
 "slug": "osaka-hai",
@@ -393,6 +415,17 @@
 "distance": 1400,
 "course": "/courses/hanshin/turf/1400",
 "last_date": "2026-03-07",
+"count": 10
+},
+{
+"slug": "kansai-television-co-ltd-sho-rose-stakes",
+"name": "関西テレビ放送賞ローズステークス",
+"grade": "G2",
+"venue": "阪神",
+"surface": "turf",
+"distance": 1800,
+"course": "/courses/hanshin/turf/1800",
+"last_date": "2026-09-13",
 "count": 10
 },
 {
@@ -539,6 +572,17 @@
 "count": 10
 },
 {
+"slug": "kyoto-kimpai",
+"name": "京都金杯",
+"grade": "G3",
+"venue": "京都",
+"surface": "turf",
+"distance": 1600,
+"course": "/courses/kyoto/turf/1600-outer",
+"last_date": "2026-01-04",
+"count": 10
+},
+{
 "slug": "keihan-hai",
 "name": "京阪杯",
 "grade": "G3",
@@ -580,6 +624,28 @@
 "distance": 1600,
 "course": "/courses/hanshin/turf/1600",
 "last_date": "2026-04-11",
+"count": 10
+},
+{
+"slug": "sankei-sho-centaur-stakes",
+"name": "産経賞セントウルステークス",
+"grade": "G2",
+"venue": "阪神",
+"surface": "turf",
+"distance": 1200,
+"course": "/courses/hanshin/turf/1200",
+"last_date": "2026-09-06",
+"count": 10
+},
+{
+"slug": "chukyo-kinen",
+"name": "中京記念",
+"grade": "G3",
+"venue": "中京",
+"surface": "turf",
+"distance": 1600,
+"course": "/courses/chukyo/turf/1600",
+"last_date": "2026-08-16",
 "count": 10
 },
 {
@@ -713,6 +779,28 @@
 "course": "/courses/fukushima/turf/2000",
 "last_date": "2025-11-22",
 "count": 10
+},
+{
+"slug": "aichi-hai",
+"name": "愛知杯",
+"grade": "G3",
+"venue": "中京",
+"surface": "turf",
+"distance": 1400,
+"course": "/courses/chukyo/turf/1400",
+"last_date": "2026-03-22",
+"count": 2
+},
+{
+"slug": "tokai-stakes",
+"name": "東海ステークス",
+"grade": "G3",
+"venue": "中京",
+"surface": "dirt",
+"distance": 1400,
+"course": "/courses/chukyo/dirt/1400",
+"last_date": "2026-07-26",
+"count": 2
 },
 {
 "slug": "cbc-sho",
@@ -858,6 +946,17 @@
 "count": 10
 },
 {
+"slug": "shinzan-kinen",
+"name": "シンザン記念",
+"grade": "G3",
+"venue": "京都",
+"surface": "turf",
+"distance": 1600,
+"course": "/courses/kyoto/turf/1600-outer",
+"last_date": "2026-01-12",
+"count": 10
+},
+{
 "slug": "kisaragi-sho",
 "name": "きさらぎ賞",
 "grade": "G3",
@@ -877,6 +976,17 @@
 "distance": 1800,
 "course": "/courses/hanshin/turf/1800",
 "last_date": "2026-03-28",
+"count": 10
+},
+{
+"slug": "kobe-shimbun-hai",
+"name": "神戸新聞杯",
+"grade": "G2",
+"venue": "阪神",
+"surface": "turf",
+"distance": 2400,
+"course": "/courses/hanshin/turf/2400",
+"last_date": "2026-09-21",
 "count": 10
 },
 {
@@ -990,6 +1100,17 @@
 "count": 10
 },
 {
+"slug": "procyon-stakes",
+"name": "プロキオンステークス",
+"grade": "G2",
+"venue": "京都",
+"surface": "dirt",
+"distance": 1800,
+"course": "/courses/kyoto/dirt/1800",
+"last_date": "2026-01-25",
+"count": 1
+},
+{
 "slug": "musashino-stakes",
 "name": "武蔵野ステークス",
 "grade": "G3",
@@ -1012,6 +1133,17 @@
 "count": 10
 },
 {
+"slug": "unicorn-stakes",
+"name": "ユニコーンステークス",
+"grade": "G3",
+"venue": "京都",
+"surface": "dirt",
+"distance": 1900,
+"course": "/courses/kyoto/dirt/1900",
+"last_date": "2026-05-02",
+"count": 3
+},
+{
 "slug": "tokyo-sports-hai-nisai-stakes",
 "name": "東京スポーツ杯2歳ステークス",
 "grade": "G2",
@@ -1031,6 +1163,17 @@
 "distance": 1400,
 "course": "/courses/kyoto/turf/1400-outer",
 "last_date": "2026-10-31",
+"count": 10
+},
+{
+"slug": "sirius-stakes",
+"name": "シリウスステークス",
+"grade": "G3",
+"venue": "阪神",
+"surface": "dirt",
+"distance": 2000,
+"course": "/courses/hanshin/dirt/2000",
+"last_date": "2026-09-26",
 "count": 10
 },
 {
@@ -1232,6 +1375,61 @@
 "count": 10
 },
 {
+"slug": "aoi-stakes",
+"name": "葵ステークス",
+"grade": "G3",
+"venue": "京都",
+"surface": "turf",
+"distance": 1200,
+"course": "/courses/kyoto/turf/1200",
+"last_date": "2026-05-30",
+"count": 4
+},
+{
+"slug": "ireland-trophy",
+"name": "アイルランドトロフィー",
+"grade": "G2",
+"venue": "東京",
+"surface": "turf",
+"distance": 1800,
+"course": "/courses/tokyo/turf/1800",
+"last_date": "2026-10-11",
+"count": 2
+},
+{
+"slug": "shirasagi-stakes",
+"name": "しらさぎステークス",
+"grade": "G3",
+"venue": "阪神",
+"surface": "turf",
+"distance": 1600,
+"course": "/courses/hanshin/turf/1600",
+"last_date": "2026-06-21",
+"count": 2
+},
+{
+"slug": "chukyo-nisai-stakes",
+"name": "中京2歳ステークス",
+"grade": "G3",
+"venue": "中京",
+"surface": "turf",
+"distance": 1400,
+"course": "/courses/chukyo/turf/1400",
+"last_date": "2026-08-30",
+"count": 2
+},
+{
+"slug": "kokura-himba-stakes",
+"name": "小倉牝馬ステークス",
+"grade": "G3",
+"venue": "小倉",
+"surface": "turf",
+"distance": 2000,
+"course": "/courses/kokura/turf/2000",
+"last_date": "2026-01-24",
+"count": 2
+},
+{
 "slug": "suzuran-sho",
 "name": "すずらん賞",
 "grade": "OP",
@@ -1240,6 +1438,17 @@
 "distance": 1200,
 "course": "/courses/sapporo/turf/1200",
 "last_date": "2026-08-29",
+"count": 10
+},
+{
+"slug": "subaru-stakes",
+"name": "すばるステークス",
+"grade": "L",
+"venue": "京都",
+"surface": "dirt",
+"distance": 1400,
+"course": "/courses/kyoto/dirt/1400",
+"last_date": "2026-01-10",
 "count": 10
 },
 {
@@ -1254,6 +1463,17 @@
 "count": 10
 },
 {
+"slug": "nagatsuki-stakes",
+"name": "ながつきステークス",
+"grade": "OP",
+"venue": "中山",
+"surface": "dirt",
+"distance": 1800,
+"course": "/courses/nakayama/dirt/1800",
+"last_date": "2026-09-19",
+"count": 1
+},
+{
 "slug": "himawari-sho",
 "name": "ひまわり賞",
 "grade": "OP",
@@ -1265,6 +1485,28 @@
 "count": 10
 },
 {
+"slug": "mahoroba-stakes",
+"name": "まほろばステークス",
+"grade": "L",
+"venue": "京都",
+"surface": "turf",
+"distance": 1600,
+"course": "/courses/kyoto/turf/1600-outer",
+"last_date": "2026-11-01",
+"count": 2
+},
+{
+"slug": "michinoku-stakes",
+"name": "みちのくステークス",
+"grade": "OP",
+"venue": "福島",
+"surface": "turf",
+"distance": 1200,
+"course": "/courses/fukushima/turf/1200",
+"last_date": "2026-11-08",
+"count": 4
+},
+{
 "slug": "momiji-stakes",
 "name": "もみじステークス",
 "grade": "OP",
@@ -1274,6 +1516,17 @@
 "course": "/courses/kyoto/turf/1400-outer",
 "last_date": "2026-10-17",
 "count": 10
+},
+{
+"slug": "rinku-stakes",
+"name": "りんくうステークス",
+"grade": "OP",
+"venue": "阪神",
+"surface": "dirt",
+"distance": 1200,
+"course": "/courses/hanshin/dirt/1200",
+"last_date": "2025-12-07",
+"count": 5
 },
 {
 "slug": "ivy-stakes",
@@ -1331,6 +1584,28 @@
 "count": 10
 },
 {
+"slug": "h-h-shaikh-isa-bin-salman-bin-hamad-al-khalifa-commemorative",
+"name": "バーレーン王国イサ・ビン・サルマン・アルカリファ殿下来場記念",
+"grade": "OP",
+"venue": "中山",
+"surface": "dirt",
+"distance": 1800,
+"course": "/courses/nakayama/dirt/1800",
+"last_date": "2025-09-20",
+"count": 1
+},
+{
+"slug": "enif-stakes",
+"name": "エニフステークス",
+"grade": "L",
+"venue": "阪神",
+"surface": "dirt",
+"distance": 1400,
+"course": "/courses/hanshin/dirt/1400",
+"last_date": "2026-09-05",
+"count": 10
+},
+{
 "slug": "elfin-stakes",
 "name": "エルフィンステークス",
 "grade": "L",
@@ -1364,6 +1639,28 @@
 "count": 10
 },
 {
+"slug": "opal-stakes",
+"name": "オパールステークス",
+"grade": "L",
+"venue": "京都",
+"surface": "turf",
+"distance": 1200,
+"course": "/courses/kyoto/turf/1200",
+"last_date": "2026-10-03",
+"count": 2
+},
+{
+"slug": "autumn-leaf-stakes",
+"name": "オータムリーフステークス",
+"grade": "OP",
+"venue": "京都",
+"surface": "dirt",
+"distance": 1400,
+"course": "/courses/kyoto/dirt/1400",
+"last_date": "2025-11-30",
+"count": 5
+},
+{
 "slug": "oro-cup",
 "name": "オーロカップ",
 "grade": "L",
@@ -1384,6 +1681,28 @@
 "course": "/courses/kyoto/turf/1800",
 "last_date": "2026-10-24",
 "count": 10
+},
+{
+"slug": "cattleya-stakes",
+"name": "カトレアステークス",
+"grade": "OP",
+"venue": "東京",
+"surface": "dirt",
+"distance": 1600,
+"course": "/courses/tokyo/dirt/1600",
+"last_date": "2025-11-29",
+"count": 6
+},
+{
+"slug": "canopus-stakes",
+"name": "カノープスステークス",
+"grade": "OP",
+"venue": "京都",
+"surface": "dirt",
+"distance": 1800,
+"course": "/courses/kyoto/dirt/1800",
+"last_date": "2026-10-25",
+"count": 2
 },
 {
 "slug": "canna-stakes",
@@ -1452,6 +1771,17 @@
 "count": 10
 },
 {
+"slug": "green-channel-cup",
+"name": "グリーンチャンネルカップ",
+"grade": "L",
+"venue": "東京",
+"surface": "dirt",
+"distance": 1600,
+"course": "/courses/tokyo/dirt/1600",
+"last_date": "2026-10-03",
+"count": 5
+},
+{
 "slug": "cosmos-sho",
 "name": "コスモス賞",
 "grade": "OP",
@@ -1474,6 +1804,28 @@
 "count": 10
 },
 {
+"slug": "cold-moon-stakes",
+"name": "コールドムーンステークス",
+"grade": "OP",
+"venue": "中京",
+"surface": "dirt",
+"distance": 1400,
+"course": "/courses/chukyo/dirt/1400",
+"last_date": "2025-12-21",
+"count": 4
+},
+{
+"slug": "citrine-stakes",
+"name": "シトリンステークス",
+"grade": "OP",
+"venue": "京都",
+"surface": "dirt",
+"distance": 1900,
+"course": "/courses/kyoto/dirt/1900",
+"last_date": "2025-11-22",
+"count": 1
+},
+{
 "slug": "january-stakes",
 "name": "ジャニュアリーステークス",
 "grade": "OP",
@@ -1494,6 +1846,28 @@
 "course": "/courses/nakayama/turf/1600",
 "last_date": "2026-01-04",
 "count": 10
+},
+{
+"slug": "july-stakes",
+"name": "ジュライステークス",
+"grade": "OP",
+"venue": "福島",
+"surface": "dirt",
+"distance": 1700,
+"course": "/courses/fukushima/dirt/1700",
+"last_date": "2026-07-05",
+"count": 5
+},
+{
+"slug": "june-stakes",
+"name": "ジューンステークス",
+"grade": "OP",
+"venue": "東京",
+"surface": "turf",
+"distance": 1800,
+"course": "/courses/tokyo/turf/1800",
+"last_date": "2026-06-13",
+"count": 2
 },
 {
 "slug": "sweetpea-stakes",
@@ -1560,6 +1934,17 @@
 "course": "/courses/nakayama/turf/1600",
 "last_date": "2026-01-12",
 "count": 10
+},
+{
+"slug": "violet-stakes",
+"name": "バイオレットステークス",
+"grade": "OP",
+"venue": "阪神",
+"surface": "dirt",
+"distance": 1400,
+"course": "/courses/hanshin/dirt/1400",
+"last_date": "2026-04-05",
+"count": 3
 },
 {
 "slug": "valentine-stakes",
@@ -1639,6 +2024,28 @@
 "count": 8
 },
 {
+"slug": "perseus-stakes",
+"name": "ペルセウスステークス",
+"grade": "OP",
+"venue": "東京",
+"surface": "dirt",
+"distance": 1600,
+"course": "/courses/tokyo/dirt/1600",
+"last_date": "2026-10-31",
+"count": 2
+},
+{
+"slug": "poinsettia-stakes",
+"name": "ポインセチアステークス",
+"grade": "OP",
+"venue": "阪神",
+"surface": "dirt",
+"distance": 1800,
+"course": "/courses/hanshin/dirt/1800",
+"last_date": "2025-12-20",
+"count": 1
+},
+{
 "slug": "polaris-stakes",
 "name": "ポラリスステークス",
 "grade": "OP",
@@ -1658,6 +2065,17 @@
 "distance": 1800,
 "course": "/courses/nakayama/dirt/1800",
 "last_date": "2026-01-11",
+"count": 10
+},
+{
+"slug": "port-island-stakes",
+"name": "ポートアイランドステークス",
+"grade": "L",
+"venue": "阪神",
+"surface": "turf",
+"distance": 1600,
+"course": "/courses/hanshin/turf/1600",
+"last_date": "2026-09-27",
 "count": 10
 },
 {
@@ -1694,6 +2112,28 @@
 "count": 10
 },
 {
+"slug": "morganite-stakes",
+"name": "モルガナイトステークス",
+"grade": "OP",
+"venue": "福島",
+"surface": "turf",
+"distance": 1200,
+"course": "/courses/fukushima/turf/1200",
+"last_date": "2026-04-26",
+"count": 4
+},
+{
+"slug": "radio-nippon-sho",
+"name": "ラジオ日本賞",
+"grade": "OP",
+"venue": "中山",
+"surface": "dirt",
+"distance": 1200,
+"course": "/courses/nakayama/dirt/1200",
+"last_date": "2026-09-12",
+"count": 2
+},
+{
 "slug": "lapis-lazuli-stakes",
 "name": "ラピスラズリステークス",
 "grade": "L",
@@ -1727,6 +2167,39 @@
 "count": 10
 },
 {
+"slug": "regulus-stakes",
+"name": "レグルスステークス",
+"grade": "OP",
+"venue": "阪神",
+"surface": "dirt",
+"distance": 1800,
+"course": "/courses/hanshin/dirt/1800",
+"last_date": "2026-03-22",
+"count": 2
+},
+{
+"slug": "manyo-stakes",
+"name": "万葉ステークス",
+"grade": "OP",
+"venue": "京都",
+"surface": "turf",
+"distance": 3000,
+"course": "/courses/kyoto/turf/3000",
+"last_date": "2026-01-05",
+"count": 10
+},
+{
+"slug": "sannomiya-stakes",
+"name": "三宮ステークス",
+"grade": "OP",
+"venue": "阪神",
+"surface": "dirt",
+"distance": 1800,
+"course": "/courses/hanshin/dirt/1800",
+"last_date": "2026-06-13",
+"count": 4
+},
+{
 "slug": "tancho-stakes",
 "name": "丹頂ステークス",
 "grade": "OP",
@@ -1758,6 +2231,17 @@
 "course": "/courses/hanshin/dirt/2000",
 "last_date": "2026-02-28",
 "count": 10
+},
+{
+"slug": "reigetsu-stakes",
+"name": "令月ステークス",
+"grade": "OP",
+"venue": "阪神",
+"surface": "dirt",
+"distance": 1200,
+"course": "/courses/hanshin/dirt/1200",
+"last_date": "2026-02-22",
+"count": 1
 },
 {
 "slug": "fukuryu-stakes",
@@ -1804,6 +2288,17 @@
 "count": 10
 },
 {
+"slug": "nagoyajo-stakes",
+"name": "名古屋城ステークス",
+"grade": "OP",
+"venue": "中京",
+"surface": "dirt",
+"distance": 1800,
+"course": "/courses/chukyo/dirt/1800",
+"last_date": "2026-08-23",
+"count": 6
+},
+{
 "slug": "meitetsu-hai",
 "name": "名鉄杯",
 "grade": "L",
@@ -1813,6 +2308,28 @@
 "course": "/courses/chukyo/dirt/1800",
 "last_date": "2026-08-02",
 "count": 7
+},
+{
+"slug": "azumakofuji-stakes",
+"name": "吾妻小富士ステークス",
+"grade": "OP",
+"venue": "福島",
+"surface": "dirt",
+"distance": 1700,
+"course": "/courses/fukushima/dirt/1700",
+"last_date": "2026-04-11",
+"count": 6
+},
+{
+"slug": "sports-hochi-hai-christmas-rose-stakes",
+"name": "スポーツ報知杯クリスマスローズステークス",
+"grade": "OP",
+"venue": "中京",
+"surface": "turf",
+"distance": 1200,
+"course": "/courses/chukyo/turf/1200",
+"last_date": "2025-12-20",
+"count": 1
 },
 {
 "slug": "yamato-stakes",
@@ -1835,6 +2352,17 @@
 "course": "/courses/hakodate/dirt/1700",
 "last_date": "2026-07-05",
 "count": 10
+},
+{
+"slug": "osaka-hamburg-cup",
+"name": "大阪―ハンブルクカップ",
+"grade": "OP",
+"venue": "阪神",
+"surface": "turf",
+"distance": 2600,
+"course": "/courses/hanshin/turf/2600",
+"last_date": "2026-04-11",
+"count": 6
 },
 {
 "slug": "osakajo-stakes",
@@ -1870,6 +2398,17 @@
 "count": 10
 },
 {
+"slug": "uzumasa-stakes",
+"name": "太秦ステークス",
+"grade": "OP",
+"venue": "京都",
+"surface": "dirt",
+"distance": 1800,
+"course": "/courses/kyoto/dirt/1800",
+"last_date": "2026-10-11",
+"count": 5
+},
+{
 "slug": "azuchijo-stakes",
 "name": "安土城ステークス",
 "grade": "L",
@@ -1881,6 +2420,17 @@
 "count": 10
 },
 {
+"slug": "adatara-stakes",
+"name": "安達太良ステークス",
+"grade": "OP",
+"venue": "福島",
+"surface": "turf",
+"distance": 1200,
+"course": "/courses/fukushima/turf/1200",
+"last_date": "2026-07-11",
+"count": 2
+},
+{
 "slug": "muromachi-stakes",
 "name": "室町ステークス",
 "grade": "OP",
@@ -1890,6 +2440,17 @@
 "course": "/courses/kyoto/dirt/1200",
 "last_date": "2026-11-07",
 "count": 10
+},
+{
+"slug": "kokura-nikkei-sho",
+"name": "小倉日経賞",
+"grade": "OP",
+"venue": "小倉",
+"surface": "turf",
+"distance": 2000,
+"course": "/courses/kokura/turf/2000",
+"last_date": "2026-02-08",
+"count": 2
 },
 {
 "slug": "tomoe-sho",
@@ -1912,6 +2473,17 @@
 "course": "/courses/nakayama/dirt/1800",
 "last_date": "2025-12-14",
 "count": 10
+},
+{
+"slug": "heijokyo-stakes",
+"name": "平城京ステークス",
+"grade": "OP",
+"venue": "京都",
+"surface": "dirt",
+"distance": 1800,
+"course": "/courses/kyoto/dirt/1800",
+"last_date": "2026-05-10",
+"count": 4
 },
 {
 "slug": "wasurenagusa-sho",
@@ -1956,6 +2528,17 @@
 "course": "/courses/nakayama/turf/1200",
 "last_date": "2026-04-12",
 "count": 10
+},
+{
+"slug": "sapporo-nikkei-sho",
+"name": "札幌日経賞",
+"grade": "L",
+"venue": "札幌",
+"surface": "turf",
+"distance": 2600,
+"course": "/courses/sapporo/turf/2600",
+"last_date": "2026-07-26",
+"count": 2
 },
 {
 "slug": "toki-stakes",
@@ -2013,6 +2596,17 @@
 "count": 10
 },
 {
+"slug": "minazuki-stakes",
+"name": "水無月ステークス",
+"grade": "OP",
+"venue": "阪神",
+"surface": "dirt",
+"distance": 1200,
+"course": "/courses/hanshin/dirt/1200",
+"last_date": "2026-06-07",
+"count": 2
+},
+{
 "slug": "rakuyo-stakes",
 "name": "洛陽ステークス",
 "grade": "L",
@@ -2021,6 +2615,17 @@
 "distance": 1600,
 "course": "/courses/kyoto/turf/1600-outer",
 "last_date": "2026-02-14",
+"count": 10
+},
+{
+"slug": "yodo-tankyori-stakes",
+"name": "淀短距離ステークス",
+"grade": "L",
+"venue": "京都",
+"surface": "turf",
+"distance": 1200,
+"course": "/courses/kyoto/turf/1200",
+"last_date": "2026-01-11",
 "count": 10
 },
 {
@@ -2044,6 +2649,39 @@
 "course": "/courses/kyoto/turf/1800",
 "last_date": "2026-05-31",
 "count": 10
+},
+{
+"slug": "mutsuki-stakes",
+"name": "睦月ステークス",
+"grade": "OP",
+"venue": "京都",
+"surface": "turf",
+"distance": 1600,
+"course": "/courses/kyoto/turf/1600-outer",
+"last_date": "2026-01-24",
+"count": 1
+},
+{
+"slug": "kannazuki-stakes",
+"name": "神無月ステークス",
+"grade": "OP",
+"venue": "東京",
+"surface": "dirt",
+"distance": 1400,
+"course": "/courses/tokyo/dirt/1400",
+"last_date": "2026-10-25",
+"count": 2
+},
+{
+"slug": "fukushima-tv-sho",
+"name": "福島テレビ賞",
+"grade": "OP",
+"venue": "福島",
+"surface": "dirt",
+"distance": 1150,
+"course": "/courses/fukushima/dirt/1150",
+"last_date": "2026-07-19",
+"count": 2
 },
 {
 "slug": "fukushima-minyu-cup",
@@ -2076,6 +2714,28 @@
 "distance": 1200,
 "course": "/courses/fukushima/turf/1200",
 "last_date": "2026-11-15",
+"count": 10
+},
+{
+"slug": "yonagojo-stakes",
+"name": "米子城ステークス",
+"grade": "OP",
+"venue": "阪神",
+"surface": "turf",
+"distance": 1200,
+"course": "/courses/hanshin/turf/1200",
+"last_date": "2026-03-15",
+"count": 2
+},
+{
+"slug": "kobai-stakes",
+"name": "紅梅ステークス",
+"grade": "L",
+"venue": "京都",
+"surface": "turf",
+"distance": 1400,
+"course": "/courses/kyoto/turf/1400-outer",
+"last_date": "2026-01-17",
 "count": 10
 },
 {
@@ -2112,6 +2772,17 @@
 "count": 10
 },
 {
+"slug": "wakagoma-stakes",
+"name": "若駒ステークス",
+"grade": "L",
+"venue": "京都",
+"surface": "turf",
+"distance": 2000,
+"course": "/courses/kyoto/turf/2000",
+"last_date": "2026-01-24",
+"count": 10
+},
+{
 "slug": "hagi-stakes",
 "name": "萩ステークス",
 "grade": "L",
@@ -2123,6 +2794,39 @@
 "count": 10
 },
 {
+"slug": "fujinomori-stakes",
+"name": "藤森ステークス",
+"grade": "OP",
+"venue": "京都",
+"surface": "dirt",
+"distance": 1200,
+"course": "/courses/kyoto/dirt/1200",
+"last_date": "2026-10-04",
+"count": 4
+},
+{
+"slug": "tanigawadake-stakes",
+"name": "谷川岳ステークス",
+"grade": "L",
+"venue": "新潟",
+"surface": "turf",
+"distance": 1400,
+"course": "/courses/niigata/turf/1400",
+"last_date": "2026-05-10",
+"count": 2
+},
+{
+"slug": "echigo-stakes",
+"name": "越後ステークス",
+"grade": "OP",
+"venue": "新潟",
+"surface": "dirt",
+"distance": 1200,
+"course": "/courses/niigata/dirt/1200",
+"last_date": "2026-05-03",
+"count": 4
+},
+{
 "slug": "miyakooji-stakes",
 "name": "都大路ステークス",
 "grade": "L",
@@ -2132,6 +2836,28 @@
 "course": "/courses/kyoto/turf/1800",
 "last_date": "2026-05-24",
 "count": 10
+},
+{
+"slug": "nojigiku-stakes",
+"name": "野路菊ステークス",
+"grade": "OP",
+"venue": "阪神",
+"surface": "turf",
+"distance": 1600,
+"course": "/courses/hanshin/turf/1600",
+"last_date": "2026-09-19",
+"count": 2
+},
+{
+"slug": "moji-stakes",
+"name": "門司ステークス",
+"grade": "OP",
+"venue": "小倉",
+"surface": "dirt",
+"distance": 1700,
+"course": "/courses/kokura/dirt/1700",
+"last_date": "2026-02-01",
+"count": 6
 },
 {
 "slug": "kanetsu-stakes",
@@ -2165,6 +2891,17 @@
 "course": "/courses/tokyo/dirt/1400",
 "last_date": "2025-11-23",
 "count": 10
+},
+{
+"slug": "seikan-stakes",
+"name": "青函ステークス",
+"grade": "OP",
+"venue": "函館",
+"surface": "turf",
+"distance": 1200,
+"course": "/courses/hakodate/turf/1200",
+"last_date": "2026-06-27",
+"count": 5
 },
 {
 "slug": "seiryu-stakes",
