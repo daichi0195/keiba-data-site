@@ -15,9 +15,9 @@ export interface RaceDef {
 }
 
 export const RACES: RaceDef[] = [
-  { slug: 'japan-cup', test: true, course: '/courses/tokyo/turf/2400' },
-  { slug: 'keihan-hai', test: true, course: '/courses/kyoto/turf/1200' },
-  { slug: 'kyoto-nisai-stakes', test: true, course: '/courses/kyoto/turf/2000' },
+  { slug: 'japan-cup', course: '/courses/tokyo/turf/2400' },
+  { slug: 'keihan-hai', course: '/courses/kyoto/turf/1200' },
+  { slug: 'kyoto-nisai-stakes', course: '/courses/kyoto/turf/2000' },
 ];
 
 export interface RaceStat {

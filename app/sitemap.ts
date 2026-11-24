@@ -10,6 +10,7 @@ import { getTrainerDataFromGCS } from '@/lib/getTrainerDataFromGCS';
 import { getSireDataFromGCS } from '@/lib/getSireDataFromGCS';
 import { hasEnoughRaces } from '@/lib/dataPageRules';
 import { getDataUpdatedAt } from '@/lib/dataDate';
+import { RACES } from '@/lib/races';
 
 // 1日1回再生成
 export const revalidate = 86400;
@@ -103,10 +104,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     }));
 
+  // レース別ページ（過去10年データ）。公開前のテスト（test）は noindex なので含めない
+  const raceEntries: MetadataRoute.Sitemap = RACES.filter((r) => !r.test).map((r) => ({
+    url: `${baseUrl}/races/${r.slug}`,
+    lastModified: dataUpdatedAt,
+    changeFrequency: 'weekly' as const,
+    priority: 0.8,
+  }));
+
   // AI予測のレース個別ページ（/ai/races/[slug]）は noindex のためサイトマップに含めない
 
   // 静的ページ
   const staticEntries: MetadataRoute.Sitemap = [
+    ...(RACES.some((r) => !r.test) ? [{ url: `${baseUrl}/races`, lastModified: dataUpdatedAt, changeFrequency: 'weekly' as const, priority: 0.9 }] : []),
     { url: `${baseUrl}/courses`, lastModified: dataUpdatedAt, changeFrequency: 'weekly' as const, priority: 0.9 },
     { url: `${baseUrl}/jockeys`, lastModified: dataUpdatedAt, changeFrequency: 'weekly' as const, priority: 0.9 },
     { url: `${baseUrl}/trainers`, lastModified: dataUpdatedAt, changeFrequency: 'weekly' as const, priority: 0.9 },
@@ -124,6 +134,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...homeEntry,
     ...staticEntries,
     ...articleEntries,
+    ...raceEntries,
     ...courseEntries,
     ...jockeyEntries,
     ...trainerEntries,
