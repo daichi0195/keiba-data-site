@@ -24,7 +24,7 @@ export interface WeekRace {
 }
 
 export const WEEK_RACES: WeekRace[] = [
-  { date: '2026-11-28', venue: '東京', venueId: 'tokyo', raceNo: 11, name: 'キャピタルステークス', grade: 'L', surface: 'turf', distance: 1600, condition: '3歳以上', weightType: '別定', course: '/courses/tokyo/turf/1600' },
+  { date: '2026-11-28', venue: '東京', venueId: 'tokyo', raceNo: 11, name: 'キャピタルステークス', grade: 'L', surface: 'turf', distance: 1600, condition: '3歳以上', weightType: '別定', slug: 'capital-stakes', course: '/courses/tokyo/turf/1600' },
   { date: '2026-11-28', venue: '京都', venueId: 'kyoto', raceNo: 11, name: '京都2歳ステークス', grade: 'G3', surface: 'turf', distance: 2000, condition: '2歳', weightType: '馬齢', slug: 'kyoto-nisai-stakes', course: '/courses/kyoto/turf/2000' },
   { date: '2026-11-29', venue: '東京', venueId: 'tokyo', raceNo: 9, name: 'カトレアステークス', grade: 'OP', surface: 'dirt', distance: 1600, condition: '2歳', weightType: '別定', course: '/courses/tokyo/dirt/1600' },
   { date: '2026-11-29', venue: '東京', venueId: 'tokyo', raceNo: 12, name: 'ジャパンカップ', grade: 'G1', surface: 'turf', distance: 2400, condition: '3歳以上', weightType: '定量', slug: 'japan-cup', course: '/courses/tokyo/turf/2400' },

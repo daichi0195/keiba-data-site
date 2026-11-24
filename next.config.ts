@@ -38,9 +38,7 @@ const nextConfig: NextConfig = {
     return [
       // apex（keibadata.com）→ www に統一（Vercel ではドメイン設定で実施していたもの。Cloudflare Workers 用）
       { source: '/:path*', has: [{ type: 'host', value: 'keibadata.com' }], destination: 'https://www.keibadata.com/:path*', permanent: true },
-      // 有馬記念ページ（データなしの空ページ）→ 中山芝2500mのコースデータへ。/races/arima-kinen を作るときに外す
-      // （/races → /courses の転送は、2026-11 にレースデータの一覧ページを作ったので外した）
-      { source: '/races/arima-kinen', destination: '/courses/nakayama/turf/2500', permanent: true },
+      // （/races → /courses と /races/arima-kinen → 中山芝2500m の転送は、2026-11 にレース別ページを作ったので外した）
       // 前日予測（/ai/tomorrow）は 2026-11 に廃止。予測トップへ寄せる
       { source: '/ai/tomorrow', destination: '/ai', permanent: true },
       { source: '/ai/tomorrow/:slug*', destination: '/ai', permanent: true },

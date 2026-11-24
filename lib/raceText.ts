@@ -13,7 +13,9 @@ const pct = (v: number) => `${v.toFixed(1)}%`;
 const yen = (v: number) => `${v.toLocaleString('ja-JP')}円`;
 
 export function courseLabel(d: RaceData) {
-  return `${d.venue}${SURF[d.surface] ?? ''}${d.distance}m`;
+  // 内回り・外回りでコースが分かれているもの（京都芝1400・1600m、新潟芝2000m）は回りも書く
+  const v = d.course?.endsWith('-outer') ? '（外回り）' : d.course?.endsWith('-inner') ? '（内回り）' : '';
+  return `${d.venue}${SURF[d.surface] ?? ''}${d.distance}m${v}`;
 }
 
 export function periodLabel(d: RaceData) {

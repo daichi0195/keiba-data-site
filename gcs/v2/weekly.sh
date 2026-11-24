@@ -49,6 +49,8 @@ done
 $PY generate_leading_data.py >> $LOG 2>&1 || fail "leading"
 # 検索意図に合わせた追加項目（プロフィール・重賞勝ち・代表産駒・コース概要など）を JSON に追記
 $PY generate_extras.py >> $LOG 2>&1 || log "WARN: extras に失敗（追加項目なしで続行）"
+# レース別ページ（過去10年データ）。core を直接読む（数回・数GB）。結果はリポジトリの data/races に書く
+( export SSL_CERT_FILE=$($PY2 -m certifi) && $PY generate_races.py ) >> $LOG 2>&1 && log "races generated" || log "WARN: races に失敗（前回のデータのまま）"
 n=$(find out -name '*.json' | wc -l | tr -d ' ')
 [[ $n -lt 600 ]] && fail "生成ファイルが少なすぎる ($n)"
 log "generated $n json files"
@@ -62,13 +64,14 @@ if [[ $UPLOAD -eq 1 ]]; then
     if ! diff -q out/lib/$k.ts $REPO/lib/$k.ts > /dev/null 2>&1; then cp out/lib/$k.ts $REPO/lib/$k.ts; changed=1; fi
   done
   if ! diff -q out/leading.json $REPO/public/data/leading.json > /dev/null 2>&1; then cp out/leading.json $REPO/public/data/leading.json; changed=1; fi
+  [[ -n $(cd $REPO && git status --porcelain data/races) ]] && changed=1
   if [[ $changed -eq 1 && $PUSH -eq 1 ]]; then
-    ( cd $REPO && git add lib/jockeys.ts lib/trainers.ts lib/sires.ts public/data/leading.json &&
+    ( cd $REPO && git add lib/jockeys.ts lib/trainers.ts lib/sires.ts public/data/leading.json data/races &&
       git commit -q -m "data: 週次データ更新 ($(date +%Y-%m-%d))
 
-騎手・調教師・種牡馬の一覧とリーディングを JRA-VAN 準拠 DB から再生成 (gcs/v2/weekly.sh)
+騎手・調教師・種牡馬の一覧とリーディング、レース別の過去10年データを JRA-VAN 準拠 DB から再生成 (gcs/v2/weekly.sh)
 
-Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>" && git push -q origin main ) >> $LOG 2>&1 && pushed=1 && log "lists/leading committed & pushed (Vercel が再ビルド)" || log "WARN: commit/push に失敗"
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>" && git push -q origin HEAD:main ) >> $LOG 2>&1 && pushed=1 && log "lists/leading committed & pushed (Vercel が再ビルド)" || log "WARN: commit/push に失敗"
   elif [[ $changed -eq 1 ]]; then
     log "lists/leading changed (未 commit: --no-push)"
   else

@@ -82,7 +82,7 @@ function Results({ e }: { e: RaceEdition }) {
           </thead>
           <tbody>
             {e.results.map((x) => (
-              <tr key={x.horse_id}>
+              <tr key={`${x.num}-${x.horse}`}>
                 <td className={s.k}><span className={r.fin}>{x.fin < 99 ? x.fin : '中止'}</span>{x.horse}</td>
                 <td className={s.r}>{x.pop ? `${x.pop}番人気` : '—'}</td>
                 <td data-l="馬番" className={s.r}>{x.num ?? '—'}</td>
@@ -312,19 +312,19 @@ export default async function RacePage({ params }: Props) {
         {/* 騎手・血統・調教師 */}
         <section id="jockey" className={s.sc} aria-label="騎手別データ">
           <Head title={`${NAME}で好成績の騎手`} sub="騎手別データ・勝利数順" />
-          <Ranking rows={jockeys} nameLabel="騎手" note={`${periodLabel(d)}に騎乗した騎手`} />
+          <Ranking rows={jockeys} nameLabel="騎手" note={`${periodLabel(d)}に3着以内に入った騎手（最大30人）`} />
         </section>
         <section id="sire" className={s.sc} aria-label="種牡馬別データ">
           <Head title={`${NAME}で好成績の血統（種牡馬）`} sub="種牡馬別データ・勝利数順" />
-          <Ranking rows={sires} nameLabel="種牡馬" note={`${periodLabel(d)}の出走馬の父`} />
+          <Ranking rows={sires} nameLabel="種牡馬" note={`${periodLabel(d)}に3着以内に入った馬の父（最大30頭）`} />
         </section>
         <section id="damsire" className={s.sc} aria-label="母父別データ">
           <Head title={`${NAME}で好成績の血統（母父）`} sub="母父別データ・勝利数順" />
-          <Ranking rows={damsires} nameLabel="母父" note={`${periodLabel(d)}の出走馬の母の父`} />
+          <Ranking rows={damsires} nameLabel="母父" note={`${periodLabel(d)}に3着以内に入った馬の母の父（最大30頭）`} />
         </section>
         <section id="trainer" className={s.sc} aria-label="調教師別データ">
           <Head title={`${NAME}で好成績の調教師`} sub="調教師別データ・勝利数順" />
-          <Ranking rows={trainers} nameLabel="調教師" note={`${periodLabel(d)}に出走させた調教師`} />
+          <Ranking rows={trainers} nameLabel="調教師" note={`${periodLabel(d)}に3着以内に入った調教師（最大30人）`} />
         </section>
 
         {/* 配当 */}
@@ -374,11 +374,11 @@ export default async function RacePage({ params }: Props) {
         </section>
 
         {/* コースページへ */}
-        {def.course && (
+        {d.course && (
           <section className={s.sc} aria-label="コースデータ">
             <Head title={`${courseLabel(d)}のコースデータ`} sub="このレース以外も含めた直近3年間の傾向" />
             <div className={`${s.cp} ${r.go}`}>
-              <Link prefetch={false} href={def.course}>
+              <Link prefetch={false} href={d.course}>
                 <span>
                   <b>{courseLabel(d)}の傾向と特徴</b>
                   <small>枠順・脚質・血統・騎手・平均タイム</small>
