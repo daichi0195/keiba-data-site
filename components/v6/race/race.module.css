@@ -61,3 +61,48 @@
 
 /* 配当の表：3連単の列（人気つきで長い）を中身の幅にして、ほかの列の間隔を均等にする */
 .payT.payT th:last-child,.payT.payT td:last-child{width:1%}
+
+/* 傾向のポイントの小さな表（同じ項目が続くところは文章でなく表で）。列の幅を揃え、1列目は折り返す */
+.mtw{margin-top:8px;border:1px solid var(--c-rule);border-radius:8px;overflow:hidden}
+.mt{width:100%;table-layout:fixed;border-collapse:collapse;font-size:13px}
+.mt th,.mt td{height:34px;padding:4px 10px;border-top:1px solid var(--c-rule);line-height:1.35}
+.mt thead th{height:30px;border-top:0;background:var(--c-cell);font-size:12px;font-weight:700;color:var(--c-text-sub);text-align:right;white-space:nowrap}
+.mt thead th:first-child,.mt tbody th{text-align:left}
+.mt tbody th{font-weight:500;overflow-wrap:anywhere}
+.mt td{text-align:right;white-space:nowrap;font-family:var(--f-num);font-variant-numeric:tabular-nums}
+.mt th:nth-child(2){width:7.6em}
+.mt th:nth-child(3){width:4.6em}
+.mt th:nth-child(4){width:5em}
+@media (max-width:699.98px){
+  .mt{font-size:12px}
+  .mt th,.mt td{padding:4px 6px}
+  .mt thead th:first-child,.mt tbody th{padding-left:10px}
+  .mt th:nth-child(2){width:7.2em}
+  .mt th:nth-child(3){width:4.2em}
+  .mt th:nth-child(4){width:4.6em}
+}
+/* PC：表のある項目は2列に組む（文章だけの項目は横いっぱい） */
+@media (min-width:1100px){
+  .pt{display:grid;grid-template-columns:1fr 1fr}
+  .pt li + li{border-top:0}
+  .pt li{border-top:1px solid var(--c-rule)}
+  .pt li:first-child{border-top:0}
+  .pt li.pw{grid-column:1 / -1}
+  .pt li:not(.pw):nth-child(even of :not(.pw)){border-left:1px solid var(--c-rule)}
+}
+
+/* 配当：同着は2段に。3連単の人気は小さく */
+.pl + .pl::before{content:" / "}
+.yr .pay .pl{margin-right:0}
+.payT .pl{display:block}
+.payT .pl + .pl::before{content:none}
+.pl small{font-size:11px;color:var(--c-text-sub)}
+/* 勝ち馬：スマホは年を馬名の上に小さく積み、固定する1列目を細くする */
+@media (max-width:699.98px){
+  .wt td:first-child .y{display:block;font-size:11px;line-height:1.2;color:var(--c-text-sub)}
+  .wt.wt td:first-child,.tb.tb td:first-child{min-width:9.2em;max-width:10em}
+  .tb.tb td:first-child .fin{display:block;min-width:0;font-size:11px;line-height:1.2;color:var(--c-text-sub)}
+  /* 消去法・好走：札は条件名の上に積み、条件名の幅を確保する */
+  .cdt td:first-child i{display:block;width:max-content;margin:0 0 3px}
+  .cdt.cdt td:first-child{min-width:7.4em}
+}

@@ -13,6 +13,7 @@ import { getDataUpdatedAt, formatJaDate, toIsoDate, buildWebPageJsonLd } from '@
 import s from '@/components/v6/course/course.module.css';
 import r from '@/components/v6/race/race.module.css';
 import CourseChips from '@/components/v6/course/CourseChips';
+import TableScroll from '@/components/v6/course/TableScroll';
 import { CourseMotion } from '@/components/v6/course/motion';
 import { Cond, Faq, Head, ListTable, Ranking, RichText, type CondRow, type RankRow } from '@/components/v6/course/parts';
 
@@ -74,8 +75,8 @@ function Results({ e }: { e: RaceEdition }) {
   ];
   const time = (x: RaceRunner) => (x.fin === 1 ? formatRaceTime(x.time) ?? '—' : x.diff !== null ? `+${x.diff.toFixed(1)}` : '—');
   return (
-    <div className={`${s.lt} ${r.tb}`}>
-      <div className={s['lt-w']} role="region" aria-label={`${e.year}年の結果`} tabIndex={0}>
+    <div className={`${s.lt} ${s.ltt} ${r.tb}`}>
+      <TableScroll label={`${e.year}年の結果`}>
         <table>
           <thead>
             <tr>{cols.map((c) => <th key={c.label} scope="col" className={c.num ? s.r : undefined}>{c.label}</th>)}</tr>
@@ -96,7 +97,7 @@ function Results({ e }: { e: RaceEdition }) {
             ))}
           </tbody>
         </table>
-      </div>
+      </TableScroll>
     </div>
   );
 }
@@ -120,6 +121,13 @@ export default async function RacePage({ params }: Props) {
   const conds = buildConditions(d, MIN);
   const faq = buildRaceFaq(d, sum);
   const ws = winners(d);
+  // 全頭の回収率（条件別の回収率を読むときの基準。人気馬が強いレースほど低い）
+  const base = (() => {
+    const n = S.popularity.reduce((a, x) => a + x.races, 0) || 1;
+    const sum = (k: 'win_payback' | 'place_payback') => Math.round(S.popularity.reduce((a, x) => a + x[k] * x.races, 0) / n);
+    return { win: sum('win_payback'), place: sum('place_payback') };
+  })();
+  const baseNote = `回収率は100円ずつ買った場合の払戻の割合。${NAME}は全頭で単勝${base.win}%・複勝${base.place}%です。条件別の回収率はこの数字と比べて見てください`;
   const excluded = d.editions.filter((e) => !e.included);
   const updatedAt = getDataUpdatedAt() ?? new Date();
   const surf = SURF[d.surface] ?? '';
@@ -189,7 +197,7 @@ export default async function RacePage({ params }: Props) {
   const pay = (e: RaceEdition, k: keyof RaceEdition['payouts']) => {
     const ps = e.payouts[k];
     if (!ps.length) return '—';
-    return ps.map((p) => `${p.yen.toLocaleString('ja-JP')}円`).join(' / ');
+    return ps.map((p, i) => <span key={i} className={r.pl}>{p.yen.toLocaleString('ja-JP')}円</span>);
   };
   const ad = (unit: 'dataTop' | 'dataMid' | 'dataBottom') => (
     <div className={s.ad}>
@@ -228,6 +236,7 @@ export default async function RacePage({ params }: Props) {
           <dl className={s['hero-m']}>
             <div><dt>集計</dt><dd>{d.period.from}〜{d.period.to}年の{d.period.count}回（{courseLabel(d)}の回のみ）</dd></div>
             <div><dt>出走</dt><dd>{d.total_runners}頭</dd></div>
+            <div><dt>全頭買いの回収率</dt><dd>単勝{base.win}%・複勝{base.place}%</dd></div>
             {d.next_date && <div><dt>次回</dt><dd>{jaDate(d.next_date)}</dd></div>}
             <div><dt>更新</dt><dd><time dateTime={toIsoDate(updatedAt)}>{formatJaDate(updatedAt)}</time></dd></div>
           </dl>
@@ -239,9 +248,32 @@ export default async function RacePage({ params }: Props) {
           <div className={s.cp}>
             <ol className={r.pt}>
               {sum.points.map((p) => (
-                <li key={p.key}>
+                <li key={p.key} className={p.tbl ? undefined : r.pw}>
                   <h3>{p.title}</h3>
-                  <p><RichText text={p.text} /></p>
+                  {p.tbl ? (
+                    <>
+                      {p.note && <p><RichText text={p.note} /></p>}
+                      <div className={r.mtw} role="region" aria-label={p.title} tabIndex={0}>
+                        <table className={r.mt}>
+                          <thead>
+                            <tr><th scope="col">条件</th><th scope="col">成績</th><th scope="col">勝率</th><th scope="col">複勝率</th></tr>
+                          </thead>
+                          <tbody>
+                            {p.tbl.map((x) => (
+                              <tr key={x.label}>
+                                <th scope="row">{x.label}</th>
+                                <td>{rec(x.r)}</td>
+                                <td>{x.r.win_rate.toFixed(1)}%</td>
+                                <td>{x.r.place_rate.toFixed(1)}%</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </>
+                  ) : (
+                    <p><RichText text={p.text} /></p>
+                  )}
                 </li>
               ))}
             </ol>
@@ -252,6 +284,8 @@ export default async function RacePage({ params }: Props) {
         <section id="winners" className={s.sc} aria-label="過去10年の勝ち馬">
           <Head title={`${NAME} 過去10年の勝ち馬`} sub="新しい順" />
           <ListTable
+            table
+            className={r.wt}
             label={`${NAME}の過去10年の勝ち馬`}
             cols={[{ label: '年・勝ち馬', key: true }, { label: '人気', num: true }, { label: '性齢' }, { label: '騎手' }, { label: 'タイム', num: true }, { label: '上がり', num: true }, { label: '前走' }]}
             rows={[...ws.map(({ e, w }) => ({ e, w })), ...excluded.map((e) => ({ e, w: e.results.find((x) => x.fin === 1) ?? e.results[0] }))]
@@ -277,6 +311,8 @@ export default async function RacePage({ params }: Props) {
         <section id="conditions" className={s.sc} aria-label="消去法・好走データ">
           <Head title={`${NAME}の消去法データ・好走データ`} sub={`出走${MIN}頭以上の条件のうち、3着以内がない条件と複勝率が高い条件`} />
           <ListTable
+            table
+            className={r.cdt}
             label={`${NAME}の消去法データ・好走データ`}
             cols={[{ label: '条件', key: true }, { label: '成績', num: true }, { label: '複勝率', num: true }, { label: '複勝回収率', num: true, ml: '複回' }]}
             rows={[...conds.good.map((x) => ['好走', x] as const), ...conds.zero.map((x) => ['消し', x] as const)].map(([k, x]) => [
@@ -285,7 +321,7 @@ export default async function RacePage({ params }: Props) {
               `${x.place_rate.toFixed(1)}%`,
               `${x.place_payback.toFixed(0)}%`,
             ])}
-            note="条件：人気・枠・馬番・脚質・年齢・性別・所属・前走（格・レース・着順・人気・上がり順位）・間隔・乗り替わり・馬体重。脚質は結果の通過順から分類するため、予想では過去の走りから見込みを立てて使ってください"
+            note={`${baseNote}。条件：人気・枠・馬番・脚質・年齢・性別・所属・前走（格・レース・着順・人気・上がり順位）・間隔・乗り替わり・馬体重。脚質は結果の通過順から分類するため、予想では過去の走りから見込みを立てて使ってください`}
           />
         </section>
 
@@ -302,11 +338,13 @@ export default async function RacePage({ params }: Props) {
                 <section id="prev-race" className={s.sc} aria-label="前走レース別データ">
                   <Head title={`${NAME} 前走レース別データ（ステップレース）`} sub="出走5頭以上の前走レース・勝利数順。残りは「その他」" />
                   <ListTable
+            table
                     label={`${NAME}の前走レース別データ`}
                     cols={[{ label: '前走レース', key: true }, { label: '成績', num: true }, { label: '勝率', num: true }, { label: '複勝率', num: true }, { label: '単勝回収率', num: true, ml: '単回' }, { label: '複勝回収率', num: true, ml: '複回' }]}
                     rows={S.prev_race.map((x) => [
                       x.label ?? '', rec(x), `${x.win_rate.toFixed(1)}%`, `${x.place_rate.toFixed(1)}%`, `${x.win_payback.toFixed(0)}%`, `${x.place_payback.toFixed(0)}%`,
                     ])}
+                    note={baseNote}
                   />
                 </section>
               </>
@@ -337,14 +375,19 @@ export default async function RacePage({ params }: Props) {
         <section id="payout" className={s.sc} aria-label="過去10年の配当">
           <Head title={`${NAME} 過去10年の配当`} sub="100円あたりの払戻" />
           <ListTable
+            table
             className={r.payT}
             label={`${NAME}の過去10年の配当`}
             cols={[{ label: '年', key: true }, { label: '単勝', num: true }, { label: '馬連', num: true }, { label: '3連複', num: true }, { label: '3連単', num: true }]}
             rows={d.editions.filter((e) => e.included).map((e) => [
               `${e.year}`, pay(e, 'win'), pay(e, 'quinella'), pay(e, 'trio'),
-              e.payouts.trifecta.map((p) => `${p.yen.toLocaleString('ja-JP')}円${p.pop ? `（${p.pop}番人気）` : ''}`).join(' / ') || '—',
+              e.payouts.trifecta.length
+                ? e.payouts.trifecta.map((p, i) => (
+                    <span key={i} className={r.pl}>{p.yen.toLocaleString('ja-JP')}円{p.pop ? <small>（{p.pop}番人気）</small> : null}</span>
+                  ))
+                : '—',
             ])}
-            note={`3連単の中央値は${sum.tri.median.toLocaleString('ja-JP')}円、10万円を超えたのは${sum.tri.over100k}回。同着の年は払戻を「/」で並べています`}
+            note={`3連単の中央値は${sum.tri.median.toLocaleString('ja-JP')}円、10万円を超えたのは${sum.tri.over100k}回。同着の年は払戻を2段に並べています`}
           />
         </section>
 

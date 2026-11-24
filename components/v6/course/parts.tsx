@@ -1,6 +1,7 @@
 import Link from '@/components/HardLink';
 import { FRAME_ICONS, FrameIcon } from '@/components/layout/icons';
 import s from './course.module.css';
+import TableScroll from './TableScroll';
 import { COLS, fmt, maxOf, type StatRow } from './stats';
 import { Reveal } from './motion';
 import { CondView, RankView, type CondV, type RankV } from './Tables';
@@ -291,36 +292,54 @@ export function Faq({ items }: { items: FaqItem[] }) {
 }
 
 /* ---------- 一覧の表（標準タイム・馬場状態別・重賞の勝ち馬・狙い目） ---------- */
-export function ListTable({ cols, rows, label, note, className = '' }: {
-  /** ml＝スマホで数値の前に付ける短いラベル（2列目より後ろの列） */
+export function ListTable({ cols, rows, label, note, className = '', table = false }: {
+  /** ml＝スマホで数値の前に付ける短いラベル（2列目より後ろの列）。table のときはスマホの見出しに使う */
   cols: { label: string; num?: boolean; key?: boolean; ml?: string }[];
   rows: React.ReactNode[][];
   label: string;
   note?: React.ReactNode;
   className?: string;
+  /** スマホでも行を崩さず表のまま見せる（横に送れる。1列目は固定、右に続きがあるあいだは右端に影）。列が同じ行が続く表向け */
+  table?: boolean;
 }) {
-  return (
-    <div className={`${s.cp} ${s.lt} ${className}`}>
-      <div className={s['lt-w']} role="region" aria-label={label} tabIndex={0}>
-        <table>
-          <thead>
-            <tr>
-              {cols.map((c) => (
-                <th key={c.label} scope="col" className={c.num ? s.r : undefined}>{c.label}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((cells, i) => (
-              <tr key={i}>
-                {cells.map((cell, j) => (
-                  <td key={j} data-l={j >= 2 ? (cols[j].ml ?? cols[j].label) : undefined} className={[cols[j].num ? s.r : '', cols[j].key ? s.k : ''].filter(Boolean).join(' ') || undefined}>{cell}</td>
-                ))}
-              </tr>
+  const body = (
+    <table>
+      <thead>
+        <tr>
+          {cols.map((c) => (
+            <th key={c.label} scope="col" className={c.num ? s.r : undefined}>
+              {table && c.ml ? (
+                <>
+                  <span className={s['lt-l']}>{c.label}</span>
+                  <span className={s['lt-m']}>{c.ml}</span>
+                </>
+              ) : (
+                c.label
+              )}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((cells, i) => (
+          <tr key={i}>
+            {cells.map((cell, j) => (
+              <td key={j} data-l={!table && j >= 2 ? (cols[j].ml ?? cols[j].label) : undefined} className={[cols[j].num ? s.r : '', cols[j].key ? s.k : ''].filter(Boolean).join(' ') || undefined}>{cell}</td>
             ))}
-          </tbody>
-        </table>
-      </div>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+  return (
+    <div className={`${s.cp} ${s.lt}${table ? ` ${s.ltt}` : ''} ${className}`}>
+      {table ? (
+        <TableScroll label={label}>{body}</TableScroll>
+      ) : (
+        <div className={s['lt-w']} role="region" aria-label={label} tabIndex={0}>
+          {body}
+        </div>
+      )}
       {note ? <p className={s['cp-n']}>{note}</p> : null}
     </div>
   );

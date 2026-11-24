@@ -435,13 +435,26 @@ thead .rno{font-size:12px;font-family:inherit}
 .lt > .cp-n{padding-top:10px;border-top:1px solid var(--c-rule)}
 /* スマホ：1行目＝名前＋主な数値、2行目＝残りの数値（ラベル付き）。横にはみ出さない */
 @media (max-width:699.98px){
-  .lt thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
-  .lt table,.lt tbody{display:block}
-  .lt tr{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;padding:9px var(--c-pad);border-top:1px solid var(--c-rule)}
-  .lt tbody tr:first-child{border-top:0}
-  .lt td,.lt th:first-child,.lt td:first-child,.lt td:last-child{display:block;height:auto;padding:0;border:0}
-  .lt td:first-child{flex:0 0 calc(100% - 7em - 10px);min-width:0;white-space:normal}
-  .lt td:nth-child(2){flex:0 0 7em;font-weight:700;text-align:right}
-  .lt td:nth-child(n+3){font-size:12px;color:var(--c-text-sub)}
-  .lt td:nth-child(n+3)[data-l]::before{content:attr(data-l) " "}
+  .lt:not(.ltt) thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+  .lt:not(.ltt) table,.lt:not(.ltt) tbody{display:block}
+  .lt:not(.ltt) tr{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;padding:9px var(--c-pad);border-top:1px solid var(--c-rule)}
+  .lt:not(.ltt) tbody tr:first-child{border-top:0}
+  .lt:not(.ltt) td,.lt:not(.ltt) th:first-child,.lt:not(.ltt) td:first-child,.lt:not(.ltt) td:last-child{display:block;height:auto;padding:0;border:0}
+  .lt:not(.ltt) td:first-child{flex:0 0 calc(100% - 7em - 10px);min-width:0;white-space:normal}
+  .lt:not(.ltt) td:nth-child(2){flex:0 0 7em;font-weight:700;text-align:right}
+  .lt:not(.ltt) td:nth-child(n+3){font-size:12px;color:var(--c-text-sub)}
+  .lt:not(.ltt) td:nth-child(n+3)[data-l]::before{content:attr(data-l) " "}
+}
+/* 表のまま（.ltt）：横に送れる。1列目（年・馬名・条件）は全部の幅で固定し、送ったときだけ影を付ける。右に続きがあるあいだは右端に影（TableScroll の .more） */
+.ltt th:first-child,.ltt td:first-child{position:sticky;left:0;z-index:1;background:var(--c-panel);transition:box-shadow .2s}
+.ltt thead th:first-child{background:var(--c-cell)}
+.ltt .tb.narrow th:first-child,.ltt .tb.narrow td:first-child{box-shadow:6px 0 8px -6px rgba(16,24,40,.28)}
+.ltt .lt-m{display:none}
+@media (max-width:699.98px){
+  .ltt table{font-size:13px}
+  .ltt th,.ltt td{padding-left:6px;padding-right:6px}
+  /* 1列目は広げすぎない（送ったあとに見える幅を残す）。長い名前は折り返す */
+  .ltt td:first-child{min-width:6.5em;max-width:9em;white-space:normal;line-height:1.35}
+  .ltt .lt-l{display:none}
+  .ltt .lt-m{display:inline}
 }

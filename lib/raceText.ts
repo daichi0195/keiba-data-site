@@ -43,7 +43,11 @@ function median(xs: number[]) {
 export interface Point {
   key: string;
   title: string;
+  /** 文章（FAQ でも使う） */
   text: string;
+  /** 画面では、同じ項目（成績・勝率・複勝率）が続くところを文章でなく表で見せる。tbl があるときは text の代わりに note＋表 */
+  note?: string;
+  tbl?: { label: string; r: RaceStat }[];
 }
 
 function byWins(rows: RaceStat[]) {
@@ -139,13 +143,21 @@ export function buildRaceSummary(d: RaceData) {
       key: 'popularity',
       title: `1番人気は${fav1.wins}勝・複勝率${pct(fav1.place_rate)}`,
       text: `1番人気は**${rec(fav1)}**。${winnerPop}です。${low && placed(low) === 0 && low.races >= 10 ? `10番人気以下は${rec(low)}で3着以内がありません。` : low ? `10番人気以下は${rec(low)}です。` : ''}`,
+      note: `${winnerPop}です。`,
+      tbl: [
+        { label: '1番人気', r: fav1 },
+        { label: '2〜5番人気', r: sumRows(S.popularity.filter((r) => /^[2-5]番人気$/.test(r.label ?? ''))) },
+        ...S.popularity.filter((r) => r.label === '6〜9番人気' || r.label === '10番人気〜').map((r) => ({ label: r.label ?? '', r })),
+      ].filter((x) => x.r.races > 0),
     });
   }
-  if (ageTop) {
+  if (ageTop && S.age.filter((r) => r.races > 0).length >= 2) {
     points.push({
       key: 'age',
       title: `${ageTies.map((r) => r.label).join('・')}が${ageTop.wins}勝で最多`,
       text: `${S.age.filter((r) => r.races > 0).map((r) => `${r.label}${rec(r)}`).join('、')}。${ageZero ? `**${ageZero}は3着以内なし**です。` : ''}`,
+      note: ageZero ? `**${ageZero}は3着以内なし**です。` : undefined,
+      tbl: S.age.filter((r) => r.races > 0).map((r) => ({ label: r.label ?? '', r })),
     });
   }
   if (prevTop) {
@@ -153,6 +165,11 @@ export function buildRaceSummary(d: RaceData) {
       key: 'prev',
       title: `前走${prevTop.label}組が${prevTop.wins}勝`,
       text: `前走${prevTop.label}組は**${rec(prevTop)}**。${prevG1 ? `前走G1組は${rec(prevG1)}（複勝率${pct(prevG1.place_rate)}）、` : ''}${prevWin ? `前走1着馬は${rec(prevWin)}（複勝率${pct(prevWin.place_rate)}）です。` : ''}`,
+      tbl: [
+        { label: `前走${prevTop.label}`, r: prevTop },
+        ...(prevG1 && prevTop.label !== 'G1' ? [{ label: '前走G1', r: prevG1 }] : []),
+        ...(prevWin ? [{ label: '前走1着', r: prevWin }] : []),
+      ],
     });
   }
   if (inner.races && outer.races) {
@@ -160,6 +177,11 @@ export function buildRaceSummary(d: RaceData) {
       key: 'frame',
       title: frameDiff >= 8 ? '内枠（1〜4枠）が優勢' : frameDiff <= -8 ? '外枠（5〜8枠）が優勢' : '枠の有利不利は小さい',
       text: `1〜4枠の複勝率**${pct(inner.place_rate)}**に対し、5〜8枠は**${pct(outer.place_rate)}**。最も勝っているのは${frameTop.label}の${frameTop.wins}勝${rec(frameTop)}です。`,
+      tbl: [
+        { label: '1〜4枠', r: inner },
+        { label: '5〜8枠', r: outer },
+        ...(frameTop.wins ? [{ label: `${frameTop.label}（最多勝）`, r: frameTop }] : []),
+      ],
     });
   }
   if (styleWins.length) {
@@ -167,6 +189,8 @@ export function buildRaceSummary(d: RaceData) {
       key: 'style',
       title: `勝ち馬は${styleWins.map((r) => `${r.label}${r.wins}頭`).join('・')}`,
       text: `${styles.map((r) => `${r.label}${rec(r)}`).join('、')}。${styleZero.length ? `**${styleZero.map((r) => r.label).join('・')}は3着以内なし**です。` : ''}`,
+      note: styleZero.length ? `**${styleZero.map((r) => r.label).join('・')}は3着以内なし**です。` : undefined,
+      tbl: styles.map((r) => ({ label: r.label ?? '', r })),
     });
   }
   if (l3.length) {
@@ -174,6 +198,10 @@ export function buildRaceSummary(d: RaceData) {
       key: 'last3f',
       title: `勝ち馬${ws.length}頭中${l3Top3Winners}頭が上がり3位以内`,
       text: `${l3.map((r) => `上がり${r.label}${rec(r)}`).join('、')}。${l3Low && l3Low.races >= 10 ? `上がり6位以下の複勝率は**${pct(l3Low.place_rate)}**です。` : ''}${pl3Top3.races && pl3Rest.races ? `前走で上がり3位以内だった馬は${rec(pl3Top3)}（複勝率${pct(pl3Top3.place_rate)}）、4位以下は${rec(pl3Rest)}（複勝率${pct(pl3Rest.place_rate)}）です。` : ''}`,
+      tbl: [
+        ...l3.map((r) => ({ label: `上がり${r.label}`, r })),
+        ...(pl3Top3.races && pl3Rest.races ? [{ label: '前走上がり3位以内', r: pl3Top3 }, { label: '前走上がり4位以下', r: pl3Rest }] : []),
+      ],
     });
   }
   if (tri.length) {

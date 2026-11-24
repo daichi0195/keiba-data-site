@@ -9,7 +9,7 @@ import s from './course.module.css';
  * - 右にまだ続きがあるあいだは .more（右端に影）
  * - PC（1100px以上）では、表が画面の上へ流れても見出し行をヘッダーとチップの下に留める（thead に --ty を入れる）
  */
-export default function TableScroll({ className, children }: { className?: string; children: React.ReactNode }) {
+export default function TableScroll({ className, label, children }: { className?: string; label?: string; children: React.ReactNode }) {
   const tbRef = useRef<HTMLDivElement>(null);
   const [narrow, setNarrow] = useState(false);
   const [more, setMore] = useState(false);
@@ -72,7 +72,7 @@ export default function TableScroll({ className, children }: { className?: strin
 
   return (
     <div className={`${s.tbw}${className ? ` ${className}` : ''}${more ? ` ${s.more}` : ''}`}>
-      <div ref={tbRef} className={`${s.tb}${narrow ? ` ${s.narrow}` : ''}`}>
+      <div ref={tbRef} className={`${s.tb}${narrow ? ` ${s.narrow}` : ''}`} {...(label ? { role: 'region', 'aria-label': label, tabIndex: 0 } : {})}>
         {children}
       </div>
     </div>
