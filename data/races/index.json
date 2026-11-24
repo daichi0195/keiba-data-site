@@ -150,7 +150,7 @@
 "surface": "turf",
 "distance": 1600,
 "course": "/courses/kyoto/turf/1600-outer",
-"last_date": "2025-11-23",
+"last_date": "2026-11-22",
 "count": 10
 },
 {
@@ -777,7 +777,7 @@
 "surface": "turf",
 "distance": 2000,
 "course": "/courses/fukushima/turf/2000",
-"last_date": "2025-11-22",
+"last_date": "2026-11-21",
 "count": 10
 },
 {
@@ -1151,7 +1151,7 @@
 "surface": "turf",
 "distance": 1800,
 "course": "/courses/tokyo/turf/1800",
-"last_date": "2025-11-24",
+"last_date": "2026-11-23",
 "count": 10
 },
 {
@@ -1822,8 +1822,8 @@
 "surface": "dirt",
 "distance": 1900,
 "course": "/courses/kyoto/dirt/1900",
-"last_date": "2025-11-22",
-"count": 1
+"last_date": "2026-11-21",
+"count": 2
 },
 {
 "slug": "january-stakes",
@@ -2889,7 +2889,7 @@
 "surface": "dirt",
 "distance": 1400,
 "course": "/courses/tokyo/dirt/1400",
-"last_date": "2025-11-23",
+"last_date": "2026-11-22",
 "count": 10
 },
 {

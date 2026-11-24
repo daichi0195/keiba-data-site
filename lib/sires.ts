@@ -2,7 +2,7 @@
  * 全種牡馬のIDリスト
  * 
  * 過去3年間に産駒が出走している種牡馬 (既存ページは維持し、50レース以上・産駒10頭以上の種牡馬を追加)
- * gcs/v2/generate_lists.py が JRA-VAN 由来のデータから自動生成（2026-11-17時点: 218頭）
+ * gcs/v2/generate_lists.py が JRA-VAN 由来のデータから自動生成（2026-11-24時点: 218頭）
  */
 
 export interface SireInfo {
