@@ -1,7 +1,6 @@
 import Link from '@/components/HardLink';
 import Image from 'next/image';
-import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { FrameIcon } from '@/components/layout/icons';
+import { FRAME_ICONS, FrameIcon } from '@/components/layout/icons';
 import { ALL_COURSES, getCourseUrl, getCoursesByRacecourse } from '@/lib/courses';
 import { getRaceGrade } from '@/lib/raceGrades';
 import type { Article } from '@/lib/articles';
@@ -33,8 +32,8 @@ export type VenueRow = (typeof VENUES)[number];
 const of = (v: VenueRow, sf: Surface) => v.courses.filter((c) => c.surface === sf);
 export const COURSE_TOTAL = ALL_COURSES.length;
 
-const ChevR = () => <FrameIcon icon={faChevronRight} className={cx('ic')} />;
-const ChevD = () => <FrameIcon icon={faChevronDown} className={cx('ic')} />;
+const ChevR = () => <FrameIcon icon={FRAME_ICONS.chevronRight} className={cx('ic')} />;
+const ChevD = () => <FrameIcon icon={FRAME_ICONS.chevronDown} className={cx('ic')} />;
 
 /** 節の見出し（地の上）。右に丸いボタン */
 export function Head({ title, sub, more }: { title: string; sub?: string; more?: { href: string; label: string } }) {

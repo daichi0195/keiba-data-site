@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { ScrollBar, useScrollBar } from '@/components/layout/ScrollBar';
 import { cx } from './cx';
 
 /**
@@ -11,6 +12,8 @@ export default function RiseOnView({ children }: { children: React.ReactNode }) 
   const ref = useRef<HTMLDivElement>(null);
   const [anim, setAnim] = useState(false);
   const [seen, setSeen] = useState(false);
+  // スマホで横に送れることを示す細いバー（はみ出しがない PC では出ない）
+  const { bar, update } = useScrollBar(ref);
 
   useEffect(() => {
     const el = ref.current;
@@ -32,8 +35,11 @@ export default function RiseOnView({ children }: { children: React.ReactNode }) 
   }, []);
 
   return (
-    <div ref={ref} className={cx('ai', anim && 'anim', seen && 'in')}>
-      {children}
-    </div>
+    <>
+      <div ref={ref} className={cx('ai', anim && 'anim', seen && 'in')} onScroll={update}>
+        {children}
+      </div>
+      <ScrollBar bar={bar} />
+    </>
   );
 }

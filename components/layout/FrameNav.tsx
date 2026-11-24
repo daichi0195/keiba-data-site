@@ -11,6 +11,7 @@ type NavItem = { key: FrameIconKey; label: string; href: string };
 /** 左メニュー（PC）・引き出しメニュー（スマホ）の上段 */
 export const MAIN_NAV: NavItem[] = [
   { key: 'home', label: 'ホーム', href: '/' },
+  { key: 'race', label: 'レースデータ', href: '/races' },
   { key: 'ai', label: 'AI予測', href: '/ai' },
   { key: 'course', label: 'コースデータ', href: '/courses' },
   { key: 'jockey', label: '騎手データ', href: '/jockeys' },
@@ -21,6 +22,7 @@ export const MAIN_NAV: NavItem[] = [
 
 /** スマホ・タブレットの下部メニュー */
 export const TAB_NAV: NavItem[] = [
+  { key: 'race', label: 'レース', href: '/races' },
   { key: 'course', label: 'コース', href: '/courses' },
   { key: 'jockey', label: '騎手', href: '/jockeys' },
   { key: 'sire', label: '血統', href: '/sires' },

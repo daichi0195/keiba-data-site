@@ -2,8 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
-import { faMagnifyingGlass, faXmark } from '@fortawesome/free-solid-svg-icons';
-import { FrameIcon } from '@/components/layout/icons';
+import { FRAME_ICONS, FrameIcon } from '@/components/layout/icons';
 import { cx } from './cx';
 
 export interface ChipItem {
@@ -230,7 +229,7 @@ export function FilterBox({
       <div className={cx('lf-b')}>
         {children}
         <label className={cx('lf-i')}>
-          <FrameIcon icon={faMagnifyingGlass} className={cx('ic')} />
+          <FrameIcon icon={FRAME_ICONS.search} className={cx('ic')} />
           <span className={cx('vh')}>{label}</span>
           <input
             ref={qRef}
@@ -268,7 +267,7 @@ export function FilterBox({
               qRef.current?.focus();
             }}
           >
-            <FrameIcon icon={faXmark} className={cx('ic')} />
+            <FrameIcon icon={FRAME_ICONS.close} className={cx('ic')} />
           </button>
         </label>
       </div>

@@ -1,0 +1,54 @@
+/* レース別ページ（/races/[slug]）。共通の見た目は components/v6/course/course.module.css を使い、ここはこのページだけの部品 */
+
+/* 冒頭の要約（AI による概要に載る1〜2文） */
+.lead{margin-top:8px;font-size:15px;line-height:1.75}
+.lead b{font-weight:700}
+
+/* 傾向のポイント：結論の見出し＋根拠の数字 */
+.pt{list-style:none}
+.pt li{padding:12px var(--c-pad)}
+.pt li + li{border-top:1px solid var(--c-rule)}
+.pt h3{font-size:16px;font-weight:700;line-height:1.45}
+.pt p{margin-top:3px;font-size:14px;line-height:1.75;color:var(--c-text)}
+.pt p b{font-weight:700}
+.pt .k{display:inline-block;min-width:40px;margin-right:8px;padding:0 6px;border-radius:4px;background:var(--c-here);color:var(--c-on-here);font-size:11px;font-weight:700;line-height:20px;text-align:center;vertical-align:2px}
+
+/* 年度別の結果：1年＝1行の開閉 */
+.yr details + details{border-top:1px solid var(--c-rule)}
+.yr summary{display:flex;align-items:center;gap:10px;min-height:48px;padding:6px var(--c-pad);cursor:pointer;list-style:none}
+.yr summary::-webkit-details-marker{display:none}
+.yr summary:hover{background:var(--c-cell)}
+.yr .y{flex:none;width:52px;font-family:var(--f-num);font-weight:700;font-variant-numeric:tabular-nums}
+.yr .w{flex:1;min-width:0;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.yr .w small{margin-left:8px;font-size:12px;font-weight:400;color:var(--c-text-sub)}
+.yr .m{flex:none;font-size:12px;color:var(--c-text-sub)}
+.yr .ic{flex:none;width:12px;height:12px;color:var(--c-text-sub);transition:transform .2s}
+.yr details[open] .ic{transform:rotate(180deg)}
+.yr .tb{border-top:1px solid var(--c-rule)}
+.yr .pay{padding:8px var(--c-pad) 12px;border-top:1px solid var(--c-rule);font-size:12px;line-height:1.7;color:var(--c-text-sub)}
+.yr .pay b{margin-right:4px;color:var(--c-text);font-weight:700}
+.yr .pay span{margin-right:14px;white-space:nowrap}
+
+/* 表の中の小さな札（集計対象外の年） */
+.ex{display:inline-block;margin-left:6px;padding:0 6px;border-radius:4px;background:var(--c-cell);color:var(--c-text-sub);font-size:11px;font-weight:700;line-height:18px;vertical-align:1px}
+
+/* コースページへの導線 */
+.go a{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:60px;padding:12px var(--c-pad);color:var(--c-text)}
+.go a:hover{background:#F6F7F9}
+.go b{display:block;font-size:16px;font-weight:700;color:var(--c-link)}
+.go small{display:block;margin-top:2px;font-size:12px;color:var(--c-text-sub)}
+.go .ic{width:14px;height:14px;fill:currentColor;flex:none;color:var(--c-text-sub)}
+
+@media (min-width:700px){
+  .lead{font-size:16px}
+  .pt li{padding:14px var(--c-pad)}
+  .pt h3{font-size:17px}
+}
+
+/* 表の1列目：年や着順を馬名の前に並べる */
+.y{display:inline-block;min-width:48px;font-family:var(--f-num);font-weight:700;font-variant-numeric:tabular-nums}
+.fin{display:inline-block;min-width:34px;font-family:var(--f-num);font-weight:700;font-variant-numeric:tabular-nums}
+
+@media (max-width:699.98px){
+  .yr .w small{display:none}
+}

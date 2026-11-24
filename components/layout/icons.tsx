@@ -1,37 +1,36 @@
-import type { IconDefinition } from '@fortawesome/fontawesome-common-types';
-import {
-  faHouse,
-  faRobot,
-  faFlag,
-  faHelmetSafety,
-  faHorse,
-  faUser,
-  faPenToSquare,
-  faBars,
-  faXmark,
-} from '@fortawesome/free-solid-svg-icons';
+import { ICON_DATA, type IconName } from './iconData';
 
-/** 共通の枠で使うアイコン（見本 lib.mjs の I と同じ Font Awesome solid） */
+/**
+ * サイト共通のアイコン（自前の SVG。元は components/layout/svg/*.svg、作り直しは node scripts/build-icons.mjs）。
+ * 以前は Font Awesome を使っていた。キーは以前のものを残している（col＝コラム など）。
+ */
 export const FRAME_ICONS = {
-  home: faHouse,
-  ai: faRobot,
-  course: faFlag,
-  jockey: faHelmetSafety,
-  sire: faHorse,
-  trainer: faUser,
-  col: faPenToSquare,
-  menu: faBars,
-  close: faXmark,
-} as const;
+  home: 'home',
+  race: 'race',
+  ai: 'ai',
+  course: 'course',
+  jockey: 'jockey',
+  sire: 'sire',
+  trainer: 'trainer',
+  col: 'column',
+  menu: 'menu',
+  close: 'close',
+  chevronRight: 'chevron-right',
+  chevronDown: 'chevron-down',
+  search: 'search',
+} as const satisfies Record<string, IconName>;
 
 export type FrameIconKey = keyof typeof FRAME_ICONS;
 
-/** 1em 四方のインライン SVG（色は currentColor）。大きさは親の font-size で決める */
-export function FrameIcon({ icon, className }: { icon: IconDefinition; className?: string }) {
-  const [w, h, , , p] = icon.icon;
+/** 1em 四方のインライン SVG（色は currentColor）。大きさは親の font-size か className の width/height で決める */
+export function FrameIcon({ icon, className }: { icon: IconName; className?: string }) {
   return (
-    <svg className={className} viewBox={`0 0 ${w} ${h}`} aria-hidden="true" focusable="false">
-      <path d={Array.isArray(p) ? p.join(' ') : p} />
-    </svg>
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+      dangerouslySetInnerHTML={{ __html: ICON_DATA[icon] }}
+    />
   );
 }

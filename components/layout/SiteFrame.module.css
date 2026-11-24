@@ -198,6 +198,11 @@
 .ftr nav a:hover {
   text-decoration: underline;
 }
+.fData {
+  margin-top: 14px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, .2);
+}
 .fNote {
   margin-top: 8px;
   font-size: 13px;
@@ -217,7 +222,7 @@
   bottom: 0;
   z-index: 90;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   padding-left: env(safe-area-inset-left, 0px);
   padding-right: env(safe-area-inset-right, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);

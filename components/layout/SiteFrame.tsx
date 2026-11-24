@@ -13,6 +13,17 @@ const VENUES = getCoursesByRacecourse().map((g) => ({
 }));
 const venueHref = (id: string) => `/courses#rc-${id}`;
 
+/** フッターのデータ一覧（左メニューと同じ並び） */
+const FOOTER_DATA = [
+  { href: '/races', label: 'レースデータ' },
+  { href: '/courses', label: 'コースデータ' },
+  { href: '/jockeys', label: '騎手データ' },
+  { href: '/sires', label: '血統データ' },
+  { href: '/trainers', label: '調教師データ' },
+  { href: '/ai', label: 'AI予測' },
+  { href: '/articles', label: 'コラム' },
+];
+
 const FOOTER_LINKS = [
   { href: '/about', label: 'サイト情報・運営者情報' },
   { href: '/about/data', label: 'データの出典と集計方法' },
@@ -77,6 +88,13 @@ export default function SiteFrame({ children }: { children: React.ReactNode }) {
 
           <footer className={s.ftr}>
             <p className={s.fLogo}>競馬データ.com</p>
+            <nav aria-label="データ一覧" className={s.fData}>
+              {FOOTER_DATA.map((l) => (
+                <Link prefetch={false} key={l.href} href={l.href}>
+                  {l.label}
+                </Link>
+              ))}
+            </nav>
             <nav aria-label="サイト情報">
               {FOOTER_LINKS.map((l) => (
                 <Link prefetch={false} key={l.href} href={l.href}>

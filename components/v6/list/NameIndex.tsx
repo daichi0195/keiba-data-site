@@ -2,8 +2,7 @@
 
 import { useMemo, useRef, useState } from 'react';
 import Link from '@/components/HardLink';
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
-import { FrameIcon } from '@/components/layout/icons';
+import { FRAME_ICONS, FrameIcon } from '@/components/layout/icons';
 import AdSlot from '@/components/AdSlot';
 import LeadingRank, { type RankRow } from '@/components/v6/home/LeadingRank';
 import { FilterBox, ListChips } from './Nav';
@@ -157,7 +156,7 @@ export default function NameIndex({
                       <i className={cx('num')}>{n}</i>
                       {unit}
                     </span>
-                    <FrameIcon icon={faChevronDown} className={cx('ic')} />
+                    <FrameIcon icon={FRAME_ICONS.chevronDown} className={cx('ic')} />
                   </summary>
                   <div className={cx('ln-a')}>{g.items.map((x, k) => cell(x, !hits[i][k]))}</div>
                 </details>

@@ -1,13 +1,12 @@
 // AI予測の3ページで共通の小さな部品（サーバーで描く）。見本：docs/redesign/src/pages/ai-shared.mjs
 import { Fragment } from 'react';
 import Link from '@/components/HardLink';
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { FrameIcon } from '@/components/layout/icons';
+import { FRAME_ICONS, FrameIcon } from '@/components/layout/icons';
 import { gradeOf, sfJa, sfKey, shortDate, shortName } from './format';
 import type { RaceSummary } from './data';
 import s from './ai.module.css';
 
-export const ChevR = () => <FrameIcon icon={faChevronRight} className={s.ic} />;
+export const ChevR = () => <FrameIcon icon={FRAME_ICONS.chevronRight} className={s.ic} />;
 
 /** 馬場の札（sm＝小） */
 export function Sf({ surface, sm }: { surface: string; sm?: boolean }) {

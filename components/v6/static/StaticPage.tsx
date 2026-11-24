@@ -1,7 +1,6 @@
 import { Children, Fragment, isValidElement } from 'react';
 import Link from '@/components/HardLink';
-import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { FrameIcon } from '@/components/layout/icons';
+import { FRAME_ICONS, FrameIcon } from '@/components/layout/icons';
 import RailAiOff from '@/components/layout/RailAiOff';
 import StaticToc from './StaticToc';
 import { cx } from './cx';
@@ -15,8 +14,8 @@ import { cx } from './cx';
  * 右列（幅1800px以上）の AI 案内は出さない（RailAiOff）。
  */
 
-export const ChevD = () => <FrameIcon icon={faChevronDown} className={cx('ic')} />;
-export const ChevR = () => <FrameIcon icon={faChevronRight} className={cx('ic')} />;
+export const ChevD = () => <FrameIcon icon={FRAME_ICONS.chevronDown} className={cx('ic')} />;
+export const ChevR = () => <FrameIcon icon={FRAME_ICONS.chevronRight} className={cx('ic')} />;
 
 /**
  * 段落・箇条書き・説明の末尾3文字を折り返さない塊にして、行末に1〜2文字だけ残るのを防ぐ（文章は変えない）。

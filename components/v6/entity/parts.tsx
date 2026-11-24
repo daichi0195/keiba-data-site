@@ -2,9 +2,8 @@
 // サーバーコンポーネント。開閉だけ Box（クライアント）、ページ全体の動きは EntityEffects（クライアント）。
 import Link from '@/components/HardLink';
 import type { CSSProperties, ReactNode } from 'react';
-import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import AdSlot from '@/components/AdSlot';
-import { FrameIcon } from '@/components/layout/icons';
+import { FRAME_ICONS, FrameIcon } from '@/components/layout/icons';
 import Box, { SyncGroup } from './Box';
 import EntityEffects from './EntityEffects';
 import Stats, { type StatsProps } from './Stats';
@@ -12,8 +11,8 @@ import { cx } from './cx';
 import { MIN_BAR, bestOf, int, num, pct, R, slashDate, type Row, type Stat } from './format';
 
 /* ---------- 小さな部品 ---------- */
-export const ChevR = () => <FrameIcon icon={faChevronRight} className={cx('ic')} />;
-export const ChevD = () => <FrameIcon icon={faChevronDown} className={cx('ic')} />;
+export const ChevR = () => <FrameIcon icon={FRAME_ICONS.chevronRight} className={cx('ic')} />;
+export const ChevD = () => <FrameIcon icon={FRAME_ICONS.chevronDown} className={cx('ic')} />;
 const iv = (i: number) => ({ '--i': i }) as CSSProperties;
 
 /** 語のまとまりで折り返す（語の途中で割らない） */
@@ -77,13 +76,13 @@ export const Head = ({ title, sub }: { title: ReactNode; sub?: ReactNode }) => (
     </h2>
   </div>
 );
-/** 「〇〇 節名」（名前と節名を語のまとまりで折り返す） */
+/** 「〇〇 節名」。見出しは意味の区切りで改行させず、行末で普通に折り返す（オーナー指示 2026-11-20） */
 export const H = ({ w, title, sub }: { w: string; title: string; sub?: ReactNode }) => (
-  <Head title={<><Nb>{w}</Nb> <Nb>{title}</Nb></>} sub={sub} />
+  <Head title={`${w} ${title}`} sub={sub} />
 );
 /** 「〇〇の節名」 */
 export const Hno = ({ w, title, sub }: { w: string; title: string; sub?: ReactNode }) => (
-  <Head title={<><Nb>{w}の</Nb><Nb>{title}</Nb></>} sub={sub} />
+  <Head title={`${w}の${title}`} sub={sub} />
 );
 /** 見出しの下の補足：従来の補足（jk-sb）と「出走30以上で…」（jk-nt） */
 export const Subs = ({ sub, note }: { sub?: ReactNode; note?: ReactNode }) => (
@@ -190,10 +189,8 @@ export function Hero({
       <div className={cx('jk-pn', 'jk-hero')}>
         <div className={cx('jk-hl')}>
           <h1>
-            <Nb>{h1}</Nb>
-            <Nb>
-              <small className={h1s.startsWith('（') ? cx('es-par') : undefined}>{h1s}</small>
-            </Nb>
+            {h1}
+            <small className={h1s.startsWith('（') ? cx('es-par') : undefined}>{h1s}</small>
           </h1>
           <p className={cx('jk-lead')}>{lead}</p>
           {kpiTable ? (

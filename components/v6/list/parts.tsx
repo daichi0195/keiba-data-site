@@ -1,5 +1,4 @@
 import Link from '@/components/HardLink';
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import AdSlot from '@/components/AdSlot';
 import { FrameIcon, FRAME_ICONS } from '@/components/layout/icons';
 import { ALL_COURSES } from '@/lib/courses';
@@ -64,7 +63,7 @@ export function Tail({ current }: { current: ListKey }) {
               <FrameIcon icon={FRAME_ICONS[k]} className={cx('ic')} />
               <b>{label}</b>
               <span>{n}</span>
-              <FrameIcon icon={faChevronRight} className={cx('ic')} />
+              <FrameIcon icon={FRAME_ICONS.chevronRight} className={cx('ic')} />
             </Link>
           ))}
         </div>

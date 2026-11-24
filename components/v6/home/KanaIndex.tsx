@@ -2,8 +2,7 @@
 
 import { useState } from 'react';
 import Link from '@/components/HardLink';
-import { FrameIcon } from '@/components/layout/icons';
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { FRAME_ICONS, FrameIcon } from '@/components/layout/icons';
 import { cx } from './cx';
 import type { KanaGroup } from '@/components/datapage/list/kana';
 
@@ -35,7 +34,7 @@ export default function KanaIndex({ groups, unit, label, hrefPrefix }: { groups:
                 {g.items.length}
                 {unit}
               </span>
-              <FrameIcon icon={faChevronDown} className={cx('ic')} />
+              <FrameIcon icon={FRAME_ICONS.chevronDown} className={cx('ic')} />
             </summary>
             <div className={cx('kn-a')}>
               {g.items.map((x) => (

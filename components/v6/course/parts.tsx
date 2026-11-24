@@ -1,6 +1,5 @@
 import Link from '@/components/HardLink';
-import { faChevronDown, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { FrameIcon } from '@/components/layout/icons';
+import { FRAME_ICONS, FrameIcon } from '@/components/layout/icons';
 import s from './course.module.css';
 import { COLS, fmt, maxOf, type StatRow } from './stats';
 import { Reveal } from './motion';
@@ -24,18 +23,9 @@ function pack(row: StatRow, max: ReturnType<typeof maxOf>) {
 
 /* ---------- 小物 ---------- */
 
-/** 見出しを語のまとまりで折り返す（語の途中で割らない） */
+/** 見出しの文字列をつなぐ。意味の区切りで改行させず、行末で普通に折り返す（オーナー指示 2026-11-20：見出しの改行は読みづらい） */
 export function Nb({ parts, sep = '' }: { parts: string[]; sep?: string }) {
-  return (
-    <>
-      {parts.map((p, i) => (
-        <span key={i}>
-          {i > 0 && sep}
-          <span className={s.nb}>{p}</span>
-        </span>
-      ))}
-    </>
-  );
+  return <>{parts.join(sep)}</>;
 }
 
 /** 節の見出し（地の上） */
@@ -55,7 +45,7 @@ export function More({ anchor, label }: { anchor: string; label: string }) {
   return (
     <Link prefetch={false} className={s['c-def']} href={`/about/data#${anchor}`}>
       {label}
-      <FrameIcon icon={faChevronRight} className={s.ic} />
+      <FrameIcon icon={FRAME_ICONS.chevronRight} className={s.ic} />
     </Link>
   );
 }
@@ -123,9 +113,10 @@ export interface CondRow extends StatRow {
   keep?: boolean;
 }
 
-const MIN = 30; // 現行と同じ：出走30未満は「最も高い」の対象外
+const MIN_DEFAULT = 30; // 現行と同じ：出走30未満は「最も高い」の対象外
 
-export function Cond({ rows: all, keyLabel, extra }: { rows: CondRow[]; keyLabel: string; extra?: React.ReactNode }) {
+/** min：「最も高い」の対象と棒の濃さを決める出走数の下限（レース別ページは母数が少ないので10） */
+export function Cond({ rows: all, keyLabel, extra, min: MIN = MIN_DEFAULT }: { rows: CondRow[]; keyLabel: string; extra?: React.ReactNode; min?: number }) {
   const rows = all.filter((r) => typeof r.races === 'number');
   if (rows.length === 0) {
     return (
@@ -278,7 +269,7 @@ export function Faq({ items }: { items: FaqItem[] }) {
         <details key={n}>
           <summary>
             <span>{item.question}</span>
-            <FrameIcon icon={faChevronDown} className={s.ic} />
+            <FrameIcon icon={FRAME_ICONS.chevronDown} className={s.ic} />
           </summary>
           {item.answer && (
             <div className={s['qa-a']}>

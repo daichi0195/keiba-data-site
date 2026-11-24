@@ -1,7 +1,10 @@
 import { Metadata } from 'next';
 import AdSlot from '@/components/AdSlot';
 import TopChips from '@/components/v6/home/TopChips';
-import { AiCards, ColumnList, COURSE_TOTAL, FeatArticles, Head, People, VENUES, VenueList, WeekVenues, type RaceSummary } from '@/components/v6/home/parts';
+import { AiCards, ColumnList, COURSE_TOTAL, Head, People, VENUES, VenueList, WeekVenues, type RaceSummary } from '@/components/v6/home/parts';
+import { WeekBanners, WeekRaceList } from '@/components/v6/race/WeekRaces';
+import wk from '@/components/v6/race/week.module.css';
+import { WEEK_RACES, weekSpan } from '@/lib/weekRaces';
 import { cx } from '@/components/v6/home/cx';
 import { JOCKEY_GROUPS, SIRE_GROUPS, TRAINER_GROUPS } from '@/components/datapage/list/kana';
 import { getJockeyLeading, getTrainerLeading, getSireLeading, getLeadingYear } from '@/lib/getLeadingData';
@@ -71,8 +74,10 @@ export default async function HomePage() {
   };
 
   // 見出しのチップ（見本 top.mjs の CHIPS）。節が出ないときはチップも出さない
+  const weekDates = [...new Set(WEEK_RACES.map((r) => r.date))].sort();
   const chips = [
     predictions.length > 0 && { id: 'ai', label: 'AI勝率予測' },
+    WEEK_RACES.length > 0 && { id: 'races', label: 'ピックアップレース' },
     weekVenues.length > 0 && { id: 'week', label: '今週開催' },
     { id: 'courses', label: 'コース' },
     { id: 'jockeys', label: '騎手' },
@@ -89,16 +94,30 @@ export default async function HomePage() {
       />
       <main className={cx('root')}>
         <h1 className={cx('vh')}>競馬データ.com｜コース・騎手・血統の競馬データ分析</h1>
-        <TopChips items={chips} />
-
-        <section className={cx('feat')} id="top" aria-label="おすすめ記事">
-          <FeatArticles articles={articles} />
+        {/* 今週の重賞のバナー（見出しなしでページの一番上。その下にナビゲーションのチップ） */}
+        <section className={`${cx('feat')} ${wk.top}`} id="top" aria-label="今週の重賞">
+          <WeekBanners />
         </section>
 
+        {/* バナーの下に広告を挟んでから、ナビゲーションのチップ */}
+        <div className={cx('ad')}>
+          <AdSlot unit="list" />
+        </div>
+
+        <TopChips items={chips} />
+
+        {/* ナビのすぐ下の節は上の余白を詰める（ナビの下端から見出しまでを、ほかのページの最初の節と同じくらいに） */}
         {predictions.length > 0 && (
-          <section className={cx('sc band')} id="ai">
+          <section className={cx('sc band')} id="ai" style={{ paddingTop: 8 }}>
             <Head title="AI勝率予測" sub="対象レースの約5分前に公開" more={{ href: '/ai', label: 'もっとみる' }} />
             <AiCards races={predictions} />
+          </section>
+        )}
+
+        {WEEK_RACES.length > 0 && (
+          <section className={cx('sc')} id="races" style={predictions.length > 0 ? undefined : { paddingTop: 8 }}>
+            <Head title="今週のピックアップレース" sub={`オープン・リステッド以上（${weekSpan(weekDates)}）`} more={{ href: '/races', label: 'もっとみる' }} />
+            <WeekRaceList />
           </section>
         )}
 
@@ -108,10 +127,6 @@ export default async function HomePage() {
             <WeekVenues venues={weekVenues} />
           </section>
         )}
-
-        <div className={cx('ad')}>
-          <AdSlot unit="list" />
-        </div>
 
         <section className={cx('sc')} id="courses">
           <Head title="コース別データ" sub={`${VENUES.length}競馬場・${COURSE_TOTAL}コース`} more={{ href: '/courses', label: 'コース一覧' }} />
