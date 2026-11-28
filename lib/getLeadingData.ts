@@ -1,5 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+// JSON を直接 import してバンドルに含める（Cloudflare Workers 上の ISR 再生成ではファイルを読めないため）
+import leadingJson from '@/public/data/leading.json';
 
 export interface LeadingData {
   rank: number;
@@ -20,12 +20,10 @@ interface LeadingJsonData {
 
 /**
  * 事前生成されたリーディングデータを読み込む
- * public/data/leading.jsonから読み込み
+ * public/data/leading.json（ビルド時にバンドル）から読み込み
  */
 function getLeadingDataFromFile(): LeadingJsonData {
-  const filePath = path.join(process.cwd(), 'public', 'data', 'leading.json');
-  const fileContent = fs.readFileSync(filePath, 'utf-8');
-  return JSON.parse(fileContent);
+  return leadingJson as LeadingJsonData;
 }
 
 /**

@@ -74,7 +74,7 @@ export async function getThisWeekVenues(): Promise<Venue[]> {
   let ids: string[] = [];
   try {
     const res = await fetch('https://storage.googleapis.com/umadata/predictions/index.json', {
-      next: { revalidate: 3600 },
+      next: { revalidate: 60 }, // トップの AI 予測と同じ間隔で開催場の切り替わりを反映
     });
     if (res.ok) {
       const entries = (await res.json()) as PredictionIndexEntry[];

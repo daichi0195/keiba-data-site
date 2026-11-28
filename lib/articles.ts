@@ -4,6 +4,8 @@ import matter from 'gray-matter';
 import { remark } from 'remark';
 import html from 'remark-html';
 import gfm from 'remark-gfm';
+// ビルド時に scripts/build-articles-index.mjs が書き出す記事一覧（Workers 上の再生成ではファイルを読めないため）
+import generatedArticles from './articles.generated.json';
 
 const articlesDirectory = path.join(process.cwd(), 'content/articles');
 
@@ -62,6 +64,10 @@ export function getArticleExtension(slug: string): 'md' | 'mdx' | null {
  * 全ての記事データを取得（一覧表示用）
  */
 export function getAllArticles(): Article[] {
+  // 記事フォルダが読めない環境（Cloudflare Workers 上の ISR 再生成）では、ビルド時の一覧を使う
+  if (!fs.existsSync(articlesDirectory)) {
+    return sortArticles(generatedArticles as Article[]);
+  }
   const slugs = getAllArticleSlugs();
 
   const articles = slugs.map((slug) => {
@@ -79,8 +85,12 @@ export function getAllArticles(): Article[] {
     };
   }).filter((article): article is Article => article !== null);
 
-  // 日付の降順でソート（同じ日付の場合はスラッグの昇順）
-  return articles.sort((a, b) => {
+  return sortArticles(articles);
+}
+
+/** 日付の降順でソート（同じ日付の場合はスラッグの昇順） */
+function sortArticles(articles: Article[]): Article[] {
+  return [...articles].sort((a, b) => {
     if (a.frontmatter.date < b.frontmatter.date) {
       return 1;
     } else if (a.frontmatter.date > b.frontmatter.date) {

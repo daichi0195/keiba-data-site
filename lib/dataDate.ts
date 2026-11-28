@@ -1,5 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+// JSON を直接 import してバンドルに含める（Cloudflare Workers 上の ISR 再生成ではファイルを読めないため）
+import leadingJson from '@/public/data/leading.json';
 
 /**
  * データの更新日まわりの共通処理
@@ -11,8 +11,7 @@ import path from 'path';
 /** データの最終更新日時（取得できなければ null） */
 export function getDataUpdatedAt(): Date | null {
   try {
-    const filePath = path.join(process.cwd(), 'public', 'data', 'leading.json');
-    const { last_updated } = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    const { last_updated } = leadingJson as { last_updated: string };
     const d = new Date(last_updated);
     return Number.isNaN(d.getTime()) ? null : d;
   } catch {
